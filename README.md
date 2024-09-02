@@ -51,8 +51,8 @@ Open your web browser and navigate to `http://localhost:4000`.
 # How to Use
 ## Adding Content
 
-- Markdown files: Add your content in the _posts directory for blog-style posts or directly into specific folders for chapters or sections.
-- Bibliography: Manage your references by editing the references.bib file located in the root directory. You can then cite them in your markdown files using the jekyll-scholar syntax.
+- **Markdown files:** Add your content in the `_posts` directory for blog-style posts or directly into specific folders for chapters or sections.
+- **Bibliography:** Manage your references by editing the `references.bib` file located in the root directory. You can then cite them in your markdown files using the `jekyll-scholar` syntax.
 
 ## Building the Site
 
@@ -60,13 +60,13 @@ When you are ready to deploy your site, you can build it using:
 ```bash
 bundle exec jekyll build
 ```
-The generated static files will be placed in the _site directory, ready to be hosted on GitHub Pages or any other static site hosting platform.
+The generated static files will be placed in the `_site` directory, ready to be hosted on GitHub Pages or any other static site hosting platform.
 Customizing the Theme
 
-You can customize the theme by modifying the _config.yml file and the styles in the assets/css directory.
+You can customize the theme by modifying the `_config.yml` file and the styles in the `assets/css` directory.
 
-- Config options: Change site-wide settings such as title, description, and navigation in _config.yml.
-- Layout and styles: Tweak the layout in _layouts and _includes, and update styles in assets/css/style.css.
+- **Config options:** Change site-wide settings such as title, description, and navigation in `_config.yml`.
+- **Layout and styles:** Tweak the layout in _layouts and `_includes`, and update styles in `assets/css/style.css`.
 
 # Contributing
 
@@ -80,8 +80,8 @@ This project is licensed under the MIT License. See the LICENSE file for more de
 
 This template is built with:
 
-- jekyll-gitbook by Sighingnow
-- jekyll-scholar by Inukshuk
+- [jekyll-gitbook](https://github.com/sighingnow/jekyll-gitbook) by [Sighingnow](https://github.com/sighingnow)
+- [jekyll-scholar](https://github.com/inukshuk/jekyll-scholar) by [Inukshuk](https://github.com/inukshuk)
 
 Check out their projects for more detailed documentation and updates.
 
