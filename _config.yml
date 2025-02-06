@@ -41,7 +41,7 @@ syntax_highlighter_style: colorful
 markdown_ext:             markdown,mkdown,mkdn,mkd,md
 
 # Permalinks
-permalink:                /:categories/:year-:month-:day-:title:output_ext
+permalink: /:name.html
 
 # Disqus comments
 # disqushandler:            sighingnow
@@ -54,17 +54,28 @@ exclude:
   - README.md
 
 collections:
+  chapters:
+    output: true
+    permalink: /:collection/:name.html  # Generates clean URLs like /chapter-1.html
+    sort_by: weight  # Enables manual ordering with 'weight'
   pages:
     output: true
     permalink: /:collection/:path/
   others:
     output: true
     permalink: /:collection/:path/
-
+  slides:
+    output: true
+    permalink: /:collection/:name.html  # Generates clean URLs like /slides/chapter-1.html
+    
 ordered_collections:
-  - posts
+  - chapters
   - pages
   - others
+
+reveal:
+  theme: "black"  # Options: beige, blood, league, moon, night, serif, simple, sky, solarized, white
+  transition: "slide"  # Options: none, fade, slide, convex, concave, zoom
 
 page_width: 800px
 
