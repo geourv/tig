@@ -23,8 +23,50 @@ require(['gitbook', 'jquery'], function(gitbook, $) {
                 e.preventDefault();
                 window.open('https://github.com');
             }
+        },
+        'telegram': {
+            'label': 'Telegram',
+            'icon': 'fa fa-telegram',
+            'onClick': function(e) {
+                e.preventDefault();
+                window.open('https://t.me');
+            }
+        },
+        'google': {
+            'label': 'Google+',
+            'icon': 'fa fa-google-plus',
+            'onClick': function(e) {
+                e.preventDefault();
+                window.open('https://plus.google.com/share?url='+encodeURIComponent(location.href));
+            }
+        },
+        'weibo': {
+            'label': 'Weibo',
+            'icon': 'fa fa-weibo',
+            'onClick': function(e) {
+                e.preventDefault();
+                window.open('http://service.weibo.com/share/share.php?content=utf-8&url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title));
+            }
+        },
+        'instapaper': {
+            'label': 'Instapaper',
+            'icon': 'fa fa-instapaper',
+            'onClick': function(e) {
+                e.preventDefault();
+                window.open('http://www.instapaper.com/text?u='+encodeURIComponent(location.href));
+            }
+        },
+        'vk': {
+            'label': 'VK',
+            'icon': 'fa fa-vk',
+            'onClick': function(e) {
+                e.preventDefault();
+                window.open('http://vkontakte.ru/share.php?url='+encodeURIComponent(location.href));
+            }
         }
     };
+
+
 
     gitbook.events.bind('start', function(e, config) {
         var opts = config.sharing;
@@ -32,6 +74,7 @@ require(['gitbook', 'jquery'], function(gitbook, $) {
         // Create dropdown menu
         var menu = $.map(opts.all, function(id) {
             var site = SITES[id];
+
             return {
                 text: site.label,
                 onClick: site.onClick
@@ -48,48 +91,19 @@ require(['gitbook', 'jquery'], function(gitbook, $) {
             });
         }
 
-        // 🔹 Add the "View Slides" Button in the GitBook Toolbar
-        $(document).ready(function() {
-            var baseurl = (typeof gitbook.state.basePath !== "undefined") ? gitbook.state.basePath : "";
-            var currentPage = window.location.pathname.split("/").pop().replace(".html", "");
-            var slideURL = baseurl + "slides/" + currentPage + ".html";  // Adjust for your setup
-
-            $.ajax({
-                url: slideURL,
-                type: 'HEAD',
-                success: function() {
-                    console.log("Slides found: Adding button...");
-
-                    // Add button to GitBook toolbar
-                    gitbook.toolbar.createButton({
-                        icon: 'fa fa-file-powerpoint-o', // PowerPoint style icon
-                        label: 'View Slides',
-                        position: 'right', // Places it in the navbar
-                        onClick: function(e) {
-                            e.preventDefault();
-                            window.location.href = slideURL;
-                        }
-                    });
-                },
-                error: function() {
-                    console.log("Slides not found: " + slideURL);
-                }
-            });
-        });
-
         // Direct actions to share
         $.each(SITES, function(sideId, site) {
             if (!opts[sideId]) return;
 
             var onClick = site.onClick;
             
-            // Override target link with provided link
-            var side_link = opts[`${sideId}_link`];
+            // override target link with provided link
+            var side_link = opts[`${sideId}_link`]
             if (side_link !== undefined && side_link !== "") {
                 onClick = function(e) {
                     e.preventDefault();
                     window.open(side_link);
-                };
+                }
             }
 
             gitbook.toolbar.createButton({
@@ -101,4 +115,3 @@ require(['gitbook', 'jquery'], function(gitbook, $) {
         });
     });
 });
-
