@@ -7,8 +7,38 @@
 <script src="{{site.baseurl}}/assets/gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
 <script src="{{site.baseurl}}/assets/gitbook/gitbook-plugin-search-pro/jquery.mark.min.js"></script>
 <script src="{{site.baseurl}}/assets/gitbook/gitbook-plugin-search-pro/search.js"></script>
-<script src="{{site.baseurl}}/assets/gitbook/gitbook-plugin-sharing/buttons.js"></script>
+<script src="{{site.baseurl}}/assets/gitbook/gitbook-plugin-zip/button.js"></script>
+<script src="{{site.baseurl}}/assets/gitbook/gitbook-plugin-video/button.js"></script>
+<script src="{{site.baseurl}}/assets/gitbook/gitbook-plugin-reveal/button.js"></script>
 <script src="{{site.baseurl}}/assets/gitbook/gitbook-plugin-splitter/splitter.js"></script>
+
+<script>
+    var slidesData = {
+        {% for slide in site.slides %}
+            "{{ slide.name | replace: '.md', '' }}": "{{ site.baseurl }}{{ slide.url }}"{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+    };
+</script>
+
+<script>
+    var zipData = {
+        {% assign zip_files = site.static_files | where: "extname", ".zip" %}
+        {% for file in zip_files %}
+            {% if file.path contains '/downloads/' %}
+                "{{ file.name | replace: '.zip', '' }}": "{{ site.baseurl }}{{ file.path }}"{% unless forloop.last %},{% endunless %}
+            {% endif %}
+        {% endfor %}
+    };
+    console.log("zipData (auto-detectado):", zipData);  // Verificación automática de los archivos ZIP
+</script>
+
+
+
+
+{% if page.video %}
+    <meta name="video-url" content="{{ page.video }}">
+{% endif %}
+
 
 <!--
 <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>

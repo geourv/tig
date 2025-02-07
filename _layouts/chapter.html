@@ -4,6 +4,13 @@
 
         {%- include head.html -%}
 
+        {% if page.video %}
+        <meta name="video-url" content="{{ page.video }}">
+        <script>console.log("Meta tag 'video-url' añadido:", "{{ page.video }}");</script>
+        {% endif %}
+    
+    
+
         {% if page.previous %}
             <link rel="prev" href="{{site.baseurl}}{{page.previous.url}}" />
         {% else %}
@@ -33,19 +40,6 @@
                 </div>
 
                 <div class="body-inner">
-                
-                {% assign slide_name = page.name | replace: ".md", "" %}
-{% for slide in site.slides %}
-    {% assign slide_filename = slide.name | replace: ".md", "" %}
-    {% if slide_name == slide_filename %}
-        <p>
-            <a href="{{ site.baseurl }}{{ slide.url }}" class="btn btn-primary">
-                📽️ View Slides for this Chapter
-            </a>
-        </p>
-    {% endif %}
-{% endfor %}
-
                 
                     {%- include body.html -%}
 
