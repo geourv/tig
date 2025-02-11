@@ -1,10 +1,10 @@
 # Configurations
-title:            Jekyll Gitbook Template
-longtitle:        Jekyll Gitbook Template
+title:            CurriCodex templating system
+longtitle:        CurriCodex templating system for teaching materials
 author:           Benito Zaragozí
 email:            benizar@gmail.com
 description: >
-  Build Jekyll site with the GitBook style and Jekyll scholar.
+  Build Jekyll site with the GitBook style, Jekyll scholar, Reveal.js, Mermaid,js, etc...
 
 version:          1.0
 gitbook_version:  3.2.3
