@@ -1,4 +1,6 @@
 ---
+lang: en
+permalink: /:title/en/
 title: 1. Why Jekyll with GitBook
 author: Tao He
 date: 2019-04-27

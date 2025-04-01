@@ -1,4 +1,6 @@
 ---
+lang: en
+permalink: /:title/en/
 title: 2. How to Get Started
 author: Tao He
 date: 2019-04-28

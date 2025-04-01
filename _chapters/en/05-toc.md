@@ -1,4 +1,6 @@
 ---
+lang: en
+permalink: /:title/en/
 title: 3. How to Generate TOC
 author: Tao He
 date: 2021-08-10

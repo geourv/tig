@@ -1,4 +1,6 @@
 ---
+lang: ca
+permalink: /:title/ca/
 title: 6. Wide tables
 author: Tao He
 date: 2022-06-26

@@ -19,7 +19,7 @@ require(['gitbook', 'jquery'], function(gitbook, $) {
                 id: BUTTON_ID,  // Asignamos un ID único al botón
                 icon: 'fa fa-tv',
                 label: 'Ver Diapositivas',
-                position: 'right',
+                position: 'left',
                 onClick: function(e) {
                     e.preventDefault();
                     window.open(slideUrl, '_blank');

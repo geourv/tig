@@ -19,7 +19,7 @@ require(['gitbook', 'jquery'], function(gitbook, $) {
                 id: VIDEO_BUTTON_ID,
                 icon: 'fa fa-play-circle',  // Icono de reproducción
                 label: 'Ver Vídeo',
-                position: 'right',
+                position: 'left',
                 onClick: function(e) {
                     e.preventDefault();
                     window.open(videoUrl, '_blank');

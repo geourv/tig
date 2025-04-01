@@ -1,4 +1,6 @@
 ---
+lang: ca
+permalink: /:title/ca/
 title: 3. License
 author: Tao He
 date: 2019-04-29

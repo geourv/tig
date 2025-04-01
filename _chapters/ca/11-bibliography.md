@@ -1,4 +1,6 @@
 ---
+lang: ca
+permalink: /:title/ca/
 title: 11. Adding bibliographies
 author: "Benito Zaragozí"
 date: 2024-09-02

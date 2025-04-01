@@ -1,4 +1,6 @@
 ---
+lang: en
+permalink: /:title/en/
 title: 9. MathJax and LaTeX
 author: Tao He
 date: 2023-10-14

@@ -1,4 +1,6 @@
 ---
+lang: ca
+permalink: /:title/ca/
 title: 4. Page with cover image
 author: Tao He
 date: 2022-05-24

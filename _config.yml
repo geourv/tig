@@ -56,7 +56,7 @@ exclude:
 collections:
   chapters:
     output: true
-    permalink: /:collection/:name.html  # Generates clean URLs like /chapter-1.html
+    permalink: /:collection/:name  # Generates clean URLs like /chapter-1.html
     sort_by: weight  # Enables manual ordering with 'weight'
   pages:
     output: true
@@ -66,7 +66,7 @@ collections:
     permalink: /:collection/:path/
   slides:
     output: true
-    permalink: /:collection/:name.html  # Generates clean URLs like /slides/chapter-1.html
+    permalink: /:collection/:name  # Generates clean URLs like /slides/chapter-1.html
     
 ordered_collections:
   - chapters

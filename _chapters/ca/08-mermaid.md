@@ -1,4 +1,6 @@
 ---
+lang: ca
+permalink: /:title/ca/
 title: 8. Diagrams with mermaid.js
 author: Tao He
 date: 2023-08-31

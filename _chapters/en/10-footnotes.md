@@ -1,4 +1,6 @@
 ---
+lang: en
+permalink: /:title/en/
 title: 10. Using Footnotes
 author: Tao He
 date: 2023-12-12

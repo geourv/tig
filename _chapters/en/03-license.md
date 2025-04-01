@@ -1,0 +1,15 @@
+---
+lang: en
+permalink: /:title/en/
+title: 3. License
+author: Tao He
+date: 2019-04-29
+category: Jekyll
+weight: 3
+layout: chapter
+---
+
+This work is open sourced under the Apache License, Version 2.0, using the
+same license as the original [GitBook](https://github.com/GitbookIO/gitbook) repository.
+
+Copyright 2019 Tao He.
