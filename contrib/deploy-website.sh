@@ -4,8 +4,8 @@
 # Only use this script after commiting your changes to $SOURCE
 
 # Use these defaults
-SOURCE="source"
-SITE="master"
+SOURCE="main"
+SITE="gh-pages"
 # Get the latest commit SHA in SOURCE branch
 last_SHA=( $(git log -n 1 --pretty=oneline) )
 
