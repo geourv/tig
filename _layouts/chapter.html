@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" >
+<html lang="{{ page.lang | default: site.lang | default: 'ca' }}">
     <head>
 
         {%- include head.html -%}
@@ -41,7 +41,13 @@
 
                 <div class="body-inner">
                 
-                    {%- include body.html -%}
+                    <div class="chapter-content"
+                        data-chapter="{{ page.weight | default: 0 }}"
+                        data-lang="{{ page.lang | default: site.lang | default: 'ca' }}">
+
+                        {%- include body.html -%}
+                    </div>
+                      
 
                     {% if page.previous %}
                         <a href="{{site.baseurl}}{{page.previous.url}}" class="navigation navigation-prev navigation-unique" aria-label="Previous page: {{page.previous.title}}">

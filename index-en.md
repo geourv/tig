@@ -2,10 +2,8 @@
 layout: home
 lang: en
 permalink: /en/
-title: Cover page
 ---
 
-# Welcome!
-
-This is the English landing page.
-
+<div class="cover">
+  <img class="cover-image" src="{{ site.baseurl }}/images/cover-cat.png" alt="Tecnologies de la Informació Geogràfica">
+</div>

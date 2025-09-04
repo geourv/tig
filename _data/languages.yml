@@ -1,0 +1,10 @@
+# _data/languages.yml
+- code: ca
+  name: Català
+  path_prefix: /ca/
+- code: es
+  name: Castellano
+  path_prefix: /es/
+- code: en
+  name: English
+  path_prefix: /en/

@@ -1,0 +1,24 @@
+ca:
+  title: "Tecnologies de la Informació Geogràfica"
+  longtitle: "Manual per a l'assignatura de Tecnologies de la Informació Geogràfica"
+  description: "Materials amb estil GitBook, Jekyll Scholar, Reveal.js, Mermaid, etc."
+  language_name: "Català"
+  search_placeholder: "Escriu per cercar"
+  search_link_text: "Anar al cercador"
+
+es:
+  title: "Tecnologías de la Información Geográfica"
+  longtitle: "Manual de la asignatura de Tecnologías de la Información Geográfica"
+  description: "Material con estilo GitBook, Jekyll Scholar, Reveal.js, Mermaid, etc."
+  language_name: "Castellano"
+  search_placeholder: "Escribe para buscar"
+  search_link_text: "Ir al buscador"
+
+en:
+  title: "Geographic Information Technologies"
+  longtitle: "Course manual for Geographic Information Technologies"
+  description: "Build Jekyll site with GitBook style, Jekyll Scholar, Reveal.js, Mermaid, etc."
+  language_name: "English"
+  search_placeholder: "Type to search"
+  search_link_text: "Go to search"
+

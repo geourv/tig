@@ -1,14 +1,16 @@
 <meta charset="UTF-8">
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
 
+{%- assign lang_code = page.lang | default: site.lang | default: 'ca' -%}
+{%- assign t = site.data.i18n[lang_code] -%}
+
 {%- if page.title -%}
-    <title>{{ page.title | escape }} · {{ site.title | escape }}</title>
+  <title>{{ page.title | escape }} · {{ t.title | default: site.title | escape }}</title>
 {%- else -%}
-    <title>{{ site.title | escape }}</title>
+  <title>{{ t.title | default: site.title | escape }}</title>
 {%- endif -%}
 
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="description" content="{{site.description}}">
+<meta name="description" content="{{ t.description | default: site.description }}">
 
 {%- if site.gitbook_version -%}
     <meta name="generator" content="Jekyll (using style of GitBook {{ site.gitbook_version | escape }})">
@@ -70,3 +72,11 @@
     {%- endif -%}
 
 {%- endif -%}
+
+{%- assign curr_lang = page.lang | default: site.lang | default: 'ca' -%}
+<script>
+  // disponibles des de qualsevol script del tema
+  window.SITE_BASEURL = "{{ site.baseurl }}";
+  window.SITE_LANGS   = {{ site.data.languages | jsonify }};
+  window.CURRENT_LANG = "{{ curr_lang }}";
+</script>

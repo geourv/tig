@@ -1,20 +1,20 @@
 # Configurations
-title:            CurriCodex templating system
-longtitle:        CurriCodex templating system for teaching materials
+title:            Tecnologies de la Informació Geogràfica
+longtitle:        Manual per a l'assignatura de Tecnologies de la Informació Geogràfica
 author:           Benito Zaragozí
-email:            benizar@gmail.com
+email:            benito.zaragozi@urv.cat
 description: >
   Build Jekyll site with the GitBook style, Jekyll scholar, Reveal.js, Mermaid,js, etc...
 
 version:          1.0
 gitbook_version:  3.2.3
 
-url:              'https://benizar.github.io'
-baseurl:          '/jekyll-gitbook-template'
+url:              'https://geourv.github.io/tig'
+baseurl:          '/tig'
 rss:              RSS
 
 # bootstrap: use the remote theme for the site itself
-remote_theme: sighingnow/jekyll-gitbook
+#remote_theme: sighingnow/jekyll-gitbook
 
 toc:
   enabled: true
@@ -43,8 +43,6 @@ markdown_ext:             markdown,mkdown,mkdn,mkd,md
 # Permalinks
 permalink: /:name.html
 
-# Disqus comments
-# disqushandler:            sighingnow
 
 exclude:
   - _drafts

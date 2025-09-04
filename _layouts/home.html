@@ -1,57 +1,63 @@
 <!DOCTYPE HTML>
-<html lang="en" >
-    <head>
+<html lang="{{ page.lang | default: site.lang | default: 'ca' }}">
+  <head>
+    {%- include head.html -%}
 
-        {%- include head.html -%}
+    {%- assign known_langs = site.data.languages | map:'code' -%}
+    {%- assign curr_lang = page.lang | default: site.lang | default: known_langs | first -%}
+    {%- assign lang_chapters = site.chapters | where:'lang', curr_lang | sort:'weight' -%}
+    {%- if lang_chapters == empty -%}
+      {%- assign lang_dir = '/_chapters/' | append: curr_lang | append: '/' -%}
+      {%- assign lang_chapters = site.chapters | where_exp:'c',"c.path contains lang_dir" | sort:'weight' -%}
+    {%- endif -%}
+    {%- assign first_chapter = lang_chapters | first -%}
+    {%- if first_chapter -%}
+      <link rel="next" href="{{ site.baseurl }}{{ first_chapter.url }}" />
+    {%- endif -%}
+  </head>
+  <body data-numbering="off">
+    <div class="book">
 
-        {% assign reversed_posts = site.posts | reverse %}
+      {%- include toc-date.html -%}
 
-        {% if reversed_posts %}
-            <link rel="next" href="{{site.baseurl}}{{reversed_posts.first.url}}" />
-        {% endif %}
-    </head>
-    <body>
-        <div class="book">
-
-            {%- include toc-date.html -%}
-
-            <div class="book-body">
-                <div class="book-header" role="navigation">
-                    <!-- Title -->
-                    <h1>
-                        <i class="fa fa-circle-o-notch fa-spin"></i>
-                        {% if page.title %}
-                            <a href="." >{{ page.title | escape }}</a>
-                        {% else %}
-                            <a href="." >{{ site.title | escape }}</a>
-                        {% endif %}
-                    </h1>
-                </div>
-
-                <div class="body-inner">
-                    {%- include body.html -%}
-
-                    <a href="{{site.baseurl}}/" class="navigation navigation-pre navigation-unique">
-                        <i class="fa"></i>
-                    </a>
-
-                    {% if reversed_posts %}
-                        <a href="{{site.baseurl}}{{reversed_posts.first.url}}" class="navigation navigation-next navigation-unique" aria-label="Next page: {{reversed_posts.first.title}}">
-                            <i class="fa fa-angle-right"></i>
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-
-            <script>
-            var gitbook = gitbook || [];
-            gitbook.push(function() {
-                gitbook.page.hasChanged({%- include metadata-home.json.tpl -%});
-            });
-            </script>
+      <div class="book-body">
+        <div class="book-header" role="navigation">
+          {%- assign lang_home = site.baseurl | append:'/' | append: curr_lang | append:'/' -%}
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i>
+            {% if page.title %}
+              <a href="{{ lang_home }}">{{ page.title | escape }}</a>
+            {% else %}
+              <a href="{{ lang_home }}">{{ site.title | escape }}</a>
+            {% endif %}
+          </h1>
         </div>
 
-        {%- include footer.html -%}
+        <div class="body-inner">
+          {%- include body.html -%}
 
-    </body>
+          <a href="{{ lang_home }}" class="navigation navigation-pre navigation-unique" aria-label="Home">
+            <i class="fa"></i>
+          </a>
+
+          {% if first_chapter %}
+          <a href="{{ site.baseurl }}{{ first_chapter.url }}"
+             class="navigation navigation-next navigation-unique"
+             aria-label="Next page: {{ first_chapter.title | escape }}">
+            <i class="fa fa-angle-right"></i>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function () {
+          gitbook.page.hasChanged({%- include metadata-home.json.tpl -%});
+        });
+      </script>
+    </div>
+
+    {%- include footer.html -%}
+  </body>
 </html>

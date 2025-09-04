@@ -1,20 +1,18 @@
 <div class="book-summary">
   <script type="text/javascript">
+    // smooth scroll helpers (kept from your original)
     function pageScrollToTop(element) {
       $('div.body-inner').animate({ scrollTop: 0 });
       $(element).parent().find('li>ul>li').removeClass('active');
       return true;
     }
-
     function mobilePageScrollToAnchor(element) {
       $(element).closest('li.chapter').find('ul>li').removeClass('active');
       $(element).parent().addClass('active');
       if ($(document).width() <= 1240) {
         let target = $($(element).attr('href'));
         if (target.length) {
-          $('div.body-inner').animate({
-            scrollTop: target.get(0).offsetTop,
-          });
+          $('div.body-inner').animate({ scrollTop: target.get(0).offsetTop });
         }
       }
       return true;
@@ -22,59 +20,99 @@
   </script>
 
   <nav role="navigation">
+    {%- comment -%}
+      === language detection (from _data/languages.yml) ===
+      1) prefer page.lang or site.lang if it exists and is among declared languages
+      2) fallback: infer from URL segments (/ca/, /es/, /en/, …) based on _data
+      3) final fallback: first language defined in _data
+    {%- endcomment -%}
+    {%- assign known_langs = site.data.languages | map: 'code' -%}
+    {%- assign current_lang = page.lang | default: site.lang -%}
+    {%- if current_lang == nil or current_lang == '' or (known_langs contains current_lang) == false -%}
+      {%- assign segments = page.url | split: '/' -%}
+      {%- assign current_lang = '' -%}
+      {%- for seg in segments -%}
+        {%- if known_langs contains seg -%}
+          {%- assign current_lang = seg -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if current_lang == '' -%}
+        {%- assign current_lang = known_langs | first -%}
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- comment -%}
+      === i18n strings (from _data/i18n.yml) with sensible fallbacks ===
+    {%- endcomment -%}
+    {%- assign i18n = site.data.i18n[current_lang] -%}
+    {%- assign toc_title          = i18n.title            | default: site.title -%}
+    {%- assign search_placeholder = i18n.search_placeholder | default: "Type to search" -%}
+    {%- assign search_link_text   = i18n.search_link_text   | default: "Click to Search" -%}
+
     <div id="book-search-input" role="search">
-      <input type="text" placeholder="Type to search" />
+      <input type="text" placeholder="{{ search_placeholder }}" />
     </div>
     <div id="book-search-input-link" role="search">
-      <a href="{{site.baseurl}}/assets/search.html">Click to Search</a>
+      <a href="{{ site.baseurl }}/assets/search.html">{{ search_link_text }}</a>
     </div>
 
+    {%- comment -%}
+      === filter chapters for current language ===
+      Try explicit front matter lang first; if empty, filter by folder path '/_chapters/<lang>/'
+    {%- endcomment -%}
+    {%- assign filtered_chapters = site.chapters | where: 'lang', current_lang -%}
+    {%- if filtered_chapters == empty -%}
+      {%- assign lang_dir = '/_chapters/' | append: current_lang | append: '/' -%}
+      {%- assign filtered_chapters = site.chapters | where_exp: 'c', "c.path contains lang_dir" -%}
+    {%- endif -%}
+    {%- assign filtered_chapters = filtered_chapters | sort: 'weight' -%}
+
     <ul class="summary">
-
-{%- assign last_segment = page.url | split: '/' | last -%}
-{%- assign current_lang = "ca" -%}
-{%- if last_segment == "en" or last_segment == "ca" -%}
-  {%- assign current_lang = last_segment -%}
-{%- endif -%}
-
-{%- assign filtered_chapters = site.chapters | where: "lang", current_lang -%}
-
-
+      {%- comment -%}
+        === home entry ===
+        Keep your existing behavior (root index decides language)
+      {%- endcomment -%}
+      
+      {%- assign home_url = site.baseurl | append: '/' | append: current_lang | append: '/' -%}
 
       {%- if page.url == "/index.html" or page.url == "/" -%}
-        <li class="chapter active" data-level="1.1" data-path="{{site.baseurl}}">
+        <li class="chapter home-item active" data-level="1.1" data-path="{{ home_url }}" data-home="1">
       {%- else -%}
-        <li class="chapter" data-level="1.1" data-path="{{site.baseurl}}">
+        <li class="chapter home-item" data-level="1.1" data-path="{{ home_url }}" data-home="1">
       {%- endif -%}
-        <a href="{{site.baseurl}}/" onclick="pageScrollToTop(this)">
-          {{ site.title | escape }}
-        </a>
-        {% if site.toc.enabled and site.toc.enabled_index %}
-          {% include toc.html html=content h_min=site.toc.h_min h_max=site.toc.h_max %}
-        {% endif %}
-      </li>
+          <a href="{{ home_url }}" onclick="pageScrollToTop(this)">
+            {{ toc_title | escape }}
+          </a>
+          {%- if site.toc.enabled and site.toc.enabled_index -%}
+            {%- include toc.html html=content h_min=site.toc.h_min h_max=site.toc.h_max -%}
+          {%- endif -%}
+        </li>
+      
 
       <li class="divider"></li>
 
-      {% for post in filtered_chapters %}
-        {% if page.url == post.url %}
-          <li class="chapter active" data-level="1.2" data-path="{{site.baseurl}}{{post.url}}">
-        {% else %}
-          <li class="chapter" data-level="1.1" data-path="{{site.baseurl}}{{post.url}}">
-        {% endif %}
-            <a href="{{site.baseurl}}{{post.url}}" onclick="pageScrollToTop(this)">
+      {%- comment -%}
+        === language-scoped chapter list ===
+        Only chapters for current_lang; active item gets its in-page TOC (H2–H3)
+      {%- endcomment -%}
+      {%- for post in filtered_chapters -%}
+        {%- if page.url == post.url -%}
+          <li class="chapter active" data-level="1.2" data-path="{{ site.baseurl }}{{ post.url }}">
+        {%- else -%}
+          <li class="chapter" data-level="1.1" data-path="{{ site.baseurl }}{{ post.url }}">
+        {%- endif -%}
+            <a href="{{ site.baseurl }}{{ post.url }}" onclick="pageScrollToTop(this)">
               {{ post.title | escape }}
             </a>
-            {% if site.toc.enabled and page.url == post.url %}
-              {% include toc.html html=content h_min=site.toc.h_min h_max=site.toc.h_max %}
-            {% endif %}
+            {%- if site.toc.enabled and page.url == post.url -%}
+              {%- include toc.html html=content h_min=site.toc.h_min h_max=site.toc.h_max -%}
+            {%- endif -%}
           </li>
-      {% endfor %}
+      {%- endfor -%}
 
-      {% if filtered_chapters.size > 0 %}
+      {%- if filtered_chapters.size > 0 -%}
         <li class="divider"></li>
-      {% endif %}
+      {%- endif -%}
     </ul>
   </nav>
 </div>
-

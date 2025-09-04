@@ -1,5 +1,64 @@
+/* File: assets/gitbook/custom-local.css */
 /* This file is kept intentionally blank inside the jekyll-github-theme
  * It gets imported at the end of custom.css
  * Its purpose is for users of the theme to be able to add css rules from a blank file
- *   these get simply added to the ones already active in the layout.
  */
+
+/* numbering prefix for headings inside content */
+.hd-num {
+  display: inline;
+  white-space: nowrap;
+  font-weight: 600;
+  opacity: .85;
+  margin-right: 0.18em;
+}
+
+/* numbering prefix for TOC items (sidebar chapters) */
+.book-summary .summary li.chapter > a[data-num]::before {
+  content: attr(data-num) "\2009"; /* thin space */
+  font-weight: 600;
+  opacity: .85;
+  display: inline;
+  white-space: nowrap;
+}
+
+/* numbering prefix for in-page TOC (inside the page content) */
+#toc a[data-num]::before,
+.toc a[data-num]::before,
+.table-of-contents a[data-num]::before {
+  content: attr(data-num) "\2009";
+  font-weight: 600;
+  opacity: .85;
+  display: inline;
+  white-space: nowrap;
+}
+
+/* NEW: numbering for section/subsection links INSIDE the sidebar (anchors #...) */
+.book-summary .summary a[href^="#"][data-num]::before {
+  content: attr(data-num) "\2009";
+  font-weight: 600;
+  opacity: .85;
+  display: inline;
+  white-space: nowrap;
+}
+
+
+/* cover styles (no headings => no numbering) */
+.cover {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+  padding: 2.5rem 1rem;
+}
+
+.cover-image {
+  max-width: 600px;
+  height: auto;
+  border-radius: 0px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.15);
+  max-height: 80vh; 
+  object-fit: contain; 
+}
+
