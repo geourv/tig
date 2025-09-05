@@ -9,7 +9,7 @@ include contrib/*.mk
 .PHONY: 2-start-server
 ## Start a Jekyll server at port 4000
 2-start-server:
-	@docker compose -f contrib/docker-compose.yml up jekyll_site
+	@@UID=$$(id -u) GID=$$(id -g) docker compose -f contrib/docker-compose.yml up jekyll_site
 
 .PHONY: 3-stop-server
 ## Close the jekyll server
@@ -23,15 +23,9 @@ include contrib/*.mk
 
 
 
-.PHONY: clean super-clean
+.PHONY: clean
+# Remove _site, .jekyll-cache i .jekyll-metadata
 clean:
-	@bundle exec jekyll clean   # elimina _site, .jekyll-cache i .jekyll-metadata
-
-super-clean:
-	@bundle exec jekyll clean
-	@rm -rf vendor/bundle
+	@sudo rm -rf _site .jekyll-cache .jekyll-metadata
 
 
-standarize-images:
-	@rename 'y/A-Z/a-z/' images/*
-	@rename 'y/\_/-/' images/*
