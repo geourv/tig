@@ -41,7 +41,8 @@ syntax_highlighter_style: colorful
 markdown_ext:             markdown,mkdown,mkdn,mkd,md
 
 # Permalinks
-permalink: /:name.html
+permalink: pretty
+
 
 
 exclude:
@@ -58,7 +59,7 @@ collections:
     sort_by: weight  # Enables manual ordering with 'weight'
   pages:
     output: true
-    permalink: /:collection/:path/
+    permalink: /:path/
   others:
     output: true
     permalink: /:collection/:path/
@@ -70,6 +71,26 @@ ordered_collections:
   - chapters
   - pages
   - others
+
+defaults:
+  - scope: { path: "_pages/ca", type: "pages" }
+    values:
+      lang: "ca"
+      layout: "page"
+      permalink: "/:title/ca/"
+  - scope: { path: "_pages/es", type: "pages" }
+    values:
+      lang: "es"
+      layout: "page"
+      permalink: "/:title/es/"
+  - scope: { path: "_pages/en", type: "pages" }
+    values:
+      lang: "en"
+      layout: "page"
+      permalink: "/:title/en/"
+
+
+
 
 reveal:
   theme: "black"  # Options: beige, blood, league, moon, night, serif, simple, sky, solarized, white
@@ -85,6 +106,7 @@ plugins:
   - jekyll-feed
   - jekyll-readme-index
   - jemoji
+  - jekyll-scholar
   
 scholar:
   style: _bibliography/my-apa-cv-no-access.csl

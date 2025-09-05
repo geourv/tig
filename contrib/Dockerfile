@@ -1,8 +1,7 @@
-FROM ruby:3.2
+FROM ruby:3.3
 
 WORKDIR /srv/jekyll
 
-# Install bundler version 1.17.1
 RUN gem install bundler -v 2.3.0
 
 RUN gem install jekyll-scholar

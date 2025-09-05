@@ -1,7 +1,6 @@
 ---
 layout: home
-lang: ca
-permalink: /ca/
+permalink: /en/
 ---
 
 <div class="cover">

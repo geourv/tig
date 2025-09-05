@@ -1,24 +1,164 @@
 ---
-layout: home
+layout: none
+permalink: /404.html
 ---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>404</title>
+  {%- assign langs = site.data.languages -%}
+  <script>
+    (function(){
+      var BASE = "{{ site.baseurl }}";
+      var LANGS = {{ langs | jsonify }};
+      var CODES = LANGS.map(function(l){ return l.code; });
 
-<style type="text/css" media="screen">
-  .container {
-    margin: 10px auto;
-    max-width: 600px;
-    text-align: center;
-  }
-  h1 {
-    margin: 30px 0;
-    font-size: 4em;
-    line-height: 1;
-    letter-spacing: -1px;
-  }
-</style>
+      function stripBase(path){
+        var b = BASE || "";
+        return (b && path.startsWith(b)) ? path.slice(b.length) : path;
+      }
 
-<div class="container">
-  <h1>404</h1>
+      // detecta l'idioma per URL: /ca/... o .../ca/
+      function pickFromPath(path){
+        var parts = path.split("/").filter(Boolean);
+        if (!parts.length) return null;
+        var last = parts[parts.length - 1];
+        if (CODES.indexOf(last) !== -1) return last;
+        var first = parts[0];
+        if (CODES.indexOf(first) !== -1) return first;
+        return null;
+      }
 
-  <p><strong>Page not found :(</strong></p>
-  <p>The requested page could not be found.</p>
-</div>
+      function pickFromStorageOrBrowser(){
+        try {
+          var s = localStorage.getItem("preferredLang");
+          if (s && CODES.indexOf(s) !== -1) return s;
+        } catch(e){}
+        var nav = (navigator.language || navigator.userLanguage || "").toLowerCase();
+        if (nav && nav.length >= 2){
+          var two = nav.slice(0,2);
+          if (CODES.indexOf(two) !== -1) return two;
+        }
+        return LANGS[0].code;
+      }
+
+      function entry(code){
+        for (var i=0;i<LANGS.length;i++){ if (LANGS[i].code === code) return LANGS[i]; }
+        return LANGS[0];
+      }
+
+      function ensureSlashes(s){
+        if (!s.startsWith("/")) s = "/" + s;
+        if (!s.endsWith("/")) s = s + "/";
+        return s;
+      }
+
+      // textos
+      var I18N = {
+        ca: {
+          title: "Pàgina no trobada",
+          lead: "No hem trobat el que buscaves.",
+          home: "Torna a l’inici"
+        },
+        es: {
+          title: "Página no encontrada",
+          lead: "No hemos encontrado lo que buscabas.",
+          home: "Volver al inicio"
+        },
+        en: {
+          title: "Page not found",
+          lead: "We couldn’t find what you were looking for.",
+          home: "Back to home"
+        }
+      };
+
+      var requested = stripBase(window.location.pathname);
+      var lang = pickFromPath(requested) || pickFromStorageOrBrowser();
+      var L = I18N[lang] || I18N[LANGS[0].code];
+      var homePrefix = entry(lang).path_prefix || ("/"+lang+"/");
+      var homeURL = ensureSlashes((BASE || "") + homePrefix);
+
+      document.addEventListener("DOMContentLoaded", function(){
+        document.documentElement.setAttribute("lang", lang);
+        document.getElementById("t-title").textContent = L.title;
+        document.getElementById("t-lead").textContent = L.lead;
+        var home = document.getElementById("t-home");
+        home.textContent = L.home;
+        home.href = homeURL;
+      });
+    })();
+  </script>
+  <style>
+    :root{
+      --bg: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #22d3ee;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 50% -10%, #1f2937, var(--bg));
+      color: var(--fg);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:2rem;
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 720px;
+      width: 100%;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      text-align:center;
+    }
+    .code{
+      font-weight: 800;
+      font-size: clamp(3rem, 8vw, 6rem);
+      line-height: 1;
+      letter-spacing: .02em;
+      background: linear-gradient(90deg, var(--accent), #60a5fa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin: 0 0 .25rem 0;
+    }
+    h1{
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      margin: .25rem 0 1rem 0;
+    }
+    p{ margin: 0 0 1.5rem 0; color: var(--muted); }
+    .actions{ display:flex; gap:.75rem; justify-content:center; flex-wrap:wrap; }
+    .btn{
+      display:inline-block;
+      padding:.8rem 1.1rem;
+      border-radius: 999px;
+      text-decoration:none;
+      color:#0b1220;
+      background: linear-gradient(90deg, var(--accent), #60a5fa);
+      font-weight:600;
+      box-shadow: 0 8px 20px rgba(34,211,238,0.25);
+      transition: transform .08s ease, box-shadow .2s ease;
+    }
+    .btn:active{ transform: translateY(1px); box-shadow: 0 4px 12px rgba(34,211,238,0.2); }
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <div class="code">404</div>
+    <h1 id="t-title">Page not found</h1>
+    <p id="t-lead">We couldn’t find what you were looking for.</p>
+    <div class="actions">
+      <a id="t-home" class="btn" href="#">home</a>
+    </div>
+  </main>
+</body>
+</html>
