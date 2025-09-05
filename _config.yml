@@ -60,9 +60,6 @@ collections:
   pages:
     output: true
     permalink: /:path/
-  others:
-    output: true
-    permalink: /:collection/:path/
   slides:
     output: true
     permalink: /:collection/:name  # Generates clean URLs like /slides/chapter-1.html

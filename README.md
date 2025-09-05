@@ -1,204 +1,269 @@
-# Jekyll GitBook Template
+# Docs Quarts de Docs
 
-A ready-to-use template for creating a GitBook-style website using [Jekyll](https://jekyllrb.com/), the [jekyll-gitbook](https://github.com/sighingnow/jekyll-gitbook) theme, and [jekyll-scholar](https://github.com/inukshuk/jekyll-scholar) for managing academic references.
+**Docs Quarts de Docs** is the playful name of this teaching template.  
+In Catalan, time is often expressed in “quarters” relative to the next hour:
+
+- *un quart de dos* → 1:15 (literally, “a quarter of the way to two”)  
+- *dos quarts de dos* → 1:30 (“two quarters of the way to two”)  
+- *tres quarts de dos* → 1:45 (“three quarters of the way to two”)  
+
+So *quarts de docs* sounds like *“quarts de dos”* (1:15, 1:30, 1:45…), the time of day when many students are already thinking about lunch. At the same time, it plays with the idea of *docs* as “documents” or “notes”.
+
+The goal of this project is to provide students with a clear, accessible reference document — essentially structured lecture notes — in one or several formats. The idea is to enrich the project over time with more features and resources.
+
+---
+
+## Educational Manual with Jekyll GitBook
+
+This repository provides a template for creating **educational materials** in the form of a **multilingual web book**.  
+It is based on the original [jekyll-gitbook](https://github.com/sighingnow/jekyll-gitbook) theme, with important adaptations for teaching:
+
+- Multilingual chapters (`ca`, `es`, `en`) with clean URLs.  
+- Bibliographies and citations managed with [jekyll-scholar](https://github.com/inukshuk/jekyll-scholar) from BibTeX files.  
+- Integration of slides (Reveal.js), diagrams (Mermaid), and advanced Markdown features.  
+- Easy local testing with Docker + Makefile.  
+- Ready-to-deploy with GitHub Pages.
+
+This way, course materials are not static PDFs hidden in a folder, but a living, extensible resource that can evolve together with the course and its students.
+
+---
 
 ## Table of Contents
 
-- [Features](#features)
-- [Setup](#setup)
-- [How to Use](#how-to-use)
-- [Customization](#customization)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgements](#acknowledgements)
+- [Docs Quarts de Docs](#docs-quarts-de-docs)
+  - [Educational Manual with Jekyll GitBook](#educational-manual-with-jekyll-gitbook)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Project Structure](#project-structure)
+  - [Setup and Usage](#setup-and-usage)
+    - [Prerequisites](#prerequisites)
+    - [Build and Preview Locally](#build-and-preview-locally)
+    - [Deploy with GitHub Pages](#deploy-with-github-pages)
+  - [Writing Content](#writing-content)
+    - [Chapters](#chapters)
+    - [Bibliography and Citations](#bibliography-and-citations)
+    - [Markdown and Extensions](#markdown-and-extensions)
+  - [Makefile Shortcuts](#makefile-shortcuts)
+  - [Markdown Reference](#markdown-reference)
+    - [Headings](#headings)
+    - [Bold and Italics](#bold-and-italics)
+    - [Lists](#lists)
+    - [Links](#links)
+    - [Images](#images)
+    - [Tables](#tables)
+    - [Alert Blocks](#alert-blocks)
+    - [MathJax and LaTeX](#mathjax-and-latex)
+    - [Footnotes](#footnotes)
+    - [Syntax Highlighting](#syntax-highlighting)
+    - [Mermaid Diagrams](#mermaid-diagrams)
+  - [License](#license)
+  - [Acknowledgements](#acknowledgements)
+
+---
 
 ## Features
 
-- **GitBook-style layout:** Clean and responsive design that mimics GitBook.
-- **Jekyll Scholar integration:** Seamlessly manage and display academic references.
-- **Easy setup:** Simple installation process with clear instructions.
-- **Customization:** Easily tweak the design and functionality to suit your needs.
-- **Markdown support:** Write your content in Markdown.
+- **GitBook-style layout**: Clean and responsive book interface.
+- **Multilingual support**: Chapters can be written in multiple languages with language-aware permalinks.
+- **Bibliography integration**: Cite references directly from BibTeX files using `jekyll-scholar`.
+- **Slides and diagrams**: Reveal.js slides and Mermaid diagrams integrated into chapters.
+- **Advanced Markdown**: Alerts, MathJax, footnotes, syntax highlighting, tables, and more.
+- **Docker-ready**: Reproducible builds with Docker and a `Makefile`.
 
-## Setup
+---
+
+## Project Structure
+
+```
+.
+├── _chapters/        # Chapters organized by language
+├── _bibliography/    # BibTeX files for references
+├── _pages/           # Additional static pages
+├── _data/            # Language definitions and other config
+├── assets/           # Images, icons, css, js
+├── contrib/          # Docker and utility scripts
+├── Makefile          # Build and deploy shortcuts
+└── _config.yml       # Jekyll configuration
+```
+
+---
+
+## Setup and Usage
 
 ### Prerequisites
 
-To get started, make sure you have the following installed:
+- **Ubuntu 24.04 LTS** or equivalent (tested environment)
+- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/)
+- `make` (for convenience with the provided Makefile)
 
-- [Ruby](https://www.ruby-lang.org/en/downloads/) (version 2.5.0 or higher)
-- [Bundler](https://bundler.io/)
-- [Jekyll](https://jekyllrb.com/)
+### Build and Preview Locally
 
-### Installation
-
-1. **Clone this repository:**
-   ```bash
-   git clone https://github.com/your-username/your-repo-name.git
-   cd your-repo-name
-   ```
-2. **Install the dependencies:**
-   ```bash
-   bundle install
-   ```
-4. **Run the Jekyll server:**
-   ```bash
-   bundle exec jekyll serve
-   ```
-5. **Visit your site:**
-Open your web browser and navigate to `http://localhost:4000`.
-
-# How to Use
-## Adding Content
-
-- **Markdown files:** Add your content in the `_posts` directory for blog-style posts or directly into specific folders for chapters or sections.
-- **Bibliography:** Manage your references by editing the `references.bib` file located in the root directory. You can then cite them in your markdown files using the `jekyll-scholar` syntax.
-
-## Building the Site
-
-When you are ready to deploy your site, you can build it using:
 ```bash
-bundle exec jekyll build
+make 2-start-server
 ```
-The generated static files will be placed in the `_site` directory, ready to be hosted on GitHub Pages or any other static site hosting platform.
-Customizing the Theme
 
-You can customize the theme by modifying the `_config.yml` file and the styles in the `assets/css` directory.
+This command runs Jekyll inside Docker and serves the book at: [http://localhost:4000](http://localhost:4000)
 
-- **Config options:** Change site-wide settings such as title, description, and navigation in `_config.yml`.
-- **Layout and styles:** Tweak the layout in _layouts and `_includes`, and update styles in `assets/css/style.css`.
+To stop the server:
 
-# Contributing
+```bash
+make 3-stop-server
+```
 
-Feel free to open issues or submit pull requests if you have suggestions for improvements or new features.
+### Deploy with GitHub Pages
 
-# Basic Markdown Syntax
+The site is designed to be deployed automatically via **GitHub Actions**.
+Every push to the `main` branch triggers a build and updates the GitHub Pages site.
 
-The content of this book is primarily written in Markdown, a lightweight markup language designed for easy reading and writing. Here are the fundamental elements you can use:
+---
 
-## Headings
+## Writing Content
+
+### Chapters
+
+- Create new chapters inside `_chapters/<lang>/` (for example `_chapters/ca/01-introduction.md`).
+- Each chapter begins with YAML metadata (`front matter`), e.g.:
+
+```yaml
+---
+lang: en
+permalink: /:title/en/
+title: Introduction
+author: Your Name
+date: 2025-01-01
+weight: 1
+layout: chapter
+mermaid: false
+---
+```
+
+### Bibliography and Citations
+
+- Place your references in `_bibliography/references.bib`.
+- Cite them in Markdown with `{% cite BibKey %}`.
+- Insert a bibliography list with `{% bibliography %}`.
+
+### Markdown and Extensions
+
+This template supports extended Markdown:
+
+- **Alert blocks** (tip, warning, danger).
+- **MathJax** for LaTeX formulas.
+- **Footnotes** (`[^1]` syntax).
+- **Syntax highlighting** for code blocks.
+- **Mermaid diagrams** (requires `mermaid: true` in the front matter).
+
+See [Markdown Reference](#markdown-reference) for concrete examples.
+
+---
+
+## Makefile Shortcuts
+
+Common commands are wrapped in a `Makefile`:
+
+- `make 2-start-server` → Start local Jekyll server (Docker).
+- `make 3-stop-server` → Stop server and clean build.
+- `make 4-push-source` → Push source branch.
+- `make 5-deploy-website` → Deploy static site (if using branch deploy).
+
+---
+
+## Markdown Reference
+
+The content of this manual is written in Markdown, with several useful extensions.
+
+### Headings
 Use the hash symbol (`#`) followed by a space to create headings of different levels.  
-- One hash (`#`) is for the main title.  
-- Two (`##`) for a subtitle.  
-- And so on.  
+- `#` → main title  
+- `##` → subtitle  
+- and so on.
 
-## Bold and Italics
+### Bold and Italics
 - Use **double asterisks** for bold text.  
 - Use *single asterisks* for italics.  
 
-## Lists
-- Unordered lists can be created using hyphens (`-`) or asterisks (`*`).  
-- Ordered lists use numbers followed by a period (`1.`, `2.`, etc.).  
+### Lists
+- Unordered lists use hyphens (`-`) or asterisks (`*`).  
+- Ordered lists use numbers (`1.`, `2.`, etc.).  
 
-## Links
-Create links with the following syntax:  
+### Links
 ```markdown
 [Link text](URL)
 ```
 
-## Images
-Insert images using the syntax:  
+### Images
 ```markdown
 ![Alt text](Image_URL)
 ```
 
-## Tables
-Construct tables using vertical bars (`|`) to separate columns and hyphens (`-`) for the separator line.  
+### Tables
+Use `|` for columns and `-` for the header separator.  
+Wrap in `<div class="table-wrapper">` for wide tables.
 
-For wide tables, wrap the table in a `div` with the class `table-wrapper` to ensure they display correctly on mobile devices.  
+### Alert Blocks
 
----
-
-# Advanced Features
-
-This Jekyll project includes several Markdown extensions to enhance your content's presentation.
-
-## Alert Blocks
-
-You can create styled alert blocks to highlight important information.  
-These blocks are written as blockquotes (`>`) followed by a class attribute on a new line.
-
-### Examples
-
-#### Tip block
 ```markdown
 > ##### TIP
 >
-> This guide was last tested with @napi-rs/canvas^0.1.20, so make sure you have
-> this or a similar version after installation.
+> This is a tip for the reader.
 {: .block-tip }
-```
 
-#### Warning block
-```markdown
 > ##### WARNING
 >
-> The dataset used in this example is incomplete. Double-check the source before
-> using it in production.
+> This is a warning.
 {: .block-warning }
-```
 
-#### Danger block
-```markdown
 > ##### DANGER
 >
-> Removing this directory will permanently delete all your data.
+> This is a critical alert.
 {: .block-danger }
 ```
 
-### Notes
-- The `#####` heading inside the blockquote makes the label (TIP, WARNING, DANGER) stand out.  
-- The styling (`.block-tip`, `.block-warning`, `.block-danger`) is handled by the theme’s CSS.  
-- You can add any Markdown content inside these blocks: text, links, code, or lists.
-## MathJax and LaTeX
-This theme supports **MathJax** to render LaTeX and mathematical expressions.  
+### MathJax and LaTeX
+- Inline: `$x^2 + y^2 = z^2$`  
+- Display block:
+```markdown
+$$
+x^2 + y^2 = z^2
+$$
+```
 
-- Inline expressions: Use a single dollar sign at the beginning and end of the expression, for example: `$x^2 + y^2 = z^2$`.  
-- Display equations: For more complex expressions, use double dollar signs on separate lines to create a display block.  
+### Footnotes
+```markdown
+Here is a statement with a footnote.[^1]
 
-## Footnotes
-You can add footnotes to your content to provide additional context or citations.  
-Simply include a footnote marker (`[^1]`) in the text and define the note at the end of the file.  
+[^1]: This is the footnote text.
+```
 
-## Syntax Highlighting
-To display code blocks cleanly with color, use three backticks (```) to open and close the block.  
-Specify the programming language right after the opening backticks for proper highlighting.  
-
+### Syntax Highlighting
 ```python
 def hello_world():
     print("Hello, world!")
 ```
 
-## Mermaid Diagrams
-This Jekyll theme allows you to use Mermaid diagrams, which let you create charts and graphs from simple text syntax.  
-To enable this feature in a chapter, you must add `mermaid: true` to the YAML front matter of the file.  
+### Mermaid Diagrams
+Enable per file with `mermaid: true` in front matter:
+
+```markdown
+```mermaid
+graph TD
+  A[Start] --> B{Decision}
+  B -->|Yes| C[Result 1]
+  B -->|No| D[Result 2]
+```
+```
 
 ---
 
-## Bibliography Management
+## License
 
-This template includes the **Jekyll Scholar** plugin, a powerful tool for managing bibliographies and citations.  
-This makes it an excellent choice for academic or technical documentation where you need to reference external sources.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file.
 
-To use this feature, follow these steps:
+---
 
-1. **Installation**: Add `gem 'jekyll-scholar'` to your `Gemfile` and run `bundle install`.  
-2. **Configuration**: In `_config.yml`, add a `scholar:` block to specify your citation style, locale, and the path to your bibliography file.  
-3. **Create a `.bib` file**: Add your references in BibTeX format to a `.bib` file (e.g., `references.bib`) within the `_bibliography` folder.  
-4. **Citing**: Cite references directly in your posts using the `{% cite %}` tag with the BibTeX key.  
-5. **Displaying the bibliography**: Use the `{% bibliography %}` tag to display a complete list of your references at the end of a page or post.  
+## Acknowledgements
 
-# License
+- [jekyll-gitbook](https://github.com/sighingnow/jekyll-gitbook) by [Sighingnow](https://github.com/sighingnow)  
+- [jekyll-scholar](https://github.com/inukshuk/jekyll-scholar) by [Inukshuk](https://github.com/inukshuk)  
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
-
-# Acknowledgements
-
-This template is built with:
-
-- [jekyll-gitbook](https://github.com/sighingnow/jekyll-gitbook) by [Sighingnow](https://github.com/sighingnow)
-- [jekyll-scholar](https://github.com/inukshuk/jekyll-scholar) by [Inukshuk](https://github.com/inukshuk)
-
-Check out their projects for more detailed documentation and updates.
-
-
+We extend their work to support multilingual educational materials, academic citations, and teaching resources.
