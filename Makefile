@@ -1,10 +1,9 @@
 include contrib/*.mk
 
-.PHONY: 1-new-draft
-## Create a new draft in the _drafts folder
-1-new-draft:
-	@bash contrib/new-draft.sh
-
+.PHONY: 1-new-chapter
+## Create a new chapter in the _drafts folder
+1-new-chapter:
+	@bash contrib/new-chapter.sh
 
 .PHONY: 2-start-server
 ## Start a Jekyll server at port 4000
@@ -20,8 +19,6 @@ include contrib/*.mk
 ## Push to source branch
 4-push-source:
 	@bash contrib/push-source.sh
-
-
 
 .PHONY: clean
 # Remove _site, .jekyll-cache i .jekyll-metadata
