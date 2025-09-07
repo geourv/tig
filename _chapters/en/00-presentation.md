@@ -4,7 +4,6 @@ permalink: /:title/en/
 title: Course presentation
 author: Benito Zaragozí
 date: 2025-09-02
-category: guide
 weight: 0
 layout: chapter
 mermaid: false

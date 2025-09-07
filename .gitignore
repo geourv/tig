@@ -6,3 +6,5 @@ _draft/
 vendor/bundle/
 node_modules/
 .DS_Store
+
+Gemfile.lock

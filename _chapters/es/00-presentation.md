@@ -4,7 +4,6 @@ permalink: /:title/es/
 title: Presentación del curso
 author: Benito Zaragozí
 date: 2025-09-02
-category: guia
 weight: 0
 layout: chapter
 mermaid: false
