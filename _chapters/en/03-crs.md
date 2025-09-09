@@ -247,5 +247,4 @@ There are also WGS84 variants, such as EPSG:32630 or EPSG:32631, common in GPS d
    - What official system does France use for national mapping?
    - What systems are recommended by the Institut Cartogràfic i Geològic de Catalunya (ICGC)?
    - What is the official coordinate system of Italy called?
-8. **International practical exercise.** Download vector data from OpenStreetMap for two different European cities (e.g., Lisbon and Warsaw). Identify the CRS in which the data arrives and determine to which system you should reproject them to make precise area calculations in each case.
-9. **Critical analysis.** Explain why it is not advisable to use geographic WGS84 (EPSG:4326) to calculate the area of a forest in Catalonia. What differences would you expect if you compare results with ETRS89/UTM 31N?
+8. **Critical analysis.** Explain why it is not advisable to use geographic WGS84 (EPSG:4326) to calculate the area of a forest in Catalonia. What differences would you expect if you compare results with ETRS89/UTM 31N?

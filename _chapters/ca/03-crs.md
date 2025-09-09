@@ -247,5 +247,4 @@ També existeixen variants en WGS84, com EPSG:32630 o EPSG:32631, habituals en d
    - Quin sistema oficial utilitza França per a la cartografia nacional?
    - Quins sistemes recomanats utilitza l'Institut Cartogràfic i Geològic de Catalunya (ICGC)?
    - Com es denomina el sistema de coordenades oficial d'Itàlia?
-8. **Exercici pràctic internacional.** Descarrega dades vectorials d'OpenStreetMap de dues ciutats europees diferents (per exemple, Lisboa i Varsòvia). Identifica en quin SRC arriben les dades i determina a quin sistema les hauríeu de reprojectar per fer càlculs precisos d'àrea en cada cas.
-9. **Anàlisi crítica.** Explica per què no és recomanable utilitzar WGS84 geogràfic (EPSG:4326) per calcular l'àrea d'un bosc a Catalunya. Quines diferències esperes trobar si compares els resultats amb ETRS89/UTM 31N?
+8. **Anàlisi crítica.** Explica per què no és recomanable utilitzar WGS84 geogràfic (EPSG:4326) per calcular l'àrea d'un bosc a Catalunya. Quines diferències esperes trobar si compares els resultats amb ETRS89/UTM 31N?
