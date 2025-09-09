@@ -7,6 +7,7 @@ date: 2025-09-07
 weight: 2
 layout: chapter
 mermaid: true
+published: true
 ---
 
 La informació geogràfica no existeix en el buit. Tota representació cartogràfica necessita un **context geogràfic** que permeta a l’usuari orientar-se i comprendre la informació que es presenta. A l’era digital, aquest context el proporcionen els **serveis web geogràfics**, una primera i molt eficaç manera de carregar dades en els nostres projectes SIG sense necessitat de descarregar arxius localment.

@@ -7,6 +7,7 @@ date: 2025-09-07
 weight: 2
 layout: chapter
 mermaid: true
+published: true
 ---
 
 La información geográfica no existe en el vacío. Toda representación cartográfica necesita un **contexto geográfico** que permita al usuario orientarse y comprender la información que se presenta. En la era digital, este contexto lo proporcionan los **servicios web geográficos**, una primera y muy eficaz manera de cargar datos en nuestros proyectos SIG sin necesidad de descargar archivos localmente.
