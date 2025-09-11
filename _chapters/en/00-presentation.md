@@ -166,7 +166,3 @@ The instructor will emphasize these aspects during the course, but it is the stu
 In addition to the course materials, students are encouraged to read, follow specialized channels, and explore all kinds of resources about GIT. Regarding manuals, even though some references are several years old, it should be remembered that many fundamental concepts of GIT and geographic information science change very slowly, or not at all, over decades. This makes them a **worthwhile investment** to build a solid theoretical foundation on which to develop more current practical skills.
 
 A classic and highly recommended example is the book {% cite Longley:2015:GIS:2809188 %}, available at the CRAI, which offers a complete and rigorous overview of the fundamentals of the discipline.
-
-## Recommended bibliography
-
-{% bibliography %}

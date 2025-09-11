@@ -199,3 +199,11 @@ function updateSidebarChapters() {
     mo.observe(sum, { childList: true, subtree: true });
   }
 })();
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  mediumZoom('figure.md-figure img', {
+    margin: 24,
+    background: 'rgba(0,0,0,0.8)'
+  });
+});

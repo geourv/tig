@@ -34,7 +34,7 @@ Si el geoide refleja la realidad física de la Tierra, el **elipsoide de revoluc
 
 A lo largo del tiempo se han definido diversos elipsoides, cada uno ajustado a diferentes zonas del mundo. Por ejemplo, el **Clarke 1866** se utilizó ampliamente en Norteamérica, mientras que el **GRS80** y el **WGS84** son los más comunes actualmente. El WGS84 es el elipsoide de referencia del sistema GPS y por eso es universalmente reconocido.
 
-![Comparación de dos elipsoides regionales (NAD27 y ED50) respecto al centro de masa de la Tierra {% cite JanvanSickle15 %}.]({{ site.baseurl }}/images/two-regional-ellipsoids.png){: .center width="80%"}
+![Comparación de dos elipsoides regionales (NAD27 y ED50) respecto al centro de masa de la Tierra]({{ site.baseurl }}/images/two-regional-ellipsoids.png "Comparación de dos elipsoides regionales (NAD27 y ED50) respecto al centro de masa de la Tierra {% cite JanvanSickle15 %}."){: .center width="80%"}
 
 La relación entre geoide y elipsoide es clave: el geoide es el modelo físico que nos dice cómo es realmente la Tierra, con todas sus irregularidades, mientras que el elipsoide es el modelo matemático que simplifica esa complejidad y nos permite hacer cálculos y mapas. En geodesia y cartografía siempre trabajamos combinándolos: un **datum** es, precisamente, la forma de ajustar un elipsoide a un geoide y fijarlo a un territorio.
 
@@ -162,7 +162,7 @@ Uno de los sistemas de coordenadas proyectados más utilizados en todo el mundo 
 
 La Tierra se divide en **60 husos de 6° de longitud cada uno**, numerados de oeste a este desde el meridiano de 180°. Cada huso se proyecta de forma independiente mediante una proyección **cilíndrica transversa de Mercator**: en vez de un cilindro alrededor del ecuador, se utiliza un cilindro “girando” que toca la Tierra en un **meridiano central**. Esto minimiza las deformaciones dentro de cada huso, pero limita el alcance: un sistema UTM solo es válido dentro de su huso.
 
-![Mapa mundial con la división en 60 husos UTM. Fuente: [maptools.com.](https://maptools.com/tutorials/grid_zone_details)]({{ site.baseurl }}/images/utm-grid.png){: .center width="100%"}
+![Mapa mundial con la división en 60 husos UTM. Fuente: [maptools.com](https://maptools.com/tutorials/grid_zone_details)]({{ site.baseurl }}/images/utm-grid.png){: .center width="100%"}
 
 ### El caso de España y Catalunya
 

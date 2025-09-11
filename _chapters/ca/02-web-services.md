@@ -53,7 +53,7 @@ https://ovc.catastro.meh.es/Cartografia/WMS/ServidorWMS.aspx
 
 Si afegim aquesta URL com a connexió WMS a QGIS, podrem visualitzar directament la cartografia cadastral sense necessitat de descarregar arxius.
 
-![Panell de connexions WMS/WMTS a QGIS]({{ site.baseurl }}/images/qgis-web-services.png){: style="display:block; margin-left:auto; margin-right:auto; width:30%;" }
+![Panell de connexions WMS/WMTS a QGIS]({{ site.baseurl }}/images/qgis-web-services.png "Panell de connexions WMS/WMTS a QGIS")
 
 Aquest procediment permet un control directe i transparent sobre els serveis als quals accedim, però requereix conéixer i gestionar manualment les URLs. Per simplificar aquesta tasca, existeixen **connectors que reuneixen llistats organitzats de recursos**, com QuickMapServices o el connector de l’ICGC, que faciliten la incorporació de capes de múltiples proveïdors sense necessitat de configurar cada connexió de manera manual.
 
@@ -154,7 +154,7 @@ La instal·lació és directa des del gestor de connectors de QGIS. Una vegada i
 
 QMS organitza els serveis per categories temàtiques. **OpenStreetMap** ofereix diferents estils de la cartografia col·laborativa més completa del món, des de l’estil estàndard fins a versions especialitzades en transport o elements humanitaris. Els serveis d’**imatges satel·litals** inclouen Google Satellite i Bing, útils per a contextualització visual encara que condicionats pels seus termes d’ús comercial. **CartoDB** i **Stamen** proporcionen estils cartogràfics minimalistes ideals per a visualització de dades temàtiques.
 
-![Panell lateral de QMS]({{ site.baseurl }}/images/qgis-qms-panel.png)
+![Panell lateral de QMS]({{ site.baseurl }}/images/qgis-qms-panel.png "Panell lateral de QMS")
 
 ## Serveis web de l'Institut Cartogràfic i Geològic de Catalunya (ICGC)
 
@@ -174,7 +174,7 @@ El connector organitza els serveis en categories lògiques: **Cartografia topogr
 
 Però la vertadera potència del connector resideix en les seues **eines integrades**. La cerca geogràfica per topònims catalans és immediata i precisa. Les eines d’anàlisi inclouen generació de perfils topogràfics, càlcul de conques visuals, descàrrega de dades per a treball offline, i accés directe a més de 200 capes temàtiques sense necessitat de configurar manualment les connexions.
 
-![Barra d’eines del connector ICGC]({{ site.baseurl }}/images/qgis-icgc-bar.png)
+![Barra d’eines del connector ICGC]({{ site.baseurl }}/images/qgis-icgc-bar.png "Barra d’eines del connector ICGC")
 
 ### Serveis web de l’ICGC
 

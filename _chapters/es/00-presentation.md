@@ -165,7 +165,3 @@ El profesor insistirá en estos aspectos durante el curso, pero es responsabilid
 Además de los materiales de la asignatura, se recomienda leer, seguir canales especializados y consultar todo tipo de recursos sobre TIG. En cuanto a manuales, aunque algunas referencias tienen ya bastantes años, conviene recordar que muchos conceptos fundamentales de las TIG y la ciencia de la información geográfica cambian muy lentamente, o casi nada, a lo largo de décadas. Esto hace que su lectura siga siendo una **buena inversión** para establecer una base teórica sólida sobre la que construir competencias prácticas más actuales.
 
 Un ejemplo clásico y recomendable es el libro {% cite Longley:2015:GIS:2809188 %}, disponible en el CRAI, que ofrece una visión completa y rigurosa de los fundamentos de la disciplina.
-
-## Bibliografía recomendada
-
-{% bibliography %}

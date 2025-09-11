@@ -8,6 +8,25 @@
                         {% endif %}
 
                     {{ content }}
+                    
+                    {%- assign lang_code = page.lang | default: page.language -%}
+{%- if lang_code == nil or lang_code == '' -%}
+  {%- assign parts = page.path | split:'/' -%}
+  {%- assign lang_code = parts[1] | default: site.lang | default: 'en' -%}
+{%- endif -%}
+
+{%- capture cited_block -%}
+  {% bibliography --cited %}
+{%- endcapture -%}
+
+{%- assign cited_trim = cited_block | strip_newlines | strip -%}
+{%- if cited_trim contains '<li' -%}
+  <h2 id="references">
+    {{ site.data.i18n[lang_code].references | default: "References" }}
+  </h2>
+  {{ cited_block }}
+{%- endif -%}
+
                 </section>
             </div>
 

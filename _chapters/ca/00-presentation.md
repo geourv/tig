@@ -164,8 +164,4 @@ El professor insistirà en aquests aspectes durant el curs, però és responsabi
 
 A part dels materials de l'assignatura es recomana llegir, seguir canals especialitzats i veure tot tipus de recursos sobre TIG. En cuant a manuals, tot i que algunes de les referències tenen ja uns quants anys, convé recordar que molts conceptes fonamentals de les TIG i la ciència de la informació geogràfica canvien molt lentament, o gairebé gens, al llarg de dècades. Això fa que la seva lectura continuï essent una **bona inversió** per establir una base teòrica sòlida sobre la qual construir competències pràctiques més actuals.
 
-Un exemple clàssic i recomanable és el llibre **Geographic Information Science and Systems** {% cite Longley:2015:GIS:2809188 %}, disponible al CRAI, que ofereix una visió completa i rigorosa dels fonaments de la disciplina .
-
-## Bibliografia recomanada
-
-{% bibliography %}
+Un exemple clàssic i recomanable és el llibre **Geographic Information Science and Systems** {% cite Longley:2015:GIS:2809188 %}, disponible al CRAI, que ofereix una visió completa i rigorosa dels fonaments de la disciplina.

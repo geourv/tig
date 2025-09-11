@@ -62,3 +62,51 @@
   object-fit: contain; 
 }
 
+
+
+/* Figures: spacing and isolation */
+.page-inner .markdown-section figure.md-figure {
+  margin: 1.5rem 0 2rem;
+  display: flow-root; /* avoid margin-collapsing */
+}
+
+/* Images: responsive and centered; full width by default */
+figure.md-figure img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  height: auto;
+}
+figure.md-figure img:not([width]):not([style*="width"]) { width: 100%; }
+
+/* Captions: scale with body text */
+.page-inner .markdown-section figure.md-figure .md-figcaption {
+  font-size: 1em !important;
+  line-height: 1.5;
+  margin-top: 0.75rem;
+  color: #333;
+  font-style: italic;
+  text-align: center;
+}
+
+/* Bold only the "Figure N." prefix */
+.md-figcaption .figlabel {
+  font-weight: 600;
+  font-style: normal;
+  margin-right: 0.25em;
+}
+
+/* Links inside captions */
+.page-inner .markdown-section .md-figcaption a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.1em;
+}
+
+
+
+
+figure.md-figure img {
+  cursor: zoom-in;
+}

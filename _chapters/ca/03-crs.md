@@ -26,7 +26,7 @@ Quan hi ha grans serralades, el pes de la roca fa que el camp gravitatori local 
 
 Per això no hi ha **un únic geoide immutable**, sinó diferents **models de geoide** calculats en cada moment històric amb dades específiques. Els primers models es van basar en mesures clàssiques de gravimetria i nivellació, mentre que avui dia missions satèl·litals com **[GRACE](https://grace.jpl.nasa.gov/)** o **GOCE** han permès cartografiar el geoide global amb una precisió centimètrica. A més, molts països mantenen models nacionals per afinar millor la conversió d'altures.
 
-![Representació esquemàtica del geoide com a superfície equipotencial irregular. Geoide terrestre: superfície irregular que representa el nivell mitjà del mar equipotencial. Font: nosmienten.com via Wikimedia Commons, File:Geoide.jpg (CC BY-SA 4.0).]({{ site.baseurl }}/images/geoid.png){: .center width="100%"}
+![Representació esquemàtica del geoide]({{ site.baseurl }}/images/geoid.png "Representació esquemàtica del geoide com a superfície equipotencial irregular. Geoide terrestre: superfície irregular que representa el nivell mitjà del mar equipotencial. Font: Wikimedia Commons")
 
 ### L'esferoide o el·lipsoide
 
@@ -34,7 +34,7 @@ Si el geoide reflecteix la realitat física de la Terra, l'**esferoide o el·lip
 
 Al llarg del temps s'han definit diversos el·lipsoides, cadascun ajustat a diferents zones del món. Per exemple, el **Clarke 1866** es va utilitzar àmpliament a Amèrica del Nord, mentre que el **GRS80** i el **WGS84** són els més comuns actualment. El WGS84 és l'el·lipsoide de referència del sistema GPS i per això és universalment reconegut.
 
-![Comparació de dos el·lipsoides regionals (NAD27 i ED50) respecte al centre de massa de la Terra {% cite JanvanSickle15 %}.]({{ site.baseurl }}/images/two-regional-ellipsoids.png){: .center width="80%"}
+![Comparació de dos el·lipsoides regionals (NAD27 i ED50) respecte al centre de massa de la Terra {% cite JanvanSickle15 %}.]({{ site.baseurl }}/images/two-regional-ellipsoids.png)
 
 La relació entre geoide i el·lipsoide és clau: el geoide és el model físic que ens diu com és realment la Terra, amb totes les seves irregularitats, mentre que l'el·lipsoide és el model matemàtic que simplifica aquella complexitat i ens permet fer càlculs i mapes. En geodèsia i cartografia treballem sempre combinant-los: un **datum** és, precisament, la manera d'ajustar un el·lipsoide a un geoide i fixar-lo a un territori.
 
@@ -51,7 +51,7 @@ La diferència entre totes dues, anomenada **ondulació del geoide (N)**, pot ar
 
 La seva importància pràctica és enorme. Per exemple, les altures que dóna el GPS són **el·lipsoïdals** (respecte a WGS84), mentre que les altures oficials en cartografia i enginyeria són **ortomètriques**, és a dir, respecte al geoide. Sense aplicar la correcció adequada, la diferència pot ser de diversos metres. Per treballs topogràfics i d'enginyeria és imprescindible utilitzar un model de geoide local per convertir les altures GPS en altures ortomètriques útils.
 
-![Comparació entre el geoide i l’el·lipsoide WGS84, amb les ondulacions geoidals i fórmules d’altura ortomètrica. Font: geologician, “Earth's Geoid compared with WGS84 ellipsoid”, Wikimedia Commons (cc by-sa 4.0)]({{ site.baseurl }}/images/geoid-vs-ellipsoid.png)
+![Comparació entre el geoide i l’el·lipsoide WGS84]({{ site.baseurl }}/images/geoid-vs-ellipsoid.png "Comparació entre el geoide i l’el·lipsoide WGS84, amb les ondulacions geoidals i fórmules d’altura ortomètrica. Font: geologician, Wikimedia Commons (CC BY-SA 4.0)")
 
 En QGIS i altres programes, aquestes conversions es poden configurar amb transformacions oficials si tenim disponible el model de geoide adequat (per exemple, EGM2008 o el geoide d'Espanya calculat per l'IGN).
 
@@ -85,7 +85,7 @@ Encara que WGS84 i ETRS89 coincideixen pràcticament en l'any 1989, amb el pas d
 
 Quan obrim les propietats d'una capa a QGIS i veiem un SRC com **EPSG:25831**, en realitat estem parlant d'un **datum (ETRS89)**, un **el·lipsoide (GRS80)** i una **projecció (UTM 31N)** combinats en un sol codi.
 
-![Exemple de definició d'un SRC en QGIS mostrant el datum, l'el·lipsoide i la projecció]({{ site.baseurl }}/images/crs-selection-in-qgis.png){: .center width="100%"}
+![Exemple de definició d'un SRC en QGIS]({{ site.baseurl }}/images/crs-selection-in-qgis.png "Exemple de definició d'un SRC en QGIS mostrant el datum, l'el·lipsoide i la projecció")
 
 Aquesta informació prové de la base de dades **EPSG Geodetic Parameter Dataset**, mantinguda per l'[International Association of Oil & Gas Producers (IOGP)](https://epsg.org/), que és l'estàndard mundial.
 
@@ -104,7 +104,7 @@ La manera clàssica d'explicar-ho és imaginar que projectem la Terra sobre una 
 - **Con** → projeccions còniques (ex.: Lambert Cònica Conforme)
 - **Disc o pla** → projeccions azimutals (ex.: Estereogràfica, Azimutal equidistant)
 
-![Superfícies de projecció: pla (azimutal), cilindre (cilíndrica) i con (cònica) aplicats conceptualment a l’el·lipsoide. Font: Charles Preppernau (2022), “The three developable projection surfaces: cylinder, cone and plane”, llicència CC BY 4.0. ]({{ site.baseurl }}/images/projection-surfaces.png){: .center width="70%"}
+![Superfícies de projecció: pla, cilindre i con aplicats a l’el·lipsoide]({{ site.baseurl }}/images/projection-surfaces.png "Superfícies de projecció: pla (azimutal), cilindre (cilíndrica) i con (cònica) aplicats conceptualment a l’el·lipsoide. Font: Charles Preppernau (2022), *The three developable projection surfaces: cylinder, cone and plane*, llicència CC BY 4.0."){ width=70% }
 
 Cada superfície pot tocar l'el·lipsoide en una línia (projecció tangent) o en dues (secant). Allà on hi ha contacte, la deformació és mínima; a mesura que ens allunyem, augmenta.
 
@@ -115,11 +115,11 @@ Cada superfície pot tocar l'el·lipsoide en una línia (projecció tangent) o e
 - **Equidistants**: conserven distàncies només en determinades direccions. Exemple: Azimutal equidistant
 - **Compromís**: busquen un balanç entre deformacions. Exemple: Robinson o Winkel-Tripel, usades sovint en mapes mundials
 
-![Comparació de projeccions: Mercator (conformal) i Albers (equiàrea). Font: Tobias Jung, map-projections.net (CC BY-SA 4.0).]({{ site.baseurl }}/images/map-projections-comparison-mercator-albers.png){: .center width="100%"}
+![Comparació de projeccions: Mercator i Albers]({{ site.baseurl }}/images/map-projections-comparison-mercator-albers.png "Comparació de projeccions: Mercator (conformal) i Albers (equiàrea). Font: Tobias Jung, map-projections.net (CC BY-SA 4.0).")
 
 L’indicatriu de Tissot és un mètode clàssic per visualitzar les distorsions que introdueixen les projeccions cartogràfiques. Consisteix a dibuixar cercles iguals sobre la superfície de la Terra i observar com aquests es deformen quan es projecten sobre el mapa. Si la projecció conserva les formes locals (projecció conforme), els cercles es mantenen com a cercles però poden variar de mida; si conserva les àrees (projecció equiàrea), els cercles poden transformar-se en el·lipses però amb la mateixa superfície; i en projeccions de compromís, apareixen distorsions tant de forma com de mida. A la imatge, la projecció cilíndrica equiàrea de Behrmann mostra com els cercles es deformen progressivament en el·lipses més aplanades a mesura que ens allunyem de l’equador, fent evident la variació d’escala i de distorsió segons la latitud.
 
-![Indicatriu de Tissot sobre projecció cilíndrica igual-àrea (Behrmann), que mostra com distàncies i superfícies es distorsionen amb la latitude — utilitzat aquí com a analogia per al sistema de coordenades geogràfic WGS84 sense projecció directa (Plate Carrée), on les distorsions són similars en tendència.]({{ site.baseurl }}/images/tissot-behrmann.png){: .center width="80%"}
+![Indicatriu de Tissot sobre projecció Behrmann]({{ site.baseurl }}/images/tissot-behrmann.png "Indicatriu de Tissot sobre projecció cilíndrica igual-àrea (Behrmann), que mostra com distàncies i superfícies es distorsionen amb la latitud — utilitzat aquí com a analogia per al sistema de coordenades geogràfic WGS84 sense projecció directa (Plate Carrée), on les distorsions són similars en tendència.")
 
 > **Consell**: No hi ha projecció perfecta. La clau és preguntar-se: què volem preservar? Si necessitem calcular àrees, escollirem una projecció equivalent; si ens interessa la navegació o la geometria local, una conforme.
 {: .block-tip }
@@ -137,7 +137,7 @@ En un sistema geogràfic, un punt s'expressa mitjançant **latitud i longitud**,
 
 Aquests sistemes són universals i molt intuïtius: qualsevol GPS ens dóna coordenades en WGS84 geogràfic (EPSG:4326). Però tenen un inconvenient: **les distàncies i superfícies no es poden calcular directament**. Un grau de longitud no equival sempre al mateix nombre de quilòmetres; a l'equador són uns 111 km, però a mesura que ens apropem als pols aquesta distància es redueix fins a zero.
 
-![Diagrama detallat del sistema de coordenades geogràfiques: latitud i longitud representats sobre un globus amb angles etiquetats. Font: Djexplo (2011), “Latitude and Longitude of the Earth” (CC0, domini públic).]({{ site.baseurl }}/images/geographic-coordinates-systems.png){: .center width="800%"}
+![Diagrama del sistema de coordenades geogràfiques]({{ site.baseurl }}/images/geographic-coordinates-systems.png "Diagrama detallat del sistema de coordenades geogràfiques: latitud i longitud representats sobre un globus amb angles etiquetats. Font: Djexplo (2011), *Latitude and Longitude of the Earth* (CC0, domini públic).")
 
 Si treballem amb dades globals o compartim informació en serveis web, l'opció més habitual és un **sistema geogràfic** com WGS84 (EPSG:4326).
 
@@ -162,7 +162,7 @@ Un dels sistemes de coordenades projectats més utilitzats arreu del món és el
 
 La Terra es divideix en **60 fusos de 6° de longitud cadascun**, numerats d’oest a est des del meridià de 180°. Cada fus es projecta de manera independent mitjançant una projecció **cilíndrica transversa de Mercator**: en lloc d’un cilindre al voltant de l’equador, s’utilitza un cilindre “girant” que toca la Terra en un **meridià central**. Això minimitza les deformacions dins de cada fus, però limita l’abast: un sistema UTM és vàlid només dins del seu fus.
 
-![Mapa mundial amb la divisió en 60 fusos UTM. Font: [maptools.com.](https://maptools.com/tutorials/grid_zone_details)]({{ site.baseurl }}/images/utm-grid.png){: .center width="100%"}
+![Mapa mundial amb la divisió en 60 fusos UTM]({{ site.baseurl }}/images/utm-grid.png "Mapa mundial amb la divisió en 60 fusos UTM. Font: [maptools.com](https://maptools.com/tutorials/grid_zone_details)")
 
 ### El cas d’Espanya i Catalunya
 
@@ -176,7 +176,7 @@ Les Illes Canàries se situen als fusos **27N** i **28N**.
 
 A la pràctica, a Catalunya treballem amb **ETRS89 / UTM zona 31N (EPSG:25831)**. Si el projecte abasta Castella o Andalusia, cal utilitzar **ETRS89 / UTM zona 30N (EPSG:25830)**. Un criteri a seguir és usar el fus que cobreix més superficie a la nostra zona d'estudi.
 
-![Mapa dels fusos UTM a Espanya (30N i 31N) i bandes latitudinals. Font: [maptools.com](https://maptools.com/tutorials/grid_zone_details).]({{ site.baseurl }}/images/utm-zone.png){: .center width="50%"}
+![Mapa dels fusos UTM a Espanya]({{ site.baseurl }}/images/utm-zone.png "Mapa dels fusos UTM a Espanya (30N i 31N) i bandes latitudinals. Font: [maptools.com](https://maptools.com/tutorials/grid_zone_details)."){ width=50% }
 
 > **Atenció!** Si carregues en un mateix projecte dades del fus 30N i del 31N, QGIS pot **reprojectar al vol**, però per a **anàlisi espacial** cal que totes les capes siguin coherents en un **únic CRS** (mateix fus/zonatge i mateix datum).
 {: .block-warning }
@@ -197,7 +197,7 @@ Com es veu, el sistema geogràfic expressa posicions amb **angles** (graus), men
 
 Al QGIS podem comprovar fàcilment si treballem en coordenades geogràfiques o en coordenades projectades fixant-nos a la **barra d’estat** (part inferior dreta de la finestra). Quan el projecte està configurat en un sistema geogràfic com **EPSG:4326 (WGS84)**, les coordenades del punter apareixen en graus de **latitud i longitud**. En canvi, si utilitzem un sistema projectat com **EPSG:25831 (ETRS89 / UTM zona 31N)**, les coordenades es mostren en **metres d’easting i northing**. Aquesta diferència visual permet identificar de seguida en quin sistema estem treballant i evitar confusions en els càlculs.
 
-![Comparació de la mateixa ubicació a QGIS amb dos sistemes de coordenades diferents: a dalt, geogràfiques (EPSG:4326) en graus de latitud/longitud; a baix, projectades UTM (EPSG:25831) en metres d’easting i northing.]({{ site.baseurl }}/images/qgis-geographic-utm-coordinates.png){: .center width="100%"}
+![Comparació de la mateixa ubicació a QGIS amb dos sistemes de coordenades]({{ site.baseurl }}/images/qgis-geographic-utm-coordinates.png "Comparació de la mateixa ubicació a QGIS amb dos sistemes de coordenades diferents: a dalt, geogràfiques (EPSG:4326) en graus de latitud/longitud; a baix, projectades UTM (EPSG:25831) en metres d’easting i northing.")
 
 ## Els codis EPSG
 
@@ -228,7 +228,7 @@ A la taula següent trobaràs els codis EPSG més utilitzats segons l'àrea d'es
 
 El codi més rellevants per al nostre curs és el **EPSG:25831** → ETRS89 / UTM zona 31N. Podeu comprovar les diferents distorsions que es veuen si escollim entre dos sistemes de coordenades de referència. Per exemple, a escala global les diferències entre escollir **25831** o **4326** son bastant evidents.
 
-![Comparació de projeccions WGS84 (EPSG:4326) i ETRS89/UTM 31N (EPSG:25831)]({{ site.baseurl }}/images/wgs84-etrs89utm-comparison.png){: .center width="100%"}
+![Comparació de projeccions WGS84 i ETRS89/UTM 31N]({{ site.baseurl }}/images/wgs84-etrs89utm-comparison.png "Comparació de projeccions WGS84 (EPSG:4326) i ETRS89/UTM 31N (EPSG:25831)")
 
 També existeixen variants en WGS84, com EPSG:32630 o EPSG:32631, habituals en dades GPS i serveis internacionals. Una menció especial mereix la projecció **Web Mercator** o **Pseudo-Mercator** (EPSG:3857), desenvolupada per Google per als seus mapes web i adoptada posteriorment per la majoria de serveis similars (OpenStreetMap, Bing Maps, etc.). Aquesta projecció és una variant simplificada de la clàssica projecció de Mercator que utilitza l'el·lipsoide WGS84 però el tracta com si fos una esfera perfecta. Això permet càlculs més ràpids i una implementació més senzilla en aplicacions web, però introdueix petites distorsions addicionals, especialment a latituds altes. Tot i les seves limitacions tècniques, la Web Mercator s'ha convertit in l'estàndard de facto per a la visualització de mapes a internet gràcies a la seva rapidesa de renderitzat i compatibilitat universal.
 
