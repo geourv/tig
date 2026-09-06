@@ -1,0 +1,22 @@
+_site/
+.bundle/
+.cache/
+.jekyll-cache/
+.jekyll-metadata
+.sass-cache/
+.quarto/
+**/.quarto/
+**/*.quarto_ipynb
+assets/quarto/**/assets/
+.DS_Store
+node_modules/
+sandbox/
+test-results/
+vendor/
+tmp/
+__pycache__/
+*.pyc
+
+# Generated unaltremanual publication outputs are never versioned.
+/assets/img/manual-cover-ca.png
+/assets/pdf/manual-ca.pdf

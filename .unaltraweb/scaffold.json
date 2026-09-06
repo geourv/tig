@@ -1,0 +1,15 @@
+{
+  "files": {
+    ".github/CONTRIBUTING.md": "19aacc6113335d016ab7db65c795eae3232d1d206b5568a4c0b97c2f9a9a0c79",
+    ".github/dependabot.yml": "a8220cfb49a6649b7d8d8600e4b6f619fadf05b4da68bea2e3a9cd3fc48eac20",
+    ".github/pull_request_template.md": "a3bd183f02120238f0aa5a188216aaab30a45cf58713d5c5059b7e320b3fef12",
+    ".github/workflows/deploy.yml": "a38fec82d4f582fd0b152a15bd12e814e6a99763a2516f3d662e1544ef8a5af3",
+    ".gitignore": "2a8759432093ddc35526ba104208cdf01e6d259dbdd5b9e26da9d31966057f64",
+    ".unaltraweb/docker-mount.sh": "59b042cecc2226036e4d85bd96543182c53b32dbddb437b9c196d78df6d12104",
+    "Gemfile": "aeda8448e87d5aec084919a024804939a90d4b981a09f302cb7e253d4472b99c",
+    "Gemfile.lock": "61639ad4b650faabf0dd5ada1c484baec1ac1cc308ae4a5262b46b035b9100df",
+    "Makefile": "918c8c671b5fddd5d0fc6ab378d1661adcbab3ff82457a03eb77ca92c54666d8"
+  },
+  "schema_version": 1,
+  "source": "unaltraweb_mcp package"
+}

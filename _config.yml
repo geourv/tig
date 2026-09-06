@@ -1,0 +1,45 @@
+title: "Tecnologies de la Informació Geogràfica"
+description: ""
+copyright_holder: "Tecnologies de la Informació Geogràfica"
+keywords: ""
+url: "https://geourv.github.io"
+baseurl: "/tig"
+lang: "ca"
+default_lang: "ca"
+languages: ["ca"]
+theme: unaltraweb
+unaltraweb:
+  site_profile: unaltremanual
+  content_status_field: content_status
+  approved_status: approved
+  footer:
+    show_logo: false
+    brand_name: "Tecnologies de la Informació Geogràfica"
+    brand_url: "https://geourv.github.io/tig/ca/"
+  features:
+    news: false
+    blog: false
+    cv: false
+    projects: false
+    publications: false
+    metrics: false
+    docs: false
+    manual: true
+    readings: true
+  manual:
+    collection: chapters
+    show_chapter_index: true
+    bibliography: true
+    bibliography_file: manual.bib
+    metadata:
+      series:
+    release:
+      selector: latest
+    pdf:
+      enabled: false
+      languages: ["ca"]
+      output: assets/pdf/manual-{lang}.pdf
+      cover_output: assets/img/manual-cover-{lang}.png
+  figure_captions:
+    enabled: true
+    collections: [chapters]
