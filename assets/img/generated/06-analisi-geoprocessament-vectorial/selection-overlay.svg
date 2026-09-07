@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="700" viewBox="0 0 1240 700" role="img" aria-labelledby="title desc">
+  <title id="title">Diferència entre selecció espacial, retall i intersecció</title>
+  <desc id="desc">Tres panells parteixen de la mateixa línia A que travessa el polígon B. La selecció conserva la línia completa, el retall conserva només el tram interior i la intersecció conserva el mateix tram però combina els atributs de les dues capes.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f5f7f8; }
+      .card { fill: #ffffff; stroke: #c8d3d9; stroke-width: 2; }
+      text { font-family: Arial, 'Liberation Sans', sans-serif; }
+      .title { font-size: 34px; font-weight: 700; fill: #17202a; }
+      .subtitle { font-size: 22px; fill: #52616b; }
+      .heading { font-size: 25px; font-weight: 700; fill: #17202a; }
+      .body { font-size: 22px; fill: #33434c; }
+      .small { font-size: 22px; font-weight: 700; fill: #33434c; }
+      .map { fill: #f8fafb; stroke: #d9e1e5; stroke-width: 1.5; }
+      .mask { fill: #76b7d8; fill-opacity: .34; stroke: #2878a5; stroke-width: 3; }
+      .mask-context { fill: #76b7d8; fill-opacity: .12; stroke: #7ba8bd; stroke-width: 2; stroke-dasharray: 7 5; }
+      .source { fill: none; stroke: #d65f43; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+      .source-context { fill: none; stroke: #9aa8af; stroke-width: 5; stroke-linecap: round; }
+      .result { fill: none; stroke: #b53e29; stroke-width: 9; stroke-linecap: round; }
+      .chip-geometry { fill: #e6f1f6; stroke: #8eb9cc; stroke-width: 1.5; }
+      .chip-fields { fill: #f7e8d2; stroke: #d5a768; stroke-width: 1.5; }
+    </style>
+    <marker id="arrow" markerWidth="11" markerHeight="11" refX="8" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,7 L9,3.5 z" fill="#52616b"/>
+    </marker>
+    <clipPath id="result-clip-0">
+      <polygon points="150,410 340,425 315,540 175,555"/>
+    </clipPath>
+    <clipPath id="result-clip-1">
+      <polygon points="545,410 735,425 710,540 570,555"/>
+    </clipPath>
+    <clipPath id="result-clip-2">
+      <polygon points="940,410 1130,425 1105,540 965,555"/>
+    </clipPath>
+  </defs>
+  <rect class="bg" width="1240" height="700"/>
+  <text x="35" y="46" class="title">Un mateix predicat, tres tipus de resultat</text>
+  <text x="35" y="76" class="subtitle">La línia A interseca el polígon B; l’operació decideix si es conserva l’entitat o se’n construeix una part nova.</text>
+  <rect x="35" y="100" width="380" height="555" rx="12" class="card"/>
+  <text x="59" y="138" class="heading">Selecció o extracció</text>
+  <text x="59" y="168" class="subtitle">Quines entitats coincideixen?</text>
+  <rect x="59" y="182" width="332" height="154" rx="8" class="map"/>
+  <polygon points="150,185 340,200 315,315 175,330" class="mask"/>
+  <path d="M 85,300 C 170,280 250,205 385,220" class="source"/>
+  <text x="98" y="322" class="small">A</text>
+  <text x="305" y="224" class="small">B</text>
+  <line x1="225" y1="350" x2="225" y2="385" stroke="#52616b" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="59" y="407" width="332" height="154" rx="8" class="map"/>
+  <polygon points="150,410 340,425 315,540 175,555" class="mask-context"/>
+  <path d="M 85,525 C 170,505 250,430 385,445" class="result"/>
+  <rect x="59" y="579" width="332" height="28" rx="14" class="chip-geometry"/>
+  <text x="225" y="600" text-anchor="middle" class="small">Geometria completa</text>
+  <rect x="59" y="614" width="332" height="28" rx="14" class="chip-fields"/>
+  <text x="225" y="635" text-anchor="middle" class="small">Atributs d’A</text>
+  <rect x="430" y="100" width="380" height="555" rx="12" class="card"/>
+  <text x="454" y="138" class="heading">Retall (clip)</text>
+  <text x="454" y="168" class="subtitle">Quina part queda dins de B?</text>
+  <rect x="454" y="182" width="332" height="154" rx="8" class="map"/>
+  <polygon points="545,185 735,200 710,315 570,330" class="mask"/>
+  <path d="M 480,300 C 565,280 645,205 780,220" class="source"/>
+  <text x="493" y="322" class="small">A</text>
+  <text x="700" y="224" class="small">B</text>
+  <line x1="620" y1="350" x2="620" y2="385" stroke="#52616b" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="454" y="407" width="332" height="154" rx="8" class="map"/>
+  <polygon points="545,410 735,425 710,540 570,555" class="mask-context"/>
+  <path d="M 480,525 C 565,505 645,430 780,445" class="source-context"/>
+  <path d="M 480,525 C 565,505 645,430 780,445" class="result" clip-path="url(#result-clip-1)"/>
+  <rect x="454" y="579" width="332" height="28" rx="14" class="chip-geometry"/>
+  <text x="620" y="600" text-anchor="middle" class="small">Part interior a B</text>
+  <rect x="454" y="614" width="332" height="28" rx="14" class="chip-fields"/>
+  <text x="620" y="635" text-anchor="middle" class="small">Atributs d’A</text>
+  <rect x="825" y="100" width="380" height="555" rx="12" class="card"/>
+  <text x="849" y="138" class="heading">Intersecció</text>
+  <text x="849" y="168" class="subtitle">Quina part comparteixen A i B?</text>
+  <rect x="849" y="182" width="332" height="154" rx="8" class="map"/>
+  <polygon points="940,185 1130,200 1105,315 965,330" class="mask"/>
+  <path d="M 875,300 C 960,280 1040,205 1175,220" class="source"/>
+  <text x="888" y="322" class="small">A</text>
+  <text x="1095" y="224" class="small">B</text>
+  <line x1="1015" y1="350" x2="1015" y2="385" stroke="#52616b" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="849" y="407" width="332" height="154" rx="8" class="map"/>
+  <polygon points="940,410 1130,425 1105,540 965,555" class="mask-context"/>
+  <path d="M 875,525 C 960,505 1040,430 1175,445" class="source-context"/>
+  <path d="M 875,525 C 960,505 1040,430 1175,445" class="result" clip-path="url(#result-clip-2)"/>
+  <rect x="849" y="579" width="332" height="28" rx="14" class="chip-geometry"/>
+  <text x="1015" y="600" text-anchor="middle" class="small">Part comuna A ∩ B</text>
+  <rect x="849" y="614" width="332" height="28" rx="14" class="chip-fields"/>
+  <text x="1015" y="635" text-anchor="middle" class="small">Atributs d’A i B</text>
+  <text x="620" y="687" text-anchor="middle" class="subtitle">Seleccionar respon quines entitats; retallar o intersectar respon quina geometria exacta.</text>
+</svg>

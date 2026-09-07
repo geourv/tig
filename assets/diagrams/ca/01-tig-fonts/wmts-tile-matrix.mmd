@@ -1,0 +1,6 @@
+flowchart TB
+  capabilities["GetCapabilities"] --> set["Conjunt de matrius declarat<br/>(TileMatrixSet)<br/>CRS"]
+  set --> levels["Matriu de cada nivell<br/>(TileMatrix)<br/>resolució · origen · files · columnes<br/>mida de tessel·la"]
+  request["GetTile<br/>capa · estil · format<br/>conjunt · matriu · fila · columna"] --> selection["Cel·la adreçada<br/>de la matriu"]
+  levels --> selection
+  selection --> tile["Tessel·la d'imatge"]

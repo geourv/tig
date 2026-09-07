@@ -1,0 +1,5 @@
+flowchart TB
+  request["GetFeature<br/>tipus d'entitat · filtre<br/>format de sortida"] --> server["Servidor WFS"]
+  data[("Dades vectorials")] --> server
+  server --> response["Representació d'entitats<br/>geometries + atributs<br/>en un format anunciat"]
+  server -.-> transaction["Operacions WFS-T opcionals<br/>inserir · modificar · suprimir<br/>amb permisos"]

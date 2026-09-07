@@ -1,0 +1,28 @@
+metrics:
+  updated_on: '2026-09-06'
+  sources:
+    openalex: offline
+    crossref: offline
+    google_scholar: bibtex + _data/citations.yml
+    scimago: missing
+  api_errors: {}
+  summary:
+    articles_with_metrics: 0
+    openalex_citations_total: 0
+    crossref_citations_total: 0
+    google_scholar_citations_total: 0
+    openalex_citations_2y_total: 0
+    openalex_citations_5y_total: 0
+    fwci_avg: 0
+    cnp_avg: 0
+    journals_core_count: 0
+    journals_doaj_count: 0
+    scimago_articles_count: 0
+    scimago_q1_count: 0
+    scimago_q2_count: 0
+    scimago_q3_count: 0
+    scimago_q4_count: 0
+    scimago_stale_rejected: 0
+    scimago_max_year_gap: 2
+    scimago_year_min: null
+    scimago_year_max: null

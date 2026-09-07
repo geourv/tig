@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="680" viewBox="0 0 1240 680" role="img" aria-labelledby="title desc">
+  <title id="title">Comparació entre buffers individuals i una cobertura dissolta</title>
+  <desc id="desc">Quatre punts generen buffers. A l’esquerra es mantenen quatre entitats i els solapaments; a la dreta se’n dissolen les fronteres internes, de manera que queda una entitat multipart amb dos components i es perd l’atribució directa a cada punt.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f5f7f8; }
+      .card { fill: #ffffff; stroke: #c8d3d9; stroke-width: 2; }
+      text { font-family: Arial, 'Liberation Sans', sans-serif; }
+      .title { font-size: 34px; font-weight: 700; fill: #17202a; }
+      .subtitle { font-size: 22px; fill: #52616b; }
+      .heading { font-size: 27px; font-weight: 700; fill: #17202a; }
+      .body { font-size: 22px; fill: #33434c; }
+      .label { font-size: 22px; font-weight: 700; fill: #33434c; }
+      .individual { fill: #7fc4de; fill-opacity: .38; stroke: #2878a5; stroke-width: 3; }
+      .dissolved { fill: #7fc4de; }
+      .point { fill: #d65f43; stroke: #8c3225; stroke-width: 2.5; }
+      .chip { fill: #e6f1f6; stroke: #8eb9cc; stroke-width: 1.5; }
+      .warning { fill: #f7e8d2; stroke: #d5a768; stroke-width: 1.5; }
+    </style>
+    <marker id="arrow" markerWidth="11" markerHeight="11" refX="8" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,7 L9,3.5 z" fill="#52616b"/>
+    </marker>
+    <filter id="union-outline" x="-15%" y="-15%" width="130%" height="130%">
+      <feMorphology in="SourceAlpha" operator="dilate" radius="3" result="expanded"/>
+      <feFlood flood-color="#2878a5" result="outline-color"/>
+      <feComposite in="outline-color" in2="expanded" operator="in" result="outline"/>
+      <feMerge>
+        <feMergeNode in="outline"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect class="bg" width="1240" height="680"/>
+  <text x="35" y="46" class="title">Conservar l’origen o mesurar la cobertura única?</text>
+  <text x="35" y="77" class="subtitle">Dissoldre respon una pregunta diferent; no és una neteja automàtica que serveixi per a qualsevol anàlisi.</text>
+  <rect x="35" y="105" width="500" height="510" rx="12" class="card"/>
+  <text x="65" y="148" class="heading">Buffers individuals</text>
+  <text x="65" y="179" class="subtitle">Una geometria per cada punt generador</text>
+  <circle cx="165" cy="285" r="76" class="individual"/>
+  <circle cx="165" cy="285" r="8" class="point"/>
+  <text x="177" y="273" class="label">P1</text>
+  <circle cx="270" cy="285" r="76" class="individual"/>
+  <circle cx="270" cy="285" r="8" class="point"/>
+  <text x="282" y="273" class="label">P2</text>
+  <circle cx="220" cy="380" r="76" class="individual"/>
+  <circle cx="220" cy="380" r="8" class="point"/>
+  <text x="232" y="368" class="label">P3</text>
+  <circle cx="430" cy="430" r="76" class="individual"/>
+  <circle cx="430" cy="430" r="8" class="point"/>
+  <text x="442" y="418" class="label">P4</text>
+  <rect x="65" y="510" width="440" height="36" rx="18" class="chip"/>
+  <text x="285" y="536" text-anchor="middle" class="label">4 entitats · origen identificable</text>
+  <rect x="65" y="558" width="440" height="36" rx="18" class="warning"/>
+  <text x="285" y="584" text-anchor="middle" class="label">Solapament · doble recompte</text>
+  <line x1="565" y1="345" x2="660" y2="345" stroke="#52616b" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="612" y="325" text-anchor="middle" class="label">Dissoldre</text>
+  <rect x="705" y="105" width="500" height="510" rx="12" class="card"/>
+  <text x="735" y="148" class="heading">Cobertura dissolta</text>
+  <text x="735" y="179" class="subtitle">Les fronteres internes desapareixen</text>
+  <g filter="url(#union-outline)">
+    <circle cx="855" cy="285" r="76" class="dissolved"/>
+    <circle cx="960" cy="285" r="76" class="dissolved"/>
+    <circle cx="910" cy="380" r="76" class="dissolved"/>
+    <circle cx="1120" cy="430" r="76" class="dissolved"/>
+  </g>
+  <circle cx="855" cy="285" r="8" class="point"/>
+  <text x="867" y="273" class="label">P1</text>
+  <circle cx="960" cy="285" r="8" class="point"/>
+  <text x="972" y="273" class="label">P2</text>
+  <circle cx="910" cy="380" r="8" class="point"/>
+  <text x="922" y="368" class="label">P3</text>
+  <circle cx="1120" cy="430" r="8" class="point"/>
+  <text x="1132" y="418" class="label">P4</text>
+  <rect x="735" y="510" width="440" height="36" rx="18" class="chip"/>
+  <text x="955" y="536" text-anchor="middle" class="label">1 entitat multipart · 2 components</text>
+  <rect x="735" y="558" width="440" height="36" rx="18" class="warning"/>
+  <text x="955" y="584" text-anchor="middle" class="label">Cobertura única · origen perdut</text>
+  <text x="620" y="655" text-anchor="middle" class="subtitle">Convé conservar les dues sortides quan calen atribució per origen i superfície conjunta.</text>
+</svg>
