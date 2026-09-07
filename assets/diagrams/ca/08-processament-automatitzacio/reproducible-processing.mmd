@@ -1,0 +1,7 @@
+flowchart TB
+  inputs["Contracte d'entrada<br/>dades i versions<br/>paràmetres i unitats<br/>entorn i dependències"] --> process["Procés<br/>algorisme + dependències"]
+  process --> outputs["Sortides<br/>dades + productes"]
+  process --> logs["Registres<br/>missatges + incidències"]
+  outputs --> checks["Controls<br/>recomptes + valors + mostres"]
+  logs --> checks
+  checks -.->|Corregir i repetir| process

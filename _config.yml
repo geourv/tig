@@ -1,19 +1,32 @@
-title: "Tecnologies de la Informació Geogràfica"
-description: ""
-copyright_holder: "Tecnologies de la Informació Geogràfica"
-keywords: ""
+title: "TIG"
+short_title: "TIG"
+description: "Manual de teoria aplicada, pràctiques i criteris per analitzar informació territorial amb QGIS."
+copyright_holder: "Benito Zaragozí"
+keywords: "TIG, SIG, QGIS, cartografia, anàlisi espacial, geoprocessament, vector, ràster"
 url: "https://geourv.github.io"
 baseurl: "/tig"
 lang: "ca"
 default_lang: "ca"
 languages: ["ca"]
+icon: "brand/dosquartsdedocs-logo-white.svg"
 theme: unaltraweb
+author:
+  name: Benito Zaragozí
+  name_ca: Benito Zaragozí
+  bio: Manual de l'assignatura Tecnologies de la Informació Geogràfica.
+  bio_ca: Manual de l'assignatura Tecnologies de la Informació Geogràfica.
+  affiliation: Universitat Rovira i Virgili
+  affiliation_ca: Universitat Rovira i Virgili
+  location: Vila-seca
+  location_ca: Vila-seca
+  email: benito.zaragozi@urv.cat
+  github: geourv
 unaltraweb:
   site_profile: unaltremanual
   content_status_field: content_status
   approved_status: approved
   footer:
-    show_logo: false
+    show_logo: true
     brand_name: "Tecnologies de la Informació Geogràfica"
     brand_url: "https://geourv.github.io/tig/ca/"
   features:
@@ -29,17 +42,57 @@ unaltraweb:
   manual:
     collection: chapters
     show_chapter_index: true
+    cover_image: /assets/img/manual-cover-ca.png
+    logo: /assets/img/brand/dosquartsdedocs-logo.svg
+    logo_inverse: /assets/img/brand/dosquartsdedocs-logo-white.svg
+    logo_cafe: /assets/img/brand/dosquartsdedocs-logo-cafe.svg
     bibliography: true
     bibliography_file: manual.bib
     metadata:
-      series:
+      title: "Tecnologies de la  \nInformació Geogràfica"
+      short_title: TIG
+      description: Manual de teoria aplicada, pràctiques i criteris per analitzar informació territorial amb QGIS.
+      series: Dos quarts de docs
+      series_subtitle: Recursos d'aprenentatge
+      publisher: Dos quarts de docs
+      edition: Edició digital de treball, curs 2026/2027
+      publication_date: 7 de setembre de 2026
+      source: https://geourv.github.io/tig/
+      subject: Tecnologies de la Informació Geogràfica
+      teaching_guides:
+        - degree: Grau en Geografia, Anàlisi Territorial i Sostenibilitat
+          subject_code: "21234114"
+      department: Departament de Geografia
+      faculty: Facultat de Turisme i Geografia
+      institution: Universitat Rovira i Virgili
+      location: Vila-seca
+      academic_year: 2026/2027
+      revision_date:
+        ca: 7 de setembre de 2026
+      instructors:
+        - name: Benito Zaragozí
+      rights: © Benito Zaragozí. Les marques, les figures i els materials de tercers conserven els drets i les llicències indicats.
     release:
       selector: latest
     pdf:
-      enabled: false
+      enabled: true
       languages: ["ca"]
+      build_dir: tmp/manual-pdf
       output: assets/pdf/manual-{lang}.pdf
       cover_output: assets/img/manual-cover-{lang}.png
+      include_home: true
+      include_bibliography: true
+      toc: true
+      mark_drafts: true
+      home_title: Inici i presentació del curs
+      cover:
+        image: assets/img/manual-cover-background.jpg
+        series_logo: assets/img/brand/docs-quarts-logo-small-white.png
+        institution_logo: assets/img/brand/dgeo-apilat-color.pdf
+        band_color: "990000"
+        primary_color: "990000"
+        secondary_color: "003366"
+        muted_color: "666666"
   figure_captions:
     enabled: true
     collections: [chapters]
