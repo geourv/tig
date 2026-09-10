@@ -26,7 +26,7 @@ vector_source:
     name: CC BY 4.0
     attribution: ign.es
     url: https://www.ign.es/resources/licencia/Condiciones_licenciaUso_IGN.pdf
-    evidence: Enllac rel=license publicat per la col.leccio i condicions de l'IGN.
+    evidence: Enllaç rel=license publicat per la col·lecció i condicions de l'IGN.
   serialization:
     raw_sha256_observed:
       - cc791921d25b797180a66041ee48af1e2b4cb5bb756e0708935a99f3e51a1643
