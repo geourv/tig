@@ -14,14 +14,16 @@ manual_references: true
 
 Un projecte SIG no és només el fitxer que QGIS obre. També inclou la pregunta, les dades originals, les transformacions, els paràmetres, els resultats i les decisions que permeten interpretar-los. Si una capa final no es pot relacionar amb una font i un procediment, el mapa pot semblar plausible però no constitueix una evidència verificable.
 
-El projecte acumulatiu inclourà un **GeoPackage**, un projecte QGIS i un **diari d'activitats**. El GeoPackage concentrarà les capes vectorials i les taules quan sigui adequat; els ràsters analítics es conservaran habitualment com a GeoTIFF; i el fitxer `.qgz` registrarà l'organització de capes, estils, consultes, models i composicions. Cap d'aquestes peces substitueix les altres.
+Aquest capítol crea per primera vegada la base del **projecte QGIS acumulatiu**: el fitxer extern `projecte_tig.qgz`, el GeoPackage `dades_preparades/projecte_tig.gpkg` i la capa canònica `municipi_treball`. Els capítols posteriors reobriran i ampliaran aquestes mateixes peces; no les recrearan en un projecte paral·lel. La còpia de treball canònica serà el `.qgz`; el GeoPackage concentrarà les capes vectorials i les taules quan sigui adequat i contindrà, en punts de control explícits, una representació incrustada del mateix projecte amb el nom `projecte_tig`. Els ràsters analítics es conservaran habitualment com a GeoTIFF i el **diari d'activitats** relacionarà totes les peces.
 
 >>>>> En acabar el capítol, cal poder preparar un projecte SIG transportable i explicar el recorregut complet des de les fonts fins als resultats.
 >>>>>
 >>>>> - Separar dades originals, preparades, resultats intermedis i resultats finals.
->>>>> - Utilitzar noms i rutes que permetin traslladar el projecte a un altre equip.
+>>>>> - Crear `municipi_treball`, mantenir el `.qgz` canònic i actualitzar una representació incrustada identificable del mateix punt de control.
 >>>>> - Documentar fonts, operacions, paràmetres, controls, incidències i limitacions.
 >>>>> - Sintetitzar un resultat sense ocultar els supòsits ni la qualitat de les entrades.
+
+El projecte extern i l'incrustat no se sincronitzen automàticament. Desar el `.qgz` no actualitza l'entrada del GeoPackage, i desar un projecte obert des del GeoPackage no modifica el `.qgz`. Aquesta independència permet conservar fites deliberades, però obliga a saber sempre quina representació està oberta i a actualitzar l'altra només després dels controls indicats.
 
 Organitzar no és embellir una carpeta després d'acabar. L'estructura del sistema de fitxers expressa quines entrades s'han rebut, quines còpies es poden modificar, quines sortides encara són provisionals i quins resultats sostenen la conclusió. Si aquests estats només existeixen a la memòria de qui ha executat el treball, una altra persona no podrà saber si `final_2.gpkg` és una font, una prova o el resultat acceptat.
 
@@ -44,15 +46,21 @@ La **traçabilitat** és la possibilitat de reconstruir com s'ha obtingut un res
 
 La cadena no sempre és lineal. Un control pot revelar una clau duplicada, una geometria invàlida o una resolució insuficient i obligar a tornar a la preparació. Aquesta iteració s'ha de registrar: corregir una incidència forma part del mètode, mentre que ocultar-la impedeix entendre per què el resultat final difereix del primer intent.
 
-La **procedència** identifica d'on ve una entrada: productor, producte, versió, data, llicència, adreça i forma d'obtenció. El **llinatge de dades** descriu què li ha passat dins del projecte: quina capa en deriva, amb quina operació, quins paràmetres i quins controls. La traçabilitat necessita totes dues dimensions. Un fitxer pot conservar perfectament la URL original i haver perdut la relació amb la capa final; també pot tenir un historial intern molt detallat i partir d'una font sense autoria o data.
+Procedència
+: Identifica d'on ve una entrada: productor, producte, versió, data, llicència, adreça i forma d'obtenció.
+
+Llinatge de dades
+: Descriu què li ha passat dins del projecte: quina capa en deriva, amb quina operació, quins paràmetres i quins controls.
+
+La traçabilitat necessita totes dues dimensions. Un fitxer pot conservar perfectament la URL original i haver perdut la relació amb la capa final; també pot tenir un historial intern molt detallat i partir d'una font sense autoria o data.
 
 Cada sortida ha de tenir antecedents identificables. Si `parceles_candidates` prové d'una intersecció, el diari ha d'indicar les dues entrades exactes, la versió del projecte, l'algorisme, el tractament d'entitats invàlides i el lloc on s'ha desat. Si una entrada es corregeix i l'operació es repeteix, la sortida anterior no s'ha de reetiquetar silenciosament: cal substituir-la de manera controlada o conservar-la com a resultat rebutjat amb la incidència documentada.
 
 El llinatge forma una xarxa de dependències, no només una cronologia. Una mateixa capa preparada pot alimentar un mapa, una unió i una anàlisi de proximitat; una mateixa sortida pot dependre de tres fonts amb dates diferents. El diari pot explicar aquesta xarxa amb identificadors de fitxer i capa sense dibuixar-la. El criteri és que, començant pel resultat, es pugui retrocedir fins a cada original i, començant per una font, es pugui saber en quins resultats intervé.
 
-Aquesta xarxa fa visibles tant el recorregut principal com els controls que poden obligar a revisar una dada preparada o una sortida.
+La ramificació fa visible quines fonts alimenten cada resultat i com una validació pot obligar a revisar una preparació o repetir l'anàlisi.
 
-![Xarxa de llinatge entre fonts, preparació, operacions, controls, resultats i interpretació]({{ site.baseurl }}/assets/diagrams/ca/02-sintesi-documentacio/project-data-lineage.mmd "El llinatge connecta cada resultat amb les fonts, les transformacions i els controls dels quals depèn, i permet recórrer la cadena en tots dos sentits."){: data-figure-width-web="45rem" data-figure-width-pdf="95%"}
+![Dependències ramificades entre el límit municipal, les dades temàtiques, el WMS, les preparacions, l'anàlisi, el resultat, el mapa i la validació]({{ site.baseurl }}/assets/diagrams/ca/02-sintesi-documentacio/project-data-lineage.mmd "El límit municipal i les dades temàtiques alimenten preparacions que conflueixen en l'anàlisi; el resultat i el WMS de context alimenten el mapa, mentre que la validació pot retornar a la preparació o a l'anàlisi."){: data-figure-width-web="45rem" data-figure-width-pdf="95%"}
 
 La validació també forma part de la cadena. Anotar només que una eina «ha funcionat» descriu l'estat de la interfície, no la qualitat de la sortida. Cal conservar el control aplicat i el seu resultat observat: recompte abans i després, presència de nuls, extensió, rang, geometries problemàtiques o contrast d'una mostra. Els valors reals s'han d'obtenir durant l'execució; una plantilla pot indicar quins controls cal fer, però no anticipar-ne les xifres.
 
@@ -60,26 +68,9 @@ La validació també forma part de la cadena. Anotar només que una eina «ha fu
 
 Separar l'estat de les dades evita confondre una font amb una transformació. La còpia original es conserva tal com s'ha rebut o descarregat. Les dades preparades corregeixen estructura, tipus, CRS o àmbit sense perdre la relació amb l'original. Els resultats intermedis permeten diagnosticar un flux, i els finals responen directament una pregunta o alimenten una composició.
 
-Una estructura possible és la següent:
+Una estructura possible és la següent. Els directoris expressen l'estat lògic de les dades, mentre que el `.qgz`, el diari i el fitxer de presentació queden a l'arrel transportable.
 
-::: listing "Estructura orientativa del projecte acumulatiu"
-```filetree
-projecte_tig/
-|-- README.md
-|-- dades_originals/
-|   |-- paquets/
-|   `-- extrets/
-|-- dades_preparades/
-|   `-- projecte_tig.gpkg
-|-- treball/
-|-- resultats_intermedis/
-|-- resultats/
-|   |-- raster/
-|   `-- mapes/
-|-- projecte_tig.qgz
-`-- diari.pdf
-```
-:::
+![Arbre de directoris i fitxers del projecte acumulatiu]({{ site.baseurl }}/assets/diagrams/ca/02-sintesi-documentacio/project-folder-tree.puml "L'arrel projecte_tig separa originals, dades preparades, treball, resultats intermedis i resultats finals, i conserva el projecte QGIS, el diari i el README al primer nivell."){: data-figure-width-web="12.5rem" data-figure-width-pdf="30%"}
 
 L'arbre és orientatiu, però les funcions no són intercanviables. `dades_originals` conserva allò que s'ha rebut del productor: els paquets i, quan cal obrir-los, una extracció íntegra que no s'edita. `dades_preparades` conté còpies que ja han passat per decisions com seleccionar camps, corregir tipus, retallar l'àmbit o materialitzar un CRS. `treball` admet proves que encara es poden descartar. `resultats_intermedis` conserva sortides necessàries per explicar o repetir una cadena, i `resultats` queda reservat per als productes validats que responen la pregunta.
 
@@ -91,7 +82,7 @@ Les capes temporals de QGIS exigeixen una decisió explícita. Mentre només só
 
 No totes les capes necessiten un fitxer separat. Un únic `projecte_tig.gpkg` pot contenir capes vectorials, taules i resultats relacionats, amb noms que indiquin funció i no només l'ordre accidental de creació. Els noms `municipis_font`, `municipis_preparats` i `municipis_pendent` expliquen millor el recorregut que `capa1`, `final2` o `nova_definitiva`.
 
-Els noms han de ser estables, breus i compatibles amb les eines utilitzades. Convé usar minúscules, guions baixos i unitats explícites quan siguin necessàries, com `buffer_200_m`. Les dates formen part del nom només quan distingeixen versions reals de les dades o del resultat; no substitueixen un registre de canvis.
+Els noms han de ser estables, breus i compatibles amb les eines utilitzades. Convé usar minúscules, guions baixos i unitats explícites quan siguin necessàries, com `vies_buffer_200m`. Les dates formen part del nom només quan distingeixen versions reals de les dades o del resultat; no substitueixen un registre de canvis.
 
 ### Noms, identificadors i esquemes
 
@@ -127,7 +118,21 @@ El fitxer `.qgz` conserva referències a les fonts, l'ordre i els grups de capes
 
 Un `.qgz` és un paquet comprimit que conté la definició del projecte i recursos auxiliars que QGIS pugui incorporar. La definició registra proveïdors i adreces de fonts, però no converteix qualsevol Shapefile, GeoTIFF, full de càlcul o servei remot en contingut incrustat. La mida petita del projecte no prova que les dades hi siguin. Per saber què necessita, cal inspeccionar les propietats de les capes i executar una prova fora de la ubicació original.
 
-Desar el projecte aviat fixa un punt de referència per a les rutes i evita acumular capes en un projecte sense nom. El fitxer independent també permet revisar l'estructura encara que el projecte es desi addicionalment dins del GeoPackage. El nom estable `projecte_tig.qgz` identifica la continuïtat acumulativa; els canvis rellevants es documenten al diari o amb còpies de control deliberades, no amb una cadena de `projecte_final_final2.qgz`.
+Projecte QGIS
+: Document que conserva l'organització, la representació i part de l'estat de treball, però que normalment referencia les dades en lloc de contenir-les.
+
+Capa de projecte
+: Vista configurada d'un contingut geogràfic: té nom, estil, filtres i altres propietats dins del projecte i apunta a una font.
+
+Font de dades
+: Recurs tècnic que conté o serveix els valors, identificat per un camí, una URL o un identificador uniforme de recurs (URI). En un GeoPackage, la URI combina el fitxer contenidor amb la taula o capa interna.
+
+Proveïdor de dades de QGIS
+: Component de programari que sap llegir i, quan correspon, escriure un tipus de font, com OGR per a molts formats vectorials o GDAL per a molts ràsters.
+
+Aquest **proveïdor de dades** no és necessàriament l'organisme productor o distribuïdor estudiat al capítol 01, ni tampoc un **proveïdor de Processament**, que agrupa algorismes. Qualificar el terme evita atribuir a una institució una funció interna de QGIS o confondre el lector de la font amb l'eina que la transforma.
+
+Desar el projecte aviat fixa un punt de referència per a les rutes i evita acumular capes en un projecte sense nom. El nom estable `projecte_tig.qgz` identifica la còpia canònica i la continuïtat acumulativa: és el fitxer que s'obre per reprendre el treball i el que es desa abans de crear una fita incrustada. Els canvis rellevants es documenten al diari o amb còpies de control deliberades, no amb una cadena de `projecte_final_final2.qgz`.
 
 El projecte conserva estils, filtres, unions i composicions que poden canviar el significat de la vista sense canviar les dades. Una capa oculta per un filtre no està buida; una unió dinàmica pot desaparèixer si falta la taula externa; un disseny pot dependre d'una imatge o una tipografia que no viatja amb la font geogràfica. La prova de transport ha d'incloure aquestes dependències i no només comprovar que el llenç mostra algun mapa.
 
@@ -147,43 +152,61 @@ Les URL de WMS, WMTS, WFS o API no es converteixen en rutes locals relatives. Co
 
 Una ruta relativa només resol la **localització**. No resol llicències, formats no admesos, extensions de base de dades, tipografies absents, diferències de versió ni dependències de complements. Per això el projecte ha d'indicar la versió de QGIS quan sigui rellevant i sotmetre's a una obertura real en una ubicació neta. Veure la paraula «relatiu» al diàleg és una configuració; obrir totes les fonts després del trasllat és l'evidència.
 
-### Abast i límits del GeoPackage
-
-QGIS també pot desar un projecte dins d'un GeoPackage. Aquesta opció és convenient per agrupar peces, però no s'ha de confondre amb una garantia d'interoperabilitat: altres aplicacions poden llegir les taules del GeoPackage i ignorar l'estat propi de QGIS. Durant el curs es conservarà també un `.qgz` independent per facilitar la revisió de l'estructura i la recuperació del projecte {% cite qgisUserGuide344 %}.
+### Abast del GeoPackage i projecte incrustat
 
 GeoPackage és un estàndard OGC basat en SQLite. Pot contenir diverses taules d'entitats vectorials, taules d'atributs i piràmides de tessel·les, juntament amb metadades i extensions definides segons el cas {% cite ogcGeoPackage2024 %}. Aquesta capacitat el fa adequat per concentrar vectors i taules relacionats sense dispersar-los en molts fitxers. Cada capa continua tenint nom, geometria, CRS, esquema i llinatge propis.
 
-No és una carpeta comprimida d'ús general. Un GeoTIFF analític, un `.zip` original, un PDF del diari o qualsevol document no s'hi ha d'introduir com si l'estàndard els convertís en capes interoperables. Encara que GeoPackage admet tessel·les ràster, això no equival a conservar qualsevol ràster analític de coma flotant amb la mateixa compatibilitat que un GeoTIFF. El projecte del curs mantindrà habitualment aquests ràsters com a fitxers externs dins de l'arbre.
+No és una carpeta comprimida d'ús general. Un GeoTIFF analític, un `.zip` original o el PDF del diari no esdevenen capes interoperables pel fet d'introduir-los en una base. Encara que GeoPackage admet tessel·les ràster, això no equival a conservar qualsevol ràster analític de coma flotant amb la mateixa compatibilitat que un GeoTIFF. El projecte del curs mantindrà habitualment aquests ràsters com a fitxers externs dins de l'arbre.
 
-QGIS pot desar-hi estils i projectes mitjançant estructures o extensions pròpies. Altres aplicacions poden ignorar-les sense deixar de llegir les capes estàndard. Per això «tot és dins del `.gpkg`» no és una afirmació suficient: cal especificar quines taules són dades interoperables i quins elements depenen de QGIS. El `.qgz` independent conserva una via clara d'obertura i revisió.
+QGIS permet **desar un projecte a un GeoPackage** i **obrir-lo des d'un GeoPackage** mitjançant les accions `Projecte > Desa a > GeoPackage` (*Save to GeoPackage*) i `Projecte > Obre des de > GeoPackage` (*Open from GeoPackage*), encara que la traducció o la posició exacta puguin variar entre versions. En tots dos casos se seleccionen un contenidor i un nom de projecte; no s'estan important o exportant les capes. Altres aplicacions poden llegir les taules geogràfiques i ignorar aquesta definició pròpia de QGIS {% cite qgisUserGuide344 %}.
 
-Agrupar moltes capes en un sol fitxer redueix la dispersió, però també concentra el risc de pèrdua. Un GeoPackage no és una còpia de seguretat de si mateix. Abans d'una edició extensa convé tancar operacions pendents, crear una còpia coherent i evitar editar el mateix fitxer simultàniament des de processos o ubicacions sincronitzades que puguin entrar en conflicte. Una transacció pot agrupar escriptures de manera coherent, però no substitueix una estratègia de recuperació.
+Al curs, l'entrada incrustada s'anomena exactament `projecte_tig`. Per crear o renovar un punt de control, s'obre el `projecte_tig.qgz` extern, es desen els canvis canònics, s'executen els controls previstos i només aleshores es desa una representació d'aquell estat al GeoPackage amb aquest nom. Després es tanca la representació incrustada i es torna a obrir explícitament el `.qgz` abans de continuar treballant. Així s'evita que una ordre **Desa** posterior actualitzi només l'entrada incrustada per error.
 
-Els noms interns també s'han de gestionar. Esborrar o reanomenar una taula pot trencar la referència del `.qgz`; reemplaçar una capa amb una altra del mateix nom pot ocultar un canvi d'esquema. Després d'una importació s'han de revisar geometria, CRS, camps i recomptes, i després tornar a obrir el projecte. El contenidor simplifica el transport físic, no la validació del contingut.
+Les dues representacions són independents. L'ordre **Desa** actualitza la que està oberta en aquell moment; no hi ha cap enllaç que propagui els canvis a l'altra. La data de la fita i els controls que la justifiquen han de quedar al diari. Una diferència posterior pot ser correcta si el `.qgz` ha avançat des de l'última fita, però ha de ser explicable.
 
->>>> **Una còpia comprimida no és documentació ni còpia de seguretat suficient.** Un paquet `.zip` pot simplificar un lliurament, però no explica les dependències, no permet comparar decisions i no protegeix per si sol contra la pèrdua de totes les còpies.
+El projecte incrustat **no és una còpia de seguretat**. Comparteix el mateix fitxer `projecte_tig.gpkg` que les capes: si el contenidor es perd o es corromp, es poden perdre alhora les dades i el projecte incrustat. Una còpia de recuperació ha d'estar en una ubicació independent i incloure també el `.qgz`, els ràsters i la documentació necessaris.
+
+Els noms interns també s'han de gestionar. Esborrar o reanomenar una taula pot trencar tant la referència del `.qgz` com la de la fita incrustada; reemplaçar una capa amb una altra del mateix nom pot ocultar un canvi d'esquema. Després d'una importació s'han de revisar geometria, CRS, camps i recomptes, i després tornar a obrir totes dues representacions des d'una còpia del projecte. El contenidor simplifica el transport físic, no la validació del contingut.
+
+>>>> **Ni el projecte incrustat ni un `.zip` substitueixen una còpia de seguretat independent.** Tots dos poden facilitar una fita o un lliurament, però no protegeixen per si sols contra la pèrdua del contenidor o de l'única ubicació de treball.
 
 ### Còpies de seguretat i control de versions
 
-Una **còpia de seguretat** permet recuperar fitxers després d'una supressió, una avaria o una corrupció. Ha d'existir en una ubicació independent de la còpia de treball i s'ha de provar restaurant-ne contingut. Una carpeta sincronitzada pot replicar també una supressió o un fitxer malmès; una còpia al mateix disc no protegeix contra la fallada del disc. La freqüència i el nombre de còpies depenen del cost de repetir el treball, però almenys una no ha de compartir el mateix punt de fallada.
+Còpia de seguretat
+: Permet recuperar fitxers després d'una supressió, una avaria o una corrupció. Ha d'existir en una ubicació independent de la còpia de treball i s'ha de provar restaurant-ne contingut.
 
-El **control de versions** conserva canvis identificats i permet relacionar-los amb una decisió. És especialment útil per al `README.md`, el diari en format editable, consultes, scripts, models o altres fonts textuals. Git no interpreta l'estructura interna d'un `.qgz`, un `.gpkg` o un GeoTIFF com interpreta línies de text; pot guardar versions binàries, però comparar-les, fusionar-les i contenir-ne el creixement és més difícil. Per això no s'ha de presentar Git com a substitut d'una còpia de seguretat ni com una solució automàtica per a totes les geodades.
+Control de versions
+: Conserva canvis identificats i permet relacionar-los amb una decisió. És especialment útil per al `README.md`, el diari editable, les consultes, els scripts, els models i altres fonts textuals.
+
+Una carpeta sincronitzada pot replicar també una supressió o un fitxer malmès; una còpia al mateix disc no protegeix contra la fallada del disc. Git pot guardar `.qgz`, `.gpkg` o GeoTIFF binaris, però no en pot comparar ni fusionar l'estructura interna com fa amb línies de text. Per això el control de versions no substitueix una còpia de seguretat ni resol automàticament la gestió de totes les geodades.
 
 En un projecte docent es poden combinar còpies de recuperació del conjunt amb fites deliberades dels fitxers centrals. Abans d'una transformació difícil de revertir es crea una còpia tancada del GeoPackage; després es registra al diari què s'ha canviat i quin resultat s'ha validat. No cal conservar una còpia amb marca horària de cada clic. Cal conservar prou estats per recuperar-se i prou documentació per saber quin estat és coherent.
 
 El paquet `.zip` del lliurament és una **còpia de distribució**. Pot servir també per fer la prova de transport, però no és l'única còpia de seguretat ni l'historial de treball. Abans de comprimir s'han d'excloure memòries cau, temporals, credencials i originals que no es puguin redistribuir; després s'ha d'extreure el paquet en una carpeta nova i obrir-ne el contingut. Que la compressió acabi sense error no prova que el projecte sigui complet.
 
+::: table "Cinc registres o còpies que no s'han de confondre"
+| Peça | Funció | Prova necessària |
+| --- | --- | --- |
+| Inventari | Descriu les peces, la ubicació, la funció i les dependències de l'estat actual | Cada entrada existeix i es pot relacionar amb el projecte |
+| Diari | Registra decisions, execucions, incidències, controls i interpretacions | Una altra persona pot reconstruir per què s'ha acceptat cada resultat |
+| Punt de control | Identifica un estat validat i coherent del `.qgz` extern i de la seva representació incrustada | Les dues representacions s'obren per separat i compleixen els mateixos controls declarats |
+| Còpia de seguretat | Permet recuperar-se d'una pèrdua o corrupció | Es troba en una ubicació independent i se n'ha provat la restauració |
+| Paquet de distribució o transport | Trasllada només les peces redistribuïbles necessàries | S'extreu en una ruta neta i s'obre sense dependre de la còpia original |
+:::
+
 ### Configuració inicial a QGIS
 
-Tot i que la disposició concreta depèn de la versió i del perfil, la interfície manté unes regions funcionals estables: menús i barres d'eines per activar ordres, `Explorador` per localitzar fonts, `Capes` per organitzar-les, llenç del mapa per representar-les i barra d'estat per llegir l'escala, les coordenades i altres estats de la vista. La captura antiga, amb etiquetes en anglès, és orientativa; els panells visibles i la seva posició poden variar.
+En QGIS, la separació conceptual entre fonts, organització, representació i procés es tradueix en regions funcionals diferents: l'`Explorador` localitza fonts, el panell `Capes` les organitza, el llenç les representa, la caixa d'eines les transforma i la barra d'estat informa de l'escala, les coordenades i el CRS de la vista. La disposició concreta depèn de la versió i del perfil. La configuració ha de començar fora del llenç: primer es crea l'arbre del projecte i es desa `projecte_tig.qgz` a l'arrel.
 
-![Esquema de la interfície de QGIS amb menús, barres d'eines, explorador, capes, llenç del mapa i barra d'estat]({{ site.baseurl }}/assets/img/qgis/qgis-gui-schema.png "Captura històrica anotada del material docent predecessor; les regions funcionals orienten la configuració inicial, però no constitueixen un contracte exacte de la interfície actual."){: data-figure-width-web="48rem" data-figure-width-pdf="100%"}
+>>> **Miniprojecte de Vila-seca.** Després de construir la base pròpia, es pot [descarregar el paquet de referència](https://geourv.github.io/tig/assets/projectes/vila-seca/projecte-tig-vila-seca.zip), extreure'l en una carpeta nova i comparar-ne l'organització i els controls. Inclou `municipi_treball`, el WMS PNOA de context, la representació incrustada `projecte_tig`, la procedència, les sumes SHA-256 i un constructor escrit amb la interfície Python de QGIS (PyQGIS) per publicar la demostració; l'estudiant no ha d'executar aquest constructor ni presentar Vila-seca com a resultat propi.
 
-La configuració ha de començar fora del llenç. Primer es crea l'arbre del projecte i es desa `projecte_tig.qgz` a l'arrel.
+En obrir-lo, la captura permet relacionar cada decisió del projecte amb el lloc on es comprova: les dependències a l'`Explorador`, l'ordre al panell `Capes`, el resultat visible al llenç i els algorismes a la caixa d'eines.
+
+![Interfície de QGIS amb l'Explorador i el panell de Capes a l'esquerra, el llenç del mapa al centre, la Caixa d'eines de processament a la dreta i la barra d'estat amb el localitzador a la part inferior]({{ site.baseurl }}/assets/img/qgis/qgis-interface-overview.png "Interfície de QGIS 3.44.11 en català. La posició i la visibilitat dels panells i de les barres d'eines poden variar segons la versió i el perfil; les regions funcionals es mantenen."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
 
 A `Projecte > Propietats > General` es configura l'emmagatzematge de camins relatius. També es revisa la `Carpeta inicial del projecte`, que pot apuntar a l'arrel per agilitzar la navegació, però no substitueix la carpeta del `.qgz` com a base de les rutes desades. Només llavors s'afegeixen les còpies preparades o els originals en mode d'inspecció, de manera que les referències neixen dins d'una estructura coneguda.
 
-El GeoPackage inicial es pot crear des del panell `Explorador` o en desar la primera capa preparada. El contenidor es desa a `dades_preparades/projecte_tig.gpkg`; cada importació rep un nom intern descriptiu i es comprova abans de continuar. L'original no s'arrossega ni es reemplaça: una exportació crea la capa de treball i el diari registra font, operació, CRS i camps conservats.
+El GeoPackage inicial es pot crear des del panell `Explorador` o en desar la primera capa preparada. El contenidor es desa a `dades_preparades/projecte_tig.gpkg`. El paquet del límit municipal candidat del CNIG es conserva íntegre a `dades_originals`; després de comprovar-ne peces, metadades, CRS, camps i cobertura, la selecció del municipi assignat s'importa al GeoPackage amb el nom intern exacte `municipi_treball`. La capa conserva l'identificador oficial rebut, un `codi_muni` textual derivat amb una regla documentada, el nom, una sola entitat i un identificador intern estable. L'original no es reemplaça: la capa de treball i el diari conserven la relació amb la font.
 
 El panell de capes es distribueix en grups que expressen funció, per exemple:
 
@@ -195,7 +218,7 @@ El panell de capes es distribueix en grups que expressen funció, per exemple:
 
 Els prefixos són opcionals, però l'ordre no ha de dependre d'on ha quedat una capa després d'afegir-la. Les fonts remotes de context queden separades de les entrades analítiques i reben un nom que conserva productor i producte.
 
-Abans de tancar la primera sessió, cal desar, tancar QGIS i tornar a obrir el `.qgz`. Aquesta primera reobertura comprova que cap resultat necessari continua sent temporal, que el GeoPackage no està bloquejat per una operació pendent i que les capes resolen les rutes previstes. Els recomptes, camps i extensions observats es documenten amb els valors reals de la sessió; el simple retorn de la simbologia no substitueix aquests controls.
+Abans de tancar la primera sessió, el `.qgz` ha de conservar el WMS de context, `municipi_treball` dins de `dades_preparades/projecte_tig.gpkg` i els grups inicials. Després de comprovar que cap resultat necessari continua sent temporal i documentar l'identificador oficial, `codi_muni`, els camps, el CRS, l'extensió, la geometria i el recompte observats, es crea la primera representació incrustada del punt de control amb el nom `projecte_tig`. QGIS es tanca i el `.qgz` canònic es torna a obrir explícitament; la prova de transport comprovarà després les dues representacions.
 
 ## El diari d'activitats
 
@@ -214,9 +237,9 @@ El diari ha de permetre entendre les decisions que no són visibles a les capes 
 | Fitxers | On s'han desat les entrades preparades i les sortides? |
 :::
 
-La versió de QGIS i els proveïdors de processament s'han d'indicar quan poden alterar un algorisme o els seus paràmetres. També cal registrar els complements imprescindibles. Un projecte que depèn d'una selecció activa, una variable local o una capa temporal no documentades pot deixar de ser reproduïble encara que el fitxer `.qgz` s'obri.
+La versió de QGIS i els proveïdors de Processament s'han d'indicar quan poden alterar un algorisme o els seus paràmetres. També cal registrar els complements imprescindibles. Un projecte que depèn d'una selecció activa, una variable local o una capa temporal no documentades pot deixar de ser reproduïble encara que el fitxer `.qgz` s'obri.
 
-Una entrada de qualitat comença per una decisió o una operació identificable, no per l'hora en què s'ha premut un botó. Pot indicar: objectiu de preparar el límit municipal; entrada `municipis_font` procedent del paquet identificat; filtre aplicat al camp documentat; algorisme i paràmetres; sortida `municipi_preparat`; controls de geometria, camps, CRS i extensió; i incidències. Aquesta estructura permet repetir el procés en una interfície lleugerament diferent perquè conserva el significat, no només el recorregut visual.
+Una entrada de qualitat comença per una decisió o una operació identificable, no per l'hora en què s'ha premut un botó. Pot indicar: objectiu de preparar el límit municipal; entrada `municipis_font` procedent del paquet identificat; filtre aplicat al camp documentat; algorisme i paràmetres; sortida `municipi_treball`; controls de geometria, camps, CRS i extensió; i incidències. Aquesta estructura permet repetir el procés en una interfície lleugerament diferent perquè conserva el significat, no només el recorregut visual.
 
 Una nota com «he retallat i ha sortit bé» no identifica entrada, màscara, opció ni prova. Una seqüència de captures de tots els diàlegs pot ser igualment insuficient si no explica per què s'han triat els valors. Les captures són útils quan demostren una configuració difícil de transcriure, un missatge d'error, una diferència abans-després o un control espacial. La resta es documenta millor com a text amb noms literals de capes, camps i paràmetres.
 
@@ -254,13 +277,15 @@ Si una font remota és imprescindible per a l'anàlisi, el projecte ha d'explica
 
 La prova de transport crea una situació en què les rutes personals deixen de funcionar. Amb QGIS tancat i els fitxers desats, es copia l'arrel completa a una ubicació que no comparteixi el mateix camí, per exemple una carpeta temporal amb un altre nom o un altre equip. No s'ha de moure l'única còpia de treball ni esborrar l'origen per fer la prova. Si el lliurament serà un `.zip`, la còpia es comprimeix i s'extreu en aquesta ubicació neta.
 
-Des de la còpia s'obre el `.qgz`, no un projecte de la llista de recents que podria apuntar a l'original. Abans d'acceptar cap reparació automàtica, s'observa si apareixen fonts no disponibles. Després es comproven els grups, la visibilitat, els estils, les etiquetes, les unions, les relacions, els models i les composicions que formin part de l'activitat. Cada capa local s'ha de relacionar amb un fitxer o una taula interna de la còpia, no amb `Descàrregues`, l'escriptori o l'arrel anterior.
+Des de la còpia s'obre explícitament `projecte_tig.qgz`, no un projecte de la llista de recents que podria apuntar a l'original. Abans d'acceptar cap reparació automàtica, s'observa si apareixen fonts no disponibles. Després es comproven els grups, la visibilitat, els estils, les etiquetes, les unions, les relacions, els models i les composicions que formin part de l'activitat. Cada capa local s'ha de relacionar amb un fitxer o una taula interna de la còpia, no amb `Descàrregues`, l'escriptori o l'arrel anterior.
+
+Un cop registrada la prova del `.qgz`, es tanca sense introduir canvis i s'utilitza **Obre des de GeoPackage** sobre el `projecte_tig.gpkg` de la còpia. Se selecciona l'entrada `projecte_tig` i es repeteixen els controls corresponents a la fita: fonts resoltes, grups, CRS, extensió, recompte i elements de projecte esperats. Aquesta segona obertura prova la fita incrustada; no la converteix en còpia canònica ni l'actualitza perquè coincideixi amb canvis posteriors del `.qgz`.
 
 La validació utilitza els controls ja registrats. Les capes han de conservar els noms, tipus, CRS, camps i recomptes observats durant la preparació; els ràsters, les dimensions, bandes, resolució i `NoData` que corresponguin; i les composicions, els recursos necessaris. No s'introdueixen xifres de referència inventades: es comparen els valors de la prova amb els que el mateix projecte va documentar quan va crear les sortides.
 
 Les fonts remotes es proven separadament. Amb connexió, cal confirmar que el servei encara respon i que el projecte n'identifica la dependència. Sense connexió, cal observar quina part del projecte continua disponible. L'objectiu no és que un WMS funcioni fora de línia, sinó que la seva absència no es confongui amb la pèrdua d'una entrada local i que cap anàlisi presentada com a reproduïble depengui d'una resposta efímera no documentada.
 
-Una prova superada deixa una evidència breu: ubicació de la còpia, projecte obert, fonts resoltes, controls comparats, dependències remotes i incidències corregides. Si ha calgut cercar manualment una capa, la prova no s'ha superat encara. Cal corregir l'arbre o la referència al projecte original, tornar a copiar i repetir l'obertura fins que la resolució sigui explicable.
+Una prova superada deixa una evidència breu: ubicació de la còpia, `.qgz` canònic obert, entrada incrustada `projecte_tig` oberta per separat, fonts resoltes, controls comparats, dependències remotes i incidències corregides. Si ha calgut cercar manualment una capa, si s'ha obert una font de l'arrel original o si no es pot identificar quina representació s'està comprovant, la prova no s'ha superat. Cal corregir l'arbre o la referència, renovar la fita si correspon, tornar a copiar i repetir totes dues obertures.
 
 ## Dos projectes organitzats de manera diferent
 
@@ -272,9 +297,9 @@ La resolució comença inventariant les fonts efectivament utilitzades. Els paqu
 
 A continuació es repara cada font del `.qgz` existent perquè no es perdin estils i composicions, es configuren els camins relatius i es tanquen les capes temporals o duplicades. El diari substitueix la cronologia de clics per entrades amb objectiu, entrades, operació, paràmetres, controls i incidències. Es crea una còpia de seguretat independent i es fa la prova de transport des d'un `.zip` extret en una ubicació nova. Només després d'aquesta prova el projecte es pot considerar reorganitzat.
 
-En un cas ben dissenyat des de l'inici, `projecte_tig.qgz` i totes les fonts locals pengen d'una mateixa arrel. Els paquets rebuts no es modifiquen; el GeoPackage concentra vectors i taules preparats; els ràsters analítics tenen fitxers propis; els intermedis conservats expliquen dependències reals; i els resultats finals no comparteixen noms amb proves descartades. Les capes remotes estan agrupades i documentades com a context o com a consultes reproduïbles.
+En un cas ben dissenyat des de l'inici, `projecte_tig.qgz` i totes les fonts locals pengen d'una mateixa arrel. Els paquets rebuts no es modifiquen; el GeoPackage concentra vectors i taules preparats i conserva la fita incrustada `projecte_tig`; els ràsters analítics tenen fitxers propis; els intermedis conservats expliquen dependències reals; i els resultats finals no comparteixen noms amb proves descartades. Les capes remotes estan agrupades i documentades com a context o com a consultes reproduïbles.
 
-La qualitat del cas ben organitzat no prové només de l'arbre. Cada sortida té una procedència, un esquema i controls; el `.qgz` torna a obrir-se després de copiar-lo; el paquet de distribució exclou allò que no es pot redistribuir; i una còpia de recuperació existeix fora de la ubicació de treball. Si una font falla, el diari permet identificar quin resultat queda afectat i decidir si cal restaurar, reparar o repetir una operació.
+La qualitat del cas ben organitzat no prové només de l'arbre. Cada sortida té una procedència, un esquema i controls; el `.qgz` i la fita incrustada es tornen a obrir per separat després de copiar-los; el paquet de distribució exclou allò que no es pot redistribuir; i una còpia de recuperació existeix fora de la ubicació de treball. Si una font falla, el diari permet identificar quin resultat queda afectat i decidir si cal restaurar, reparar o repetir una operació.
 
 ## Validació i síntesi
 
@@ -282,13 +307,13 @@ Validar no és només observar que el mapa «té bona forma». Els controls s'ha
 
 La **síntesi** selecciona les evidències que responen la pregunta i les presenta amb el context necessari. Un mapa final ha d'indicar què representa, de quin període són les dades, quines unitats utilitza i quines fonts l'han fet possible. L'escala, l'orientació, la llegenda i altres elements s'incorporen quan ajuden a interpretar el producte, no com una llista decorativa obligatòria.
 
-La conclusió ha de mantenir la diferència entre observació i inferència. Un `buffer` de 200 m mostra una proximitat euclidiana definida pel model; no demostra que el recorregut sigui accessible. Una zona que compleix tres màscares és candidata segons els criteris introduïts; no és automàticament la millor localització. Documentar aquestes limitacions forma part del resultat.
+La conclusió ha de mantenir la diferència entre observació i inferència. Una àrea d'influència (`buffer`) de 200 m mostra una proximitat euclidiana definida pel model; no demostra que el recorregut sigui accessible. Una zona que compleix tres màscares és candidata segons els criteris introduïts; no és automàticament la millor localització. Documentar aquestes limitacions forma part del resultat.
 
 ## Activitats
 
-### Comprovació: prova de trasllat
+### Informe de la prova de transport
 
-Cal crear un projecte breu amb dues capes locals, configurar rutes relatives, tancar QGIS i moure tota la carpeta. La comprovació consisteix a obrir el projecte des de la nova ubicació, verificar que no hi ha fonts perdudes i explicar quina diferència hi hauria si una capa continués apuntant a una carpeta de descàrregues.
+El resultat conservat serà un informe breu de la còpia traslladada. Identificarà la ubicació neta, l'obertura explícita de `projecte_tig.qgz`, l'obertura separada de l'entrada `projecte_tig` mitjançant **Obre des de GeoPackage**, les fonts locals resoltes, les dependències remotes i els controls comparats. També explicarà per què una capa que encara apunti a una carpeta de descàrregues invalida la prova, encara que aparegui a l'equip d'origen.
 
 ### Micropràctica 1: projecte, pregunta i fonts
 
@@ -297,12 +322,12 @@ La primera micropràctica lliurable prepara la base que utilitzaran les activita
 ::: table "Contracte de la micropràctica 1"
 | Component | Requisit |
 | --- | --- |
-| Entrades | Una pregunta territorial, una capa administrativa oficial, una font temàtica i una font ràster o servei d'imatge |
-| Operacions mínimes | Identificar les fonts, conservar els originals, incorporar-les a QGIS i definir l'estructura del projecte |
-| Resultats | GeoPackage inicial, projecte `.qgz` transportable i inventari de fonts |
-| Evidències del diari | Pregunta, unitat d'anàlisi, fitxa de cada font, arbre de fitxers i prova de trasllat |
-| Comprovacions | Les capes s'obren, el CRS està identificat, les rutes són relatives i els originals no s'han modificat |
-| Fitxers que cal conservar | Paquets originals autoritzats, `projecte_tig.gpkg`, `projecte_tig.qgz` i diari actualitzat |
+| Entrades | Pregunta territorial, inventari inicial, connexió WMS de context i candidatura del límit municipal oficial del CNIG per al municipi assignat |
+| Operacions mínimes | Crear l'arbre, desar `projecte_tig.qgz`, obtenir i conservar íntegre el paquet del CNIG, validar i importar el límit com a `municipi_treball`, documentar les fonts i crear la representació incrustada `projecte_tig` |
+| Resultats | WMS de context i `municipi_treball` visibles, `dades_preparades/projecte_tig.gpkg` amb una entitat municipal i la representació incrustada, `projecte_tig.qgz` canònic i inventari de fonts |
+| Evidències del diari | Pregunta, unitat d'anàlisi, fitxa de cada font, contingut del paquet, arbre de fitxers, controls de `municipi_treball`, data del punt de control i informe de transport |
+| Comprovacions | Identificador oficial conservat, `codi_muni` textual, CRS, extensió, geometria i recompte d'una entitat; rutes relatives; originals intactes; `.qgz` i entrada incrustada reoberts per separat des de la còpia |
+| Fitxers que cal conservar | Paquet original autoritzat del CNIG, `projecte_tig.gpkg`, `projecte_tig.qgz`, inventari i diari actualitzat |
 :::
 
-El lliurament només es considera reproduïble si el projecte torna a obrir-se des d'una ubicació diferent i si cada capa es pot relacionar amb una font, una data i una llicència. Moodle concretarà el format de tramesa i el termini.
+El lliurament només es considera reproduïble si les dues representacions tornen a obrir-se des d'una ubicació diferent, si la comprovació identifica quina és la còpia canònica i si cada capa es pot relacionar amb una font, una data i una llicència. L'entrada incrustada no s'ha de presentar com a còpia de seguretat perquè comparteix el contenidor amb les dades. Moodle concretarà el format de tramesa i el termini.

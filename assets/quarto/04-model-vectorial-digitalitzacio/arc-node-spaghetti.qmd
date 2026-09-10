@@ -1,0 +1,110 @@
+---
+title: "Geometries independents i topologia explícita"
+lang: ca
+ref: arc_node_spaghetti
+format:
+  gfm:
+    output-file: arc-node-spaghetti.generated.md
+execute:
+  echo: false
+  warning: false
+  message: false
+execute-dir: project
+unaltraweb_compute:
+  engine: python
+  mode: figure
+  outputs:
+    - assets/img/generated/04-model-vectorial-digitalitzacio/arc-node-spaghetti.svg
+---
+
+```{python}
+from pathlib import Path
+
+
+def find_project_root(start):
+    path = Path(start).resolve()
+    for candidate in (path, *path.parents):
+        if (candidate / ".unaltraweb" / "computations.yml").is_file():
+            return candidate
+    raise RuntimeError("Project root not found: missing .unaltraweb/computations.yml")
+
+
+width, height = 1500, 760
+svg = [
+    f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
+    '  <title id="title">Geometries independents i topologia explícita d’arcs i nodes</title>',
+    '  <desc id="desc">Dos panells comparen les mateixes formes. A l’esquerra, cada polígon i cada línia conserva les seves coordenades de manera independent, de manera que les fronteres es dupliquen i els extrems poden quedar pròxims sense coincidir. A la dreta, una topologia explícita manté una sola frontera compartida i arcs que es relacionen mitjançant un node persistent.</desc>',
+    '  <defs>',
+    '    <style>',
+    "      text { font-family: Arial, 'Liberation Sans', sans-serif; }",
+    '      .background { fill: #f7f9fa; }',
+    '      .panel { fill: #ffffff; stroke: #c5d0d5; stroke-width: 2; }',
+    '      .heading { fill: #21313c; font-size: 34px; font-weight: 700; }',
+    '      .subheading { fill: #53656e; font-size: 27px; }',
+    '      .label { fill: #263943; font-size: 27px; font-weight: 700; }',
+    '      .note { fill: #53656e; font-size: 27px; }',
+    '      .area-a { fill: #82bad0; fill-opacity: .48; stroke: #176486; stroke-width: 5; }',
+    '      .area-b { fill: #e5aa73; fill-opacity: .48; stroke: #a9572f; stroke-width: 5; }',
+    '      .line { fill: none; stroke: #176486; stroke-width: 11; stroke-linecap: butt; }',
+    '      .duplicate { fill: none; stroke: #c84232; stroke-width: 5; stroke-dasharray: 9 7; }',
+    '      .bad-node { fill: #c84232; stroke: #ffffff; stroke-width: 4; }',
+    '      .arc { fill: none; stroke: #176486; stroke-width: 11; stroke-linecap: butt; }',
+    '      .shared { fill: none; stroke: #2f875f; stroke-width: 9; }',
+    '      .node { fill: #2f875f; stroke: #ffffff; stroke-width: 4; }',
+    '      .guide { fill: none; stroke: #7f8d93; stroke-width: 2; stroke-dasharray: 8 7; }',
+    '    </style>',
+    '  </defs>',
+    '  <rect width="1500" height="760" class="background"/>',
+    '  <rect x="25" y="25" width="710" height="710" class="panel"/>',
+    '  <rect x="765" y="25" width="710" height="710" class="panel"/>',
+    '  <text x="60" y="78" class="heading">Geometries independents</text>',
+    '  <text x="60" y="116" class="subheading">coordenades desades per separat</text>',
+    '  <text x="800" y="78" class="heading">Arcs i nodes explícits</text>',
+    '  <text x="800" y="116" class="subheading">relacions mantingudes pel model</text>',
+
+    # Independent polygon boundaries can duplicate or diverge.
+    '  <polygon points="70,165 337,165 350,395 70,395" class="area-a"/>',
+    '  <polygon points="370,165 690,165 690,395 385,395" class="area-b"/>',
+    '  <path d="M 350,165 L 365,395" class="duplicate"/>',
+    '  <path d="M 370,165 L 385,395" class="duplicate"/>',
+    '  <text x="220" y="285" text-anchor="middle" class="label">P1</text>',
+    '  <text x="535" y="285" text-anchor="middle" class="label">P2</text>',
+    '  <text x="367" y="430" text-anchor="middle" class="note">dues còpies del límit</text>',
+
+    # Independent lines have near, but distinct, endpoints.
+    '  <path d="M 90,610 L 330,610" class="line"/>',
+    '  <path d="M 355,600 L 665,505" class="line"/>',
+    '  <path d="M 365,620 L 650,690" class="line"/>',
+    '  <circle cx="330" cy="610" r="13" class="bad-node"/>',
+    '  <circle cx="355" cy="600" r="13" class="bad-node"/>',
+    '  <circle cx="365" cy="620" r="13" class="bad-node"/>',
+    '  <text x="350" y="555" text-anchor="middle" class="note">extrems independents</text>',
+
+    # Explicit topology stores one common boundary and identifies its nodes.
+    '  <polygon points="810,165 1100,165 1100,395 810,395" class="area-a"/>',
+    '  <polygon points="1100,165 1430,165 1430,395 1100,395" class="area-b"/>',
+    '  <line x1="1100" y1="165" x2="1100" y2="395" class="shared"/>',
+    '  <circle cx="1100" cy="165" r="12" class="node"/>',
+    '  <circle cx="1100" cy="395" r="12" class="node"/>',
+    '  <text x="955" y="285" text-anchor="middle" class="label">cara C1</text>',
+    '  <text x="1265" y="285" text-anchor="middle" class="label">cara C2</text>',
+    '  <text x="1122" y="350" class="note">arc A1</text>',
+    '  <text x="1100" y="430" text-anchor="middle" class="note">una frontera compartida</text>',
+
+    # Network arcs reference one persistent junction node.
+    '  <path d="M 830,610 L 1100,610" class="arc"/>',
+    '  <path d="M 1100,610 L 1400,505" class="arc"/>',
+    '  <path d="M 1100,610 L 1390,690" class="arc"/>',
+    '  <circle cx="1100" cy="610" r="15" class="node"/>',
+    '  <text x="945" y="590" text-anchor="middle" class="label">A2</text>',
+    '  <text x="1265" y="545" text-anchor="middle" class="label">A3</text>',
+    '  <text x="1265" y="680" text-anchor="middle" class="label">A4</text>',
+    '  <text x="1100" y="655" text-anchor="middle" class="note">node N1</text>',
+    '</svg>',
+]
+
+project_root = find_project_root(Path.cwd())
+output = project_root / "assets/img/generated/04-model-vectorial-digitalitzacio/arc-node-spaghetti.svg"
+output.parent.mkdir(parents=True, exist_ok=True)
+output.write_text("\n".join(svg) + "\n", encoding="utf-8")
+```

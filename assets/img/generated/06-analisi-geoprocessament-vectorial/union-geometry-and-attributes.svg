@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="430" viewBox="0 0 1240 430" role="img" aria-labelledby="union-title union-desc">
+  <title id="union-title">Geometria i atributs d’una unió de dos polígons</title>
+  <desc id="union-desc">Els polígons A i B se superposen. La unió divideix la sortida en una peça només d’A, una peça comuna i una peça només de B. La taula conserva el valor d’A o de B on cada capa és present i mostra NULL on no hi ha cobertura.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, 'Liberation Sans', sans-serif; }
+      .section { font-size: 26px; font-weight: 700; fill: #17252d; }
+      .layer { font-size: 24px; font-weight: 700; fill: #17252d; }
+      .field { font-size: 24px; fill: #33454e; }
+      .piece { font-size: 24px; font-weight: 700; fill: #17252d; }
+      .piece-light { font-size: 24px; font-weight: 700; fill: #ffffff; }
+      .table-head { font-size: 24px; font-weight: 700; fill: #17252d; }
+      .table-cell { font-size: 24px; fill: #283941; }
+      .null { font-size: 24px; font-style: italic; fill: #6d797f; }
+      .rule { stroke: #aebbc1; stroke-width: 1.5; }
+      .a-input { fill: #e9a895; fill-opacity: .72; stroke: #93412f; stroke-width: 2.5; }
+      .b-input { fill: #9fcde0; fill-opacity: .72; stroke: #286d91; stroke-width: 2.5; }
+      .common-input { fill: #76577f; fill-opacity: .82; stroke: #4f3b57; stroke-width: 2.5; }
+      .a-only { fill: #e9a895; stroke: #5c4a45; stroke-width: 2.5; }
+      .common { fill: #76577f; stroke: #4f3b57; stroke-width: 2.5; }
+      .b-only { fill: #9fcde0; stroke: #3f5f6f; stroke-width: 2.5; }
+    </style>
+    <marker id="arrow" markerWidth="11" markerHeight="11" refX="8" refY="3.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,7 L9,3.5 z" fill="#52616b"/>
+    </marker>
+  </defs>
+  <text x="210" y="42" text-anchor="middle" class="section">Entrades</text>
+  <line x1="55" y1="59" x2="365" y2="59" class="rule"/>
+  <polygon points="45,105 255,105 255,285 45,285" class="a-input"/>
+  <polygon points="165,185 375,185 375,365 165,365" class="b-input"/>
+  <polygon points="165,185 255,185 255,285 165,285" class="common-input"/>
+  <text x="78" y="151" class="layer">A</text>
+  <text x="78" y="180" class="field">camp_A = a1</text>
+  <text x="270" y="318" class="layer">B</text>
+  <text x="270" y="347" class="field">camp_B = b1</text>
+  <line x1="405" y1="235" x2="449" y2="235" stroke="#52616b" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="630" y="42" text-anchor="middle" class="section">Sortida segmentada</text>
+  <line x1="475" y1="59" x2="805" y2="59" class="rule"/>
+  <path d="M 465,105 H 675 V 185 H 585 V 285 H 465 Z" class="a-only"/>
+  <polygon points="585,185 675,185 675,285 585,285" class="common"/>
+  <path d="M 675,185 H 795 V 365 H 585 V 285 H 675 Z" class="b-only"/>
+  <text x="535" y="151" text-anchor="middle" class="piece">A només</text>
+  <text x="630" y="243" text-anchor="middle" class="piece-light">A ∩ B</text>
+  <text x="730" y="326" text-anchor="middle" class="piece">B només</text>
+  <line x1="825" y1="18" x2="825" y2="400" class="rule"/>
+  <text x="1040" y="42" text-anchor="middle" class="section">Taula d’atributs</text>
+  <line x1="850" y1="82" x2="1230" y2="82" class="rule"/>
+  <line x1="850" y1="132" x2="1230" y2="132" class="rule"/>
+  <line x1="850" y1="187" x2="1230" y2="187" class="rule"/>
+  <line x1="850" y1="242" x2="1230" y2="242" class="rule"/>
+  <line x1="850" y1="297" x2="1230" y2="297" class="rule"/>
+  <line x1="850" y1="82" x2="850" y2="297" class="rule"/>
+  <line x1="990" y1="82" x2="990" y2="297" class="rule"/>
+  <line x1="1110" y1="82" x2="1110" y2="297" class="rule"/>
+  <line x1="1230" y1="82" x2="1230" y2="297" class="rule"/>
+  <text x="870" y="115" class="table-head">Peça</text>
+  <text x="1050" y="115" text-anchor="middle" class="table-head">camp_A</text>
+  <text x="1170" y="115" text-anchor="middle" class="table-head">camp_B</text>
+  <path d="M 866,151 H 882 V 167 H 866 Z" class="a-only"/>
+  <text x="888" y="169" class="table-cell">A només</text>
+  <text x="1050" y="169" text-anchor="middle" class="table-cell">a1</text>
+  <text x="1170" y="169" text-anchor="middle" class="null">NULL</text>
+  <path d="M 866,206 H 882 V 222 H 866 Z" class="common"/>
+  <text x="888" y="224" class="table-cell">Comuna</text>
+  <text x="1050" y="224" text-anchor="middle" class="table-cell">a1</text>
+  <text x="1170" y="224" text-anchor="middle" class="table-cell">b1</text>
+  <path d="M 866,261 H 882 V 277 H 866 Z" class="b-only"/>
+  <text x="888" y="279" class="table-cell">B només</text>
+  <text x="1050" y="279" text-anchor="middle" class="null">NULL</text>
+  <text x="1170" y="279" text-anchor="middle" class="table-cell">b1</text>
+</svg>

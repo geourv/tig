@@ -1,0 +1,192 @@
+---
+title: "Predicats espacials segons la geometria"
+lang: ca
+ref: spatial_predicates_by_geometry
+format:
+  gfm:
+    output-file: spatial-predicates-by-geometry.generated.md
+execute:
+  echo: false
+  warning: false
+  message: false
+execute-dir: project
+unaltraweb_compute:
+  engine: python
+  mode: figure
+  outputs:
+    - assets/img/generated/06-analisi-geoprocessament-vectorial/spatial-predicates-by-geometry.svg
+---
+
+```{python}
+from pathlib import Path
+
+
+def find_project_root(start):
+    path = Path(start).resolve()
+    for candidate in (path, *path.parents):
+        if (candidate / ".unaltraweb" / "computations.yml").is_file():
+            return candidate
+    raise RuntimeError("Project root not found: missing .unaltraweb/computations.yml")
+
+
+width = 1600
+height = 1000
+svg = [
+    f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
+    '  <title id="title">Predicats espacials aplicables a diferents parelles de geometries</title>',
+    '  <desc id="desc">Tres franges comparen relacions topològiques exactes. Un punt és dins d’un polígon, en toca la frontera o n’és disjunt. Dues línies es creuen pels interiors, comparteixen només un extrem, se solapen en un tram o són disjuntes. Dos polígons se solapen en superfície, comparteixen només una frontera, mostren la direcció inversa entre within i contains, o són disjunts.</desc>',
+    '  <defs>',
+    '    <style>',
+    "      text { font-family: Arial, 'Liberation Sans', sans-serif; }",
+    "      .row-label { font-size: 28px; font-weight: 700; fill: #1d2a32; }",
+    "      .relation { font-size: 28px; font-weight: 700; fill: #1d2a32; }",
+    "      .direction { font-size: 28px; font-weight: 700; fill: #465760; }",
+    "      .geometry-label { font-size: 28px; font-weight: 700; }",
+    "      .label-a { fill: #a63f29; }",
+    "      .label-b { fill: #145f80; }",
+    "      .separator { stroke: #c5d0d5; stroke-width: 2; }",
+    "      .polygon-a { fill: #dc6b4f; fill-opacity: .28; stroke: #a63f29; stroke-width: 5; }",
+    "      .polygon-b { fill: #58a5c5; fill-opacity: .27; stroke: #145f80; stroke-width: 5; }",
+    "      .point-a { fill: #a63f29; stroke: #ffffff; stroke-width: 4; }",
+    "      .line-a { fill: none; stroke: #b84a2f; stroke-width: 9; stroke-linecap: butt; }",
+    "      .line-b { fill: none; stroke: #176b8f; stroke-width: 9; stroke-linecap: butt; }",
+    "      .common { fill: none; stroke: #684c83; stroke-width: 11; stroke-linecap: butt; }",
+    "      .contact { fill: #1d2a32; stroke: #ffffff; stroke-width: 3; }",
+    '    </style>',
+    '  </defs>',
+    '  <line x1="30" y1="330" x2="1570" y2="330" class="separator"/>',
+    '  <line x1="30" y1="665" x2="1570" y2="665" class="separator"/>',
+
+    # Point-polygon row.
+    '  <text x="42" y="165" class="row-label">Punt A</text>',
+    '  <text x="42" y="201" class="row-label">Polígon B</text>',
+    '  <line x1="710" y1="28" x2="710" y2="302" class="separator"/>',
+    '  <line x1="1130" y1="28" x2="1130" y2="302" class="separator"/>',
+]
+
+point_panels = [
+    (500, "within", "within"),
+    (920, "touches", "touches"),
+    (1340, "disjoint", "disjoint"),
+]
+for cx, relation, mode in point_panels:
+    left = cx - 92
+    right = cx + 78
+    top = 126
+    bottom = 250
+    point_x = cx
+    point_y = 190
+    if mode == "touches":
+        point_x = left
+    elif mode == "disjoint":
+        point_x = cx + 132
+    svg.extend([
+        f'  <text x="{cx}" y="62" text-anchor="middle" class="relation">{relation}</text>',
+        f'  <polygon points="{left},{top} {right},{top} {right},{bottom} {left},{bottom}" class="polygon-b"/>',
+        f'  <text x="{left + 14}" y="{top + 31}" class="geometry-label label-b">B</text>',
+        f'  <circle cx="{point_x}" cy="{point_y}" r="12" class="point-a"/>',
+        f'  <text x="{point_x + 18}" y="{point_y - 15}" class="geometry-label label-a">A</text>',
+    ])
+
+svg.extend([
+    # Line-line row.
+    '  <text x="42" y="500" class="row-label">Línia A</text>',
+    '  <text x="42" y="536" class="row-label">Línia B</text>',
+    '  <line x1="550" y1="358" x2="550" y2="637" class="separator"/>',
+    '  <line x1="860" y1="358" x2="860" y2="637" class="separator"/>',
+    '  <line x1="1170" y1="358" x2="1170" y2="637" class="separator"/>',
+])
+
+line_panels = [
+    (395, "crosses", "crosses"),
+    (705, "touches", "touches"),
+    (1015, "overlaps", "overlaps"),
+    (1325, "disjoint", "disjoint"),
+]
+for cx, relation, mode in line_panels:
+    svg.append(f'  <text x="{cx}" y="390" text-anchor="middle" class="relation">{relation}</text>')
+    if mode == "crosses":
+        svg.extend([
+            f'  <path d="M {cx - 102},575 L {cx + 102},475" class="line-a"/>',
+            f'  <path d="M {cx - 102},475 L {cx + 102},575" class="line-b"/>',
+            f'  <text x="{cx + 108}" y="478" class="geometry-label label-a">A</text>',
+            f'  <text x="{cx + 108}" y="588" class="geometry-label label-b">B</text>',
+        ])
+    elif mode == "touches":
+        svg.extend([
+            f'  <path d="M {cx - 108},545 L {cx},545" class="line-a"/>',
+            f'  <path d="M {cx},545 L {cx + 88},470" class="line-b"/>',
+            f'  <circle cx="{cx}" cy="545" r="7" class="contact"/>',
+            f'  <text x="{cx - 132}" y="554" class="geometry-label label-a">A</text>',
+            f'  <text x="{cx + 94}" y="476" class="geometry-label label-b">B</text>',
+        ])
+    elif mode == "overlaps":
+        svg.extend([
+            f'  <path d="M {cx - 48},530 L {cx + 108},530" class="line-b"/>',
+            f'  <path d="M {cx - 108},530 L {cx + 48},530" class="line-a"/>',
+            f'  <path d="M {cx - 48},530 L {cx + 48},530" class="common"/>',
+            f'  <text x="{cx - 132}" y="539" class="geometry-label label-a">A</text>',
+            f'  <text x="{cx + 114}" y="539" class="geometry-label label-b">B</text>',
+        ])
+    else:
+        svg.extend([
+            f'  <path d="M {cx - 108},570 L {cx - 20},490" class="line-a"/>',
+            f'  <path d="M {cx + 24},570 L {cx + 112},490" class="line-b"/>',
+            f'  <text x="{cx - 132}" y="582" class="geometry-label label-a">A</text>',
+            f'  <text x="{cx + 116}" y="497" class="geometry-label label-b">B</text>',
+        ])
+
+svg.extend([
+    # Polygon-polygon row.
+    '  <text x="42" y="833" class="row-label">Polígon A</text>',
+    '  <text x="42" y="869" class="row-label">Polígon B</text>',
+    '  <line x1="550" y1="693" x2="550" y2="972" class="separator"/>',
+    '  <line x1="860" y1="693" x2="860" y2="972" class="separator"/>',
+    '  <line x1="1170" y1="693" x2="1170" y2="972" class="separator"/>',
+])
+
+polygon_panels = [
+    (395, "overlaps", "overlaps"),
+    (705, "touches", "touches"),
+    (1015, "A within B", "within"),
+    (1325, "disjoint", "disjoint"),
+]
+for cx, relation, mode in polygon_panels:
+    svg.append(f'  <text x="{cx}" y="727" text-anchor="middle" class="relation">{relation}</text>')
+    if mode == "overlaps":
+        svg.extend([
+            f'  <polygon points="{cx - 112},807 {cx + 18},807 {cx + 18},925 {cx - 112},925" class="polygon-a"/>',
+            f'  <polygon points="{cx - 24},846 {cx + 112},846 {cx + 112},958 {cx - 24},958" class="polygon-b"/>',
+            f'  <text x="{cx - 94}" y="840" class="geometry-label label-a">A</text>',
+            f'  <text x="{cx + 82}" y="943" class="geometry-label label-b">B</text>',
+        ])
+    elif mode == "touches":
+        svg.extend([
+            f'  <polygon points="{cx - 116},815 {cx},815 {cx},940 {cx - 116},940" class="polygon-a"/>',
+            f'  <polygon points="{cx},815 {cx + 116},815 {cx + 116},940 {cx},940" class="polygon-b"/>',
+            f'  <text x="{cx - 94}" y="851" class="geometry-label label-a">A</text>',
+            f'  <text x="{cx + 20}" y="851" class="geometry-label label-b">B</text>',
+        ])
+    elif mode == "within":
+        svg.extend([
+            f'  <text x="{cx}" y="764" text-anchor="middle" class="direction">B contains A</text>',
+            f'  <polygon points="{cx - 116},800 {cx + 116},800 {cx + 116},958 {cx - 116},958" class="polygon-b"/>',
+            f'  <polygon points="{cx - 46},844 {cx + 52},844 {cx + 52},916 {cx - 46},916" class="polygon-a"/>',
+            f'  <text x="{cx - 96}" y="836" class="geometry-label label-b">B</text>',
+            f'  <text x="{cx - 28}" y="887" class="geometry-label label-a">A</text>',
+        ])
+    else:
+        svg.extend([
+            f'  <polygon points="{cx - 119},814 {cx - 20},814 {cx - 20},930 {cx - 119},930" class="polygon-a"/>',
+            f'  <polygon points="{cx + 22},844 {cx + 121},844 {cx + 121},960 {cx + 22},960" class="polygon-b"/>',
+            f'  <text x="{cx - 101}" y="850" class="geometry-label label-a">A</text>',
+            f'  <text x="{cx + 40}" y="880" class="geometry-label label-b">B</text>',
+        ])
+
+svg.append('</svg>')
+
+project_root = find_project_root(Path.cwd())
+output = project_root / "assets/img/generated/06-analisi-geoprocessament-vectorial/spatial-predicates-by-geometry.svg"
+output.parent.mkdir(parents=True, exist_ok=True)
+output.write_text("\n".join(svg) + "\n", encoding="utf-8")
+```

@@ -1,0 +1,147 @@
+---
+title: "Unió d'atributs i unió espacial"
+lang: ca
+ref: attribute_vs_spatial_join
+format:
+  gfm:
+    output-file: attribute-vs-spatial-join.generated.md
+execute:
+  echo: false
+  warning: false
+  message: false
+execute-dir: project
+unaltraweb_compute:
+  engine: python
+  mode: figure
+  outputs:
+    - assets/img/generated/05-consultes-dades-relacionals/attribute-vs-spatial-join.svg
+---
+
+```{python}
+from pathlib import Path
+
+
+def find_project_root(start):
+    path = Path(start).resolve()
+    for candidate in (path, *path.parents):
+        if (candidate / ".unaltraweb" / "computations.yml").is_file():
+            return candidate
+    raise RuntimeError("Project root not found: missing .unaltraweb/computations.yml")
+
+
+def target_points(x, y):
+    offsets = [(0, 18), (30, 0), (91, 8), (118, 39), (101, 82), (42, 88), (8, 64)]
+    return " ".join(f"{x + dx},{y + dy}" for dx, dy in offsets)
+
+
+width = 1600
+height = 900
+row_centres = [250, 450, 650]
+svg = [
+    f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
+    '  <title id="title">Comparació entre una unió d’atributs i una unió espacial</title>',
+    '  <desc id="desc">A l’esquerra, les claus A, B i C troben zero, una i diverses files candidates. A la dreta, tres polígons objectiu contenen zero, un i diversos punts candidats. La geometria objectiu no es talla, però el nombre de files de sortida depèn de la política escollida per als casos sense coincidència o amb coincidències múltiples.</desc>',
+    '  <defs>',
+    '    <style>',
+    "      text { font-family: Arial, 'Liberation Sans', sans-serif; }",
+    "      .background { fill: #ffffff; }",
+    "      .heading { fill: #21313c; font-size: 34px; font-weight: 700; }",
+    "      .relation { fill: #5f7079; font-size: 28px; }",
+    "      .column { fill: #5f7079; font-size: 28px; font-weight: 700; }",
+    "      .key { fill: #21313c; font-size: 28px; font-weight: 700; }",
+    "      .count { fill: #c95338; font-size: 30px; font-weight: 700; }",
+    "      .note { fill: #334750; font-size: 28px; font-weight: 700; }",
+    "      .target { fill: #dceef4; stroke: #2878a5; stroke-width: 4; }",
+    "      .result { fill: #e8f2e9; stroke: #2878a5; stroke-width: 4; }",
+    "      .candidate-key { fill: #f3e3d8; stroke: #c95338; stroke-width: 3; }",
+    "      .candidate-point { fill: #c95338; stroke: #ffffff; stroke-width: 4; }",
+    "      .join-line { fill: none; stroke: #c95338; stroke-width: 3; }",
+    "      .flow { fill: none; stroke: #52646d; stroke-width: 4; }",
+    "      .separator { stroke: #c7d1d6; stroke-width: 2; }",
+    "      .none { fill: #77878e; font-size: 34px; font-weight: 700; }",
+    '    </style>',
+    '    <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto" markerUnits="strokeWidth">',
+    '      <path d="M0,0 L0,8 L10,4 z" fill="#52646d"/>',
+    '    </marker>',
+    '  </defs>',
+    f'  <rect class="background" width="{width}" height="{height}"/>',
+    '  <line x1="800" y1="30" x2="800" y2="790" class="separator"/>',
+    '  <line x1="60" y1="810" x2="1540" y2="810" class="separator"/>',
+
+    # Attribute join: target geometry flows through while candidate rows meet by key.
+    '  <text x="400" y="55" text-anchor="middle" class="heading">Unió d’atributs per clau</text>',
+    '  <text x="400" y="93" text-anchor="middle" class="relation">clau objectiu = clau candidata</text>',
+    '  <text x="120" y="148" text-anchor="middle" class="column">Objectiu</text>',
+    '  <text x="390" y="132" text-anchor="middle" class="column">Files</text>',
+    '  <text x="390" y="164" text-anchor="middle" class="column">candidates</text>',
+    '  <text x="619" y="132" text-anchor="middle" class="column">Geometria</text>',
+    '  <text x="619" y="164" text-anchor="middle" class="column">objectiu</text>',
+]
+
+for index, (key, y) in enumerate(zip(("A", "B", "C"), row_centres)):
+    target_y = y - 44
+    svg.extend([
+        f'  <polygon points="{target_points(62, target_y)}" class="target"/>',
+        f'  <text x="121" y="{y + 10}" text-anchor="middle" class="key">{key}</text>',
+        f'  <line x1="190" y1="{y}" x2="540" y2="{y}" class="flow" marker-end="url(#arrow)"/>',
+        f'  <polygon points="{target_points(560, target_y)}" class="result"/>',
+        f'  <text x="619" y="{y + 10}" text-anchor="middle" class="key">{key}</text>',
+    ])
+    if index == 0:
+        svg.extend([
+            f'  <text x="390" y="{y + 10}" text-anchor="middle" class="none">∅</text>',
+            f'  <text x="750" y="{y + 10}" text-anchor="middle" class="count">n = 0</text>',
+        ])
+    elif index == 1:
+        svg.extend([
+            f'  <line x1="390" y1="{y - 44}" x2="390" y2="{y}" class="join-line"/>',
+            f'  <rect x="366" y="{y - 92}" width="48" height="48" class="candidate-key"/>',
+            f'  <text x="390" y="{y - 58}" text-anchor="middle" class="key">B</text>',
+            f'  <text x="750" y="{y + 10}" text-anchor="middle" class="count">n = 1</text>',
+        ])
+    else:
+        svg.extend([
+            f'  <path d="M 345,{y - 44} L 390,{y} L 435,{y - 44}" class="join-line"/>',
+            f'  <rect x="321" y="{y - 92}" width="48" height="48" class="candidate-key"/>',
+            f'  <text x="345" y="{y - 58}" text-anchor="middle" class="key">C</text>',
+            f'  <rect x="411" y="{y - 92}" width="48" height="48" class="candidate-key"/>',
+            f'  <text x="435" y="{y - 58}" text-anchor="middle" class="key">C</text>',
+            f'  <text x="750" y="{y + 10}" text-anchor="middle" class="count">n &gt; 1</text>',
+        ])
+
+svg.extend([
+    # Spatial join: candidate points are evaluated against each target polygon.
+    '  <text x="1200" y="55" text-anchor="middle" class="heading">Unió espacial</text>',
+    '  <text x="1200" y="93" text-anchor="middle" class="relation">predicat entre geometries</text>',
+    '  <text x="930" y="132" text-anchor="middle" class="column">Objectiu +</text>',
+    '  <text x="930" y="164" text-anchor="middle" class="column">candidats</text>',
+    '  <text x="1369" y="132" text-anchor="middle" class="column">Geometria</text>',
+    '  <text x="1369" y="164" text-anchor="middle" class="column">objectiu</text>',
+])
+
+spatial_points = [
+    [(1030, 225)],
+    [(930, 450)],
+    [(905, 640), (965, 665)],
+]
+for index, y in enumerate(row_centres):
+    target_y = y - 44
+    svg.extend([
+        f'  <polygon points="{target_points(870, target_y)}" class="target"/>',
+        f'  <line x1="1015" y1="{y}" x2="1285" y2="{y}" class="flow" marker-end="url(#arrow)"/>',
+        f'  <polygon points="{target_points(1310, target_y)}" class="result"/>',
+        f'  <text x="1520" y="{y + 10}" text-anchor="middle" class="count">n {("= 0", "= 1", "&gt; 1")[index]}</text>',
+    ])
+    for x, point_y in spatial_points[index]:
+        svg.append(f'  <circle cx="{x}" cy="{point_y}" r="12" class="candidate-point"/>')
+
+svg.extend([
+    '  <text x="800" y="858" text-anchor="middle" class="note">La geometria no es talla; la política de sortida ha de resoldre n = 0 i n &gt; 1.</text>',
+    '</svg>',
+])
+
+project_root = find_project_root(Path.cwd())
+output = project_root / "assets/img/generated/05-consultes-dades-relacionals/attribute-vs-spatial-join.svg"
+output.parent.mkdir(parents=True, exist_ok=True)
+output.write_text("\n".join(svg) + "\n", encoding="utf-8")
+```

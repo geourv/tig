@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Predicats espacials aplicables a diferents parelles de geometries</title>
+  <desc id="desc">Tres franges comparen relacions topològiques exactes. Un punt és dins d’un polígon, en toca la frontera o n’és disjunt. Dues línies es creuen pels interiors, comparteixen només un extrem, se solapen en un tram o són disjuntes. Dos polígons se solapen en superfície, comparteixen només una frontera, mostren la direcció inversa entre within i contains, o són disjunts.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, 'Liberation Sans', sans-serif; }
+      .row-label { font-size: 28px; font-weight: 700; fill: #1d2a32; }
+      .relation { font-size: 28px; font-weight: 700; fill: #1d2a32; }
+      .direction { font-size: 28px; font-weight: 700; fill: #465760; }
+      .geometry-label { font-size: 28px; font-weight: 700; }
+      .label-a { fill: #a63f29; }
+      .label-b { fill: #145f80; }
+      .separator { stroke: #c5d0d5; stroke-width: 2; }
+      .polygon-a { fill: #dc6b4f; fill-opacity: .28; stroke: #a63f29; stroke-width: 5; }
+      .polygon-b { fill: #58a5c5; fill-opacity: .27; stroke: #145f80; stroke-width: 5; }
+      .point-a { fill: #a63f29; stroke: #ffffff; stroke-width: 4; }
+      .line-a { fill: none; stroke: #b84a2f; stroke-width: 9; stroke-linecap: butt; }
+      .line-b { fill: none; stroke: #176b8f; stroke-width: 9; stroke-linecap: butt; }
+      .common { fill: none; stroke: #684c83; stroke-width: 11; stroke-linecap: butt; }
+      .contact { fill: #1d2a32; stroke: #ffffff; stroke-width: 3; }
+    </style>
+  </defs>
+  <line x1="30" y1="330" x2="1570" y2="330" class="separator"/>
+  <line x1="30" y1="665" x2="1570" y2="665" class="separator"/>
+  <text x="42" y="165" class="row-label">Punt A</text>
+  <text x="42" y="201" class="row-label">Polígon B</text>
+  <line x1="710" y1="28" x2="710" y2="302" class="separator"/>
+  <line x1="1130" y1="28" x2="1130" y2="302" class="separator"/>
+  <text x="500" y="62" text-anchor="middle" class="relation">within</text>
+  <polygon points="408,126 578,126 578,250 408,250" class="polygon-b"/>
+  <text x="422" y="157" class="geometry-label label-b">B</text>
+  <circle cx="500" cy="190" r="12" class="point-a"/>
+  <text x="518" y="175" class="geometry-label label-a">A</text>
+  <text x="920" y="62" text-anchor="middle" class="relation">touches</text>
+  <polygon points="828,126 998,126 998,250 828,250" class="polygon-b"/>
+  <text x="842" y="157" class="geometry-label label-b">B</text>
+  <circle cx="828" cy="190" r="12" class="point-a"/>
+  <text x="846" y="175" class="geometry-label label-a">A</text>
+  <text x="1340" y="62" text-anchor="middle" class="relation">disjoint</text>
+  <polygon points="1248,126 1418,126 1418,250 1248,250" class="polygon-b"/>
+  <text x="1262" y="157" class="geometry-label label-b">B</text>
+  <circle cx="1472" cy="190" r="12" class="point-a"/>
+  <text x="1490" y="175" class="geometry-label label-a">A</text>
+  <text x="42" y="500" class="row-label">Línia A</text>
+  <text x="42" y="536" class="row-label">Línia B</text>
+  <line x1="550" y1="358" x2="550" y2="637" class="separator"/>
+  <line x1="860" y1="358" x2="860" y2="637" class="separator"/>
+  <line x1="1170" y1="358" x2="1170" y2="637" class="separator"/>
+  <text x="395" y="390" text-anchor="middle" class="relation">crosses</text>
+  <path d="M 293,575 L 497,475" class="line-a"/>
+  <path d="M 293,475 L 497,575" class="line-b"/>
+  <text x="503" y="478" class="geometry-label label-a">A</text>
+  <text x="503" y="588" class="geometry-label label-b">B</text>
+  <text x="705" y="390" text-anchor="middle" class="relation">touches</text>
+  <path d="M 597,545 L 705,545" class="line-a"/>
+  <path d="M 705,545 L 793,470" class="line-b"/>
+  <circle cx="705" cy="545" r="7" class="contact"/>
+  <text x="573" y="554" class="geometry-label label-a">A</text>
+  <text x="799" y="476" class="geometry-label label-b">B</text>
+  <text x="1015" y="390" text-anchor="middle" class="relation">overlaps</text>
+  <path d="M 967,530 L 1123,530" class="line-b"/>
+  <path d="M 907,530 L 1063,530" class="line-a"/>
+  <path d="M 967,530 L 1063,530" class="common"/>
+  <text x="883" y="539" class="geometry-label label-a">A</text>
+  <text x="1129" y="539" class="geometry-label label-b">B</text>
+  <text x="1325" y="390" text-anchor="middle" class="relation">disjoint</text>
+  <path d="M 1217,570 L 1305,490" class="line-a"/>
+  <path d="M 1349,570 L 1437,490" class="line-b"/>
+  <text x="1193" y="582" class="geometry-label label-a">A</text>
+  <text x="1441" y="497" class="geometry-label label-b">B</text>
+  <text x="42" y="833" class="row-label">Polígon A</text>
+  <text x="42" y="869" class="row-label">Polígon B</text>
+  <line x1="550" y1="693" x2="550" y2="972" class="separator"/>
+  <line x1="860" y1="693" x2="860" y2="972" class="separator"/>
+  <line x1="1170" y1="693" x2="1170" y2="972" class="separator"/>
+  <text x="395" y="727" text-anchor="middle" class="relation">overlaps</text>
+  <polygon points="283,807 413,807 413,925 283,925" class="polygon-a"/>
+  <polygon points="371,846 507,846 507,958 371,958" class="polygon-b"/>
+  <text x="301" y="840" class="geometry-label label-a">A</text>
+  <text x="477" y="943" class="geometry-label label-b">B</text>
+  <text x="705" y="727" text-anchor="middle" class="relation">touches</text>
+  <polygon points="589,815 705,815 705,940 589,940" class="polygon-a"/>
+  <polygon points="705,815 821,815 821,940 705,940" class="polygon-b"/>
+  <text x="611" y="851" class="geometry-label label-a">A</text>
+  <text x="725" y="851" class="geometry-label label-b">B</text>
+  <text x="1015" y="727" text-anchor="middle" class="relation">A within B</text>
+  <text x="1015" y="764" text-anchor="middle" class="direction">B contains A</text>
+  <polygon points="899,800 1131,800 1131,958 899,958" class="polygon-b"/>
+  <polygon points="969,844 1067,844 1067,916 969,916" class="polygon-a"/>
+  <text x="919" y="836" class="geometry-label label-b">B</text>
+  <text x="987" y="887" class="geometry-label label-a">A</text>
+  <text x="1325" y="727" text-anchor="middle" class="relation">disjoint</text>
+  <polygon points="1206,814 1305,814 1305,930 1206,930" class="polygon-a"/>
+  <polygon points="1347,844 1446,844 1446,960 1347,960" class="polygon-b"/>
+  <text x="1224" y="850" class="geometry-label label-a">A</text>
+  <text x="1365" y="880" class="geometry-label label-b">B</text>
+</svg>

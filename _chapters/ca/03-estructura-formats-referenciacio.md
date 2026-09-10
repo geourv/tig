@@ -23,11 +23,83 @@ El nom d'un fitxer no resol aquestes preguntes. L'extensió informa del format, 
 >>>>> - Explicar què aporta un CRS i diferenciar assignació, transformació i visualització al vol.
 >>>>> - Relacionar escala, resolució, precisió i exactitud amb l'ús previst.
 
+## De la Terra a una parella de coordenades
+
+Una coordenada és el final d'una cadena de decisions, no una etiqueta enganxada a un punt. El punt pertany primer a la Terra física. Per descriure'l cal adoptar una superfície i un marc de referència, expressar-ne la posició mitjançant un sistema de coordenades i, si es necessita un mapa pla, aplicar una projecció. Només aleshores apareixen nombres com longitud i latitud en graus o est i nord en metres.
+
+La cadena es pot llegir en cinc passos: **lloc sobre la Terra**, **marc i superfície de referència**, **coordenades geogràfiques**, **projecció cartogràfica** i **coordenades planes**. Un sistema de referència de coordenades (CRS) identifica les regles necessàries per interpretar el resultat. Ometre'l deixa nombres sense unitats, eixos ni àrea d'ús coneguts.
+
+![Seqüència des d'una posició sobre la Terra fins a les coordenades geogràfiques i les coordenades UTM d'un mapa pla]({{ site.baseurl }}/assets/quarto/03-estructura-formats-referenciacio/geographic-projected-utm.qmd "Una posició es relaciona amb un marc terrestre, s'expressa amb longitud i latitud i es projecta dins d'un fus UTM per obtenir coordenades d'est i nord; cada pas necessita una referència explícita."){: data-figure-width-web="48rem" data-figure-width-pdf="95%"}
+
+>>>> **Una parella de nombres no identifica una posició per si sola.** Cal conservar com a mínim el CRS, l'ordre dels eixos i les unitats; quan l'exactitud ho exigeixi, també l'operació i l'època de les coordenades.
+
+### Latitud i longitud
+
+La **latitud** mesura la separació angular respecte de l'equador. El rang vàlid és de `-90°` a `+90°`: el nord és positiu i el sud, negatiu. La **longitud** mesura la separació angular respecte del meridià d'origen. Habitualment s'expressa de `-180°` a `+180°`: l'est és positiu i l'oest, negatiu. Els meridians `180° E` i `180° O` coincideixen; als pols, una longitud concreta no diferencia la posició. Alguns sistemes utilitzen longituds de `0°` a `360°`, de manera que cal conèixer la convenció abans de comparar valors.
+
+Els graus decimals i els graus, minuts i segons (GMS) expressen el mateix angle. En GMS, els minuts i els segons han de complir `0 <= valor < 60`. El signe i l'hemisferi no s'han de contradir: `41° 06′ 09,5″ N` és vàlid, però `41° 61′ N` no ho és i `-41° N` barreja dues convencions. Per convertir un valor, es calcula `graus + minuts / 60 + segons / 3600` i s'aplica signe negatiu al resultat complet si és sud o oest.
+
+Per exemple, `41° 06′ 09,5″ N` equival aproximadament a `41,1026389°`, i `1° 08′ 51,3″ E`, a `1,1475833°`. Una longitud de `1° 08′ 51,3″ O` seria `-1,1475833°`. Els decimals indiquen com s'ha escrit el nombre, no l'exactitud amb què s'ha observat la posició.
+
+En llenguatge geogràfic és habitual dir **latitud i longitud**, però molts formats i programes escriuen primer X i després Y, és a dir, longitud i latitud. L'ordre forma part del contracte. No s'ha d'invertir una parella fins que s'hagin comprovat la definició del CRS, el format i l'eina que la llegeix.
+
+### Coordenades geogràfiques i projectades
+
+Un CRS geogràfic situa punts sobre un el·lipsoide amb coordenades angulars, normalment longitud i latitud en graus. Els graus no són metres: la longitud terrestre d'un grau de longitud disminueix cap als pols i la d'un grau de latitud tampoc no és exactament constant. Es poden calcular distàncies geodèsiques sobre l'el·lipsoide, però no s'ha d'interpretar una diferència de graus com una distància plana.
+
+Un CRS projectat transforma una part de la superfície corba en un pla i produeix coordenades cartesianes, habitualment en metres o peus. Això facilita moltes mesures i operacions, però cap projecció no conserva alhora totes les distàncies, àrees, direccions i formes sobre tota la Terra. La projecció i la seva **àrea d'ús** s'han de triar segons el territori i la propietat que interessa mesurar.
+
+### UTM, fus, hemisferi i MGRS
+
+El sistema **Universal Transversa de Mercator** (UTM) divideix el món entre aproximadament `80° S` i `84° N` en seixanta fusos de `6°` de longitud. Cada fus aplica la Transversa de Mercator al voltant d'un meridià central. El fus 31 s'estén convencionalment de `0°` a `6° E`, té el meridià central a `3° E` i cobreix Catalunya. El número de fus i l'hemisferi no basten encara per definir el CRS: també cal el marc geodèsic, com ETRS89 a `EPSG:25831` {% cite realDecreto1071_2007 %}.
+
+Les coordenades UTM ordinàries són **est** (`E`) i **nord** (`N`) en metres. Al meridià central s'aplica un factor d'escala de `0,9996` i un fals est de `500.000 m`. A l'hemisferi nord, el fals nord és `0 m` a l'equador; al sud és `10.000.000 m`. Aquests falsos orígens eviten valors negatius dins de l'ús ordinari, però no identifiquen el fus, l'hemisferi ni el datum. Un parell com `344448 m E, 4551803 m N` només es pot localitzar inequívocament quan també se'n declara el CRS.
+
+La distorsió UTM és controlada dins i prop de cada fus i augmenta en allunyar-se del meridià central. UTM no cobreix les regions polars i una anàlisi que travessa diversos fusos pot necessitar una altra projecció o un càlcul geodèsic. Que les unitats siguin metres no garanteix que el CRS sigui adequat fora de la seva àrea d'ús.
+
+Una coordenada UTM no és una referència **MGRS**. MGRS és un sistema de designació de quadrícula que utilitza UTM entre `80° S` i `84° N` i UPS a les regions polars. En l'àmbit UTM combina un número de fus, una lletra de banda latitudinal, lletres per al quadrat de `100 km` i parelles de dígits d'est i nord amb una precisió determinada pel nombre de dígits. En un nom de CRS com `UTM zone 31N`, la `N` indica l'hemisferi nord; en una referència MGRS, la lletra de banda té una altra funció. MGRS codifica una referència de quadrícula i una precisió, però no substitueix la identificació completa del CRS.
+
+## Mapa, imatge i lectura cartogràfica
+
+Una imatge registra valors captats per un sensor; un mapa selecciona i organitza informació per comunicar una lectura del territori. Una ortofoto pot servir de fons mesurable dins de la seva exactitud, però no incorpora necessàriament una llegenda ni converteix els objectes visibles en entitats. Un mapa pot utilitzar una ortofoto i capes vectorials alhora, però ha de declarar què aporta cada font i de quina data és.
+
+### Escala numèrica i escala gràfica
+
+La **fracció representativa** `1:n` relaciona una distància al mapa amb `n` unitats iguals al territori. A `1:25.000`, `1 cm` al mapa representa `25.000 cm`, és a dir, `250 m`; `4 cm` representen `1 km`. A la inversa, si `3 cm` representen `750 m`, primer es converteixen `750 m` en `75.000 cm` i es divideix per `3`: l'escala és `1:25.000`. En superfícies, el denominador s'aplica al quadrat: a `1:10.000`, `2 cm²` representen `2 × 10.000² cm²`, és a dir, `20.000 m²` o `2 ha`.
+
+Una escala `1:5.000` és **més gran** que una escala `1:1.000.000` perquè la fracció és més gran. L'escala gran cobreix menys territori i permet representar més detall; l'escala petita cobreix més extensió i exigeix més generalització. «Gran» i «petita» no descriuen la mida física del full ni el nivell de zoom.
+
+L'**escala gràfica** representa distàncies mitjançant una barra graduada. Si el mapa es redimensiona proporcionalment, la barra es redimensiona amb ell i continua permetent una lectura aproximada; la fracció numèrica impresa deixa de ser correcta. En una pantalla, el zoom canvia l'escala de visualització, però no millora l'escala de producció, la resolució ni l'exactitud de la font. En una composició o exportació cal fixar l'escala de sortida i comprovar que el detall i els textos són llegibles a la mida final.
+
+### Generalització i elements de lectura
+
+Canviar d'escala obliga a **generalitzar**: seleccionar allò pertinent, simplificar formes, agrupar objectes, desplaçar-los per evitar conflictes o exagerar algun element perquè continuï sent llegible. Aquestes operacions modifiquen la representació, no el fenomen original. Ampliar una geometria generalitzada no recupera els detalls omesos i ampliar una imatge no crea noves observacions.
+
+::: table "Elements mínims per interpretar un mapa"
+| Element | Pregunta que ha de resoldre |
+| --- | --- |
+| Extensió i marc | Quin territori inclou el mapa i què queda fora? |
+| Escala | Quina relació hi ha entre la representació i les distàncies del territori? |
+| Nord i orientació | Cap a on s'orienta la vista? El nord no s'ha de suposar sempre a la part superior |
+| Llegenda | Quins objectes, categories o valors representen els símbols necessaris per llegir el resultat? |
+| Font i data | Qui ha produït cada dada i a quin moment o període correspon? |
+| CRS i unitats | Com s'han interpretat la posició, les distàncies i les superfícies? |
+:::
+
+No tots els mapes necessiten una fletxa de nord o una llegenda extensa. L'orientació pot quedar inequívoca per una retícula i una capa única amb significat explícit pot no requerir llegenda. Tanmateix, ometre un element només és correcte si la pregunta que resol continua tenint una resposta clara. El títol o el text que acompanya el mapa ha d'identificar el fenomen i l'àmbit, i la font, la data, el CRS i les unitats no s'han de deixar a la memòria de qui l'ha elaborat.
+
 ## Model, estructura i format
 
-Un **model de dades** defineix com s'abstrau un fenomen. El model vectorial utilitza entitats discretes amb geometries i atributs. El model ràster divideix l'espai en una graella de cel·les i registra un valor per banda. Cap model no és superior en tots els casos: l'elecció depèn de la pregunta, la naturalesa del fenomen i l'operació prevista {% cite longleyGeographicInformationScience2015 %}.
+Model de dades
+: Defineix com s'abstrau un fenomen. El model vectorial utilitza entitats discretes amb geometries i atributs; el model ràster divideix l'espai en una graella de cel·les i registra un valor per banda.
 
-L'**estructura** descriu com s'organitzen les peces dins del model. En una capa vectorial inclou tipus geomètric, identificadors, camps, dominis i relacions. En un ràster inclou files, columnes, bandes, mida de cel·la, tipus numèric i valor `NoData`. El **format** és la convenció que permet emmagatzemar o intercanviar aquesta estructura.
+Estructura
+: Descriu com s'organitzen les peces dins del model, com el tipus geomètric, els camps i les relacions d'un vector o les files, columnes, bandes, mida de cel·la i `NoData` d'un ràster.
+
+Format
+: Convenció que permet emmagatzemar o intercanviar una estructura de dades.
+
+Cap model no és superior en tots els casos: l'elecció depèn de la pregunta, la naturalesa del fenomen i l'operació prevista {% cite longleyGeographicInformationScience2015 %}.
 
 La distinció entre fenòmens discrets i camps continus ajuda a començar, però no és una regla automàtica. Límits municipals i fanals acostumen a representar-se com a entitats vectorials; l'elevació i la temperatura, com a camps ràster. Tanmateix, un camp continu es pot mostrejar amb punts i una categoria d'ús del sòl es pot codificar en una graella. El mètode d'observació i l'anàlisi prevista també intervenen en l'elecció.
 
@@ -93,6 +165,8 @@ La tria depèn del receptor, el programari, l'edició, la concurrència, el volu
 
 El nom **Shapefile** pot induir a pensar en un únic fitxer `.shp`, però una capa funcional es distribueix com a mínim entre tres peces amb el mateix nom base. El `.shp` emmagatzema les geometries; el `.shx`, l'índex que permet localitzar cada registre geomètric; i el `.dbf`, els atributs en una taula dBase. El número d'ordre relaciona geometria i fila, de manera que no s'han d'ordenar o substituir les peces separadament.
 
+>>>> **Un Shapefile no és un fitxer `.shp`.** Copiar, reanomenar o lliurar només aquesta peça separa les geometries de l'índex i dels atributs. S'ha de conservar i transportar el conjunt complet de fitxers amb el mateix nom base.
+
 Altres fitxers laterals completen informació que el nucli no resol. El `.prj` conté una descripció textual del CRS, però no sempre permet recuperar sense ambigüitat l'edició o l'operació geodèsica esperada. El `.cpg` declara la codificació dels textos del `.dbf`. Un `.qix` pot aportar un índex espacial utilitzat per QGIS i altres programes; `.sbn` i `.sbx` són índexs d'altres implementacions; i `.shp.xml` pot contenir metadades. No totes aquestes peces són obligatòries, però eliminar-les sense saber-ne la funció pot perdre referenciació, accents, metadades o rendiment.
 
 ::: table "Components habituals d'un conjunt Shapefile"
@@ -117,81 +191,19 @@ GeoPackage és un estàndard d'implementació de l'OGC basat en SQLite. Defineix
 
 «GeoPackage pot contenir ràsters» necessita precisió: el nucli inclou piràmides de tessel·les d'imatges o mapes, mentre que les cobertures numèriques en tessel·les depenen d'una extensió. Un lector vectorial no ha de suportar totes les extensions; per intercanviar un ràster analític de coma flotant, GeoTIFF sol ser més previsible.
 
-La taula `gpkg_extensions` declara funcionalitats addicionals, que poden ser compartides o pròpies d'un productor. `layer_styles` pot contenir estils de QGIS. `qgis_projects` pot contenir projectes; un altre client pot llegir les entitats i ignorar aquesta configuració. Per això es conserva també el `.qgz` independent.
+La taula `gpkg_extensions` declara funcionalitats addicionals, que poden ser compartides o pròpies d'un productor. `layer_styles` pot contenir estils de QGIS i `qgis_projects`, projectes; un altre client pot llegir les entitats i ignorar aquesta configuració. Al curs, `projecte_tig.qgz` continua sent la còpia canònica i l'entrada incrustada `projecte_tig` només s'actualitza a les fites explícites.
 
 Durant una escriptura SQLite poden aparèixer fitxers `-journal`, `-wal` o `-shm`, que no s'han de separar ni eliminar. Abans de copiar el contenidor cal tancar les connexions i provar la còpia. Un GeoPackage en una carpeta sincronitzada no és una base multiusuari i pot patir conflictes si s'edita simultàniament.
 
-### GeoJSON: objectes JSON amb regles geogràfiques
+### GeoJSON i TopoJSON per a intercanvi web
 
-GeoJSON és un format textual d'intercanvi basat en JSON. La llegibilitat permet inspeccionar-ne l'estructura amb un editor, utilitzar-lo en API i processar-lo amb llenguatges web. Aquesta transparència té un cost: cada nom de membre i moltes coordenades es repeteixen, no hi ha índex espacial intern i una edició parcial pot exigir reescriure una part important del text. És adequat per distribuir conjunts moderats o respostes web, no necessàriament per mantenir una base editable gran.
+GeoJSON és un format textual basat en JSON, adequat per a respostes web i conjunts moderats. Una `Feature` associa una geometria amb `properties`, i una `FeatureCollection` n'agrupa diverses. La transparència del text facilita inspeccionar-lo, però repeteix noms i coordenades i no incorpora un índex espacial intern; no és la millor base general per editar un projecte gran {% cite butlerGeoJSON2016 %}.
 
-Un text GeoJSON conté un únic objecte principal. Aquest objecte pot ser una geometria, una `Feature` o una `FeatureCollection`. Tots tenen un membre `type`, sensible a majúscules i minúscules, que determina l'estructura dels altres membres. Les geometries ordinàries utilitzen `coordinates`; una `GeometryCollection` utilitza `geometries`; una `Feature` combina `geometry` i `properties`; i una `FeatureCollection` conté una matriu `features` {% cite butlerGeoJSON2016 %}.
+RFC 7946 fixa les posicions en longitud i latitud, en aquest ordre, dins de WGS 84 segons `OGC:CRS84`. El membre `crs` antic ja no forma part d'aquest contracte. Una capa UTM destinada a GeoJSON s'ha de transformar en una sortida d'intercanvi i reobrir per comprovar geometries, atributs, extensió i ordre dels eixos. El nombre de decimals no certifica l'exactitud.
 
-```json
-{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "id": "fanal-001",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [1.14784, 41.10267]
-      },
-      "properties": {
-        "estat": "operatiu",
-        "data_obs": "2026-09-06"
-      }
-    }
-  ]
-}
-```
+TopoJSON és una especificació comunitària que permet que línies i polígons facin referència a **arcs compartits** en lloc de repetir una frontera. Pot reduir la mida de cobertures administratives i mantenir la coincidència dels límits compartits, però té menys suport directe i no és un estàndard OGC o IETF {% cite bostockTopoJSON2013 %}.
 
-L'ordre dels membres d'un objecte JSON no és significatiu, però l'ordre dins de les matrius sí. Una **posició** és una matriu de dos nombres com a mínim. RFC 7946 fixa els dos primers com longitud i latitud, en aquest ordre, expressades en graus decimals dins de WGS 84 segons la convenció OGC `CRS84`. Un tercer nombre opcional representa altura en metres respecte de l'el·lipsoide WGS 84. Afegir un quart valor per a temps o mesura no és recomanable perquè la semàntica queda fora de l'especificació i alguns lectors l'ignoraran.
-
-GeoJSON RFC 7946 no utilitza el membre `crs` de l'especificació de 2008. Introduir-hi coordenades UTM i afegir un `crs` antic pot funcionar en un acord privat, però no produeix un intercanvi conforme i general. Abans d'exportar des d'ETRS89 / UTM zona 31N, el controlador ha de transformar les geometries a la referència i l'ordre exigits pel format. Això no obliga a canviar la capa de treball original: es pot generar una sortida específica de publicació i verificar-la.
-
-La profunditat de la matriu `coordinates` expressa el tipus geomètric. Un `Point` conté una posició; un `LineString`, una seqüència de posicions; un `Polygon`, una seqüència d'anells; i un `MultiPolygon`, una seqüència de polígons. Cada anell és una línia tancada amb almenys quatre posicions i la primera ha de coincidir amb l'última. El primer anell delimita l'exterior i els següents, els forats. RFC 7946 estableix la regla de la mà dreta, amb anells exteriors en sentit antihorari i interiors en sentit horari, però demana als lectors que no rebutgin dades antigues només per l'orientació contrària.
-
-Una `Feature` pot tenir `geometry: null` quan l'entitat no està localitzada i `properties` pot ser un objecte o `null`. Això no equival a una geometria invàlida: és una absència explícita admesa per l'estructura. El membre opcional `id` pot ser text o nombre. `bbox` conté primer els mínims de tots els eixos i després els màxims; en dues dimensions segueix l'ordre oest, sud, est, nord. Una caixa que travessa l'antimeridià pot tenir la longitud oriental numèricament menor que l'occidental. Per millorar la interoperabilitat, les línies i polígons que travessen l'antimeridià s'han de tallar en parts que no el travessin.
-
-GeoJSON admet membres aliens a l'especificació, però els programes no tenen l'obligació d'interpretar-los. Afegir-hi un estil, una precisió o una estructura pròpia no canvia la semàntica estàndard. Tampoc no hi ha topologia compartida: dos polígons veïns repeteixen les coordenades de la frontera. Si una còpia es modifica sense l'altra, apareix un buit o un solapament. El nombre de decimals influeix molt en la mida, però no certifica l'exactitud; arrodonir exigeix relacionar la tolerància amb la font i validar de nou les geometries.
-
-### TopoJSON: compartir arcs en lloc de repetir fronteres
-
-TopoJSON és un format d'intercanvi basat en JSON que codifica una **topologia** compartida. No és una simple opció de compressió de GeoJSON ni un estàndard de l'OGC o de l'IETF. La seva especificació comunitària conserva tipus geomètrics semblants, però substitueix les seqüències repetides de coordenades de línies i polígons per referències a **arcs** comuns. Aquesta estructura és especialment útil quan moltes unitats administratives comparteixen fronteres.
-
-L'objecte arrel té `type: "Topology"`, una matriu global `arcs` i un objecte `objects` amb una o més geometries anomenades. Els punts i multipunts mantenen `coordinates`; els `LineString`, `Polygon` i tipus múltiples indiquen índexs d'arcs. L'índex `0` designa el primer arc. Un índex negatiu en designa un de recorregut en sentit contrari mitjançant el complement a u: `-1` és el primer arc invertit, `-2`, el segon. Així, dos polígons adjacents poden utilitzar exactament la mateixa frontera en sentits oposats sense duplicar-ne els vèrtexs.
-
-![Comparació de la frontera duplicada en GeoJSON amb l'arc compartit i invertit en TopoJSON]({{ site.baseurl }}/assets/diagrams/ca/03-estructura-formats-referenciacio/geojson-topojson-encoding.mmd "GeoJSON repeteix la frontera comuna dins de cada polígon; TopoJSON la desa una vegada com a arc i permet que els objectes hi facin referència en sentits oposats."){: data-figure-width-web="44rem" data-figure-width-pdf="95%"}
-
-```json
-{
-  "type": "Topology",
-  "objects": {
-    "unitats": {
-      "type": "GeometryCollection",
-      "geometries": [
-        {"type": "Polygon", "arcs": [[0, 1]], "properties": {"id": "A"}},
-        {"type": "Polygon", "arcs": [[-1, 2]], "properties": {"id": "B"}}
-      ]
-    }
-  },
-  "arcs": [
-    [[1, 0], [1, 1]],
-    [[1, 1], [0, 1], [0, 0], [1, 0]],
-    [[1, 0], [2, 0], [2, 1], [1, 1]]
-  ]
-}
-```
-
-L'exemple només mostra l'estructura; no declara un CRS ni constitueix una capa docent de coordenades reals. La coincidència entre el final d'un arc i l'inici del següent és necessària per reconstruir una línia o un anell. Compartir arcs fa explícita la coincidència geomètrica, però no defineix per si sol regles territorials com «tots els municipis cobreixen la comarca» o «cap polígon no se superposa»: aquestes regles encara s'han de validar.
-
-TopoJSON pot incorporar un membre `transform` amb dues matrius, `scale` i `translate`, per **quantificar** les dues primeres dimensions. Les posicions passen a enters dins d'una graella. En els arcs quantificats, la primera posició és absoluta dins d'aquesta graella i les següents es codifiquen com a diferències respecte de l'anterior. Aquesta **codificació delta** produeix nombres petits i repetibles que es comprimeixen bé. Per recuperar coordenades absolutes s'acumulen les diferències i després s'apliquen escala i translació. Els punts quantificats utilitzen la transformació, però no la seqüència delta pròpia dels arcs.
-
-La quantificació és una transformació amb pèrdua: ajusta coordenades a una graella i pot desplaçar vèrtexs, col·lapsar segments curts o alterar detalls. El benefici és que els límits que havien de coincidir queden ajustats de manera conjunta i es poden simplificar conservant la topologia compartida. La resolució de quantificació s'ha de relacionar amb l'escala i la incertesa de la font, no només amb la reducció de bytes. Després de convertir cal verificar recompte, propietats, extensió, geometries buides o col·lapsades i regles topològiques.
-
-TopoJSON acostuma a ser compacte per a cobertures amb moltes fronteres comunes, però pot aportar poc en una capa de punts o en línies que no comparteixen trams. Té menys suport directe que GeoJSON, és menys llegible sense reconstruir els arcs i no és el format adequat per a una edició general a QGIS. Un flux raonable manté la font de treball en GeoPackage, valida les fronteres, genera TopoJSON com a producte de distribució i conserva els paràmetres de quantificació i simplificació. Si el destinatari no necessita topologia compartida o no disposa d'un lector compatible, GeoJSON pot ser més interoperable malgrat ocupar més.
+La quantificació de TopoJSON ajusta coordenades a una graella i pot simplificar o col·lapsar detalls. Per això és una transformació amb pèrdua que exigeix conservar els paràmetres i validar recompte, propietats, extensió i geometries. Al projecte del curs, GeoPackage continua sent el format de treball; GeoJSON o TopoJSON només són sortides d'intercanvi quan el destinatari les necessita.
 
 ### GeoTIFF i COG
 
@@ -234,9 +246,9 @@ GeoJSON utilitza UTF-8 i GeoPackage no necessita `.cpg`; en Shapefile, el `.cpg`
 
 La sortida s'ha de reobrir com una font nova i comparar recompte, geometria, esquema, nuls, caràcters, identificadors, extensió, CRS i valors. En ràster s'afegeixen dimensions, bandes, tipus, resolució, alineació i `NoData`. Un checksum només prova identitat de bytes.
 
-## Coordenades: tuples, ordre i dimensions
+## Detalls de coordenades i referències
 
-Una **coordenada** és un dels nombres d'una seqüència ordenada que situa un punt dins d'un sistema de coordenades. La seqüència completa és una **tupla de coordenades**. Escriure `(344469, 4551807)` no basta per interpretar-la: cal conèixer els eixos, l'ordre, les unitats, el CRS i, si la referència és dinàmica, l'època. El mateix parell pot significar est i nord en metres, índexs d'una graella o dos atributs sense component espacial.
+Un cop establerta la cadena bàsica, cal reconèixer els casos en què l'ordre, una dimensió addicional o una referència antiga canvien la interpretació. Una **coordenada** és un dels nombres d'una seqüència ordenada i la seqüència completa és una **tupla de coordenades**. El mateix parell pot significar est i nord en metres, índexs d'una graella o dos atributs sense component espacial.
 
 En la convenció SIG més habitual, `X` precedeix `Y`; en un sistema projectat orientat de manera convencional això sol correspondre a est i nord. En coordenades geogràfiques, moltes API i formats utilitzen longitud i latitud. Tanmateix, l'ordre oficial dels eixos d'un CRS pot ser diferent. `EPSG:4326` defineix latitud geodèsica com a primer eix i longitud com a segon, mentre que GeoJSON exigeix longitud–latitud perquè segueix `OGC:CRS84`. Les biblioteques i interfícies poden aplicar un ordre tradicional `X/Y` per comoditat o respectar estrictament l'autoritat. Per això no s'ha d'aprendre una única regla de memòria: s'ha de llegir el contracte del format, del servei o de l'eina.
 
@@ -246,19 +258,17 @@ Z necessita una semàntica: altura el·lipsoidal, cota física, profunditat o re
 
 Els decimals expressen resolució numèrica, no exactitud. Retallar-los pot reduir volum o precisió aparent si la tolerància respecta el detall útil i després es tornen a validar geometria i topologia; afegir zeros no aporta informació.
 
-## Què significa un CRS
+### Components i abast d'un CRS
 
 Un **sistema de referència de coordenades** (CRS) dona significat a una seqüència de coordenades. Sense aquesta informació, els valors `344000, 4552000` no indiquen per si sols una posició, unes unitats ni una àrea d'ús. Un CRS relaciona el sistema de coordenades amb un model de la Terra i defineix com s'interpreten els eixos.
 
 Un **CRS geodèsic** expressa habitualment longitud i latitud sobre un el·lipsoide associat a un datum o marc de referència. Un **CRS projectat** combina un CRS geodèsic base amb una conversió cartogràfica i un sistema cartesià. La projecció permet treballar en unitats lineals dins d'una àrea d'ús, però introdueix deformacions de distància, superfície, direcció o forma.
 
-![Components que defineixen un CRS geodèsic i un CRS projectat]({{ site.baseurl }}/assets/diagrams/ca/03-estructura-formats-referenciacio/crs-components.mmd "Un CRS geodèsic combina un dàtum o marc i un el·lipsoide amb un sistema de coordenades el·lipsoidal; un CRS projectat hi afegeix una conversió cartogràfica i un sistema cartesià."){: data-figure-width-web="20.5rem" data-figure-width-pdf="49%"}
-
 Els codis del registre EPSG identifiquen definicions concretes. `EPSG:4326` correspon a WGS 84 geogràfic, mentre que `EPSG:25831` correspon a ETRS89 / UTM zona 31N. Aquest darrer és habitual a Catalunya i utilitza metres, però la seva adequació depèn de l'àrea d'ús i de l'operació. El Reial decret 1071/2007 adopta ETRS89 com a sistema de referència geodèsic oficial a la península i les Balears {% cite realDecreto1071_2007 %}.
 
-### Superfície terrestre, geoide i el·lipsoide
+### Ampliació: referència vertical i geoide
 
-La superfície física de la Terra inclou relleu, fons marí, aigua i elements que canvien. No és la superfície regular sobre la qual es resolen les coordenades. L'**el·lipsoide de referència** és un model matemàtic de revolució, lleugerament aplanat als pols, definit entre altres paràmetres pel semieix major i l'aplanament. La regularitat permet calcular latituds, longituds, distàncies geodèsiques i projeccions.
+La distinció vertical és necessària quan es combinen cotes, punts GNSS o models d'elevacions; per a una anàlisi només planimètrica es pot deixar com a ampliació. La superfície física de la Terra no és la superfície regular sobre la qual es calculen les coordenades. L'**el·lipsoide de referència** és un model matemàtic regular que permet resoldre latituds, longituds, distàncies geodèsiques i projeccions.
 
 El **geoide** és una superfície equipotencial del camp de gravetat terrestre que s'aproxima al nivell mitjà del mar en repòs i es prolonga sota els continents. No és el relleu ni un el·lipsoide amb muntanyes exagerades. Com que depèn de la distribució de masses i de les observacions gravimètriques, s'aproxima mitjançant models de geoide que tenen resolució, data i àrea d'aplicació pròpies. Serveix com a referència física per entendre determinades altures, però la seva irregularitat no és adequada per definir directament una xarxa simple de latitud i longitud.
 
@@ -283,41 +293,13 @@ Els marcs contemporanis poden ser **dinàmics**. Les plaques tectòniques i les 
 
 Un **CRS vertical** és un sistema unidimensional basat en una referència vertical i una unitat. Pot expressar altures físiques o profunditats. Un **CRS compost** combina components, per exemple un CRS projectat horitzontal i un CRS vertical. Aquesta estructura és més informativa que una capa `XYZ` amb Z sense definir. Quan es combinen un model d'elevacions i punts GNSS, s'han de revisar separadament el CRS horitzontal i la referència vertical; una coincidència correcta en planta no prova que les cotes siguin comparables.
 
-### Coordenades geogràfiques i projectades
+### Distorsió i elecció de projecció
 
-Un CRS geogràfic utilitza coordenades el·lipsoidals, habitualment latitud i longitud en graus. La latitud és l'angle relacionat amb l'equador i la longitud, amb el meridià d'origen. Els graus són unitats angulars, no longituds constants: un grau de longitud s'escurça cap als pols i un grau de latitud tampoc no és una distància exactament constant sobre l'el·lipsoide.
+La distorsió és una propietat espacialment variable de qualsevol projecció, no un error aleatori del fitxer. Una projecció **conforme** conserva angles i formes locals; una d'**equivalent**, proporcions d'àrea; i una d'**equidistant**, només les distàncies definides pel seu disseny. Cap d'aquestes propietats no es conserva universalment sobre tot el planeta.
 
-![Dos globus amb els paral·lels de latitud i els meridians de longitud]({{ site.baseurl }}/assets/img/crs/geographic-coordinates-systems.png "Retícula de latitud i longitud. Font: Djexplo, 2011, via Wikimedia Commons; llicència CC0 1.0."){: data-figure-width-web="34rem" data-figure-width-pdf="78%"}
+La selecció ha de partir de l'operació i de l'àrea d'ús. Un mapa que compara superfícies pot necessitar una projecció equivalent; una cartografia local pot prioritzar conformitat i escala controlada; una distància llarga es pot calcular geodèsicament. Web Mercator (`EPSG:3857`) és útil per compatibilitat entre tessel·les web, però la seva escala varia amb la latitud i no és una opció general per calcular àrees o distàncies territorials.
 
-Font i llicència: [Djexplo, via Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Latitude_and_Longitude_of_the_Earth.svg), [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
-
-Les distàncies es poden calcular geodèsicament sobre l'el·lipsoide sense crear necessàriament una còpia projectada. Aquesta possibilitat corregeix la regla massa absoluta segons la qual qualsevol mesura exigeix dades físicament reprojectades. El que no és correcte és interpretar directament una diferència de graus com si fossin metres o aplicar un algorisme planar sense saber quin CRS i quines unitats utilitza.
-
-Un CRS projectat aplica una **conversió cartogràfica** a un CRS geogràfic base i produeix coordenades planes. Normalment utilitza metres o peus, però una unitat lineal no garanteix per si sola mesures adequades. Cal que la projecció, els paràmetres i l'àrea d'ús siguin coherents amb el territori i amb la propietat que es vol conservar. Web Mercator (`EPSG:3857`) és convenient per construir tessel·les web compatibles, però la seva escala varia amb la latitud i no és una opció general per calcular àrees o distàncies territorials.
-
-### Projeccions i distorsió
-
-Una projecció transforma una superfície corba en un pla. Cap projecció pot conservar simultàniament totes les distàncies, àrees, angles, direccions i formes sobre tota la Terra. La distorsió no és un error aleatori del fitxer, sinó una propietat espacialment variable de la transformació. Pot ser mínima al voltant d'un punt, un meridià o uns paral·lels i augmentar en allunyar-se'n.
-
-Una projecció **conforme** conserva angles i formes locals infinitesimals, però no les àrees. Una projecció **equivalent** conserva les proporcions d'àrea, però deforma formes o angles. Una projecció **equidistant** conserva determinades distàncies des de punts o al llarg de línies especificades, no qualsevol distància entre dos punts. Una projecció de **compromís** distribueix visualment diverses deformacions sense conservar exactament una d'aquestes propietats. La família geomètrica —cilíndrica, cònica o azimutal— ajuda a entendre l'organització, però no substitueix la lectura dels paràmetres concrets.
-
-![Superposició de Mercator en verd blavós i Albers en rosa i gris, amb retícules i contorns desalineats]({{ site.baseurl }}/assets/img/crs/map-projections-comparison-mercator-albers.png "Comparació visual de Mercator, representada amb retícula ortogonal i contorns verds, i Albers, representada amb retícula corba i contorns rosats o grisos; la imatge no quantifica per si sola la distorsió. Font: Tobias Jung, map-projections.net; llicència CC BY-SA 4.0."){: data-figure-width-web="35rem" data-figure-width-pdf="82%"}
-
-La retícula ortogonal i els contorns verds corresponen a Mercator; la retícula corba i els contorns rosats o grisos, a Albers. La superposició permet observar diferències de forma i extensió, però no és una mesura de l'error ni una comparació d'àrees calculades.
-
-Font i llicència: [comparació Mercator–Albers de Tobias Jung, map-projections.net](https://map-projections.net/compare.php?p1=mercator&p2=albers), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
-
-La selecció ha de partir de l'operació. Un mapa temàtic que compara superfícies entre regions pot necessitar una projecció equivalent. Una cartografia topogràfica local pot prioritzar conformitat i una escala controlada. Una distància entre punts llunyans pot calcular-se geodèsicament. La projecció del llenç, la de la capa i la utilitzada per l'algorisme poden ser diferents; la documentació ha d'indicar quina ha intervingut en el resultat.
-
-### UTM i el fus 31
-
-El sistema **Universal Transversa de Mercator** (UTM) aplica la projecció Transversa de Mercator en seixanta fusos de 6° de longitud, entre aproximadament 80° S i 84° N. Cada fus té un meridià central i paràmetres propis. La projecció és conforme i està pensada per limitar la deformació dins i prop del fus, no per representar amb el mateix control tot un continent.
-
-Els fusos es numeren d'oest a est. El fus 31 s'estén convencionalment de 0° a 6° E i té el meridià central a 3° E; Catalunya hi queda situada. El fus 30 cobreix de 6° O a 0° i el 29, de 12° O a 6° O. Les lletres de banda d'una referència MGRS no s'han de confondre amb la `N` del nom `UTM zone 31N`: en un CRS EPSG, aquesta `N` identifica l'hemisferi nord.
-
-UTM utilitza un factor d'escala de `0,9996` al meridià central i un fals est de `500.000 m`, que evita coordenades negatives dins de la zona habitual. A l'hemisferi nord, el fals nord és zero a l'equador; a l'hemisferi sud s'utilitza `10.000.000 m`. Per tant, una coordenada E inferior a 500.000 m queda a l'oest del meridià central, però no diu quin fus ni quin dàtum s'ha utilitzat. Per exemple, la longitud `1,14759°` i la latitud `41,10263°` en `EPSG:4326` es transformen aproximadament en `E 344448 m, N 4551803 m` en `EPSG:25831`; les dues parelles representen una posició comparable només perquè també se n'han declarat els CRS i s'ha aplicat una operació de coordenades.
-
-Una zona UTM no acaba físicament al límit del fus, però la distorsió creix en allunyar-se del meridià central i l'àrea d'ús del CRS orienta l'aplicació. En un estudi que travessa fusos no hi ha una regla universal de «triar el que cobreix més». Es pot seleccionar una projecció regional diferent, calcular geodèsicament o utilitzar operacions que tractin cada part adequadament. La decisió depèn de l'extensió i de la mesura que s'ha de preservar.
+La longitud `1,14759°` i la latitud `41,10263°` en `EPSG:4326`, per exemple, es transformen aproximadament en `E 344448 m, N 4551803 m` en `EPSG:25831`. Els dos parells representen una posició comparable perquè se n'han declarat els CRS i s'ha aplicat una operació, no perquè els nombres s'assemblin. La documentació ha d'indicar quin CRS ha utilitzat l'algorisme, que pot diferir del CRS del llenç.
 
 ### ETRS89, WGS 84 i ED50
 
@@ -350,11 +332,22 @@ Un codi tampoc no prova que les dades el compleixin. És possible etiquetar coor
 
 El selector de CRS de QGIS permet cercar l'identificador d'autoritat i consultar-ne el nom, l'àrea d'ús i la definició. Aquesta informació serveix per verificar la tria; la presència d'un codi a la llista no demostra que coincideixi amb les coordenades de la capa.
 
+En QGIS, el mateix selector pot aparèixer en configurar el projecte, declarar la referència d'una font o definir la sortida d'un algorisme. La captura només verifica quina definició s'ha triat; l'eina des d'on s'ha obert determina si s'està canviant la vista, assignant significat a unes coordenades existents o preparant una transformació.
+
+![Selector de CRS de QGIS amb la cerca del codi 25831, ETRS89 UTM zona 31N seleccionat i la seva àrea d'ús visible]({{ site.baseurl }}/assets/img/qgis/qgis-crs-selection.png "Cercar per codi redueix l'ambigüitat, però abans d'acceptar cal comprovar el nom complet, les unitats i l'àrea d'ús. El selector identifica una definició; no indica per si sol si QGIS l'aplicarà al projecte, a la font o a una sortida transformada."){: data-figure-width-web="38rem" data-figure-width-pdf="78%"}
+
 ### Assignar, transformar i visualitzar
 
-**Assignar un CRS** declara què signifiquen unes coordenades existents; no en modifica els valors. Aquesta operació només corregeix metadades absents o equivocades quan es coneix la referència real. **Reprojectar o transformar** calcula coordenades noves en un altre CRS. Confondre les dues operacions pot desplaçar una capa milers de quilòmetres o fer que un error quedi ocult visualment.
+Assignar un CRS
+: Declara què signifiquen unes coordenades existents sense modificar-ne els valors. Només corregeix metadades absents o equivocades quan es coneix la referència real.
 
-QGIS pot reprojectar capes **al vol** perquè coincideixin al llenç. Aquesta visualització no canvia el CRS emmagatzemat ni assegura que cada algorisme utilitzi les unitats adequades. Abans de calcular distàncies, àrees o resolucions cal inspeccionar el CRS de cada entrada, el CRS de sortida i l'operació de transformació aplicada.
+Reprojectar o transformar
+: Calcula coordenades noves en un altre CRS mitjançant una operació espacial explícita.
+
+Visualitzar al vol
+: Fa coincidir capes al llenç sense canviar el CRS ni les coordenades emmagatzemades a la font.
+
+Confondre assignació i transformació pot desplaçar una capa milers de quilòmetres o ocultar visualment un error. Abans de calcular distàncies, àrees o resolucions cal inspeccionar el CRS de cada entrada, el CRS de sortida i l'operació aplicada.
 
 >>>> **El CRS que apareix a la barra del projecte no identifica necessàriament el CRS de la capa activa.** La comprovació s'ha de fer a la informació de cada font. Canviar el CRS del projecte pot modificar la visualització sense corregir una capa mal declarada.
 
@@ -364,17 +357,11 @@ Una **conversió de coordenades** canvia el sistema de coordenades sense canviar
 
 Entre dos CRS hi pot haver més d'una operació candidata. Cadascuna té una àrea d'ús, una exactitud declarada, uns paràmetres i, de vegades, dependències de fitxers. QGIS i PROJ seleccionen operacions a partir de les definicions, l'extensió i els recursos disponibles, però la selecció automàtica s'ha de revisar quan el canvi de dàtum afecta el resultat o quan es necessita una exactitud concreta {% cite qgisUserGuide344 %}.
 
-Una **graella de transformació** emmagatzema correccions que varien segons la posició. Pot descriure desplaçaments horitzontals entre marcs o separacions verticals entre superfícies de referència. L'aplicació interpola el valor de la graella a cada coordenada. Això permet modelar deformacions locals que una translació única no representa. La graella té límits espacials, resolució, versió i convencions pròpies; fora de cobertura no s'ha d'extrapolar sense saber què fa el programa.
-
-Si una graella necessària no està instal·lada, QGIS pot oferir descarregar-la, seleccionar una alternativa o advertir que només hi ha una operació aproximada. Una transformació de «precisió desconeguda» o de tipus aproximat no s'ha d'acceptar silenciosament en un treball exigent. Cal registrar l'operació triada i la disponibilitat de la graella perquè una altra instal·lació pugui reproduir-la. En una pràctica introductòria, la prova amb una posició coneguda i una capa oficial ajuda a detectar una selecció inadequada, però no substitueix un control geodèsic quan es demana precisió topogràfica.
-
-Les operacions dinàmiques poden requerir èpoques de coordenades. Si la font no en conté i l'exactitud requerida és molt superior a la documentació disponible, no hi ha una opció de programari que inventi aquesta informació. La limitació s'ha de declarar i l'ús s'ha d'ajustar a la qualitat real de les dades.
+Una **graella de transformació** conté correccions que varien segons la posició i té cobertura, resolució i versió pròpies. Si falta una graella o una època necessària, QGIS pot oferir una operació aproximada, però el programari no pot inventar la informació absent. Cal registrar l'operació triada, qualsevol recurs extern i l'avís d'exactitud; una posició coneguda detecta errors grossos, però no substitueix un control geodèsic quan es demana precisió topogràfica.
 
 ### Quan cal materialitzar una reprojecció
 
-La visualització al vol és apropiada per explorar capes amb CRS diferents i pot ser suficient per a operacions que declaren clarament com transformen les entrades i calculen en un CRS adequat. No hi ha una exigència absoluta que totes les entrades s'exportin físicament al mateix CRS abans de qualsevol anàlisi. Reprojectar sense necessitat crea còpies, pot acumular arrodoniments i, en ràster, obliga a remostrejar.
-
-Cal, però, conèixer el contracte de l'algorisme. Alguns processos adopten el CRS de la primera capa, el del projecte o un CRS de sortida explícit; alguns transformen internament les altres entrades; d'altres comparen coordenades tal com arriben o interpreten una distància en les unitats de la capa. Una superposició que gestiona les transformacions de manera segura no necessita les mateixes preparacions que una expressió planar de longitud aplicada a una capa en graus. La documentació de l'eina i el registre de processament formen part de la decisió.
+La visualització al vol és apropiada per explorar capes amb CRS diferents i pot ser suficient quan l'algorisme declara que transforma les entrades i calcula en un CRS adequat. No cal exportar físicament totes les capes al mateix CRS abans de qualsevol anàlisi. Cal, però, saber si el procés adopta el CRS d'una entrada, el del projecte o un CRS de sortida, i en quines unitats interpreta les distàncies.
 
 Materialitzar una capa transformada és convenient quan s'ha de distribuir en un format amb un CRS fix, quan moltes operacions repetiran la mateixa transformació, quan el programari receptor no transforma al vol, quan cal congelar una operació i una graella per reproduïbilitat o quan les unitats de treball han de quedar inequívocament en la font. La sortida ha de tenir un nom nou, conservar l'original i registrar CRS d'origen, CRS de destinació i operació.
 
@@ -396,11 +383,20 @@ L'ordre operatiu següent redueix els diagnòstics per prova i error:
 
 L'acció **Estableix el CRS de la capa** o una opció equivalent canvia la interpretació i correspon a l'assignació; no és una eina per moure coordenades. **Desa les entitats com a...** amb un CRS de destinació o els algorismes de reprojecció creen una font nova transformada. En ràster, la reprojecció es fa amb una operació de deformació de graella i paràmetres de remostreig. Els noms exactes de menú poden variar entre versions, de manera que el diari ha de registrar l'operació i els paràmetres, no només una successió de clics.
 
-Un test útil consisteix a desactivar temporalment una capa de referència i llegir una coordenada concreta en el CRS de la font i en el del projecte. Si en canviar només el CRS del projecte la capa continua al mateix lloc visual, està actuant la transformació al vol. Si s'exporta una còpia i els valors numèrics canvien però la posició coincideix, s'ha materialitzat una reprojecció. Si els nombres no canvien després d'«assignar» un altre codi i la capa salta de lloc, s'ha canviat el significat sense transformar-la.
+>>> **Assignació o reprojecció.** Desactiveu temporalment una capa de referència i llegiu una coordenada concreta en el CRS de la font i en el del projecte. Si en canviar només el CRS del projecte la capa continua al mateix lloc visual, està actuant la transformació al vol. Si s'exporta una còpia i els valors numèrics canvien però la posició coincideix, s'ha materialitzat una reprojecció. Si els nombres no canvien després d'«assignar» un altre codi i la capa salta de lloc, s'ha canviat el significat sense transformar-la.
 
-## Escala, resolució, precisió i exactitud
+## Resolució, precisió i exactitud
 
-L'**escala** relaciona les dimensions d'una representació amb el territori i condiciona el detall cartografiable. La **resolució espacial** d'un ràster indica la mida de la cel·la, no l'exactitud de l'observació. La **precisió** descriu el grau de detall numèric o la repetibilitat, mentre que l'**exactitud** expressa la proximitat a una referència adequada.
+Resolució espacial
+: Mida de la cel·la o unitat mínima de mostreig d'un ràster; no expressa l'error de l'observació.
+
+Precisió
+: Grau de detall numèric o de repetibilitat d'una mesura.
+
+Exactitud
+: Proximitat d'una observació o resultat a una referència adequada.
+
+Totes tres propietats s'han d'interpretar juntament amb l'escala de producció i de sortida.
 
 Afegir decimals o vèrtexs no millora l'exactitud d'una font. Una ortofoto de píxel petit pot conservar un desplaçament i una geometria detallada pot ser menys exacta que un límit oficial simplificat. La transformació de coordenades només afegeix un component al pressupost d'incertesa: una operació centimètrica no converteix en centimètric un límit ambigu digitalitzat sobre una imatge mètrica.
 
@@ -427,16 +423,22 @@ La conversió també pot revelar incompatibilitats legítimes. Una `GeometryColl
 
 ## Activitats
 
-### Comprovació: quatre capes semblants
+### Fitxa comparativa de quatre recursos
 
-Cal inspeccionar una capa municipal, una ortofoto, un model d'elevacions i una taula CSV amb coordenades. Per a cada recurs s'han d'identificar model, estructura, format, CRS i unitat d'observació. La comparació ha d'explicar per què compartir extensió territorial no implica compartir model ni resolució.
+El resultat conservat serà una fitxa d'una capa municipal, una ortofoto, un model d'elevacions i una taula CSV amb coordenades. Per a cada recurs identificarà model, estructura, format, CRS, unitat d'observació, escala o resolució, font i data. La conclusió explicarà per què compartir extensió territorial no implica compartir model, resolució ni aptitud analítica, i distingirà quins elements pertanyen a una imatge i quins a un mapa.
 
-### Pràctica guiada: assignació o reprojecció
+### Registre d'assignació i reprojecció
 
-La pràctica partirà d'una capa amb el CRS correctament declarat i d'una còpia sense aquesta informació. Cal predir què passarà en assignar una definició correcta, assignar-ne una d'incorrecta i reprojectar la capa original. Els resultats es comprovaran amb l'extensió, una coordenada coneguda i la superposició amb una font de referència.
+La pràctica partirà d'una capa amb el CRS correctament declarat i d'una còpia sense aquesta informació. El diari conservarà les prediccions i els resultats observats en assignar la definició correcta, assignar-ne una d'incorrecta i reprojectar l'original. Per a cada estat registrarà els valors d'una coordenada, l'extensió, el CRS declarat i la posició respecte d'una font de referència. Les còpies de prova descartades no s'incorporaran com a resultats finals.
 
-### Aplicació al projecte
+>>>> **Canviar el format o el CRS del projecte no repara una capa mal referenciada.** Una correcció només és justificable si la font permet saber què significaven les coordenades originals; en cas contrari, la incertesa s'ha de conservar i la capa es pot haver de descartar.
 
-Cal elaborar una taula d'inventari amb el model, el format, el CRS, l'escala o resolució i la data de totes les fonts incorporades a la micropràctica 1. Si dues capes no són directament comparables, s'ha de descriure quina transformació seria necessària i quina propietat no es podria corregir només canviant el format.
+### Fita del projecte: formats i CRS comprovats
 
-La taula ha d'afegir, quan correspongui, ordre dels eixos, referència vertical, codificació, valor nul, extensió utilitzada i operació de coordenades prevista. Per a una conversió executada s'han de conservar l'entrada, la sortida i una comprovació amb recomptes i una posició coneguda. No s'ha de crear una còpia reprojectada si l'eina posterior gestiona de manera explícita i segura la transformació; en aquest cas, el diari ha d'indicar quin CRS i quines unitats utilitza el càlcul.
+L'inventari del projecte s'actualitzarà amb el model, el format, el CRS, l'escala o resolució i la data del WMS de context, del límit municipal oficial del CNIG i de les altres fonts incorporades. Quan correspongui, també registrarà ordre dels eixos, referència vertical, codificació, valor nul, extensió utilitzada i operació de coordenades prevista. Si l'original és un Shapefile, l'inventari identificarà el conjunt complet i no només el `.shp`.
+
+Per a cada conversió realment necessària es conservaran l'entrada original, la sortida amb un nom funcional i els controls de recompte, esquema, nuls, extensió, CRS i una posició coneguda. Si l'eina posterior transforma de manera explícita i segura, no es crearà una còpia redundant: el resultat observable serà la decisió documentada, amb el CRS i les unitats efectives del càlcul.
+
+La fita es tanca desant primer `projecte_tig.qgz`, comprovant que el WMS continua separat de les entrades analítiques i que el límit municipal preparat conserva identificador, geometria, CRS i extensió, i actualitzant després l'entrada incrustada `projecte_tig` del GeoPackage. Des d'una còpia de l'arbre es tornaran a obrir per separat el `.qgz` i el projecte incrustat, sense utilitzar la llista de projectes recents.
+
+>> **Resultat de la fita.** Es conserven l'inventari actualitzat, els controls de format i CRS, les conversions justificades, el diari, el `.qgz` canònic i la representació incrustada `projecte_tig` comprovada. Desar una representació no sincronitza l'altra i la fita incrustada no és una còpia de seguretat del GeoPackage que la conté.

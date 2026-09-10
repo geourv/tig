@@ -1,0 +1,13 @@
+flowchart LR
+  subgraph contributions["Aportacions"]
+    direction TB
+    tig(("TIG i SIG<br/>preguntes i decisions"))
+    maths(("Estadística i matemàtiques<br/>models i incertesa"))
+    computing(("Informàtica<br/>dades i algorismes"))
+  end
+
+  giscience["GIScience<br/>representar, analitzar<br/>i interpretar informació geogràfica"]
+
+  tig --> giscience
+  maths --> giscience
+  computing --> giscience

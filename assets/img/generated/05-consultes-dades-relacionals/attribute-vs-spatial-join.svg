@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Comparació entre una unió d’atributs i una unió espacial</title>
+  <desc id="desc">A l’esquerra, les claus A, B i C troben zero, una i diverses files candidates. A la dreta, tres polígons objectiu contenen zero, un i diversos punts candidats. La geometria objectiu no es talla, però el nombre de files de sortida depèn de la política escollida per als casos sense coincidència o amb coincidències múltiples.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, 'Liberation Sans', sans-serif; }
+      .background { fill: #ffffff; }
+      .heading { fill: #21313c; font-size: 34px; font-weight: 700; }
+      .relation { fill: #5f7079; font-size: 28px; }
+      .column { fill: #5f7079; font-size: 28px; font-weight: 700; }
+      .key { fill: #21313c; font-size: 28px; font-weight: 700; }
+      .count { fill: #c95338; font-size: 30px; font-weight: 700; }
+      .note { fill: #334750; font-size: 28px; font-weight: 700; }
+      .target { fill: #dceef4; stroke: #2878a5; stroke-width: 4; }
+      .result { fill: #e8f2e9; stroke: #2878a5; stroke-width: 4; }
+      .candidate-key { fill: #f3e3d8; stroke: #c95338; stroke-width: 3; }
+      .candidate-point { fill: #c95338; stroke: #ffffff; stroke-width: 4; }
+      .join-line { fill: none; stroke: #c95338; stroke-width: 3; }
+      .flow { fill: none; stroke: #52646d; stroke-width: 4; }
+      .separator { stroke: #c7d1d6; stroke-width: 2; }
+      .none { fill: #77878e; font-size: 34px; font-weight: 700; }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,8 L10,4 z" fill="#52646d"/>
+    </marker>
+  </defs>
+  <rect class="background" width="1600" height="900"/>
+  <line x1="800" y1="30" x2="800" y2="790" class="separator"/>
+  <line x1="60" y1="810" x2="1540" y2="810" class="separator"/>
+  <text x="400" y="55" text-anchor="middle" class="heading">Unió d’atributs per clau</text>
+  <text x="400" y="93" text-anchor="middle" class="relation">clau objectiu = clau candidata</text>
+  <text x="120" y="148" text-anchor="middle" class="column">Objectiu</text>
+  <text x="390" y="132" text-anchor="middle" class="column">Files</text>
+  <text x="390" y="164" text-anchor="middle" class="column">candidates</text>
+  <text x="619" y="132" text-anchor="middle" class="column">Geometria</text>
+  <text x="619" y="164" text-anchor="middle" class="column">objectiu</text>
+  <polygon points="62,224 92,206 153,214 180,245 163,288 104,294 70,270" class="target"/>
+  <text x="121" y="260" text-anchor="middle" class="key">A</text>
+  <line x1="190" y1="250" x2="540" y2="250" class="flow" marker-end="url(#arrow)"/>
+  <polygon points="560,224 590,206 651,214 678,245 661,288 602,294 568,270" class="result"/>
+  <text x="619" y="260" text-anchor="middle" class="key">A</text>
+  <text x="390" y="260" text-anchor="middle" class="none">∅</text>
+  <text x="750" y="260" text-anchor="middle" class="count">n = 0</text>
+  <polygon points="62,424 92,406 153,414 180,445 163,488 104,494 70,470" class="target"/>
+  <text x="121" y="460" text-anchor="middle" class="key">B</text>
+  <line x1="190" y1="450" x2="540" y2="450" class="flow" marker-end="url(#arrow)"/>
+  <polygon points="560,424 590,406 651,414 678,445 661,488 602,494 568,470" class="result"/>
+  <text x="619" y="460" text-anchor="middle" class="key">B</text>
+  <line x1="390" y1="406" x2="390" y2="450" class="join-line"/>
+  <rect x="366" y="358" width="48" height="48" class="candidate-key"/>
+  <text x="390" y="392" text-anchor="middle" class="key">B</text>
+  <text x="750" y="460" text-anchor="middle" class="count">n = 1</text>
+  <polygon points="62,624 92,606 153,614 180,645 163,688 104,694 70,670" class="target"/>
+  <text x="121" y="660" text-anchor="middle" class="key">C</text>
+  <line x1="190" y1="650" x2="540" y2="650" class="flow" marker-end="url(#arrow)"/>
+  <polygon points="560,624 590,606 651,614 678,645 661,688 602,694 568,670" class="result"/>
+  <text x="619" y="660" text-anchor="middle" class="key">C</text>
+  <path d="M 345,606 L 390,650 L 435,606" class="join-line"/>
+  <rect x="321" y="558" width="48" height="48" class="candidate-key"/>
+  <text x="345" y="592" text-anchor="middle" class="key">C</text>
+  <rect x="411" y="558" width="48" height="48" class="candidate-key"/>
+  <text x="435" y="592" text-anchor="middle" class="key">C</text>
+  <text x="750" y="660" text-anchor="middle" class="count">n &gt; 1</text>
+  <text x="1200" y="55" text-anchor="middle" class="heading">Unió espacial</text>
+  <text x="1200" y="93" text-anchor="middle" class="relation">predicat entre geometries</text>
+  <text x="930" y="132" text-anchor="middle" class="column">Objectiu +</text>
+  <text x="930" y="164" text-anchor="middle" class="column">candidats</text>
+  <text x="1369" y="132" text-anchor="middle" class="column">Geometria</text>
+  <text x="1369" y="164" text-anchor="middle" class="column">objectiu</text>
+  <polygon points="870,224 900,206 961,214 988,245 971,288 912,294 878,270" class="target"/>
+  <line x1="1015" y1="250" x2="1285" y2="250" class="flow" marker-end="url(#arrow)"/>
+  <polygon points="1310,224 1340,206 1401,214 1428,245 1411,288 1352,294 1318,270" class="result"/>
+  <text x="1520" y="260" text-anchor="middle" class="count">n = 0</text>
+  <circle cx="1030" cy="225" r="12" class="candidate-point"/>
+  <polygon points="870,424 900,406 961,414 988,445 971,488 912,494 878,470" class="target"/>
+  <line x1="1015" y1="450" x2="1285" y2="450" class="flow" marker-end="url(#arrow)"/>
+  <polygon points="1310,424 1340,406 1401,414 1428,445 1411,488 1352,494 1318,470" class="result"/>
+  <text x="1520" y="460" text-anchor="middle" class="count">n = 1</text>
+  <circle cx="930" cy="450" r="12" class="candidate-point"/>
+  <polygon points="870,624 900,606 961,614 988,645 971,688 912,694 878,670" class="target"/>
+  <line x1="1015" y1="650" x2="1285" y2="650" class="flow" marker-end="url(#arrow)"/>
+  <polygon points="1310,624 1340,606 1401,614 1428,645 1411,688 1352,694 1318,670" class="result"/>
+  <text x="1520" y="660" text-anchor="middle" class="count">n &gt; 1</text>
+  <circle cx="905" cy="640" r="12" class="candidate-point"/>
+  <circle cx="965" cy="665" r="12" class="candidate-point"/>
+  <text x="800" y="858" text-anchor="middle" class="note">La geometria no es talla; la política de sortida ha de resoldre n = 0 i n &gt; 1.</text>
+</svg>

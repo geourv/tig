@@ -1,0 +1,467 @@
+{
+  "ok": true,
+  "capture_id": "digitizing-tools",
+  "provenance": {
+    "recipe_id": "qgis-applied-workflows",
+    "recipe_title": "Fluxos aplicats amb QGIS",
+    "recipe_path": "/workspace/recipes/qgis-applied-workflows.yml",
+    "capture_title": "Eines de captura i edici\u00f3 vectorial",
+    "source_prompt": "Necessito set captures procedimentals en catal\u00e0 que mostrin com connectar\nun servei WMS/WMTS, triar un SRC projectat, distingir en un MDT les cotes\nv\u00e0lides de les cel\u00b7les NoData, interpretar una taula d'atributs, localitzar\nles eines de digitalitzaci\u00f3, configurar un buffer sense arribar a executar-lo\ni recon\u00e8ixer les regions funcionals del Dissenyador de models.\n",
+    "recipe_source_prompt": "Necessito set captures procedimentals en catal\u00e0 que mostrin com connectar\nun servei WMS/WMTS, triar un SRC projectat, distingir en un MDT les cotes\nv\u00e0lides de les cel\u00b7les NoData, interpretar una taula d'atributs, localitzar\nles eines de digitalitzaci\u00f3, configurar un buffer sense arribar a executar-lo\ni recon\u00e8ixer les regions funcionals del Dissenyador de models.\n",
+    "capture_source_prompt": null
+  },
+  "image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "image_digest": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "probe": {
+    "ok": true,
+    "image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+    "digest": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+    "qgis_version": "3.44.11",
+    "raw": "QGIS 3.44.11-Solothurn 'Solothurn' (f8f5812197f)\nQGIS code revision f8f5812197f\nQt version 5.15.17\nPython version 3.13.7\nGDAL/OGR version 3.10.3\nPROJ version 9.6.0\nEPSG Registry database version v12.004 (2025-03-02)\nGEOS version 3.13.1-CAPI-1.19.2\nSQLite version 3.46.1\nOS Ubuntu 25.10\n",
+    "returncode": 0
+  },
+  "output": "/workspace/assets/img/qgis/qgis-digitizing-tools.png",
+  "annotation_svg": "/workspace/assets/img/qgis/qgis-digitizing-tools.annotations.svg",
+  "annotation_svg_background": {
+    "mode": "embedded_png_data_uri",
+    "width": 1440,
+    "height": 900
+  },
+  "manifest": "/workspace/assets/img/qgis/qgis-digitizing-tools.manifest.yml",
+  "backend": "offscreen",
+  "locale": {
+    "requested": "ca_ES",
+    "qsettings_user_locale": "ca_ES",
+    "qsettings_override": true
+  },
+  "device_pixel_ratio": 1.0426788330078125,
+  "coordinate_space": "logical pixels in the captured image; recipe relative coordinates share this space for PNG and SVG annotations",
+  "camera": {
+    "mode": "full",
+    "requested": {
+      "mode": "full",
+      "target": null,
+      "padding": 0,
+      "output_size": null
+    },
+    "full_capture": {
+      "width": 1440,
+      "height": 900
+    },
+    "scale": 1.0
+  },
+  "layout_policy": {
+    "reading_direction": "left_to_right",
+    "prefer_local_empty_space": true,
+    "prefer_leaderless_labels": false,
+    "avoid_diagonal_leaders": true,
+    "allow_diagonal_leaders": "when_no_clear_local_candidate",
+    "protect_text": true,
+    "protect_controls": true,
+    "obstacle_padding": 4.0
+  },
+  "project_crs": "EPSG:25831",
+  "canvas_crs": "EPSG:25831",
+  "warnings": [],
+  "target": {
+    "object_name": null,
+    "class_name": "QgisApp",
+    "text": null,
+    "item_text": null,
+    "layer_name": null,
+    "target_part": null,
+    "title": null,
+    "parent_window": null,
+    "fallback": [
+      {
+        "object_name": null,
+        "class_name": "QMainWindow",
+        "text": null,
+        "item_text": null,
+        "layer_name": null,
+        "target_part": null,
+        "title": null,
+        "parent_window": null,
+        "fallback": []
+      }
+    ]
+  },
+  "annotations": [
+    {
+      "type": "callout",
+      "source": "target",
+      "colour": {
+        "mode": "auto_contrast",
+        "token": "ember",
+        "hex": "#b84200",
+        "score": 26.769,
+        "family": "warm"
+      },
+      "shadow": true,
+      "target": {
+        "object_name": "mSnappingToolBar",
+        "class_name": null,
+        "text": null,
+        "item_text": null,
+        "layer_name": null,
+        "target_part": null,
+        "title": null,
+        "parent_window": null,
+        "fallback": []
+      },
+      "text": "Autoensamblat",
+      "number": 1,
+      "number_style": "label",
+      "target_anchor": {
+        "x": 741,
+        "y": 139
+      },
+      "target_bbox": {
+        "x": 667,
+        "y": 98,
+        "width": 773,
+        "height": 39
+      },
+      "target_marker": "box",
+      "label_topology": "outside",
+      "target_marker_bbox": {
+        "x": 664,
+        "y": 95,
+        "width": 779,
+        "height": 45
+      },
+      "label_bbox": {
+        "x": 664,
+        "y": 157,
+        "width": 155,
+        "height": 28
+      },
+      "layout_candidate": "halo:r1:bottom:start",
+      "layout_candidate_score": -2998.965,
+      "label_style": "numbered_box",
+      "number_bbox": {
+        "x": 664,
+        "y": 157,
+        "width": 25,
+        "height": 28
+      },
+      "text_bbox": {
+        "x": 689,
+        "y": 157,
+        "width": 130,
+        "height": 28
+      },
+      "label_lines": {
+        "title": [
+          "Autoensamblat"
+        ],
+        "body": []
+      },
+      "leader": {
+        "from": {
+          "x": 741,
+          "y": 162
+        },
+        "to": {
+          "x": 741,
+          "y": 139
+        },
+        "label_edge": {
+          "x": 741,
+          "y": 157
+        },
+        "label_snap": "top",
+        "target_snap": "bottom",
+        "vanishing_point": "lower_center_left",
+        "vanishing_point_xy": {
+          "x": 360,
+          "y": 612
+        },
+        "stroke_width": 3,
+        "target_dot": true
+      }
+    },
+    {
+      "type": "callout",
+      "source": "target",
+      "colour": {
+        "mode": "auto_contrast",
+        "token": "ember",
+        "hex": "#b84200",
+        "score": 25.082,
+        "family": "warm"
+      },
+      "shadow": true,
+      "target": {
+        "object_name": "mDigitizeToolBar",
+        "class_name": null,
+        "text": null,
+        "item_text": null,
+        "layer_name": null,
+        "target_part": null,
+        "title": null,
+        "parent_window": null,
+        "fallback": []
+      },
+      "text": "Digitalitzaci\u00f3",
+      "number": 2,
+      "number_style": "label",
+      "target_anchor": {
+        "x": 480,
+        "y": 100
+      },
+      "target_bbox": {
+        "x": 247,
+        "y": 59,
+        "width": 469,
+        "height": 39
+      },
+      "target_marker": "box",
+      "label_topology": "outside",
+      "target_marker_bbox": {
+        "x": 244,
+        "y": 56,
+        "width": 475,
+        "height": 45
+      },
+      "label_bbox": {
+        "x": 412,
+        "y": 156,
+        "width": 138,
+        "height": 28
+      },
+      "layout_candidate": "halo:r2:bottom:mid",
+      "layout_candidate_score": -1017.635,
+      "label_style": "numbered_box",
+      "number_bbox": {
+        "x": 412,
+        "y": 156,
+        "width": 25,
+        "height": 28
+      },
+      "text_bbox": {
+        "x": 437,
+        "y": 156,
+        "width": 113,
+        "height": 28
+      },
+      "label_lines": {
+        "title": [
+          "Digitalitzaci\u00f3"
+        ],
+        "body": []
+      },
+      "leader": {
+        "from": {
+          "x": 480,
+          "y": 161
+        },
+        "to": {
+          "x": 480,
+          "y": 100
+        },
+        "label_edge": {
+          "x": 480,
+          "y": 156
+        },
+        "label_snap": "top",
+        "target_snap": "bottom",
+        "vanishing_point": "lower_center_right",
+        "vanishing_point_xy": {
+          "x": 1080,
+          "y": 612
+        },
+        "stroke_width": 3,
+        "target_dot": true
+      }
+    },
+    {
+      "type": "callout",
+      "source": "target",
+      "colour": {
+        "mode": "auto_contrast",
+        "token": "ember",
+        "hex": "#b84200",
+        "score": 26.769,
+        "family": "warm"
+      },
+      "shadow": true,
+      "target": {
+        "object_name": "mAdvancedDigitizeToolBar",
+        "class_name": null,
+        "text": null,
+        "item_text": null,
+        "layer_name": null,
+        "target_part": null,
+        "title": null,
+        "parent_window": null,
+        "fallback": []
+      },
+      "text": "Digitalitzaci\u00f3 avan\u00e7ada",
+      "number": 3,
+      "number_style": "label",
+      "target_anchor": {
+        "x": 562,
+        "y": 139
+      },
+      "target_bbox": {
+        "x": 0,
+        "y": 98,
+        "width": 667,
+        "height": 39
+      },
+      "target_marker": "box",
+      "label_topology": "outside",
+      "target_marker_bbox": {
+        "x": -3,
+        "y": 95,
+        "width": 673,
+        "height": 45
+      },
+      "label_bbox": {
+        "x": 454,
+        "y": 195,
+        "width": 216,
+        "height": 28
+      },
+      "layout_candidate": "halo:r2:bottom:end",
+      "layout_candidate_score": -2187.578,
+      "label_style": "numbered_box",
+      "number_bbox": {
+        "x": 454,
+        "y": 195,
+        "width": 25,
+        "height": 28
+      },
+      "text_bbox": {
+        "x": 479,
+        "y": 195,
+        "width": 191,
+        "height": 28
+      },
+      "label_lines": {
+        "title": [
+          "Digitalitzaci\u00f3 avan\u00e7ada"
+        ],
+        "body": []
+      },
+      "leader": {
+        "from": {
+          "x": 562,
+          "y": 200
+        },
+        "to": {
+          "x": 562,
+          "y": 139
+        },
+        "label_edge": {
+          "x": 562,
+          "y": 195
+        },
+        "label_snap": "top",
+        "target_snap": "bottom",
+        "vanishing_point": "lower_center_right",
+        "vanishing_point_xy": {
+          "x": 1080,
+          "y": 612
+        },
+        "stroke_width": 3,
+        "target_dot": true
+      }
+    },
+    {
+      "type": "callout",
+      "source": "target",
+      "colour": {
+        "mode": "auto_contrast",
+        "token": "ember",
+        "hex": "#b84200",
+        "score": 26.648,
+        "family": "warm"
+      },
+      "shadow": true,
+      "target": {
+        "object_name": "AdvancedDigitizingTools",
+        "class_name": null,
+        "text": null,
+        "item_text": null,
+        "layer_name": null,
+        "target_part": null,
+        "title": null,
+        "parent_window": null,
+        "fallback": []
+      },
+      "text": "Restriccions de captura",
+      "number": 4,
+      "number_style": "label",
+      "target_anchor": {
+        "x": 296,
+        "y": 176
+      },
+      "target_bbox": {
+        "x": 0,
+        "y": 137,
+        "width": 294,
+        "height": 79
+      },
+      "target_marker": "box",
+      "label_topology": "outside",
+      "target_marker_bbox": {
+        "x": -3,
+        "y": 134,
+        "width": 300,
+        "height": 85
+      },
+      "label_bbox": {
+        "x": 314,
+        "y": 236,
+        "width": 218,
+        "height": 28
+      },
+      "layout_candidate": "halo:r1:bottom_right",
+      "layout_candidate_score": -2000.921,
+      "label_style": "numbered_box",
+      "number_bbox": {
+        "x": 314,
+        "y": 236,
+        "width": 26,
+        "height": 28
+      },
+      "text_bbox": {
+        "x": 340,
+        "y": 236,
+        "width": 192,
+        "height": 28
+      },
+      "label_lines": {
+        "title": [
+          "Restriccions de captura"
+        ],
+        "body": []
+      },
+      "leader": {
+        "from": {
+          "x": 319,
+          "y": 249
+        },
+        "to": {
+          "x": 296,
+          "y": 176
+        },
+        "label_edge": {
+          "x": 314,
+          "y": 249
+        },
+        "label_snap": "left",
+        "target_snap": "right",
+        "vanishing_point": "lower_center_right",
+        "vanishing_point_xy": {
+          "x": 1080,
+          "y": 612
+        },
+        "stroke_width": 3,
+        "target_dot": true
+      }
+    }
+  ]
+}

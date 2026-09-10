@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760" role="img" aria-labelledby="title desc">
+  <title id="title">Comparació de distància euclidiana, Manhattan i sobre una xarxa</title>
+  <desc id="desc">Tres panells connecten el mateix origen i destinació. La distància euclidiana segueix la línia recta i travessa una barrera, la distància Manhattan suma moviments ortogonals i la distància de xarxa només segueix arcs connectats amb costos.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, 'Liberation Sans', sans-serif; }
+      .panel { fill: #ffffff; stroke: #c4cfd4; stroke-width: 2; }
+      .heading { fill: #21313c; font-size: 36px; font-weight: 700; }
+      .note { fill: #4f626b; font-size: 28px; }
+      .grid { stroke: #d9e0e3; stroke-width: 2; }
+      .road { fill: none; stroke: #99a8ae; stroke-width: 13; stroke-linecap: square; stroke-linejoin: round; }
+      .route { fill: none; stroke: #2d7f5c; stroke-width: 11; stroke-linecap: round; stroke-linejoin: round; }
+      .straight { fill: none; stroke: #bd4935; stroke-width: 7; stroke-dasharray: 14 10; }
+      .manhattan { fill: none; stroke: #75518b; stroke-width: 9; stroke-linejoin: miter; }
+      .barrier { fill: #8cc2d5; fill-opacity: .55; stroke: #27738f; stroke-width: 4; }
+      .node { fill: #6b7b82; }
+      .terminal { fill: #ffffff; stroke: #1f596f; stroke-width: 5; }
+      .terminal-label { fill: #1f4657; font-size: 28px; font-weight: 700; }
+    </style>
+  </defs>
+  <rect width="1600" height="760" fill="#f7f9fa"/>
+  <rect x="20" y="25" width="510" height="710" class="panel"/>
+  <rect x="545" y="25" width="510" height="710" class="panel"/>
+  <rect x="1070" y="25" width="510" height="710" class="panel"/>
+  <text x="275" y="80" text-anchor="middle" class="heading">Euclidiana</text>
+  <path d="M 245,175 C 200,255 315,315 270,405 C 235,475 260,535 325,610 L 420,610 L 420,175 Z" class="barrier"/>
+  <text x="337" y="390" text-anchor="middle" class="note">barrera</text>
+  <line x1="105" y1="590" x2="445" y2="180" class="straight"/>
+  <circle cx="105" cy="590" r="17" class="terminal"/>
+  <circle cx="445" cy="180" r="17" class="terminal"/>
+  <text x="76" y="625" class="terminal-label">A</text>
+  <text x="462" y="170" class="terminal-label">B</text>
+  <text x="275" y="685" text-anchor="middle" class="note">línia recta: √(Δx² + Δy²)</text>
+  <line x1="590" y1="130" x2="590" y2="625" class="grid"/>
+  <line x1="660" y1="130" x2="660" y2="625" class="grid"/>
+  <line x1="730" y1="130" x2="730" y2="625" class="grid"/>
+  <line x1="800" y1="130" x2="800" y2="625" class="grid"/>
+  <line x1="870" y1="130" x2="870" y2="625" class="grid"/>
+  <line x1="940" y1="130" x2="940" y2="625" class="grid"/>
+  <line x1="1010" y1="130" x2="1010" y2="625" class="grid"/>
+  <line x1="590" y1="135" x2="1020" y2="135" class="grid"/>
+  <line x1="590" y1="205" x2="1020" y2="205" class="grid"/>
+  <line x1="590" y1="275" x2="1020" y2="275" class="grid"/>
+  <line x1="590" y1="345" x2="1020" y2="345" class="grid"/>
+  <line x1="590" y1="415" x2="1020" y2="415" class="grid"/>
+  <line x1="590" y1="485" x2="1020" y2="485" class="grid"/>
+  <line x1="590" y1="555" x2="1020" y2="555" class="grid"/>
+  <line x1="590" y1="625" x2="1020" y2="625" class="grid"/>
+  <text x="800" y="80" text-anchor="middle" class="heading">Manhattan</text>
+  <path d="M 615,590 L 615,450 L 825,450 L 825,310 L 965,310 L 965,180" class="manhattan"/>
+  <circle cx="615" cy="590" r="17" class="terminal"/>
+  <circle cx="965" cy="180" r="17" class="terminal"/>
+  <text x="580" y="625" class="terminal-label">A</text>
+  <text x="982" y="170" class="terminal-label">B</text>
+  <text x="800" y="685" text-anchor="middle" class="note">moviment ortogonal: |Δx| + |Δy|</text>
+  <path d="M 1125,590 L 1205,470 L 1325,500 L 1410,395 L 1515,425" class="road"/>
+  <path d="M 1205,470 L 1190,300 L 1320,230 L 1440,285 L 1510,175" class="road"/>
+  <path d="M 1325,500 L 1455,600" class="road"/>
+  <path d="M 1320,230 L 1410,395" class="road"/>
+  <circle cx="1125" cy="590" r="8" class="node"/>
+  <circle cx="1205" cy="470" r="8" class="node"/>
+  <circle cx="1325" cy="500" r="8" class="node"/>
+  <circle cx="1410" cy="395" r="8" class="node"/>
+  <circle cx="1515" cy="425" r="8" class="node"/>
+  <circle cx="1190" cy="300" r="8" class="node"/>
+  <circle cx="1320" cy="230" r="8" class="node"/>
+  <circle cx="1440" cy="285" r="8" class="node"/>
+  <circle cx="1510" cy="175" r="8" class="node"/>
+  <circle cx="1455" cy="600" r="8" class="node"/>
+  <text x="1325" y="80" text-anchor="middle" class="heading">Sobre una xarxa</text>
+  <path d="M 1125,590 L 1205,470 L 1190,300 L 1320,230 L 1440,285 L 1510,175" class="route"/>
+  <circle cx="1125" cy="590" r="17" class="terminal"/>
+  <circle cx="1510" cy="175" r="17" class="terminal"/>
+  <text x="1090" y="625" class="terminal-label">A</text>
+  <text x="1528" y="165" class="terminal-label">B</text>
+  <text x="1325" y="665" text-anchor="middle" class="note">arcs connectats, sentits i costos</text>
+  <text x="1325" y="700" text-anchor="middle" class="note">defineixen el recorregut</text>
+</svg>

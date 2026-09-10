@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="720" viewBox="0 0 1500 720" role="img" aria-labelledby="title desc">
+  <title id="title">Comparació d’una envolupant circular, una envolupant convexa i una envolupant còncava</title>
+  <desc id="desc">Els mateixos deu punts queden continguts per un cercle, pel polígon convex mínim i per una possible envolupant còncava que segueix més de prop el patró però depèn del mètode i del paràmetre.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, 'Liberation Sans', sans-serif; }
+      .panel { fill: #ffffff; stroke: #c5d0d5; stroke-width: 2; }
+      .heading { fill: #21313c; font-size: 34px; font-weight: 700; }
+      .note { fill: #4e626b; font-size: 28px; }
+      .circle-hull { fill: #76aec5; fill-opacity: .18; stroke: #176486; stroke-width: 6; }
+      .convex-hull { fill: #78ad88; fill-opacity: .2; stroke: #2d7f5c; stroke-width: 6; }
+      .concave-hull { fill: #df9b71; fill-opacity: .22; stroke: #ad5531; stroke-width: 6; }
+      .point { fill: #803e72; stroke: #ffffff; stroke-width: 4; }
+      .radius { stroke: #176486; stroke-width: 3; stroke-dasharray: 9 7; }
+    </style>
+  </defs>
+  <rect width="1500" height="720" fill="#f7f9fa"/>
+  <rect x="20" y="25" width="470" height="670" class="panel"/>
+  <rect x="515" y="25" width="470" height="670" class="panel"/>
+  <rect x="1010" y="25" width="470" height="670" class="panel"/>
+  <text x="255" y="80" text-anchor="middle" class="heading">Circular</text>
+  <circle cx="260" cy="300" r="160" class="circle-hull"/>
+  <line x1="260" y1="300" x2="420" y2="300" class="radius"/>
+  <text x="340" y="285" text-anchor="middle" class="note">radi</text>
+  <text x="255" y="590" text-anchor="middle" class="note">centre i radi resumeixen</text>
+  <text x="255" y="625" text-anchor="middle" class="note">la dispersió màxima</text>
+  <text x="750" y="80" text-anchor="middle" class="heading">Convexa</text>
+  <polygon points="635,240 715,190 795,190 875,240 865,410 645,410" class="convex-hull"/>
+  <text x="750" y="590" text-anchor="middle" class="note">polígon convex mínim;</text>
+  <text x="750" y="625" text-anchor="middle" class="note">omple totes les concavitats</text>
+  <text x="1245" y="80" text-anchor="middle" class="heading">Còncava</text>
+  <polygon points="1130,240 1210,190 1250,260 1290,190 1370,240 1330,330 1360,410 1250,365 1140,410 1170,330" class="concave-hull"/>
+  <text x="1245" y="590" text-anchor="middle" class="note">segueix entrants, però canvia</text>
+  <text x="1245" y="625" text-anchor="middle" class="note">segons mètode i paràmetre</text>
+  <circle cx="140" cy="240" r="11" class="point"/>
+  <circle cx="220" cy="190" r="11" class="point"/>
+  <circle cx="260" cy="260" r="11" class="point"/>
+  <circle cx="300" cy="190" r="11" class="point"/>
+  <circle cx="380" cy="240" r="11" class="point"/>
+  <circle cx="340" cy="330" r="11" class="point"/>
+  <circle cx="370" cy="410" r="11" class="point"/>
+  <circle cx="260" cy="365" r="11" class="point"/>
+  <circle cx="150" cy="410" r="11" class="point"/>
+  <circle cx="180" cy="330" r="11" class="point"/>
+  <circle cx="635" cy="240" r="11" class="point"/>
+  <circle cx="715" cy="190" r="11" class="point"/>
+  <circle cx="755" cy="260" r="11" class="point"/>
+  <circle cx="795" cy="190" r="11" class="point"/>
+  <circle cx="875" cy="240" r="11" class="point"/>
+  <circle cx="835" cy="330" r="11" class="point"/>
+  <circle cx="865" cy="410" r="11" class="point"/>
+  <circle cx="755" cy="365" r="11" class="point"/>
+  <circle cx="645" cy="410" r="11" class="point"/>
+  <circle cx="675" cy="330" r="11" class="point"/>
+  <circle cx="1130" cy="240" r="11" class="point"/>
+  <circle cx="1210" cy="190" r="11" class="point"/>
+  <circle cx="1250" cy="260" r="11" class="point"/>
+  <circle cx="1290" cy="190" r="11" class="point"/>
+  <circle cx="1370" cy="240" r="11" class="point"/>
+  <circle cx="1330" cy="330" r="11" class="point"/>
+  <circle cx="1360" cy="410" r="11" class="point"/>
+  <circle cx="1250" cy="365" r="11" class="point"/>
+  <circle cx="1140" cy="410" r="11" class="point"/>
+  <circle cx="1170" cy="330" r="11" class="point"/>
+</svg>

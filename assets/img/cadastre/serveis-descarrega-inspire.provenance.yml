@@ -1,0 +1,30 @@
+schema_version: 1
+asset:
+  path: assets/img/cadastre/serveis-descarrega-inspire.png
+  sha256: f283665ff1cb5258ec622510eb78d5805a0d28b73799ce9e9e0ab5006d5c5d7f
+  width: 1440
+  height: 790
+  bytes: 118796
+
+source:
+  producer: Direccion General del Catastro
+  title: Servicios de descarga INSPIRE
+  url: https://www.catastro.hacienda.gob.es/webinspire/index.html#serviciodescarga
+  access_date: "2026-09-09"
+  role: portal de descoberta de serveis WFS i ATOM, no conjunt de dades
+  variability: Els enllacos, les dates d'actualitzacio i la interfície poden canviar.
+
+capture:
+  captured_at: "2026-09-09T11:08:48+02:00"
+  browser: Playwright 1.56.1 / Chromium
+  container: mcr.microsoft.com/playwright@sha256:f1e7e01021efd65dd1a2c56064be399f3e4de00fd021ac561325f2bfbb2b837a
+  mode: headless
+  initial_viewport: 1440x900
+  clip: 1440x790+0+0
+  state:
+    section: Servicio de descarga
+    cookies: denied before capture
+
+rights:
+  attribution: Direccion General del Catastro
+  note: Captura de la interfície institucional per identificar les vies de consulta i descarrega en un context docent. Les condicions del servei i de cada conjunt s'han de llegir a la font oficial.

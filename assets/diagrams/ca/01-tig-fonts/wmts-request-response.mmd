@@ -1,0 +1,14 @@
+%%{init: {
+  "sequence": { "showSequenceNumbers": false }
+}}%%
+sequenceDiagram
+    participant Q as QGIS
+    participant S as Servidor WMTS
+    participant T as Tessel·les
+
+    Q->>S: GetCapabilities
+    S-->>Q: Capes, formats i matrius
+    Q->>S: GetTile amb matriu, fila i columna
+    S->>T: Cerca la tessel·la
+    T-->>S: Imatge o absència
+    S-->>Q: Imatge o excepció

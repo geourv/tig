@@ -15,7 +15,7 @@ manual_references: false
 
 Aquest manual forma part de l'assignatura **Tecnologies de la Informació Geogràfica**, del segon curs del Grau en Geografia, Anàlisi Territorial i Sostenibilitat de la Universitat Rovira i Virgili. L'assignatura és obligatòria, té una càrrega de 4 ECTS i es desenvolupa durant el primer quadrimestre. La [guia docent del curs 2026–27](https://guiadocent.urv.cat/docnet/guia_docent/index.php?centre=21&ensenyament=2123&assignatura=21234114&any_academic=2026_27) n'estableix els resultats d'aprenentatge, els continguts, les metodologies i les condicions generals d'avaluació.
 
-L'objectiu del curs **no és memoritzar una col·lecció d'eines**. Es tracta d'entendre com es representa un problema territorial mitjançant dades, com condicionen el resultat el **model vectorial** i el **model ràster**, quines operacions permeten respondre una pregunta i com es comprova que el procés és coherent. QGIS serà l'eina principal de les pràctiques, però els conceptes, els criteris i les operacions formen part del treball amb sistemes d'informació geogràfica en un sentit més ampli.
+L'objectiu del curs **no és memoritzar una col·lecció d'eines**. Es tracta d'entendre com es representa un problema territorial mitjançant dades, com condicionen el resultat el **model vectorial** i el **model ràster**, quines operacions permeten respondre una pregunta i com es comprova que el procés és coherent. [QGIS](https://qgis.org/) és una aplicació lliure i multiplataforma de sistema d'informació geogràfica (SIG) i serà l'eina principal de les pràctiques. El programa permet organitzar, representar, consultar i transformar dades geogràfiques, però els conceptes, els criteris i les operacions no depenen del nom d'un botó ni d'una aplicació concreta.
 
 >>>>> En acabar aquest capítol, cal poder situar el paper del manual dins del curs i identificar com s'organitzen el treball, els dubtes i l'avaluació.
 >>>>>
@@ -24,7 +24,7 @@ L'objectiu del curs **no és memoritzar una col·lecció d'eines**. Es tracta d'
 >>>>> - Formular un dubte tècnic amb prou informació per poder-lo reproduir.
 >>>>> - Identificar les condicions generals de l'avaluació i de la recuperació.
 
-El manual desenvolupa més exemples i activitats que els exigits per superar l'assignatura. Aquesta amplitud permet practicar una mateixa idea en contextos diferents, recuperar conceptes previs i explorar extensions com les consultes espacials, les tessel·les, els models de processament, SQL o PyQGIS. Les activitats lliurables estaran identificades de manera explícita; la resta serviran per preparar les sessions, comprovar la comprensió o ampliar el recorregut.
+El manual desenvolupa més exemples i activitats que els exigits per superar l'assignatura. Aquesta amplitud permet practicar una mateixa idea en contextos diferents, recuperar conceptes previs i explorar extensions com les consultes espacials, les tessel·les de mapes web, els models de processament, el llenguatge de consulta SQL o la interfície de programació de QGIS amb Python, anomenada PyQGIS. Les activitats lliurables estaran identificades de manera explícita; la resta serviran per preparar les sessions, comprovar la comprensió o ampliar el recorregut.
 
 ::: table "Dades identificatives de l'assignatura"
 | Camp | Valor |
@@ -40,16 +40,34 @@ El manual desenvolupa més exemples i activitats que els exigits per superar l'a
 
 ## Què s'aprendrà durant el curs
 
-Les tecnologies de la informació geogràfica permeten capturar, organitzar, consultar, analitzar i comunicar informació vinculada al territori. En aquest curs s'aprofundirà en aquestes funcions a partir de preguntes que obliguen a relacionar la naturalesa de les dades amb les operacions aplicades. Caldrà decidir, per exemple, com es representa una xarxa de carrils bici, què significa cada columna d'una capa del CNIG, quin sistema de referència de coordenades (`CRS`) permet mesurar una distància o com canvia una estimació d'altitud quan varia la resolució d'un model digital d'elevacions.
+Les tecnologies de la informació geogràfica permeten capturar, organitzar, consultar, analitzar i comunicar informació vinculada al territori. En aquest curs s'aprofundirà en aquestes funcions a partir de preguntes que obliguen a relacionar la naturalesa de les dades amb les operacions aplicades. Caldrà decidir, per exemple, com es representa una xarxa de carrils bici, què significa cada columna d'una capa distribuïda pel Centro Nacional de Información Geográfica (CNIG), quin sistema de referència de coordenades (`CRS`) permet mesurar una distància o com canvia una estimació d'altitud quan varia la resolució d'un model digital d'elevacions.
 
-L'assignatura continua coneixements introduïts anteriorment a Tècniques d'Informació Geogràfica i Turística. Es pressuposa una primera experiència amb fitxers, taules, capes, sistemes de coordenades, simbolització i composició cartogràfica. Aquests coneixements es recuperaran quan siguin necessaris, però ara s'utilitzaran per construir processos més complets, documentats i reproduïbles.
+L'assignatura continua el recorregut iniciat a [Tècniques d'Informació Geogràfica i Turística (TIGIT)](https://guiadocent.urv.cat/docnet/guia_docent/index.php?centre=21&ensenyament=2123&assignatura=21234003). És possible que ja resultin familiars l'obertura de capes vectorials i taules, les unions mitjançant un camp comú, la taula d'atributs, la simbologia temàtica i la preparació d'una composició cartogràfica. Aquesta experiència pot variar segons el curs i no es dona per consolidada. El manual recupera les nocions necessàries i explica des del principi les operacions essencials, inclosos els sistemes de referència, el geoprocessament i les dades ràster, de manera que també es pot seguir sense haver cursat TIGIT.
 
-El treball pràctic seguirà un **projecte acumulatiu aplicat a un municipi**. Vila-seca i l'entorn de la Facultat serviran sovint com a demostració comuna perquè permeten relacionar les dades amb llocs recognoscibles. Els fanals del carrer de Joanot Martorell, els carrils bici, les edificacions, les plaques solars o els models d'elevacions poden convertir-se en geometries, atributs i criteris d'anàlisi. **El cas demostrat no substitueix l'aplicació al municipi de treball** i a les fonts que hi estiguin disponibles.
+### Mapa de dependències conceptuals
+
+El recorregut és acumulatiu: cada bloc aporta les decisions necessàries per entendre el següent. Aquesta seqüència funciona com un mapa de prerequisits i permet tornar al punt on s'ha originat un dubte, en lloc de tractar cada eina com una recepta aïllada.
+
+::: table "Dependències entre els conceptes principals del curs"
+| Punt de partida | Concepte que s'hi construeix | Què permet fer després |
+| --- | --- | --- |
+| Pregunta territorial i unitat d'observació | Evidència necessària, àmbit, període i mesura | Cercar i descartar fonts amb criteri |
+| Font, producte, capa i via d'accés | Procedència, escala o resolució, llicència i aptitud d'ús | Organitzar entrades fiables dins d'un projecte |
+| Projecte, capa configurada i font de dades | Dependències, rutes, formats i traçabilitat | Traslladar i reconstruir el treball |
+| Model, estructura, format i `CRS` | Diferència entre entitats vectorials i cel·les ràster | Triar una representació i unes unitats coherents |
+| Geometria, atributs, identificadors i topologia | Esquema vectorial i regles de qualitat | Digitalitzar, consultar i relacionar taules |
+| Condicions lògiques, claus i relacions espacials | Seleccions, unions i correspondències comprovables | Construir geoprocessaments vectorials |
+| Distància, superposició i àrea d'influència (`buffer`) | Geometries derivades i criteris d'inclusió o exclusió | Combinar condicions territorials i provar-ne la sensibilitat |
+| Cel·la, banda, resolució i valor sense dades (`NoData`) | Graella ràster i significat dels valors | Calcular relleu, distàncies, reclassificacions i superposicions ràster |
+| Procés manual validat i controls | Contracte d'un algorisme i graf de dependències | Repetir per lots, construir un model i, opcionalment, utilitzar SQL o PyQGIS |
+:::
+
+El treball pràctic construirà **un únic projecte QGIS acumulatiu aplicat al municipi assignat**. Començarà amb un servei web de mapes (WMS) com a fons visual i un límit municipal oficial del CNIG, i conservarà els resultats de cada fase per utilitzar-los en les següents. Vila-seca i l'entorn de la Facultat seran el cas de demostració a l'aula perquè permeten relacionar les dades amb llocs recognoscibles. Els fanals del carrer de Joanot Martorell, els carrils bici, les edificacions, les plaques solars o els models d'elevacions poden convertir-se en geometries, atributs i criteris d'anàlisi. **El cas demostrat no substitueix l'aplicació al municipi assignat** ni la comprovació de les fonts que hi estiguin disponibles.
 
 ::: table "Fases del projecte acumulatiu"
 | Fase | Pregunta principal | Resultat que es conserva |
 | --- | --- | --- |
-| Projecte i fonts | Quines dades permeten estudiar el municipi i amb quines condicions? | GeoPackage inicial, projecte QGIS i registre de fonts |
+| Projecte i fonts | Quines dades permeten estudiar el municipi i amb quines condicions? | Inventari de fonts, connexió WMS, límit municipal preparat, `projecte_tig.qgz` i primera fita incrustada al GeoPackage |
 | Digitalització | Com es converteix una observació o una font visual en entitats fiables? | Capa pròpia amb geometries, atributs i controls topològics |
 | Consultes | Quines entitats compleixen un criteri alfanumèric? | Expressions, seleccions, filtres i camps derivats comprovats |
 | Anàlisi vectorial | Quines zones compleixen relacions de distància, contacte o superposició? | Capes intermèdies, resultat multicriteri i mesures interpretades |
@@ -71,7 +89,7 @@ Cada capítol combina explicació conceptual, exemples, procediments, criteris d
 
 Tots els capítols de contingut acabaran amb activitats. Algunes seran preguntes de comprensió o exercicis breus; altres desenvoluparan una pràctica guiada, proposaran una aplicació al municipi propi o ampliaran el contingut. Només les activitats identificades com a **micropràctica lliurable** formaran part del treball continuat obligatori. Moodle publicarà l'enunciat vigent, el termini i les condicions concretes de cada lliurament.
 
-El projecte del curs es conservarà progressivament en un **GeoPackage acumulatiu**. També es mantindrà un projecte QGIS dins del GeoPackage i una còpia independent en format `.qgz`, d'acord amb les instruccions de cada activitat. El **diari d'activitats** documentarà les fonts, els passos, les eines, els paràmetres, les incidències, les decisions i els resultats. Les captures de pantalla s'hi incorporaran quan ajudin a demostrar una configuració, un error o una comprovació, no per reproduir cada clic.
+La còpia de treball canònica serà el projecte extern **`projecte_tig.qgz`**. El GeoPackage acumulatiu contindrà les capes vectorials i les taules adequades i, en les fites indicades, una representació incrustada del projecte amb el nom **`projecte_tig`**. Totes dues representacions són independents: desar el `.qgz` no actualitza el projecte incrustat, ni desar o obrir el projecte incrustat modifica automàticament el `.qgz`. A cada fita es desarà primer la còpia canònica, s'actualitzarà expressament la representació incrustada i es provaran totes dues després de copiar l'arbre del projecte. El **diari d'activitats** documentarà les fonts, les operacions, els paràmetres, les incidències, les decisions, els controls i els resultats. Les captures de pantalla s'hi incorporaran quan ajudin a demostrar una configuració, un error o una comprovació, no per reproduir cada clic.
 
 ## Com es planteja un dubte
 
@@ -134,12 +152,12 @@ Els lliuraments han de permetre verificar l'autoria i reconstruir el procés. El
 
 ### Reconèixer els espais del curs
 
-Cal localitzar la guia docent vigent, l'espai Moodle de l'assignatura i el fòrum de dubtes. Per a cadascun, s'ha d'identificar una informació que només correspongui a aquell espai i explicar per què no convé buscar-la als altres dos.
+El resultat conservat serà una fitxa breu amb l'enllaç a la guia docent vigent, l'espai Moodle de l'assignatura i el fòrum de dubtes. Per a cadascun, la fitxa identificarà una informació que només correspongui a aquell espai i explicarà per què no convé buscar-la als altres dos.
 
 ### Preparar una consulta reproduïble
 
-Es redactarà una consulta breu a partir d'una incidència real o hipotètica de QGIS. La consulta haurà d'indicar l'objectiu, les dades implicades, els passos seguits, el resultat esperat i el resultat obtingut. Si l'error depèn d'un CRS, un camp, una ruta o un paràmetre, aquesta informació haurà d'aparèixer explícitament.
+El resultat conservat serà una consulta breu i reproduïble sobre una incidència real o hipotètica de QGIS. Inclourà l'objectiu, les dades implicades, els passos seguits, el resultat esperat i el resultat obtingut. Si l'error depèn d'un CRS, un camp, una ruta o un paràmetre, aquesta informació hi apareixerà explícitament.
 
 ### Anticipar el projecte municipal
 
-Un cop assignat o seleccionat el municipi de treball, caldrà identificar una pregunta vectorial i una pregunta ràster que es podrien estudiar durant el curs. En aquesta activitat inicial no s'ha de resoldre l'anàlisi: només cal explicar quines dades serien necessàries, quin organisme podria proporcionar-les i quin resultat permetria respondre cada pregunta.
+Un cop assignat el municipi de treball, el diari conservarà una pregunta vectorial i una pregunta ràster que es puguin estudiar durant el curs. Per a cadascuna s'hi registraran les dades necessàries, l'organisme que podria proporcionar-les i el resultat observable que permetria respondre-la. Aquesta activitat inicial no resol l'anàlisi ni dona per verificada cap font.

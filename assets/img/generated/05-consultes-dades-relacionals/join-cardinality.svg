@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="820" viewBox="0 0 1600 820" role="img" aria-labelledby="title desc">
+  <title id="title">Cardinalitats 1 a 1, N a 1, 1 a N i N a M</title>
+  <desc id="desc">Quatre esquemes mostren parelles úniques, molts centres associats a un municipi, moltes observacions associades a un municipi i una relació entre equipaments i serveis resolta amb una taula intermèdia.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, 'Liberation Sans', sans-serif; }
+      .panel { fill: #ffffff; stroke: #c5d0d5; stroke-width: 2; }
+      .heading { fill: #21313c; font-size: 36px; font-weight: 700; }
+      .side { fill: #5b6d76; font-size: 28px; font-weight: 700; }
+      .note { fill: #40545e; font-size: 28px; }
+      .left-record { fill: #dceef4; stroke: #2878a5; stroke-width: 3; }
+      .right-record { fill: #f5e5d8; stroke: #b65c35; stroke-width: 3; }
+      .pair-record { fill: #e5efe7; stroke: #3d7e5c; stroke-width: 3; }
+      .record-label { fill: #243640; font-size: 28px; font-weight: 700; }
+      .relation { stroke: #6b7b82; stroke-width: 3; }
+      .warning { fill: #a53b2b; font-size: 28px; font-weight: 700; }
+    </style>
+  </defs>
+  <rect width="1600" height="820" fill="#f7f9fa"/>
+  <rect x="20" y="25" width="375" height="770" class="panel"/>
+  <rect x="415" y="25" width="375" height="770" class="panel"/>
+  <rect x="810" y="25" width="375" height="770" class="panel"/>
+  <rect x="1205" y="25" width="375" height="770" class="panel"/>
+  <text x="207" y="80" text-anchor="middle" class="heading">1 : 1</text>
+  <text x="91" y="125" text-anchor="middle" class="side">municipi</text>
+  <text x="324" y="125" text-anchor="middle" class="side">fitxa vigent</text>
+  <rect x="50" y="175" width="82" height="54" class="left-record"/>
+  <text x="91" y="211" text-anchor="middle" class="record-label">M1</text>
+  <rect x="283" y="175" width="82" height="54" class="right-record"/>
+  <text x="324" y="211" text-anchor="middle" class="record-label">F1</text>
+  <line x1="132" y1="202" x2="283" y2="202" class="relation"/>
+  <rect x="50" y="320" width="82" height="54" class="left-record"/>
+  <text x="91" y="356" text-anchor="middle" class="record-label">M2</text>
+  <rect x="283" y="320" width="82" height="54" class="right-record"/>
+  <text x="324" y="356" text-anchor="middle" class="record-label">F2</text>
+  <line x1="132" y1="347" x2="283" y2="347" class="relation"/>
+  <rect x="50" y="465" width="82" height="54" class="left-record"/>
+  <text x="91" y="501" text-anchor="middle" class="record-label">M3</text>
+  <rect x="283" y="465" width="82" height="54" class="right-record"/>
+  <text x="324" y="501" text-anchor="middle" class="record-label">F3</text>
+  <line x1="132" y1="492" x2="283" y2="492" class="relation"/>
+  <text x="207" y="665" text-anchor="middle" class="note">una candidata única</text>
+  <text x="207" y="700" text-anchor="middle" class="note">per fila objectiu</text>
+  <text x="207" y="748" text-anchor="middle" class="side">unió directa</text>
+  <text x="602" y="80" text-anchor="middle" class="heading">N : 1</text>
+  <text x="486" y="125" text-anchor="middle" class="side">centres</text>
+  <text x="719" y="125" text-anchor="middle" class="side">municipi</text>
+  <rect x="445" y="175" width="82" height="54" class="left-record"/>
+  <text x="486" y="211" text-anchor="middle" class="record-label">C1</text>
+  <line x1="527" y1="202" x2="678" y2="347" class="relation"/>
+  <rect x="445" y="320" width="82" height="54" class="left-record"/>
+  <text x="486" y="356" text-anchor="middle" class="record-label">C2</text>
+  <line x1="527" y1="347" x2="678" y2="347" class="relation"/>
+  <rect x="445" y="465" width="82" height="54" class="left-record"/>
+  <text x="486" y="501" text-anchor="middle" class="record-label">C3</text>
+  <line x1="527" y1="492" x2="678" y2="347" class="relation"/>
+  <rect x="678" y="320" width="82" height="54" class="right-record"/>
+  <text x="719" y="356" text-anchor="middle" class="record-label">M1</text>
+  <text x="602" y="665" text-anchor="middle" class="note">cada centre troba</text>
+  <text x="602" y="700" text-anchor="middle" class="note">un sol municipi</text>
+  <text x="602" y="748" text-anchor="middle" class="side">files objectiu conservades</text>
+  <text x="997" y="80" text-anchor="middle" class="heading">1 : N</text>
+  <text x="881" y="125" text-anchor="middle" class="side">municipi</text>
+  <text x="1170" y="125" text-anchor="end" class="side">observacions</text>
+  <rect x="840" y="320" width="82" height="54" class="left-record"/>
+  <text x="881" y="356" text-anchor="middle" class="record-label">M1</text>
+  <rect x="1073" y="175" width="82" height="54" class="right-record"/>
+  <text x="1114" y="211" text-anchor="middle" class="record-label">O1</text>
+  <line x1="922" y1="347" x2="1073" y2="202" class="relation"/>
+  <rect x="1073" y="320" width="82" height="54" class="right-record"/>
+  <text x="1114" y="356" text-anchor="middle" class="record-label">O2</text>
+  <line x1="922" y1="347" x2="1073" y2="347" class="relation"/>
+  <rect x="1073" y="465" width="82" height="54" class="right-record"/>
+  <text x="1114" y="501" text-anchor="middle" class="record-label">O3</text>
+  <line x1="922" y1="347" x2="1073" y2="492" class="relation"/>
+  <text x="997" y="650" text-anchor="middle" class="note">una unió plana pot</text>
+  <text x="997" y="685" text-anchor="middle" class="warning">repetir la geometria</text>
+  <text x="997" y="748" text-anchor="middle" class="side">relació o agregació</text>
+  <text x="1392" y="80" text-anchor="middle" class="heading">N : M</text>
+  <text x="1220" y="125" text-anchor="start" class="side">equipaments</text>
+  <text x="1528" y="125" text-anchor="middle" class="side">serveis</text>
+  <rect x="1225" y="210" width="82" height="54" class="left-record"/>
+  <text x="1266" y="246" text-anchor="middle" class="record-label">E1</text>
+  <rect x="1225" y="455" width="82" height="54" class="left-record"/>
+  <text x="1266" y="491" text-anchor="middle" class="record-label">E2</text>
+  <rect x="1497" y="210" width="82" height="54" class="right-record"/>
+  <text x="1538" y="246" text-anchor="middle" class="record-label">S1</text>
+  <rect x="1497" y="455" width="82" height="54" class="right-record"/>
+  <text x="1538" y="491" text-anchor="middle" class="record-label">S2</text>
+  <rect x="1360" y="185" width="82" height="54" class="pair-record"/>
+  <text x="1401" y="221" text-anchor="middle" class="record-label">E1·S1</text>
+  <rect x="1360" y="320" width="82" height="54" class="pair-record"/>
+  <text x="1401" y="356" text-anchor="middle" class="record-label">E1·S2</text>
+  <rect x="1360" y="455" width="82" height="54" class="pair-record"/>
+  <text x="1401" y="491" text-anchor="middle" class="record-label">E2·S2</text>
+  <line x1="1307" y1="237" x2="1360" y2="212" class="relation"/>
+  <line x1="1442" y1="212" x2="1497" y2="237" class="relation"/>
+  <line x1="1307" y1="237" x2="1360" y2="347" class="relation"/>
+  <line x1="1442" y1="347" x2="1497" y2="482" class="relation"/>
+  <line x1="1307" y1="482" x2="1360" y2="482" class="relation"/>
+  <line x1="1442" y1="482" x2="1497" y2="482" class="relation"/>
+  <text x="1392" y="650" text-anchor="middle" class="note">una fila per parella</text>
+  <text x="1392" y="685" text-anchor="middle" class="note">admesa</text>
+  <text x="1392" y="748" text-anchor="middle" class="side">taula intermèdia</text>
+</svg>

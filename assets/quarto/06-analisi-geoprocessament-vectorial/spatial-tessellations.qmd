@@ -1,0 +1,212 @@
+---
+title: "Tessel·lacions espacials"
+lang: ca
+ref: spatial_tessellations
+format:
+  gfm:
+    output-file: spatial-tessellations.generated.md
+execute:
+  echo: false
+  warning: false
+  message: false
+execute-dir: project
+unaltraweb_compute:
+  engine: python
+  mode: figure
+  outputs:
+    - assets/img/generated/06-analisi-geoprocessament-vectorial/spatial-tessellations.svg
+---
+
+```{python}
+from itertools import combinations
+from math import cos, pi, sin, sqrt
+from pathlib import Path
+
+
+def find_project_root(start):
+    path = Path(start).resolve()
+    for candidate in (path, *path.parents):
+        if (candidate / ".unaltraweb" / "computations.yml").is_file():
+            return candidate
+    raise RuntimeError("Project root not found: missing .unaltraweb/computations.yml")
+
+
+def polygon_points(points):
+    return " ".join(f"{x:.1f},{y:.1f}" for x, y in points)
+
+
+def hexagon(cx, cy, radius):
+    return [
+        (cx + radius * cos(pi * angle / 3), cy + radius * sin(pi * angle / 3))
+        for angle in range(6)
+    ]
+
+
+def clip_polygon_to_half_plane(polygon, a, b, c):
+    """Keep points satisfying a*x + b*y <= c."""
+    clipped = []
+    for start, end in zip(polygon, polygon[1:] + polygon[:1]):
+        start_value = a * start[0] + b * start[1] - c
+        end_value = a * end[0] + b * end[1] - c
+        start_inside = start_value <= 1e-9
+        end_inside = end_value <= 1e-9
+
+        if start_inside and end_inside:
+            clipped.append(end)
+        elif start_inside != end_inside:
+            ratio = start_value / (start_value - end_value)
+            intersection = (
+                start[0] + ratio * (end[0] - start[0]),
+                start[1] + ratio * (end[1] - start[1]),
+            )
+            clipped.append(intersection)
+            if end_inside:
+                clipped.append(end)
+    return clipped
+
+
+def voronoi_cells(generators, bounds):
+    left, top, right, bottom = bounds
+    frame = [(left, top), (right, top), (right, bottom), (left, bottom)]
+    cells = []
+    for index, (px, py) in enumerate(generators):
+        cell = frame
+        for other_index, (qx, qy) in enumerate(generators):
+            if index == other_index:
+                continue
+            a = 2 * (qx - px)
+            b = 2 * (qy - py)
+            c = qx * qx + qy * qy - px * px - py * py
+            cell = clip_polygon_to_half_plane(cell, a, b, c)
+        cells.append(cell)
+    return cells
+
+
+def circumcircle(first, second, third):
+    ax, ay = first
+    bx, by = second
+    cx, cy = third
+    denominator = 2 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by))
+    if abs(denominator) < 1e-9:
+        return None
+    ux = (
+        (ax * ax + ay * ay) * (by - cy)
+        + (bx * bx + by * by) * (cy - ay)
+        + (cx * cx + cy * cy) * (ay - by)
+    ) / denominator
+    uy = (
+        (ax * ax + ay * ay) * (cx - bx)
+        + (bx * bx + by * by) * (ax - cx)
+        + (cx * cx + cy * cy) * (bx - ax)
+    ) / denominator
+    radius_squared = (ux - ax) ** 2 + (uy - ay) ** 2
+    return ux, uy, radius_squared
+
+
+def delaunay_edges(generators):
+    edges = set()
+    for triple in combinations(range(len(generators)), 3):
+        circle = circumcircle(*(generators[index] for index in triple))
+        if circle is None:
+            continue
+        ux, uy, radius_squared = circle
+        others = (index for index in range(len(generators)) if index not in triple)
+        if all(
+            (generators[index][0] - ux) ** 2 + (generators[index][1] - uy) ** 2
+            >= radius_squared - 1e-6
+            for index in others
+        ):
+            edges.update(tuple(sorted(edge)) for edge in combinations(triple, 2))
+    return sorted(edges)
+
+
+width, height = 1600, 760
+svg = [
+    f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
+    '  <title id="title">Comparació de tessel·lacions regulars i irregulars</title>',
+    '  <desc id="desc">Una graella quadrada agrega punts en unitats comunes, una malla hexagonal destaca sis veïns laterals homogenis i un esquema de Voronoi assigna dominis irregulars als punts generadors amb arestes de Delaunay entre veïns.</desc>',
+    '  <defs>',
+    '    <style>',
+    "      text { font-family: Arial, 'Liberation Sans', sans-serif; }",
+    '      .panel { fill: #ffffff; stroke: #c5d0d5; stroke-width: 2; }',
+    '      .heading { fill: #21313c; font-size: 36px; font-weight: 700; }',
+    '      .note { fill: #4f626b; font-size: 28px; }',
+    '      .cell { fill: #edf3f5; stroke: #7b8d95; stroke-width: 2; }',
+    '      .cell-low { fill: #d7e8ee; stroke: #7b8d95; stroke-width: 2; }',
+    '      .cell-high { fill: #74abc1; stroke: #58747f; stroke-width: 2; }',
+    '      .hex-neighbour { fill: #dcebdc; stroke: #4e8965; stroke-width: 3; }',
+    '      .hex-centre { fill: #e8b17f; stroke: #a65a35; stroke-width: 4; }',
+    '      .voronoi-a { fill: #d7e8ee; stroke: #ffffff; stroke-width: 4; }',
+    '      .voronoi-b { fill: #e8dce8; stroke: #ffffff; stroke-width: 4; }',
+    '      .voronoi-c { fill: #e8e4c7; stroke: #ffffff; stroke-width: 4; }',
+    '      .voronoi-d { fill: #dcebdc; stroke: #ffffff; stroke-width: 4; }',
+    '      .voronoi-e { fill: #f0dacf; stroke: #ffffff; stroke-width: 4; }',
+    '      .event { fill: #a63f2c; stroke: #ffffff; stroke-width: 3; }',
+    '      .generator { fill: #21313c; stroke: #ffffff; stroke-width: 4; }',
+    '      .delaunay { stroke: #6e4e80; stroke-width: 4; stroke-dasharray: 10 8; fill: none; }',
+    '      .count { fill: #21313c; font-size: 28px; font-weight: 700; }',
+    '    </style>',
+    '  </defs>',
+    '  <rect width="1600" height="760" fill="#f7f9fa"/>',
+]
+
+for x in (20, 545, 1070):
+    svg.append(f'  <rect x="{x}" y="25" width="510" height="710" class="panel"/>')
+
+# Square grid with observed points and counts.
+svg.append('  <text x="275" y="80" text-anchor="middle" class="heading">Graella quadrada</text>')
+square_counts = {(0, 2): 1, (1, 1): 2, (1, 3): 1, (2, 2): 3, (3, 0): 1, (3, 3): 2, (4, 1): 1}
+for col in range(5):
+    for row in range(5):
+        x = 85 + col * 75
+        y = 130 + row * 85
+        count = square_counts.get((col, row), 0)
+        css_class = "cell-high" if count >= 2 else "cell-low" if count == 1 else "cell"
+        svg.append(f'  <rect x="{x}" y="{y}" width="75" height="85" class="{css_class}"/>')
+        svg.append(f'  <text x="{x + 37.5}" y="{y + 52}" text-anchor="middle" class="count">{count}</text>')
+svg.extend([
+    '  <text x="275" y="588" text-anchor="middle" class="note">recomptes comparables</text>',
+    '  <text x="275" y="623" text-anchor="middle" class="note">però sensibles a mida,</text>',
+    '  <text x="275" y="658" text-anchor="middle" class="note">origen i orientació</text>',
+])
+
+# Hexagonal neighbourhood.
+svg.append('  <text x="800" y="80" text-anchor="middle" class="heading">Graella hexagonal</text>')
+radius = 42
+centre = (3, 2)
+neighbours = {(2, 2), (2, 1), (3, 1), (4, 1), (4, 2), (3, 3)}
+for col in range(6):
+    for row in range(5):
+        cx = 625 + col * 1.5 * radius
+        cy = 165 + (row + 0.5 * (col % 2)) * sqrt(3) * radius
+        css_class = "hex-centre" if (col, row) == centre else "hex-neighbour" if (col, row) in neighbours else "cell"
+        svg.append(f'  <polygon points="{polygon_points(hexagon(cx, cy, radius))}" class="{css_class}"/>')
+svg.extend([
+    '  <text x="800" y="605" text-anchor="middle" class="note">sis veïns que comparteixen costat</text>',
+    '  <text x="800" y="640" text-anchor="middle" class="note">a igual distància entre centres</text>',
+])
+
+# Voronoi partition and its dual Delaunay neighbourhood from one point set.
+svg.append('  <text x="1325" y="80" text-anchor="middle" class="heading">Voronoi i Delaunay</text>')
+generators = [(1190, 220), (1405, 210), (1190, 430), (1415, 380), (1370, 505)]
+region_classes = ["voronoi-a", "voronoi-b", "voronoi-c", "voronoi-d", "voronoi-e"]
+for points, css_class in zip(voronoi_cells(generators, (1110, 130, 1540, 555)), region_classes):
+    svg.append(f'  <polygon points="{polygon_points(points)}" class="{css_class}"/>')
+for first, second in delaunay_edges(generators):
+    x1, y1 = generators[first]
+    x2, y2 = generators[second]
+    svg.append(f'  <line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" class="delaunay"/>')
+for x, y in generators:
+    svg.append(f'  <circle cx="{x}" cy="{y}" r="12" class="generator"/>')
+svg.extend([
+    '  <text x="1325" y="605" text-anchor="middle" class="note">domini del generador més pròxim</text>',
+    '  <text x="1325" y="640" text-anchor="middle" class="note">i veïnatge geomètric dual</text>',
+    '  <text x="800" y="700" text-anchor="middle" class="note">Cap d’aquestes estructures incorpora per si sola població, barreres, capacitat ni temps de recorregut.</text>',
+    '</svg>',
+])
+
+project_root = find_project_root(Path.cwd())
+output = project_root / "assets/img/generated/06-analisi-geoprocessament-vectorial/spatial-tessellations.svg"
+output.parent.mkdir(parents=True, exist_ok=True)
+output.write_text("\n".join(svg) + "\n", encoding="utf-8")
+```

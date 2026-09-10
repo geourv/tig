@@ -1,0 +1,115 @@
+---
+title: "Models de distància"
+lang: ca
+ref: distance_models
+format:
+  gfm:
+    output-file: distance-models.generated.md
+execute:
+  echo: false
+  warning: false
+  message: false
+execute-dir: project
+unaltraweb_compute:
+  engine: python
+  mode: figure
+  outputs:
+    - assets/img/generated/06-analisi-geoprocessament-vectorial/distance-models.svg
+---
+
+```{python}
+from pathlib import Path
+
+
+def find_project_root(start):
+    path = Path(start).resolve()
+    for candidate in (path, *path.parents):
+        if (candidate / ".unaltraweb" / "computations.yml").is_file():
+            return candidate
+    raise RuntimeError("Project root not found: missing .unaltraweb/computations.yml")
+
+
+width, height = 1600, 760
+svg = [
+    f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
+    '  <title id="title">Comparació de distància euclidiana, Manhattan i sobre una xarxa</title>',
+    '  <desc id="desc">Tres panells connecten el mateix origen i destinació. La distància euclidiana segueix la línia recta i travessa una barrera, la distància Manhattan suma moviments ortogonals i la distància de xarxa només segueix arcs connectats amb costos.</desc>',
+    '  <defs>',
+    '    <style>',
+    "      text { font-family: Arial, 'Liberation Sans', sans-serif; }",
+    '      .panel { fill: #ffffff; stroke: #c4cfd4; stroke-width: 2; }',
+    '      .heading { fill: #21313c; font-size: 36px; font-weight: 700; }',
+    '      .note { fill: #4f626b; font-size: 28px; }',
+    '      .grid { stroke: #d9e0e3; stroke-width: 2; }',
+    '      .road { fill: none; stroke: #99a8ae; stroke-width: 13; stroke-linecap: square; stroke-linejoin: round; }',
+    '      .route { fill: none; stroke: #2d7f5c; stroke-width: 11; stroke-linecap: round; stroke-linejoin: round; }',
+    '      .straight { fill: none; stroke: #bd4935; stroke-width: 7; stroke-dasharray: 14 10; }',
+    '      .manhattan { fill: none; stroke: #75518b; stroke-width: 9; stroke-linejoin: miter; }',
+    '      .barrier { fill: #8cc2d5; fill-opacity: .55; stroke: #27738f; stroke-width: 4; }',
+    '      .node { fill: #6b7b82; }',
+    '      .terminal { fill: #ffffff; stroke: #1f596f; stroke-width: 5; }',
+    '      .terminal-label { fill: #1f4657; font-size: 28px; font-weight: 700; }',
+    '    </style>',
+    '  </defs>',
+    '  <rect width="1600" height="760" fill="#f7f9fa"/>',
+]
+
+for x in (20, 545, 1070):
+    svg.append(f'  <rect x="{x}" y="25" width="510" height="710" class="panel"/>')
+
+# Euclidean distance ignores the barrier.
+svg.extend([
+    '  <text x="275" y="80" text-anchor="middle" class="heading">Euclidiana</text>',
+    '  <path d="M 245,175 C 200,255 315,315 270,405 C 235,475 260,535 325,610 L 420,610 L 420,175 Z" class="barrier"/>',
+    '  <text x="337" y="390" text-anchor="middle" class="note">barrera</text>',
+    '  <line x1="105" y1="590" x2="445" y2="180" class="straight"/>',
+    '  <circle cx="105" cy="590" r="17" class="terminal"/>',
+    '  <circle cx="445" cy="180" r="17" class="terminal"/>',
+    '  <text x="76" y="625" class="terminal-label">A</text>',
+    '  <text x="462" y="170" class="terminal-label">B</text>',
+    '  <text x="275" y="685" text-anchor="middle" class="note">línia recta: √(Δx² + Δy²)</text>',
+])
+
+# Manhattan distance follows orthogonal axes.
+for x in range(590, 1030, 70):
+    svg.append(f'  <line x1="{x}" y1="130" x2="{x}" y2="625" class="grid"/>')
+for y in range(135, 626, 70):
+    svg.append(f'  <line x1="590" y1="{y}" x2="1020" y2="{y}" class="grid"/>')
+svg.extend([
+    '  <text x="800" y="80" text-anchor="middle" class="heading">Manhattan</text>',
+    '  <path d="M 615,590 L 615,450 L 825,450 L 825,310 L 965,310 L 965,180" class="manhattan"/>',
+    '  <circle cx="615" cy="590" r="17" class="terminal"/>',
+    '  <circle cx="965" cy="180" r="17" class="terminal"/>',
+    '  <text x="580" y="625" class="terminal-label">A</text>',
+    '  <text x="982" y="170" class="terminal-label">B</text>',
+    '  <text x="800" y="685" text-anchor="middle" class="note">moviment ortogonal: |Δx| + |Δy|</text>',
+])
+
+# Network route follows available connected arcs.
+roads = [
+    "M 1125,590 L 1205,470 L 1325,500 L 1410,395 L 1515,425",
+    "M 1205,470 L 1190,300 L 1320,230 L 1440,285 L 1510,175",
+    "M 1325,500 L 1455,600",
+    "M 1320,230 L 1410,395",
+]
+for road in roads:
+    svg.append(f'  <path d="{road}" class="road"/>')
+for x, y in ((1125, 590), (1205, 470), (1325, 500), (1410, 395), (1515, 425), (1190, 300), (1320, 230), (1440, 285), (1510, 175), (1455, 600)):
+    svg.append(f'  <circle cx="{x}" cy="{y}" r="8" class="node"/>')
+svg.extend([
+    '  <text x="1325" y="80" text-anchor="middle" class="heading">Sobre una xarxa</text>',
+    '  <path d="M 1125,590 L 1205,470 L 1190,300 L 1320,230 L 1440,285 L 1510,175" class="route"/>',
+    '  <circle cx="1125" cy="590" r="17" class="terminal"/>',
+    '  <circle cx="1510" cy="175" r="17" class="terminal"/>',
+    '  <text x="1090" y="625" class="terminal-label">A</text>',
+    '  <text x="1528" y="165" class="terminal-label">B</text>',
+    '  <text x="1325" y="665" text-anchor="middle" class="note">arcs connectats, sentits i costos</text>',
+    '  <text x="1325" y="700" text-anchor="middle" class="note">defineixen el recorregut</text>',
+    '</svg>',
+])
+
+project_root = find_project_root(Path.cwd())
+output = project_root / "assets/img/generated/06-analisi-geoprocessament-vectorial/distance-models.svg"
+output.parent.mkdir(parents=True, exist_ok=True)
+output.write_text("\n".join(svg) + "\n", encoding="utf-8")
+```

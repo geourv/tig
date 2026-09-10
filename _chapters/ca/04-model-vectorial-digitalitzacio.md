@@ -37,11 +37,11 @@ En el model de geometries simples de l'OGC, un `Point` conté una única posici�
 
 Un `Polygon` representa una superfície plana delimitada per un anell exterior i zero o més anells interiors. Els anells interiors representen forats: una illa construïda dins d'una zona verda no és automàticament un forat, perquè pot ser una altra categoria que exigeixi una entitat pròpia. Els anells tampoc no són entitats independents ni línies de la capa. El polígon inclou el seu interior i la seva frontera per a moltes operacions de cobertura, però els predicats topològics distingeixen aquestes parts; per això un punt sobre la vora no produeix necessàriament el mateix resultat que un punt estrictament interior.
 
-![Jerarquia de geometries Simple Features des de la geometria general fins als punts, les línies, els polígons i les col·leccions múltiples]({{ site.baseurl }}/assets/diagrams/ca/04-model-vectorial-digitalitzacio/simple-features-hierarchy.mmd "Jerarquia abstracta de tipus geomètrics de Simple Features; no defineix per si sola l'esquema d'una capa ni què constitueix una entitat."){: data-figure-width-web="30.5rem" data-figure-width-pdf="72%"}
+La jerarquia de geometries parteix d'un tipus general i en separa les famílies puntuals, lineals, superficials i de col·lecció. Dins de cada família, els tipus simples i múltiples indiquen com s'estructura un únic valor geomètric; no defineixen què constitueix una entitat ni obliguen a barrejar famílies en una mateixa capa.
 
 Punts, línies i polígons són abstraccions topològiques, no símbols. Un punt no té longitud ni superfície, una línia no té amplada i la superfície d'un polígon no depèn del color del farciment. Un carrer dibuixat amb una línia de tres mil·límetres continua sense representar les voreres ni la calçada ocupada. Si l'anàlisi necessita amplada, aquesta propietat s'ha d'incorporar com a atribut, derivar-se mitjançant una hipòtesi explícita o representar-se amb una superfície adequada.
 
-El símbol no canvia la geometria. Un marcador gran continua representant un punt i el gruix d'una línia no la converteix en una superfície. Aquesta diferència és necessària quan es calculen distàncies, interseccions o superfícies: els algorismes operen sobre la geometria, no sobre l'aparença del mapa.
+>> El símbol no altera la geometria: un marcador gran continua sent un punt i una línia gruixuda no es converteix en una superfície. Les mesures i els predicats operen sobre les coordenades, no sobre l'aparença del mapa.
 
 ::: table "Elecció de geometria segons la pregunta"
 | Fenomen | Representació possible | Pregunta que permet respondre | Limitació principal |
@@ -98,7 +98,7 @@ El primer anell del polígon és exterior i el segon delimita un forat. En el mu
 
 El WKB codifica la mateixa classe d'estructura en bytes. Inclou informació sobre ordre dels bytes, tipus geomètric, recomptes i coordenades, de manera que és compacte i ràpid d'interpretar per una base de dades, però no és apropiat per editar-lo manualment. Mostrar un WKB com una cadena hexadecimal només és una representació textual dels bytes. Convertir WKT a WKB no millora l'exactitud ni valida la geometria; canvia la codificació.
 
-Les sigles EWKT i EWKB designen variants **ampliades** associades sobretot a l'ecosistema PostGIS. Poden incorporar un identificador de referència espacial i convencions addicionals de dimensionalitat. Per exemple, és habitual trobar `SRID=25831;POINT(344469 4551807)` com a EWKT. Aquest prefix és útil dins d'un contracte que el reconeix, però no forma part del WKT simple interoperable de l'OGC i un lector genèric el pot rebutjar. De manera semblant, l'EWKB no s'ha de presentar com si qualsevol lector WKB hagués d'interpretar-ne les marques pròpies {% cite postgisManual364 %}.
+Les sigles EWKT i EWKB designen variants **ampliades** associades sobretot a PostGIS, l'extensió espacial del sistema gestor de bases de dades PostgreSQL. Poden incorporar un identificador de referència espacial i convencions addicionals de dimensionalitat. Per exemple, és habitual trobar `SRID=25831;POINT(344469 4551807)` com a EWKT. Aquest prefix és útil dins d'un contracte que el reconeix, però no forma part del WKT simple interoperable de l'OGC i un lector genèric el pot rebutjar. De manera semblant, l'EWKB no s'ha de presentar com si qualsevol lector WKB hagués d'interpretar-ne les marques pròpies {% cite postgisManual364 %}.
 
 Les revisions i implementacions de WKT/WKB tampoc no tracten Z i M exactament igual. Un productor pot escriure `POINT Z (...)`, utilitzar codis de tipus ampliats o mantenir la dimensionalitat en metadades laterals. La prova correcta consisteix a acordar el perfil d'intercanvi i tornar a llegir una mostra `XY`, `XYZ`, `XYM`, multipart, buida i nul·la amb el receptor. Assignar un SRID dins d'una serialització declara una interpretació; no transforma les coordenades ni certifica que el codi sigui l'adequat.
 
@@ -108,7 +108,7 @@ Les revisions i implementacions de WKT/WKB tampoc no tracten Z i M exactament ig
 
 L'escala de captura expressa el nivell de detall coherent amb la font i l'ús previst; no és el nivell de zoom de la pantalla. Ampliar una ortofoto no revela detalls que el sensor no ha registrat. Afegir vèrtexs sobre contorns borrosos només crea precisió aparent.
 
-La representació s'ha de derivar de la finalitat. Un edifici pot ser un punt en un inventari regional, un polígon de petjada en un càlcul d'ocupació o diverses superfícies si es distingeixen cossos constructius. El centreide d'una petjada no és necessàriament l'accés principal, i un punt capturat sobre una etiqueta cartogràfica no és necessàriament el centre geomètric. Per a cada capa cal indicar tant el fenomen com la **referència geomètrica**: centre aproximat, accés, eix, límit visible, petjada o una altra convenció reproduïble.
+La representació s'ha de derivar de la finalitat. Un edifici pot ser un punt en un inventari regional, un polígon de petjada en un càlcul d'ocupació o diverses superfícies si es distingeixen cossos constructius. El centroide d'una petjada no és necessàriament l'accés principal, i un punt capturat sobre una etiqueta cartogràfica no és necessàriament el centre geomètric. Per a cada capa cal indicar tant el fenomen com la **referència geomètrica**: centre aproximat, accés, eix, límit visible, petjada o una altra convenció reproduïble.
 
 L'escala numèrica relaciona una distància a la representació amb la distància al terreny. En una font a `1:5.000`, un mil·límetre representa cinc metres; això ajuda a interpretar el detall dibuixable, però no converteix automàticament cinc metres en l'error de totes les entitats. Una ortofoto digital tampoc no té una escala fixa mentre es visualitza. Té una mida de píxel al terreny, un procés d'ortorectificació i unes especificacions d'exactitud. QGIS permet ampliar-la a `1:100`, però la informació original no augmenta.
 
@@ -175,21 +175,40 @@ Les tres capes de la micropràctica han d'estar separades perquè tenen unitats 
 
 ## Captura i edició controlades
 
-L'**ajust automàtic** (*snapping*) aproxima un vèrtex a un vèrtex o segment existent dins d'una tolerància d'interacció. El **traçat** reutilitza un recorregut geomètric existent. L'**edició topològica** permet moure de manera coordinada elements que comparteixen un límit. Són mecanismes diferents i cap d'ells assegura que s'hagi triat l'objecte correcte.
+Ajust automàtic (*snapping*)
+: Aproxima un vèrtex a un vèrtex o segment existent dins d'una tolerància d'interacció.
+
+Traçat
+: Reutilitza un recorregut geomètric existent entre un punt inicial i un punt final.
+
+Edició topològica
+: Permet moure de manera coordinada elements que comparteixen un límit o un node.
+
+Són mecanismes diferents i cap d'ells assegura que s'hagi triat l'objecte correcte.
 
 La configuració ha de respondre a les regles de cada capa. Ajustar els extrems d'un carril bici als extrems d'altres trams pot preservar la connectivitat; ajustar-los a qualsevol vèrtex d'edifici pròxim seria un error encara que la tolerància fos petita. Per als fanals, l'ajust a altres fanals podria crear duplicats coincidents, mentre que l'ajust a un inventari oficial pot ser útil si la tasca consisteix a actualitzar-ne els atributs. Cal declarar quines capes actuen com a destinació, si s'ajusta a vèrtexs, segments o tots dos i quina relació s'espera obtenir.
 
 La tolerància d'ajust s'ha d'adaptar a la densitat d'entitats, l'escala de treball i la pantalla. Un valor massa petit deixa microbuits; un valor massa gran pot connectar amb una entitat equivocada. Durant la captura convé revisar lots petits, emplenar els atributs quan la font encara és present i registrar les excepcions.
 
-Una tolerància en píxels controla una distància d'interacció a la pantalla i manté una sensació semblant quan canvia el zoom, però representa distàncies diferents al terreny. Una tolerància en unitats de mapa representa una distància territorial estable i ocupa més o menys píxels segons l'escala. Cap de les dues és una tolerància d'exactitud. S'ha de provar en la zona més densa de la capa i comprovar l'indicador d'ajust abans de confirmar cada vèrtex; acceptar el punt proposat sense identificar-ne la capa i l'entitat pot crear una connexió falsa.
+Una tolerància en píxels controla una distància d'interacció a la pantalla i manté una sensació semblant quan canvia el zoom, però representa distàncies diferents al terreny. Una tolerància en unitats de mapa representa una distància territorial estable i ocupa més o menys píxels segons l'escala. S'ha de provar en la zona més densa de la capa i comprovar l'indicador d'ajust abans de confirmar cada vèrtex; acceptar el punt proposat sense identificar-ne la capa i l'entitat pot crear una connexió falsa.
+
+>>>> La tolerància d'ajust no és exactitud posicional. Només estableix a quina distància interactiva QGIS proposa una coincidència; no mesura l'error de la font ni justifica que dos objectes siguin el mateix.
 
 L'ajust modifica la coordenada que s'introdueix durant una acció interactiva. No repara retroactivament els vèrtexs antics, no força que una línia tingui un node en tots els encreuaments i no manté per sempre la relació després d'una edició posterior. Si dues línies s'han d'unir, cal comprovar que comparteixen exactament l'extrem; si una nova línia acaba sobre el segment interior d'una altra, el model de xarxa pot exigir també partir aquesta altra línia o inserir-hi un node.
 
 El **traçat** calcula un camí sobre segments existents entre un punt inicial i un de final i n'incorpora els vèrtexs a la geometria nova. Evita redibuixar un límit sinuós, però hereta qualsevol error o excés de detall de la font. També pot seguir el camí equivocat quan hi ha bifurcacions o geometries molt pròximes. Abans de tancar la nova entitat cal revisar el recorregut complet, i després cal verificar que la coincidència es manté amb una prova geomètrica, no només amb una línia visualment superposada.
 
-L'**edició topològica** de QGIS ajuda a mantenir coincidències ja existents quan es mouen vèrtexs compartits. No converteix una capa spaghetti en una xarxa formal, no crea una taula de nodes i no aplica totes les regles territorials. L'opció d'evitar solapaments pot retallar la part d'un polígon nou que envaeix determinades capes, però només és apropiada quan el model prohibeix realment aquests solapaments. Si dues cobertures temporals o dos drets territorials poden coexistir, activar-la alteraria informació legítima.
+L'**edició topològica** de QGIS ajuda a mantenir coincidències ja existents quan es mouen vèrtexs compartits. No converteix una capa de geometries independents (*spaghetti*) en una xarxa formal, no crea una taula de nodes i no aplica totes les regles territorials. L'opció d'evitar solapaments pot retallar la part d'un polígon nou que envaeix determinades capes, però només és apropiada quan el model prohibeix realment aquests solapaments. Si dues cobertures temporals o dos drets territorials poden coexistir, activar-la alteraria informació legítima.
 
 Les eines de digitalització avançada afegeixen restriccions geomètriques com distància, angle, paral·lelisme o perpendicularitat. Serveixen per construir una forma segons mesures o alineacions conegudes; no fan més exacta una vora que només s'intueix en una ortofoto. Introduir un angle recte és defensable per a una placa rectangular ben identificada o a partir d'un plànol fiable, però no perquè l'edifici «sembli» ortogonal a una escala insuficient.
+
+La interfície separa aquestes funcions en controls diferents. La barra d'**Autoensamblat** configura a quines capes i components es pot ajustar el cursor; la de **Digitalització** inicia i desa l'edició o captura entitats; la de **Digitalització avançada** agrupa transformacions i tècniques addicionals; i el panell homònim permet imposar coordenades, distàncies i angles durant una captura. Fer visibles els quatre elements ajuda a localitzar-los, però encara cal decidir quins són pertinents per a la regla que s'aplica.
+
+![Interfície de QGIS amb les barres d'Autoensamblat, Digitalització i Digitalització avançada i el panell de Digitalització avançada identificats]({{ site.baseurl }}/assets/img/qgis/qgis-digitizing-tools.png "Les barres donen accés a famílies d'accions diferents; els controls del panell s'activen en iniciar una captura editable. Veure una eina no demostra que la geometria compleixi la regla del projecte."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
+
+Per treballar amb distàncies i angles territorials, la pràctica utilitza un CRS projectat adequat, `EPSG:25831`. El panell de digitalització avançada no s'ha d'interpretar com una calculadora mètrica sobre longitud i latitud: QGIS en limita les restriccions quan el llenç treballa amb coordenades geogràfiques. Canviar el CRS del projecte tampoc no millora una font ni transforma mesures aproximades en observacions exactes.
+
+Els complements que ofereixen segmentació o assistència automàtica, incloses funcions presentades com a intel·ligència artificial, poden servir per explorar possibilitats, però no formen part del flux obligatori del curs ni constitueixen una recomanació institucional. Abans d'utilitzar-ne un cal revisar manteniment, llicència, dades enviades a tercers, model emprat i possibilitat de reproduir i validar el resultat. La sortida continua sent una hipòtesi que s'ha de contrastar amb la font i les mateixes regles que una captura manual.
 
 ### Preparar una sessió d'edició
 
@@ -210,6 +229,8 @@ Els atributs s'han d'emplenar mentre la font i el criteri utilitzat encara són 
 #### Punts observats amb GNSS
 
 Una coordenada capturada al camp pot provenir d'un receptor d'un **sistema global de navegació per satèl·lit** (GNSS, de l'anglès *Global Navigation Satellite System*). En l'ús corrent, *GPS* s'empra sovint com a nom genèric, però GPS és el sistema operat pels Estats Units; Galileo, GLONASS i BeiDou són altres sistemes GNSS. Cadascun disposa d'una constel·lació, i molts receptors utilitzen senyals de diversos sistemes alhora. Aquesta disponibilitat pot millorar la geometria de l'observació, però no converteix la coordenada mostrada en una posició exacta ni elimina la necessitat d'una convenció de captura {% cite euspaWhatGNSS2026 %}.
+
+El receptor estima una **pseudodistància** multiplicant el temps aparent de propagació del senyal per la velocitat de la llum. Se'n diu pseudo perquè, entre altres errors, el rellotge del receptor no està perfectament sincronitzat amb els rellotges dels satèl·lits: aquest biaix temporal comú es tradueix en un error de distància. En el cas ideal, una solució tridimensional ha de determinar quatre incògnites —les coordenades X, Y i Z i el biaix del rellotge— i necessita almenys quatre mesures simultànies de pseudodistància a satèl·lits diferents. Mesures addicionals aporten redundància i poden millorar l'estimació, però no eliminen per si soles els errors de propagació o recepció {% cite sanzGNSSBasicObservables2011 %}.
 
 La incertesa depèn de la geometria dels satèl·lits, que es pot resumir amb indicadors de dilució de la precisió (DOP), dels retards atmosfèrics, dels obstacles, de la vegetació i els edificis, dels errors de recepció múltiple causats per senyals reflectits, del receptor i l'antena, de la durada de l'observació i del mètode de correcció {% cite gpsGovAccuracy2026 sanzGNSSBasicObservables2011 %}. Un valor DOP favorable descriu només la geometria disponible i no és, tot sol, una estimació de l'error final. Un nombre elevat de satèl·lits o molts decimals tampoc no garanteixen exactitud. La qualitat s'ha de valorar respecte de l'escala i la finalitat de l'inventari, repetint o contrastant observacions amb una referència independent quan l'ús ho exigeixi.
 
@@ -249,13 +270,22 @@ Per conservar traçabilitat no cal crear una còpia completa després de cada cl
 
 Una geometria pot ser vàlida de manera individual i incomplir el model territorial. Dos polígons municipals sense autointerseccions poden deixar una escletxa entre ells; dues línies vàlides poden quedar desconnectades; un punt pot ser correcte però situar-se fora de la zona on el model l'admet.
 
-La **validesa geomètrica** avalua si un valor geomètric compleix les regles estructurals del seu tipus. En un polígon, per exemple, els anells han de delimitar un interior interpretable, els forats han de quedar dins de l'exterior i les parts no s'han de solapar de manera incompatible. La **simplicitat** és una propietat relacionada però diferent, especialment útil per a línies: una línia autointersectada no és simple. Una geometria pot ser ben formada i simple i continuar tenint una coordenada posicionalment equivocada.
+Validesa geomètrica
+: Avalua si un valor geomètric compleix les regles estructurals del seu tipus. En un polígon, els anells han de delimitar un interior interpretable, els forats han de quedar dins de l'exterior i les parts no s'han de solapar de manera incompatible.
 
-La **topologia** descriu relacions que no depenen de distàncies exactes, com separació, contacte, intersecció, contenció o solapament. El model de nou interseccions dimensionalment estès, DE-9IM, compara l'interior, la frontera i l'exterior de dues geometries i registra si cada intersecció és buida o té dimensió 0, 1 o 2. Predicats com `intersects`, `touches`, `within`, `contains`, `crosses`, `overlaps`, `equals` i `disjoint` resumeixen determinats patrons d'aquesta matriu {% cite ogcSimpleFeatures2011 %}.
+Simplicitat
+: Propietat relacionada però diferent, especialment útil per a línies; una línia autointersectada no és simple.
+
+Topologia
+: Descriu relacions que no depenen de distàncies exactes, com separació, contacte, intersecció, contenció o solapament.
+
+Una geometria pot ser vàlida i simple i continuar tenint una coordenada posicionalment equivocada. El model de nou interseccions dimensionalment estès, DE-9IM, compara l'interior, la frontera i l'exterior de dues geometries i registra si cada intersecció és buida o té dimensió 0, 1 o 2. Predicats com `intersects`, `touches`, `within`, `contains`, `crosses`, `overlaps`, `equals` i `disjoint` resumeixen determinats patrons d'aquesta matriu {% cite ogcSimpleFeatures2011 %}.
 
 El predicat s'ha d'escollir segons la frontera. Un punt estrictament dins d'un polígon compleix `within`; un punt sobre la vora pot complir `touches`, però no necessàriament `within`. `intersects` és més ampli perquè inclou qualsevol punt compartit. `overlaps` no és un sinònim general d'intersecció: s'aplica quan geometries de la mateixa dimensió comparteixen una part de l'interior i cap no conté completament l'altra. Aquestes diferències expliquen resultats aparentment contradictoris en seleccions espacials.
 
 Una **regla topològica de conjunt** converteix una relació en un requisit del model. «Els polígons no s'han de solapar» compara entitats de la mateixa capa; «els fanals han de quedar coberts per l'àmbit municipal» compara dues capes; «els extrems dels trams han de coincidir excepte en finals justificats» combina geometria i atributs. El programari pot detectar candidats, però la definició de la regla i de les excepcions és responsabilitat del projecte.
+
+![Quatre casos de captura vectorial: una escletxa i un solapament entre polígons, dos extrems de xarxa pròxims però desconnectats i un conjunt correcte amb frontera i node compartits]({{ site.baseurl }}/assets/quarto/04-model-vectorial-digitalitzacio/topology-capture-errors.qmd "La proximitat visual no prova una relació topològica: els buits, els solapaments i els extrems desconnectats s'han de detectar amb regles del model, mentre que una frontera o un node correctes comparteixen coordenades exactes."){: data-figure-width-web="52rem" data-figure-width-pdf="100%"}
 
 ::: table "Regles possibles segons el model"
 | Capa o relació | Regla candidata | Excepció que cal preveure | Control complementari |
@@ -263,11 +293,22 @@ Una **regla topològica de conjunt** converteix una relació en un requisit del 
 | Partició administrativa | Polígons sense solapaments ni buits dins de l'àmbit | Exclavaments o àrees sense assignació documentades | Comparar la unió amb el límit oficial |
 | Instal·lacions independents | Polígons sense duplicats ni solapaments dins d'una mateixa coberta | Elements a cotes diferents o dates diferents | Revisar identificador, Z i data |
 | Xarxa de carrils | Extrems connectats als nodes funcionals | Inicis, finals i interrupcions reals | Classificar extrems i revisar sentit |
-| Fanals i municipi | Punts coberts per l'àmbit de treball | Elements exactament sobre el límit | Contrastar amb font i tolerància posicional |
+| Torres i trams de cable | Cada extrem queda cobert per una torre i cada torre funcional divideix els trams | Terminals, passos sense connexió o elements a cotes diferents | Extreure extrems, creuar capes i comparar identificadors |
+| Fanals i municipi | Punts estrictament interiors a l'àmbit de treball | Elements sobre el límit acceptats per la convenció del projecte | Contrastar amb font i tolerància posicional |
 | Plaques i cobertes | Plaques cobertes per una coberta de referència | Desajust admissible entre fonts de dates diferents | Quantificar distància i revisar la imatge |
 :::
 
+Les regles poden relacionar capes diferents. En una xarxa aèria simplificada, una capa puntual representa les torres i una capa lineal, els trams de cable. Cada extrem d'un tram ha de coincidir amb una torre, excepte en terminals documentats; si una torre intermèdia representa un canvi de connectivitat, el cable s'hi ha de dividir en dos trams. Un punt pròxim a l'extrem o dibuixat sobre una línia contínua no compleix necessàriament aquests contractes.
+
+![Relacions entre una capa puntual de torres i una capa lineal de trams: extrems coincidents, segmentació en una torre intermèdia i dos candidats a error]({{ site.baseurl }}/assets/quarto/04-model-vectorial-digitalitzacio/network-cross-layer-topology.qmd "La validació entre capes ha de comprovar tant que cada extrem queda cobert per una torre com que les torres funcionals divideixen el cable en trams; la coincidència visual no substitueix aquestes dues proves."){: data-figure-width-web="54rem" data-figure-width-pdf="100%"}
+
+Aquest control necessita més d'un predicat. Es poden extreure els extrems de les línies i comprovar-ne la cobertura per punts, però també cal detectar torres que cauen sobre l'interior d'un tram i decidir si l'han de segmentar. Les coordenades XY tampoc no expressen per si soles circuits, nivells o estat de servei: aquestes relacions requereixen atributs, identificadors i excepcions explícites.
+
 Un conjunt *spaghetti* emmagatzema cada geometria independentment. Dues línies poden compartir coordenades, però no hi ha necessàriament un node persistent que mantingui la relació; dos polígons poden repetir una frontera sencera. L'ajust i l'edició topològica ajuden a conservar coincidències durant la captura, però no transformen aquest emmagatzematge en un model topològic explícit d'arcs, nodes i cares. Aquesta diferència és rellevant quan es promet manteniment automàtic de connectivitat, no per negar la utilitat de capes simples ben validades.
+
+![Comparació entre geometries independents, amb fronteres i extrems repetits, i una topologia explícita que manté una frontera comuna i arcs relacionats per un node]({{ site.baseurl }}/assets/quarto/04-model-vectorial-digitalitzacio/arc-node-spaghetti.qmd "En un conjunt spaghetti les coincidències s'han de conservar i validar entre geometries independents; en un model topològic explícit, arcs, nodes i cares tenen identitat i mantenen les relacions declarades."){: data-figure-width-web="54rem" data-figure-width-pdf="100%"}
+
+No són dos nivells de qualitat d'un mateix fitxer. Les geometries simples són adequades per a moltes capes de QGIS quan el projecte defineix i valida les relacions necessàries. Altres entorns poden requerir una topologia persistent, regles de xarxa i edició transaccional entre molts actius; [Octave GeoMedia](https://www.octave.com/products/geospatial-intelligence/geomedia) i [GE Vernova Smallworld](https://www.gevernova.com/software/products/geospatial-network-management-smallworld-gis) són exemples de famílies especialitzades on aquests models poden formar part de la gestió corporativa. Esmentar-les no converteix el capítol en formació sobre aquests productes ni implica que una capa GeoPackage senzilla n'hagi de reproduir l'arquitectura.
 
 ::: table "Dimensions diferents del control vectorial"
 | Dimensió | Què comprova | Exemple d'error |
@@ -288,17 +329,21 @@ La validació ha de precedir qualsevol reparació automàtica. `Check validity` 
 
 Un control en QGIS comença amb l'esquema i els recomptes, continua amb la validesa individual i acaba amb les regles entre entitats. L'eina de comprovació de validesa ha de generar una sortida d'entitats vàlides, una d'invàlides i una capa o taula amb la causa i la posició dels errors quan el proveïdor ho permet. El validador topològic s'ha de configurar només amb regles pertinents i executar tant sobre els lots nous com sobre el conjunt final {% cite qgisUserGuide344 %}.
 
-La reparació automàtica no coneix la intenció territorial. Pot dividir un polígon, convertir una sortida en multipart, eliminar components col·lapsats o moure vèrtexs segons el mètode. Abans d'acceptar-la s'han de comparar nombre d'entitats i parts, tipus i dimensionalitat, superfície o longitud, identificadors i regles topològiques. Després cal tornar a executar el mateix control que havia detectat l'error i revisar la zona sobre la font. Si la diferència no es pot justificar, s'ha de restaurar la còpia anterior i corregir manualment o redefinir la font.
+La reparació automàtica pot dividir un polígon, convertir una sortida en multipart, eliminar components col·lapsats o moure vèrtexs segons el mètode. Abans d'acceptar-la s'han de comparar nombre d'entitats i parts, tipus i dimensionalitat, superfície o longitud, identificadors i regles topològiques. Després cal tornar a executar el mateix control que havia detectat l'error i revisar la zona sobre la font. Si la diferència no es pot justificar, s'ha de restaurar la còpia anterior i corregir manualment o redefinir la font.
+
+>>> Una reparació pot tancar tècnicament un anell eliminant una peça estreta i produir una geometria vàlida, però aquella peça podria representar un corredor territorial real. L'eina no coneix la intenció territorial: el canvi només s'accepta després de comparar-lo amb la font i les regles del projecte.
 
 Els errors detectats necessiten un registre mínim amb identificador, regla, ubicació, causa interpretada, acció, responsable i estat. Una excepció acceptada no s'ha d'esborrar del recompte sense explicació: es marca com a justificada i es vincula a una raó, com un final real de xarxa. Aquesta separació entre errors oberts, corregits i excepcions permet repetir la validació sense discutir de nou cada cas.
 
 ## Un cas de captura a Vila-seca
 
-La demostració combina tres capes creades amb finalitats diferents. Els **fanals** es capturen com a punts a partir d'una observació adequada; els **carrils bici**, com a línies connectades; i les **plaques o conjunts de plaques solars**, com a polígons quan la font permet delimitar-ne la superfície. Les capes comparteixen l'àmbit i el CRS, però no l'esquema ni les regles topològiques.
+La demostració reobre i amplia el mateix projecte extern `projecte_tig.qgz` i el mateix GeoPackage `dades_preparades/projecte_tig.gpkg` iniciats als capítols anteriors; no parteix d'un projecte buit ni crea un contenidor paral·lel. Abans d'editar, cal comprovar que les fonts es resolen, que no hi ha cap capa temporal pendent i que el punt de control incrustat `projecte_tig` del GeoPackage correspon al mateix estat que el fitxer extern.
+
+El cas combina tres capes creades amb finalitats diferents. Els **fanals** es capturen com a punts a partir d'una observació adequada; els **carrils bici**, com a línies connectades; i les **plaques o conjunts de plaques solars**, com a polígons quan la font permet delimitar-ne la superfície. Les capes comparteixen l'àmbit i el CRS, però no l'esquema ni les regles topològiques.
 
 La preparació comença amb una taula de fonts i tres frases d'unitat d'observació. Per als fanals, cada fila representa un suport individual i la posició correspon al peu observat o a la coordenada documentada de l'inventari. Per als carrils, cada fila representa un tram homogeni entre canvis de connectivitat o atributs. Per a les plaques, cada fila pot representar una superfície contínua visible; si es vol representar la instal·lació completa, les peces separades s'agrupen només quan una font permet afirmar que hi pertanyen.
 
-El GeoPackage incorpora tres taules homogènies amb identificadors independents i camps comuns de font i data. Abans de capturar es prova un registre vàlid i un d'invàlid de cada esquema, es configura l'ajust només a les capes necessàries i es fixa una escala de captura compatible amb la font. La zona pilot inclou una cruïlla, una coberta amb ombres i un fanal ambigu per comprovar les tres decisions que no resol l'eina.
+El GeoPackage incorpora tres taules homogènies amb identificadors independents i camps comuns de font i data. Els identificadors es creen com a valors estables, únics i no nuls, i no es recalculen a partir del número de fila, la geometria o una categoria mutable: els capítols posteriors els necessitaran per a unions, diagnòstics i anàlisis. Abans de capturar es prova un registre vàlid i un d'invàlid de cada esquema, es configura l'ajust només a les capes necessàries i es fixa una escala de captura compatible amb la font. La zona pilot inclou una cruïlla, una coberta amb ombres i un fanal ambigu per comprovar les tres decisions que no resol l'eina.
 
 Per als carrils bici, els extrems s'han d'ajustar quan existeix continuïtat física i s'han de mantenir separats quan la infraestructura s'interromp. Per als polígons solars, la generalització ha de ser coherent amb la resolució de la imatge i no ha d'inventar límits ocults. Per als fanals, l'activitat ha d'indicar si la posició prové de camp, d'un inventari o d'una imatge i quina exactitud es pot defensar.
 
@@ -306,7 +351,7 @@ La captura s'organitza per carrers o illes i cada lot es tanca amb una consulta 
 
 El control final combina recompte, identificadors, camps obligatoris, geometries invàlides, duplicats, extrems de xarxa i una mostra contrastada amb la font. Corregir un error obliga a repetir els controls afectats i a registrar la incidència al diari.
 
-La mostra de contrast ha d'incloure casos ordinaris i extrems, no només les entitats més netes. El diari conserva la fitxa de captura, la configuració d'ajust amb unitats, els resultats de validació, les excepcions i una breu interpretació del que cada capa permet analitzar. El mapa final pot mostrar les tres capes, però la verificació es basa en les dades reobertes des del GeoPackage i no en una captura de pantalla del llenç.
+La mostra de contrast ha d'incloure casos ordinaris i extrems, no només les entitats més netes. El diari conserva la fitxa de captura, la configuració d'ajust amb unitats, els resultats de validació, les excepcions i una breu interpretació del que cada capa permet analitzar. Després del control es desa el mateix `projecte_tig.qgz`, s'actualitza el punt de control incrustat `projecte_tig` al mateix GeoPackage i es tanquen i reobren tots dos estats. El mapa final pot mostrar les tres capes, però la verificació es basa en les dades reobertes des del GeoPackage i en la conservació dels identificadors, no en una captura de pantalla del llenç.
 
 ## Activitats
 
@@ -325,12 +370,12 @@ La segona micropràctica lliurable aplica el model de punts, línies i polígons
 ::: table "Contracte de la micropràctica 2"
 | Component | Requisit |
 | --- | --- |
-| Entrades | Font oficial o observació documentada, límit de treball i criteris de captura |
+| Entrades | `projecte_tig.qgz` i `dades_preparades/projecte_tig.gpkg` existents, font oficial o observació documentada, límit de treball i criteris de captura |
 | Operacions mínimes | Dissenyar tres esquemes, configurar dominis i ajust, capturar punts, línies i polígons i executar controls geomètrics i topològics |
-| Resultats | Tres capes dins del GeoPackage, amb identificadors i atributs complets |
+| Resultats | Tres capes noves dins del mateix GeoPackage, amb identificadors estables i atributs complets |
 | Evidències del diari | Finalitat de cada capa, font, escala, esquema, regles, incidències i correccions |
 | Comprovacions | Identificadors únics, geometries vàlides, connectivitat justificada, absència de solapaments no admesos i mostra contrastada |
-| Fitxers que cal conservar | GeoPackage actualitzat, projecte `.qgz` i diari amb la taula de controls |
+| Fitxers que cal conservar | El mateix GeoPackage actualitzat amb el punt de control incrustat `projecte_tig`, `projecte_tig.qgz` actualitzat i diari amb la taula de controls |
 :::
 
 El cas resolt de Vila-seca utilitzarà fanals, carrils bici i plaques solars. El lliurament ha de respondre al municipi assignat i no reproduir sense comprovació les geometries de la demostració.

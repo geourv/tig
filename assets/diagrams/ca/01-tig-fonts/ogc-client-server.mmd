@@ -1,4 +1,0 @@
-flowchart TB
-  request["Client SIG<br/>QGIS prepara l'operació<br/>i els paràmetres"] -->|Petició HTTP| service["Servidor geogràfic<br/>valida i executa<br/>el contracte públic"]
-  data[("Dades publicades")] -->|Lectura o consulta| service
-  service -->|Resposta HTTP| response["El client rep<br/>WMS: representació renderitzada<br/>WMTS: tessel·la d'una matriu declarada<br/>WFS: representació d'entitats"]

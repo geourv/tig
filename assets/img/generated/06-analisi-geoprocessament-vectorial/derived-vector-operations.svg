@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1000" viewBox="0 0 1500 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Comparació d’operacions que deriven geometries vectorials</title>
+  <desc id="desc">Quatre exemples esquemàtics mostren que el centroide d’un polígon còncau pot quedar-ne fora mentre el punt sobre la superfície queda dins; una envolupant convexa encercla un conjunt de punts; una caixa alineada amb els eixos és diferent del rectangle mínim orientat; i la distància entre dos polígons correspon al segment més curt que els uneix.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, 'Liberation Sans', sans-serif; }
+      .heading { font-size: 29px; font-weight: 700; fill: #1d2a32; }
+      .label { font-size: 27px; font-weight: 700; fill: #33434c; }
+      .legend { font-size: 26px; font-weight: 700; fill: #33434c; }
+      .separator { stroke: #c5d0d5; stroke-width: 2; }
+      .source-area { fill: #76aec5; fill-opacity: .26; stroke: #145f80; stroke-width: 5; }
+      .area-a { fill: #dc6b4f; fill-opacity: .25; stroke: #a63f29; stroke-width: 5; }
+      .area-b { fill: #58a5c5; fill-opacity: .25; stroke: #145f80; stroke-width: 5; }
+      .surface-point { fill: #287a57; stroke: #ffffff; stroke-width: 4; }
+      .centroid { fill: #ffffff; stroke: #b84a2f; stroke-width: 5; }
+      .centroid-cross { stroke: #b84a2f; stroke-width: 4; }
+      .leader { fill: none; stroke: #687780; stroke-width: 2.5; }
+      .hull { fill: #73ad84; fill-opacity: .18; stroke: #287a57; stroke-width: 5; }
+      .input-point { fill: #b84a2f; stroke: #ffffff; stroke-width: 3; }
+      .axis-envelope { fill: none; stroke: #687780; stroke-width: 4; stroke-dasharray: 12 8; }
+      .oriented-envelope { fill: none; stroke: #b84a2f; stroke-width: 5; }
+      .shortest { fill: none; stroke: #684c83; stroke-width: 6; }
+      .tick { stroke: #684c83; stroke-width: 4; }
+      .distance { font-size: 27px; font-weight: 700; fill: #684c83; }
+      .label-a { fill: #a63f29; }
+      .label-b { fill: #145f80; }
+    </style>
+  </defs>
+  <line x1="750" y1="25" x2="750" y2="975" class="separator"/>
+  <line x1="25" y1="500" x2="1475" y2="500" class="separator"/>
+  <text x="45" y="55" class="heading">Centroide i punt sobre la superfície</text>
+  <polygon points="90.0,120.0 430.0,120.0 430.0,420.0 350.0,420.0 350.0,205.0 170.0,205.0 170.0,420.0 90.0,420.0" class="source-area"/>
+  <line x1="260" y1="160" x2="472" y2="151" class="leader"/>
+  <circle cx="260" cy="160" r="11" class="surface-point"/>
+  <text x="485" y="159" class="label">punt sobre la superfície</text>
+  <line x1="260.0" y1="244.0" x2="472" y2="287" class="leader"/>
+  <circle cx="260.0" cy="244.0" r="13" class="centroid"/>
+  <line x1="252.0" y1="244.0" x2="268.0" y2="244.0" class="centroid-cross"/>
+  <line x1="260.0" y1="236.0" x2="260.0" y2="252.0" class="centroid-cross"/>
+  <text x="485" y="296" class="label">centroide: fora</text>
+  <text x="795" y="55" class="heading">Envolupant convexa</text>
+  <polygon points="840.0,340.0 900.0,160.0 1160.0,120.0 1385.0,205.0 1340.0,390.0 1020.0,420.0" class="hull"/>
+  <circle cx="840" cy="340" r="10" class="input-point"/>
+  <circle cx="900" cy="160" r="10" class="input-point"/>
+  <circle cx="930" cy="325" r="10" class="input-point"/>
+  <circle cx="1040" cy="235" r="10" class="input-point"/>
+  <circle cx="1020" cy="420" r="10" class="input-point"/>
+  <circle cx="1160" cy="120" r="10" class="input-point"/>
+  <circle cx="1210" cy="250" r="10" class="input-point"/>
+  <circle cx="1385" cy="205" r="10" class="input-point"/>
+  <circle cx="1340" cy="390" r="10" class="input-point"/>
+  <circle cx="1150" cy="355" r="10" class="input-point"/>
+  <circle cx="830" cy="465" r="9" class="input-point"/>
+  <text x="850" y="473" class="label">entrades</text>
+  <line x1="1060" y1="465" x2="1125" y2="465" class="hull"/>
+  <text x="1142" y="473" class="label">envolupant</text>
+  <text x="45" y="555" class="heading">Envolupants rectangulars</text>
+  <rect x="189.4" y="645.1" width="341.1" height="239.8" class="axis-envelope"/>
+  <polygon points="189.4,775.3 481.8,645.1 530.6,754.7 425.5,801.5 403.1,751.3 320.9,787.9 343.3,838.1 238.2,884.9" class="source-area"/>
+  <polygon points="189.4,775.3 481.8,645.1 530.6,754.7 238.2,884.9" class="oriented-envelope"/>
+  <line x1="55" y1="951" x2="115" y2="951" class="axis-envelope"/>
+  <text x="132" y="959" class="legend">envolupant (eixos)</text>
+  <line x1="430" y1="951" x2="490" y2="951" class="oriented-envelope"/>
+  <text x="507" y="959" class="legend">rectangle orientat</text>
+  <text x="795" y="555" class="heading">Línia més curta i distància</text>
+  <polygon points="835.0,685.0 980.0,645.0 1065.0,780.0 965.0,900.0 835.0,840.0" class="area-a"/>
+  <polygon points="1240.0,690.0 1435.0,720.0 1415.0,900.0 1240.0,870.0" class="area-b"/>
+  <text x="895" y="760" class="label label-a">A</text>
+  <text x="1350" y="790" class="label label-b">B</text>
+  <line x1="1065.0" y1="780.0" x2="1240.0" y2="780.0" class="shortest"/>
+  <line x1="1065.0" y1="769.0" x2="1065.0" y2="791.0" class="tick"/>
+  <line x1="1240.0" y1="769.0" x2="1240.0" y2="791.0" class="tick"/>
+  <text x="1152.5" y="762.0" text-anchor="middle" class="distance">d</text>
+</svg>

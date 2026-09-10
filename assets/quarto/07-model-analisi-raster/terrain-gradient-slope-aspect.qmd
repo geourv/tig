@@ -1,0 +1,218 @@
+---
+title: "Gradient local, pendent i orientació"
+lang: ca
+ref: terrain_gradient_slope_aspect
+format:
+  gfm:
+    output-file: terrain-gradient-slope-aspect.generated.md
+execute:
+  echo: false
+  warning: false
+  message: false
+execute-dir: project
+unaltraweb_compute:
+  engine: python
+  mode: figure
+  outputs:
+    - assets/img/generated/07-model-analisi-raster/terrain-gradient-slope-aspect.svg
+---
+
+```{python}
+from math import atan, atan2, degrees, hypot, sin, cos, radians
+from pathlib import Path
+
+
+def find_project_root(start):
+    path = Path(start).resolve()
+    for candidate in (path, *path.parents):
+        if (candidate / ".unaltraweb" / "computations.yml").is_file():
+            return candidate
+    raise RuntimeError("Project root not found: missing .unaltraweb/computations.yml")
+
+
+def ca_number(value, digits=1):
+    return f"{value:.{digits}f}".replace(".", ",")
+
+
+cell_metres = 25.0
+elevations = [
+    [128.0, 126.0, 124.0],
+    [124.0, 122.0, 120.0],
+    [120.0, 118.0, 116.0],
+]
+
+# Rows run north to south and columns west to east. These central differences
+# are illustrative; GIS providers may use a different 3 x 3 estimator.
+dz_dx = (elevations[1][2] - elevations[1][0]) / (2 * cell_metres)
+dz_dy = (elevations[0][1] - elevations[2][1]) / (2 * cell_metres)
+gradient = hypot(dz_dx, dz_dy)
+slope_degrees = degrees(atan(gradient))
+slope_percent = 100 * gradient
+downhill_east = -dz_dx
+downhill_north = -dz_dy
+aspect_degrees = degrees(atan2(downhill_east, downhill_north)) % 360
+
+profile_distance = 50.0
+profile_drop = gradient * profile_distance
+
+assert round(dz_dx, 2) == -0.08
+assert round(dz_dy, 2) == 0.16
+assert round(slope_degrees, 1) == 10.1
+assert round(slope_percent, 1) == 17.9
+assert round(aspect_degrees, 1) == 153.4
+
+width, height = 1000, 1450
+grid_x, grid_y, cell = 70, 105, 180
+centre_x = grid_x + 1.5 * cell
+centre_y = grid_y + 1.5 * cell
+arrow_length = 190
+downhill_length = hypot(downhill_east, downhill_north)
+arrow_dx = arrow_length * downhill_east / downhill_length
+arrow_dy = -arrow_length * downhill_north / downhill_length
+arrow_end_x = centre_x + arrow_dx
+arrow_end_y = centre_y + arrow_dy
+
+arc_radius = 105
+arc_start_x = centre_x
+arc_start_y = centre_y - arc_radius
+arc_end_x = centre_x + arc_radius * sin(radians(aspect_degrees))
+arc_end_y = centre_y - arc_radius * cos(radians(aspect_degrees))
+
+profile_x1, profile_y1 = 115, 925
+pixels_per_metre = 12
+profile_x2 = profile_x1 + profile_distance * pixels_per_metre
+profile_y2 = profile_y1 + profile_drop * pixels_per_metre
+angle_radius = 135
+angle_end_x = profile_x1 + angle_radius * cos(radians(slope_degrees))
+angle_end_y = profile_y1 + angle_radius * sin(radians(slope_degrees))
+
+palette = {
+    116: "#edf4f6",
+    118: "#dcebef",
+    120: "#c5dfe6",
+    122: "#a7ced9",
+    124: "#83b7c7",
+    126: "#5d99ad",
+    128: "#39778e",
+}
+
+svg = [
+    f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
+    '  <title id="title">Un gradient local determina el pendent i l’orientació</title>',
+    (
+        '  <desc id="desc">Una graella de nou elevacions separades vint-i-cinc metres mostra el màxim descens cap al sud-est. '
+        f'El gradient calculat produeix un pendent de {ca_number(slope_degrees)} graus, equivalent al {ca_number(slope_percent)} per cent, '
+        f'i una orientació de {ca_number(aspect_degrees)} graus des del nord. Una comparació final distingeix una cel·la plana de NoData.</desc>'
+    ),
+    '  <defs>',
+    '    <style>',
+    "      text { font-family: Arial, 'Liberation Sans', sans-serif; }",
+    '      .heading { fill: #21313c; font-size: 40px; font-weight: 700; }',
+    '      .label { fill: #344851; font-size: 30px; }',
+    '      .key { fill: #176486; font-size: 32px; font-weight: 700; }',
+    '      .direction-label { fill: #ad5a35; font-size: 30px; font-weight: 700; }',
+    '      .value { fill: #1f333c; font-size: 34px; font-weight: 700; }',
+    '      .value-light { fill: #ffffff; font-size: 34px; font-weight: 700; }',
+    '      .grid-cell { stroke: #ffffff; stroke-width: 4; }',
+    '      .centre-cell { stroke: #ad5a35; stroke-width: 7; }',
+    '      .direction { fill: none; stroke: #ad5a35; stroke-width: 7; marker-end: url(#arrow-orange); }',
+    '      .aspect-arc { fill: none; stroke: #176486; stroke-width: 5; marker-end: url(#arrow-blue); }',
+    '      .angle-sector { fill: #c5dfe6; fill-opacity: 0.55; stroke: #176486; stroke-width: 4; }',
+    '      .axis { fill: none; stroke: #647780; stroke-width: 4; }',
+    '      .guide { fill: none; stroke: #91a1a8; stroke-width: 3; stroke-dasharray: 9 8; }',
+    '      .profile { fill: none; stroke: #ad5a35; stroke-width: 7; marker-end: url(#arrow-orange); }',
+    '      .divider { stroke: #c5d0d5; stroke-width: 2; }',
+    '      .flat { fill: #dcebef; stroke: #7f939c; stroke-width: 3; }',
+    '      .nodata { fill: url(#diagonal); stroke: #7f939c; stroke-width: 3; }',
+    '    </style>',
+    '    <marker id="arrow-orange" markerWidth="20" markerHeight="20" refX="18" refY="10" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 20 20">',
+    '      <path d="M0,0 L0,20 L20,10 z" fill="#ad5a35"/>',
+    '    </marker>',
+    '    <marker id="arrow-blue" markerWidth="18" markerHeight="18" refX="16" refY="9" orient="auto" markerUnits="userSpaceOnUse" viewBox="0 0 18 18">',
+    '      <path d="M0,0 L0,18 L18,9 z" fill="#176486"/>',
+    '    </marker>',
+    '    <pattern id="diagonal" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">',
+    '      <rect width="18" height="18" fill="#eef1f2"/>',
+    '      <line x1="0" y1="0" x2="0" y2="18" stroke="#9ba9af" stroke-width="7"/>',
+    '    </pattern>',
+    '  </defs>',
+    f'  <rect width="{width}" height="{height}" fill="#f7f9fa"/>',
+    '  <line x1="45" y1="760" x2="955" y2="760" class="divider"/>',
+    '  <line x1="45" y1="1170" x2="955" y2="1170" class="divider"/>',
+    '  <text x="340" y="58" text-anchor="middle" class="heading">Gradient local en planta</text>',
+]
+
+for row, row_values in enumerate(elevations):
+    for col, value in enumerate(row_values):
+        x = grid_x + col * cell
+        y = grid_y + row * cell
+        css_class = "centre-cell" if (row, col) == (1, 1) else "grid-cell"
+        text_class = "value-light" if value >= 126 else "value"
+        svg.append(
+            f'  <rect x="{x}" y="{y}" width="{cell}" height="{cell}" fill="{palette[int(value)]}" class="{css_class}"/>'
+        )
+        value_y = centre_y - 36 if (row, col) == (1, 1) else y + cell / 2 + 12
+        svg.append(f'  <text x="{x + cell / 2}" y="{value_y}" text-anchor="middle" class="{text_class}">{int(value)} m</text>')
+
+svg.extend([
+    f'  <line x1="{centre_x}" y1="{centre_y}" x2="{arrow_end_x:.1f}" y2="{arrow_end_y:.1f}" class="direction"/>',
+    f'  <path d="M {arc_start_x:.1f} {arc_start_y:.1f} A {arc_radius} {arc_radius} 0 0 1 {arc_end_x:.1f} {arc_end_y:.1f}" class="aspect-arc"/>',
+    '  <line x1="790" y1="245" x2="790" y2="135" class="axis" marker-end="url(#arrow-blue)"/>',
+    '  <text x="790" y="110" text-anchor="middle" class="key">N</text>',
+    f'  <text x="665" y="325" class="key">aspecte = {ca_number(aspect_degrees)}°</text>',
+    '  <text x="665" y="450" class="direction-label">direcció de</text>',
+    '  <text x="665" y="490" class="direction-label">màxim descens</text>',
+    f'  <line x1="{grid_x}" y1="690" x2="{grid_x + cell}" y2="690" class="axis"/>',
+    f'  <line x1="{grid_x}" y1="677" x2="{grid_x}" y2="703" class="axis"/>',
+    f'  <line x1="{grid_x + cell}" y1="677" x2="{grid_x + cell}" y2="703" class="axis"/>',
+    f'  <text x="{grid_x + cell / 2}" y="735" text-anchor="middle" class="label">25 m</text>',
+    f'  <text x="360" y="710" class="label">dz/dx = {ca_number(dz_dx, 2)}</text>',
+    f'  <text x="660" y="710" class="label">dz/dy = +{ca_number(dz_dy, 2)}</text>',
+    '  <text x="500" y="815" text-anchor="middle" class="heading">Perfil en el màxim descens</text>',
+    f'  <line x1="{profile_x1}" y1="{profile_y1}" x2="{profile_x2}" y2="{profile_y1}" class="guide"/>',
+    f'  <line x1="{profile_x2}" y1="{profile_y1}" x2="{profile_x2}" y2="{profile_y2:.1f}" class="guide"/>',
+    f'  <path d="M {profile_x1} {profile_y1} L {profile_x1 + angle_radius} {profile_y1} A {angle_radius} {angle_radius} 0 0 1 {angle_end_x:.1f} {angle_end_y:.1f} Z" class="angle-sector"/>',
+    f'  <line x1="{profile_x1}" y1="{profile_y1}" x2="{profile_x2}" y2="{profile_y2:.1f}" class="profile"/>',
+    f'  <text x="{(profile_x1 + profile_x2) / 2}" y="880" text-anchor="middle" class="label">distància horitzontal = {int(profile_distance)} m</text>',
+    f'  <text x="{profile_x2 + 30}" y="{(profile_y1 + profile_y2) / 2 + 10:.1f}" class="label">Δz = −{ca_number(profile_drop, 2)} m</text>',
+    f'  <text x="{profile_x1}" y="905" text-anchor="middle" class="label">122,00 m</text>',
+    f'  <text x="{profile_x2}" y="1080" text-anchor="middle" class="label">{ca_number(122 - profile_drop, 2)} m</text>',
+    f'  <text x="275" y="1005" class="key">{ca_number(slope_degrees)}°</text>',
+    f'  <text x="285" y="1135" text-anchor="middle" class="key">pendent = {ca_number(slope_degrees)}° = {ca_number(slope_percent)} %</text>',
+    f'  <text x="770" y="1135" text-anchor="middle" class="label">mòdul del gradient = {ca_number(gradient, 3)}</text>',
+])
+
+flat_x, flat_y, flat_cell = 45, 1265, 52
+for row in range(3):
+    for col in range(3):
+        x = flat_x + col * flat_cell
+        y = flat_y + row * flat_cell
+        svg.append(f'  <rect x="{x}" y="{y}" width="{flat_cell}" height="{flat_cell}" class="flat"/>')
+
+svg.extend([
+    '  <line x1="515" y1="1195" x2="515" y2="1430" class="divider"/>',
+    f'  <text x="{flat_x + 1.5 * flat_cell}" y="1354" text-anchor="middle" class="key">120 m</text>',
+    '  <text x="40" y="1208" class="key">Cel·la plana:</text>',
+    '  <text x="40" y="1245" class="key">dada vàlida</text>',
+    '  <text x="205" y="1277" class="label">pendent = 0°;</text>',
+    '  <text x="205" y="1309" class="label">sense aspecte</text>',
+    '  <text x="205" y="1341" class="label">estable</text>',
+    '  <text x="205" y="1373" class="label">un llindar justificat</text>',
+    '  <text x="205" y="1405" class="label">en separa les</text>',
+    '  <text x="205" y="1437" class="label">gairebé planes</text>',
+    '  <rect x="545" y="1265" width="156" height="156" class="nodata"/>',
+    '  <text x="623" y="1354" text-anchor="middle" class="key">NoData</text>',
+    '  <text x="545" y="1245" class="key">Valor absent</text>',
+    '  <text x="720" y="1277" class="label">no s’avaluen ni</text>',
+    '  <text x="720" y="1309" class="label">pendent ni</text>',
+    '  <text x="720" y="1341" class="label">aspecte</text>',
+    '  <text x="720" y="1373" class="label">no equival a una</text>',
+    '  <text x="720" y="1405" class="label">superfície plana</text>',
+    '</svg>',
+])
+
+project_root = find_project_root(Path.cwd())
+output = project_root / "assets/img/generated/07-model-analisi-raster/terrain-gradient-slope-aspect.svg"
+output.parent.mkdir(parents=True, exist_ok=True)
+output.write_text("\n".join(svg) + "\n", encoding="utf-8")
+```

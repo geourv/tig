@@ -1,5 +1,22 @@
-flowchart TB
-  request["GetFeature<br/>tipus d'entitat · filtre<br/>format de sortida"] --> server["Servidor WFS"]
-  data[("Dades vectorials")] --> server
-  server --> response["Representació d'entitats<br/>geometries + atributs<br/>en un format anunciat"]
-  server -.-> transaction["Operacions WFS-T opcionals<br/>inserir · modificar · suprimir<br/>amb permisos"]
+%%{init: {
+  "sequence": { "showSequenceNumbers": false }
+}}%%
+sequenceDiagram
+    participant Q as QGIS
+    participant S as Servidor WFS
+    participant D as Dades vectorials
+
+    Q->>S: GetCapabilities
+    S-->>Q: Tipus, operacions i formats
+    Q->>S: DescribeFeatureType
+    S-->>Q: Geometries i camps
+    Q->>S: GetFeature amb filtre i BBOX
+    S->>D: Consulta espacial i temàtica
+    D-->>S: Objectes filtrats
+    S-->>Q: Geometries i atributs
+    opt WFS-T amb autorització
+        Q->>S: Transaction
+        S->>D: Insereix, actualitza o elimina
+        D-->>S: Confirmació o reversió
+        S-->>Q: TransactionResponse
+    end

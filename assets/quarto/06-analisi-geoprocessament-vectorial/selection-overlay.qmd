@@ -33,70 +33,62 @@ def points_attribute(points):
     return " ".join(f"{x},{y}" for x, y in points)
 
 
-width = 1240
-height = 700
-cards = [
+width = 1200
+height = 590
+operations = [
     {
-        "x": 35,
-        "title": "Selecció o extracció",
-        "question": "Quines entitats coincideixen?",
-        "result": "Geometria completa",
-        "fields": "Atributs d’A",
+        "x": 20,
+        "label": "Selecció / extracció",
+        "geometry": "A completa",
+        "attributes": "A",
         "mode": "selection",
     },
     {
-        "x": 430,
-        "title": "Retall (clip)",
-        "question": "Quina part queda dins de B?",
-        "result": "Part interior a B",
-        "fields": "Atributs d’A",
+        "x": 420,
+        "label": "Retall (clip)",
+        "geometry": "A ∩ B",
+        "attributes": "A",
         "mode": "clip",
     },
     {
-        "x": 825,
-        "title": "Intersecció",
-        "question": "Quina part comparteixen A i B?",
-        "result": "Part comuna A ∩ B",
-        "fields": "Atributs d’A i B",
+        "x": 820,
+        "label": "Intersecció",
+        "geometry": "A ∩ B",
+        "attributes": "A + B",
         "mode": "intersection",
     },
 ]
 
 svg = [
-    f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
-    '  <title id="title">Diferència entre selecció espacial, retall i intersecció</title>',
-    '  <desc id="desc">Tres panells parteixen de la mateixa línia A que travessa el polígon B. La selecció conserva la línia completa, el retall conserva només el tram interior i la intersecció conserva el mateix tram però combina els atributs de les dues capes.</desc>',
+    f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="selection-title selection-desc">',
+    '  <title id="selection-title">Selecció, retall i intersecció de les mateixes geometries</title>',
+    '  <desc id="selection-desc">Comparació en tres columnes d’una línia A que travessa un polígon B. La selecció o extracció conserva tota la línia A i els seus atributs; el retall conserva A intersecció B i els atributs d’A; la intersecció conserva la mateixa part comuna i combina els atributs d’A i B.</desc>',
     '  <defs>',
     '    <style>',
-    "      .bg { fill: #f5f7f8; }",
-    "      .card { fill: #ffffff; stroke: #c8d3d9; stroke-width: 2; }",
     "      text { font-family: Arial, 'Liberation Sans', sans-serif; }",
-    "      .title { font-size: 34px; font-weight: 700; fill: #17202a; }",
-    "      .subtitle { font-size: 22px; fill: #52616b; }",
-    "      .heading { font-size: 25px; font-weight: 700; fill: #17202a; }",
-    "      .body { font-size: 22px; fill: #33434c; }",
-    "      .small { font-size: 22px; font-weight: 700; fill: #33434c; }",
-    "      .map { fill: #f8fafb; stroke: #d9e1e5; stroke-width: 1.5; }",
-    "      .mask { fill: #76b7d8; fill-opacity: .34; stroke: #2878a5; stroke-width: 3; }",
-    "      .mask-context { fill: #76b7d8; fill-opacity: .12; stroke: #7ba8bd; stroke-width: 2; stroke-dasharray: 7 5; }",
-    "      .source { fill: none; stroke: #d65f43; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }",
+    "      .heading { font-size: 27px; font-weight: 700; fill: #17252d; }",
+    "      .layer { font-size: 24px; font-weight: 700; }",
+    "      .key { font-size: 24px; fill: #55656d; }",
+    "      .value { font-size: 24px; font-weight: 700; fill: #17252d; }",
+    "      .rule { stroke: #bdc8cd; stroke-width: 1.5; }",
+    "      .mask { fill: #a9d3e4; fill-opacity: .55; stroke: #2878a5; stroke-width: 2.5; }",
+    "      .mask-context { fill: #dcebf1; fill-opacity: .35; stroke: #7896a4; stroke-width: 2; stroke-dasharray: 7 6; }",
+    "      .source { fill: none; stroke: #c75038; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }",
     "      .source-context { fill: none; stroke: #9aa8af; stroke-width: 5; stroke-linecap: round; }",
-    "      .result { fill: none; stroke: #b53e29; stroke-width: 9; stroke-linecap: round; }",
-    "      .chip-geometry { fill: #e6f1f6; stroke: #8eb9cc; stroke-width: 1.5; }",
-    "      .chip-fields { fill: #f7e8d2; stroke: #d5a768; stroke-width: 1.5; }",
+    "      .result { fill: none; stroke: #a93422; stroke-width: 9; stroke-linecap: round; }",
     '    </style>',
-    '    <marker id="arrow" markerWidth="11" markerHeight="11" refX="8" refY="3.5" orient="auto" markerUnits="strokeWidth">',
+    '    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3.5" orient="auto" markerUnits="strokeWidth">',
     '      <path d="M0,0 L0,7 L9,3.5 z" fill="#52616b"/>',
     '    </marker>',
 ]
 
-for index, card in enumerate(cards):
-    x = card["x"]
+for index, operation in enumerate(operations):
+    x = operation["x"]
     output_mask = [
-        (x + 115, 410),
-        (x + 305, 425),
-        (x + 280, 540),
-        (x + 140, 555),
+        (x + 105, 330),
+        (x + 310, 346),
+        (x + 280, 450),
+        (x + 125, 462),
     ]
     svg.extend([
         f'    <clipPath id="result-clip-{index}">',
@@ -106,40 +98,36 @@ for index, card in enumerate(cards):
 
 svg.extend([
     '  </defs>',
-    f'  <rect class="bg" width="{width}" height="{height}"/>',
-    '  <text x="35" y="46" class="title">Un mateix predicat, tres tipus de resultat</text>',
-    '  <text x="35" y="76" class="subtitle">La línia A interseca el polígon B; l’operació decideix si es conserva l’entitat o se’n construeix una part nova.</text>',
+    '  <line x1="400" y1="18" x2="400" y2="572" class="rule"/>',
+    '  <line x1="800" y1="18" x2="800" y2="572" class="rule"/>',
 ])
 
-for index, card in enumerate(cards):
-    x = card["x"]
+for index, operation in enumerate(operations):
+    x = operation["x"]
     input_mask = [
-        (x + 115, 185),
-        (x + 305, 200),
-        (x + 280, 315),
-        (x + 140, 330),
+        (x + 105, 110),
+        (x + 310, 126),
+        (x + 280, 230),
+        (x + 125, 242),
     ]
     output_mask = [
-        (x + 115, 410),
-        (x + 305, 425),
-        (x + 280, 540),
-        (x + 140, 555),
+        (x + 105, 330),
+        (x + 310, 346),
+        (x + 280, 450),
+        (x + 125, 462),
     ]
-    input_line = f'M {x + 50},300 C {x + 135},280 {x + 215},205 {x + 350},220'
-    output_line = f'M {x + 50},525 C {x + 135},505 {x + 215},430 {x + 350},445'
+    input_line = f'M {x + 34},218 C {x + 122},205 {x + 215},126 {x + 342},148'
+    output_line = f'M {x + 34},438 C {x + 122},425 {x + 215},346 {x + 342},368'
     svg.extend([
-        f'  <rect x="{x}" y="100" width="380" height="555" rx="12" class="card"/>',
-        f'  <text x="{x + 24}" y="138" class="heading">{card["title"]}</text>',
-        f'  <text x="{x + 24}" y="168" class="subtitle">{card["question"]}</text>',
-        f'  <rect x="{x + 24}" y="182" width="332" height="154" rx="8" class="map"/>',
+        f'  <text x="{x + 180}" y="43" text-anchor="middle" class="heading">{operation["label"]}</text>',
+        f'  <line x1="{x + 20}" y1="62" x2="{x + 340}" y2="62" class="rule"/>',
         f'  <polygon points="{points_attribute(input_mask)}" class="mask"/>',
         f'  <path d="{input_line}" class="source"/>',
-        f'  <text x="{x + 63}" y="322" class="small">A</text>',
-        f'  <text x="{x + 270}" y="224" class="small">B</text>',
-        f'  <line x1="{x + 190}" y1="350" x2="{x + 190}" y2="385" stroke="#52616b" stroke-width="3" marker-end="url(#arrow)"/>',
-        f'  <rect x="{x + 24}" y="407" width="332" height="154" rx="8" class="map"/>',
+        f'  <text x="{x + 48}" y="198" class="layer" fill="#9d3625">A</text>',
+        f'  <text x="{x + 264}" y="174" class="layer" fill="#1f668a">B</text>',
+        f'  <line x1="{x + 180}" y1="266" x2="{x + 180}" y2="305" stroke="#52616b" stroke-width="3" marker-end="url(#arrow)"/>',
     ])
-    if card["mode"] == "selection":
+    if operation["mode"] == "selection":
         svg.extend([
             f'  <polygon points="{points_attribute(output_mask)}" class="mask-context"/>',
             f'  <path d="{output_line}" class="result"/>',
@@ -151,16 +139,14 @@ for index, card in enumerate(cards):
             f'  <path d="{output_line}" class="result" clip-path="url(#result-clip-{index})"/>',
         ])
     svg.extend([
-        f'  <rect x="{x + 24}" y="579" width="332" height="28" rx="14" class="chip-geometry"/>',
-        f'  <text x="{x + 190}" y="600" text-anchor="middle" class="small">{card["result"]}</text>',
-        f'  <rect x="{x + 24}" y="614" width="332" height="28" rx="14" class="chip-fields"/>',
-        f'  <text x="{x + 190}" y="635" text-anchor="middle" class="small">{card["fields"]}</text>',
+        f'  <line x1="{x + 20}" y1="490" x2="{x + 340}" y2="490" class="rule"/>',
+        f'  <text x="{x + 20}" y="526" class="key">Geometria</text>',
+        f'  <text x="{x + 340}" y="526" text-anchor="end" class="value">{operation["geometry"]}</text>',
+        f'  <text x="{x + 20}" y="562" class="key">Atributs</text>',
+        f'  <text x="{x + 340}" y="562" text-anchor="end" class="value">{operation["attributes"]}</text>',
     ])
 
-svg.extend([
-    '  <text x="620" y="687" text-anchor="middle" class="subtitle">Seleccionar respon quines entitats; retallar o intersectar respon quina geometria exacta.</text>',
-    '</svg>',
-])
+svg.append('</svg>')
 
 project_root = find_project_root(Path.cwd())
 output = project_root / "assets/img/generated/06-analisi-geoprocessament-vectorial/selection-overlay.svg"
