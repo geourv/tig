@@ -32,90 +32,74 @@ def find_project_root(start):
 width = 1240
 height = 680
 left_points = [
-    (165, 285, "P1"),
-    (270, 285, "P2"),
-    (220, 380, "P3"),
-    (430, 430, "P4"),
+    (155, 235, "P1"),
+    (270, 235, "P2"),
+    (215, 335, "P3"),
+    (440, 390, "P4"),
 ]
-right_points = [(x + 690, y, label) for x, y, label in left_points]
+right_points = [(x + 680, y) for x, y, _ in left_points]
 
 svg = [
     f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
-    '  <title id="title">Comparació entre buffers individuals i una cobertura dissolta</title>',
-    '  <desc id="desc">Quatre punts generen buffers. A l’esquerra es mantenen quatre entitats i els solapaments; a la dreta se’n dissolen les fronteres internes, de manera que queda una entitat multipart amb dos components i es perd l’atribució directa a cada punt.</desc>',
+    '  <title id="title">Buffers individuals i buffer dissolt</title>',
+    '  <desc id="desc">A l’esquerra, quatre buffers conserven la traça dels punts P1 a P4 i se superposen. A la dreta, la unió exacta dels mateixos quatre discs, dissolta sense separar components disjunts, forma una sola entitat multipart amb dos components i sense atribució directa a cada punt d’origen.</desc>',
     '  <defs>',
     '    <style>',
-    "      .bg { fill: #f5f7f8; }",
-    "      .card { fill: #ffffff; stroke: #c8d3d9; stroke-width: 2; }",
     "      text { font-family: Arial, 'Liberation Sans', sans-serif; }",
-    "      .title { font-size: 34px; font-weight: 700; fill: #17202a; }",
-    "      .subtitle { font-size: 22px; fill: #52616b; }",
-    "      .heading { font-size: 27px; font-weight: 700; fill: #17202a; }",
-    "      .body { font-size: 22px; fill: #33434c; }",
-    "      .label { font-size: 22px; font-weight: 700; fill: #33434c; }",
-    "      .individual { fill: #7fc4de; fill-opacity: .38; stroke: #2878a5; stroke-width: 3; }",
-    "      .dissolved { fill: #7fc4de; }",
-    "      .point { fill: #d65f43; stroke: #8c3225; stroke-width: 2.5; }",
-    "      .chip { fill: #e6f1f6; stroke: #8eb9cc; stroke-width: 1.5; }",
-    "      .warning { fill: #f7e8d2; stroke: #d5a768; stroke-width: 1.5; }",
+    "      .heading { font-size: 31px; font-weight: 700; fill: #17242c; }",
+    "      .count { font-size: 25px; fill: #4c606a; }",
+    "      .label { font-size: 24px; font-weight: 700; fill: #263943; }",
+    "      .result { font-size: 25px; fill: #263943; }",
+    "      .term { font-weight: 700; fill: #176b92; }",
+    "      .separator { stroke: #aebcc3; stroke-width: 1.5; }",
+    "      .individual { fill: #8fcde1; fill-opacity: .38; stroke: #176b92; stroke-width: 3; }",
+    "      .dissolved { fill: #b2ddeb; }",
+    "      .point { fill: #d85f45; stroke: #873629; stroke-width: 2.5; }",
+    "      .context-point { fill: #ffffff; stroke: #687b85; stroke-width: 3; }",
+    "      .operation { fill: none; stroke: #687b85; stroke-width: 3; }",
     '    </style>',
     '    <marker id="arrow" markerWidth="11" markerHeight="11" refX="8" refY="3.5" orient="auto" markerUnits="strokeWidth">',
-    '      <path d="M0,0 L0,7 L9,3.5 z" fill="#52616b"/>',
+    '      <path d="M0,0 L0,7 L9,3.5 z" fill="#687b85"/>',
     '    </marker>',
-    '    <filter id="union-outline" x="-15%" y="-15%" width="130%" height="130%">',
-    '      <feMorphology in="SourceAlpha" operator="dilate" radius="3" result="expanded"/>',
-    '      <feFlood flood-color="#2878a5" result="outline-color"/>',
-    '      <feComposite in="outline-color" in2="expanded" operator="in" result="outline"/>',
-    '      <feMerge>',
-    '        <feMergeNode in="outline"/>',
-    '        <feMergeNode in="SourceGraphic"/>',
-    '      </feMerge>',
-    '    </filter>',
     '  </defs>',
-    f'  <rect class="bg" width="{width}" height="{height}"/>',
-    '  <text x="35" y="46" class="title">Conservar l’origen o mesurar la cobertura única?</text>',
-    '  <text x="35" y="77" class="subtitle">Dissoldre respon una pregunta diferent; no és una neteja automàtica que serveixi per a qualsevol anàlisi.</text>',
-    '  <rect x="35" y="105" width="500" height="510" rx="12" class="card"/>',
-    '  <text x="65" y="148" class="heading">Buffers individuals</text>',
-    '  <text x="65" y="179" class="subtitle">Una geometria per cada punt generador</text>',
+    '  <line x1="35" y1="110" x2="535" y2="110" class="separator"/>',
+    '  <line x1="705" y1="110" x2="1205" y2="110" class="separator"/>',
+    '  <line x1="620" y1="25" x2="620" y2="250" class="separator"/>',
+    '  <line x1="620" y1="380" x2="620" y2="655" class="separator"/>',
+    '  <text x="35" y="50" class="heading">Buffers individuals</text>',
+    '  <text x="35" y="87" class="count">4 entitats</text>',
+    '  <text x="705" y="50" class="heading">Dissoldre sense separar</text>',
+    '  <text x="705" y="87" class="count">1 entitat multipart · 2 components</text>',
 ]
 
 for x, y, label in left_points:
     svg.extend([
-        f'  <circle cx="{x}" cy="{y}" r="76" class="individual"/>',
+        f'  <circle cx="{x}" cy="{y}" r="78" class="individual"/>',
         f'  <circle cx="{x}" cy="{y}" r="8" class="point"/>',
         f'  <text x="{x + 12}" y="{y - 12}" class="label">{label}</text>',
     ])
 
 svg.extend([
-    '  <rect x="65" y="510" width="440" height="36" rx="18" class="chip"/>',
-    '  <text x="285" y="536" text-anchor="middle" class="label">4 entitats · origen identificable</text>',
-    '  <rect x="65" y="558" width="440" height="36" rx="18" class="warning"/>',
-    '  <text x="285" y="584" text-anchor="middle" class="label">Solapament · doble recompte</text>',
-    '  <line x1="565" y1="345" x2="660" y2="345" stroke="#52616b" stroke-width="4" marker-end="url(#arrow)"/>',
-    '  <text x="612" y="325" text-anchor="middle" class="label">Dissoldre</text>',
-    '  <rect x="705" y="105" width="500" height="510" rx="12" class="card"/>',
-    '  <text x="735" y="148" class="heading">Cobertura dissolta</text>',
-    '  <text x="735" y="179" class="subtitle">Les fronteres internes desapareixen</text>',
-    '  <g filter="url(#union-outline)">',
+    '  <text x="620" y="297" text-anchor="middle" class="label">Dissoldre</text>',
+    '  <line x1="575" y1="325" x2="665" y2="325" class="operation" marker-end="url(#arrow)"/>',
 ])
 
-for x, y, _ in right_points:
-    svg.append(f'    <circle cx="{x}" cy="{y}" r="76" class="dissolved"/>')
+# Opaque discs with the same fill have no visible internal seams and depict their exact union.
+for x, y in right_points:
+    svg.append(f'  <circle cx="{x}" cy="{y}" r="78" class="dissolved"/>')
 
-svg.append('  </g>')
-for x, y, label in right_points:
-    svg.extend([
-        f'  <circle cx="{x}" cy="{y}" r="8" class="point"/>',
-        f'  <text x="{x + 12}" y="{y - 12}" class="label">{label}</text>',
-    ])
+for x, y in right_points:
+    svg.append(f'  <circle cx="{x}" cy="{y}" r="8" class="context-point"/>')
 
 svg.extend([
-    '  <rect x="735" y="510" width="440" height="36" rx="18" class="chip"/>',
-    '  <text x="955" y="536" text-anchor="middle" class="label">1 entitat multipart · 2 components</text>',
-    '  <rect x="735" y="558" width="440" height="36" rx="18" class="warning"/>',
-    '  <text x="955" y="584" text-anchor="middle" class="label">Cobertura única · origen perdut</text>',
-    '  <text x="620" y="655" text-anchor="middle" class="subtitle">Convé conservar les dues sortides quan calen atribució per origen i superfície conjunta.</text>',
+    '  <text x="895" y="451" text-anchor="middle" class="label">component 1</text>',
+    '  <text x="1120" y="500" text-anchor="middle" class="label">component 2</text>',
+    '  <line x1="35" y1="525" x2="535" y2="525" class="separator"/>',
+    '  <line x1="705" y1="525" x2="1205" y2="525" class="separator"/>',
+    '  <text x="35" y="570" class="result"><tspan class="term">Origen:</tspan> P1–P4 traçables</text>',
+    '  <text x="35" y="615" class="result"><tspan class="term">Superfície:</tspan> solapament repetit</text>',
+    '  <text x="705" y="570" class="result"><tspan class="term">Origen:</tspan> sense atribució directa</text>',
+    '  <text x="705" y="615" class="result"><tspan class="term">Superfície:</tspan> cobertura única</text>',
     '</svg>',
 ])
 

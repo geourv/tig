@@ -1,0 +1,32 @@
+schema_version: 1
+asset:
+  path: assets/img/icgc/visor-descarregues-icgc.png
+  sha256: b2638b9e625fd4fdd30dc9c9c8de75ffe8d44ab1157e60aa749eedf828f3066c
+  width: 1440
+  height: 780
+  bytes: 1443798
+
+source:
+  producer: Institut Cartografic i Geologic de Catalunya
+  title: Visor de descarregues de l'ICGC
+  url: https://visors.icgc.cat/appdownloads/
+  access_date: "2026-09-09"
+  role: portal de seleccio de producte i area, no entrada analitica
+  variability: El mapa base, les series disponibles, els formats i la interfície poden canviar.
+
+capture:
+  captured_at: "2026-09-09T11:08:48+02:00"
+  browser: Playwright 1.56.1 / Chromium
+  container: mcr.microsoft.com/playwright@sha256:f1e7e01021efd65dd1a2c56064be399f3e4de00fd021ac561325f2bfbb2b837a
+  mode: headless
+  initial_viewport: 1440x900
+  clip: 1440x780+0+0
+  state:
+    tab: Per area / Ortoimatges
+    product: Ortofoto Territorial 25 cm
+    bbox_epsg_25831: [344250, 4551600, 344700, 4552050]
+    preview: true
+
+rights:
+  attribution: ICGC
+  note: Captura de la interfície institucional per explicar la seleccio d'un producte en un context docent. Cal consultar separadament la llicencia i les metadades del producte descarregat.

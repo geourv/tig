@@ -1,0 +1,37 @@
+schema_version: 1
+asset:
+  path: assets/img/cnig/centro-descargas-cnig.png
+  sha256: 47780f6526d692600a09b04f8fd84fc4c45b5dd81500dd10e04e9e44a9c308c1
+  width: 1440
+  height: 734
+  bytes: 888967
+
+source:
+  producer: Instituto Geografico Nacional / Centro Nacional de Informacion Geografica
+  title: Centro de Descargas del CNIG
+  url: https://centrodedescargas.cnig.es/
+  access_date: "2026-09-08"
+  role: portal de descoberta, no entrada analitica
+  variability: La portada, la imatge de fons i els exemples del cercador poden canviar.
+
+capture:
+  captured_at: "2026-09-08T23:55:04+02:00"
+  browser: Google Chrome 128.0.6613.113
+  mode: headless
+  initial_viewport: 1440x820
+  browser_arguments:
+    - --headless
+    - --no-sandbox
+    - --disable-gpu
+    - --hide-scrollbars
+    - --no-first-run
+    - --incognito
+    - --run-all-compositor-stages-before-draw
+    - --virtual-time-budget=7000
+  postprocess:
+    tool: ImageMagick convert
+    operation: crop 1440x734+0+0
+
+rights:
+  attribution: IGN/CNIG
+  note: Captura de la interfície institucional per identificar el portal en un context docent. No atribueix al disseny web la llicència de les dades descarregables.

@@ -1,0 +1,183 @@
+id: qgis-interface-overview
+title: Regions funcionals de la interfície de QGIS
+source_prompt: |
+  Necessito una captura general, no procedimental, de la interfície de QGIS
+  en català. Ha d'identificar l'Explorador, el panell de Capes, el llenç del
+  mapa, els menús i les barres d'eines, les eines de processament, la barra
+  d'estat i el localitzador.
+
+runtime:
+  image: qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc
+  locale: ca_ES
+
+compat:
+  qgis: "==3.44.11"
+
+plugins:
+  - processing
+
+setup:
+  - action: trigger_action
+    name: mActionNewProject
+  - action: close_transients
+  - action: show_panel
+    title: Browser
+  - action: show_panel
+    title: Layers
+  - action: show_panel
+    title: ProcessingToolbox
+  - action: close_duplicate_docks
+  - action: clear_message_bar
+  - action: wait
+    ms: 800
+
+captures:
+  - id: interface-overview
+    title: Regions principals de QGIS
+    mode: window
+    layout_policy:
+      reading_direction: left_to_right
+      prefer_local_empty_space: true
+      prefer_leaderless_labels: false
+      avoid_diagonal_leaders: true
+      allow_diagonal_leaders: when_no_clear_local_candidate
+      protect_text: true
+      protect_controls: true
+    target:
+      class_name: QgisApp
+      fallback:
+        - class_name: QMainWindow
+
+    drawings:
+      - type: callout
+        text: Explorador
+        colour: auto
+        number: "none"
+        target_marker: box
+        label_topology: outside
+        placement: right
+        target_anchor_position: right
+        label_anchor_position: left
+        gap: 20
+        leader: true
+        target:
+          object_name: Browser
+          fallback:
+            - class_name: QgsBrowserDockWidget
+
+      - type: callout
+        text: Capes
+        colour: auto
+        number: "none"
+        target_marker: box
+        label_topology: outside
+        placement: right
+        target_anchor_position: right
+        label_anchor_position: left
+        gap: 20
+        leader: true
+        target:
+          object_name: Layers
+          fallback:
+            - class_name: QgsDockWidget
+              title: Capes
+
+      - type: callout
+        text: Llenç del mapa
+        colour: auto
+        number: "none"
+        target_marker: box
+        label_topology: inside
+        placement: center_edge
+        leader: false
+        target:
+          object_name: theMapCanvas
+          fallback:
+            - class_name: QgsMapCanvas
+
+      - type: callout
+        text: Eines de processament
+        colour: auto
+        number: "none"
+        target_marker: box
+        label_topology: outside
+        placement: left
+        target_anchor_position: left
+        label_anchor_position: right
+        gap: 20
+        leader: true
+        target:
+          object_name: ProcessingToolbox
+          fallback:
+            - class_name: ProcessingToolbox
+            - title: Caixa d'eines de processament
+            - title: Processing Toolbox
+
+      - type: callout
+        text: Menús
+        colour: auto
+        number: "none"
+        target_marker: box
+        label_topology: outside
+        placement: below
+        target_anchor_position: bottom
+        label_anchor_position: top
+        gap: 18
+        leader: true
+        target:
+          class_name: QMenuBar
+          parent_window: QgisApp
+
+      - type: callout
+        text: Barra d'eines d'atributs
+        colour: auto
+        number: "none"
+        target_marker: box
+        label_topology: outside
+        placement: below
+        target_anchor_position: bottom
+        label_anchor_position: top
+        gap: 18
+        leader: true
+        target:
+          object_name: mAttributesToolBar
+          fallback:
+            - class_name: QToolBar
+              parent_window: QgisApp
+
+      - type: callout
+        text: Barra d'estat
+        colour: auto
+        number: "none"
+        target_marker: box
+        label_topology: outside
+        placement: above
+        target_anchor_position: top
+        label_anchor_position: bottom
+        gap: 18
+        leader: true
+        target:
+          object_name: statusbar
+          fallback:
+            - class_name: QStatusBar
+
+      - type: callout
+        text: Localitzador
+        colour: auto
+        number: "none"
+        target_marker: box
+        label_topology: outside
+        placement: above
+        target_anchor_position: top
+        label_anchor_position: bottom
+        gap: 18
+        leader: true
+        target:
+          object_name: LocatorWidget
+          fallback:
+            - class_name: QgsLocatorWidget
+
+    output:
+      path: assets/img/qgis/qgis-interface-overview.png
+      annotations_svg: assets/img/qgis/qgis-interface-overview.annotations.svg
+      manifest: assets/img/qgis/qgis-interface-overview.manifest.yml

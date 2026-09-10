@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/dosquartsdedocs/unaltraweb.git
-  revision: c54400927e7223e14e34390ab039ed94b2e974ad
-  ref: c54400927e7223e14e34390ab039ed94b2e974ad
+  revision: 2954e75f75edb7bd6ea41dd49cb0b9f90bf3c1a5
+  ref: 2954e75f75edb7bd6ea41dd49cb0b9f90bf3c1a5
   specs:
     unaltraweb (0.3.0)
       classifier-reborn

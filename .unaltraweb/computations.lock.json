@@ -1,10 +1,10 @@
 {
   "records": {
-    "assets/quarto/06-analisi-geoprocessament-vectorial/buffer-dissolve.qmd": {
+    "assets/quarto/03-estructura-formats-referenciacio/geographic-projected-utm.qmd": {
       "dependencies": [
         {
-          "path": "assets/quarto/06-analisi-geoprocessament-vectorial/buffer-dissolve.qmd",
-          "sha256": "a10a123db93c254ac9660c9a94bc2c1b76cc9963aaf96d37cbeb577722db68d2"
+          "path": "assets/quarto/03-estructura-formats-referenciacio/geographic-projected-utm.qmd",
+          "sha256": "3c30e8b4ef4250bbf83ee17adf96a829971e08f5cd884d611c033a366f1c7357"
         },
         {
           "path": ".unaltraweb/computations.yml",
@@ -12,7 +12,211 @@
         }
       ],
       "engine": "python",
-      "fingerprint": "1675b8b8406ef50354065b029c809d4a435ca4f8b1d857fbab57756c4e59eb41",
+      "fingerprint": "87aa1ff31ed29ec4c540242751bf80ebb0fba4254ffcd222d6da1fa04d2bd972",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/03-estructura-formats-referenciacio/geographic-projected-utm.svg",
+          "sha256": "cfb17a689361e2af6ddd54b5c56bebe9a86424ac08932f9d164cbc0299a83d56",
+          "size": 6730
+        }
+      ],
+      "rendered_at": "2026-09-07T19:28:18+00:00"
+    },
+    "assets/quarto/04-model-vectorial-digitalitzacio/arc-node-spaghetti.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/04-model-vectorial-digitalitzacio/arc-node-spaghetti.qmd",
+          "sha256": "e710268317df801c73daa1eec793c630d3f11c253152759c9c925d28c1fb7dc8"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "6c3315db967614d2eae24c05dd436271507a3ca63c8aa71faa779faaa725d3d0",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/04-model-vectorial-digitalitzacio/arc-node-spaghetti.svg",
+          "sha256": "d93dd28e230821e530fe43f6b976b55db453ddaa5f94ab2609cf9f464982209d",
+          "size": 4200
+        }
+      ],
+      "rendered_at": "2026-09-09T11:12:10+00:00"
+    },
+    "assets/quarto/04-model-vectorial-digitalitzacio/network-cross-layer-topology.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/04-model-vectorial-digitalitzacio/network-cross-layer-topology.qmd",
+          "sha256": "07468ab4a8d82e20cb6c6bca1b8e0d4610d95d40f5a41faa9775065eadb8bd51"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "71a2f1bc35c39c6f3c7659c848f3c537260551dc77316eeb04bed6347bd73426",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/04-model-vectorial-digitalitzacio/network-cross-layer-topology.svg",
+          "sha256": "f1516e25f3d7b9979788ae1de42b06e2a7c6915c84b95a402417d2921257fdf1",
+          "size": 4727
+        }
+      ],
+      "rendered_at": "2026-09-09T11:12:40+00:00"
+    },
+    "assets/quarto/04-model-vectorial-digitalitzacio/topology-capture-errors.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/04-model-vectorial-digitalitzacio/topology-capture-errors.qmd",
+          "sha256": "5623f5ac2736d897cc83daddc98619e32719478ca34c4621e3e7170ca60c7c4e"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "ef2de45eecf90f454b37be1a00f6fe57ee3ac8372bed2b05a4fc3a40bf8aba5c",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/04-model-vectorial-digitalitzacio/topology-capture-errors.svg",
+          "sha256": "e974979a12df5fe4c60d0cacc528dfdab3e7f08ee4751b232031bc00ec3120af",
+          "size": 3331
+        }
+      ],
+      "rendered_at": "2026-09-07T22:58:33+00:00"
+    },
+    "assets/quarto/05-consultes-dades-relacionals/attribute-vs-spatial-join.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/05-consultes-dades-relacionals/attribute-vs-spatial-join.qmd",
+          "sha256": "fe87053d55d6651dec51f058951c351cb6c0849a92765d5f6371026e61fed6f0"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "83575252152c102c7bdd7529b5975310c82c6ff79ee94dafc3fc28659430db73",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/05-consultes-dades-relacionals/attribute-vs-spatial-join.svg",
+          "sha256": "6e1187e5f15c1238c968536fe38ad605772c57151c6cea1607c4d37fcd3a128b",
+          "size": 6554
+        }
+      ],
+      "rendered_at": "2026-09-07T19:15:20+00:00"
+    },
+    "assets/quarto/05-consultes-dades-relacionals/join-cardinality.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/05-consultes-dades-relacionals/join-cardinality.qmd",
+          "sha256": "c0b8178a2bc77f039f5d416acf1c9f3cc425cd553337d9223cb6aef5613d5bd3"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "d59b99d030a59bf7e5ae5362f30ffc66cd1baf92ebb96c8f42e542efb79e0a54",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/05-consultes-dades-relacionals/join-cardinality.svg",
+          "sha256": "13d751899deee3d35d675ea516b5d3bf141fe1374f5781dfcb732e4d1478f8a5",
+          "size": 7458
+        }
+      ],
+      "rendered_at": "2026-09-07T23:06:42+00:00"
+    },
+    "assets/quarto/06-analisi-geoprocessament-vectorial/buffer-dissolve.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/06-analisi-geoprocessament-vectorial/buffer-dissolve.qmd",
+          "sha256": "14965b355fa7269b3a97d998434bec232a496454895b0b64939d3cf53b81c565"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "346456d100827cad741aac78b100a5182cb37840aab15b9af677f029dd88569d",
       "image": {
         "engine": "python",
         "environment": "local",
@@ -28,17 +232,17 @@
       "outputs": [
         {
           "path": "assets/img/generated/06-analisi-geoprocessament-vectorial/buffer-dissolve.svg",
-          "sha256": "ba418bf5462379e96543ab9dd468f589e82372dc746131b82a5efafa96928353",
-          "size": 5012
+          "sha256": "f67ad827d88c5aac8a990738f095c115e5acdb6b8344fb5470e7daf6956d49c3",
+          "size": 3948
         }
       ],
-      "rendered_at": "2026-09-07T00:28:24+00:00"
+      "rendered_at": "2026-09-07T16:53:56+00:00"
     },
     "assets/quarto/06-analisi-geoprocessament-vectorial/buffer-parameters.qmd": {
       "dependencies": [
         {
           "path": "assets/quarto/06-analisi-geoprocessament-vectorial/buffer-parameters.qmd",
-          "sha256": "2ad4cf41e57b667c5cf06d21e6e975805dc5e6099785fc79b9273c8151586614"
+          "sha256": "0c410a204c9e66336aa6d049637c7b492ea24131f4726b0383cca563d3c76781"
         },
         {
           "path": ".unaltraweb/computations.yml",
@@ -46,7 +250,7 @@
         }
       ],
       "engine": "python",
-      "fingerprint": "ae6df87d8bce93b8b94c0a90b7ab72fe357009d913fe2571b881a81a81931fa6",
+      "fingerprint": "5961cc4617196bd6516b0a2b842676f66a26d18944fddcd950c9000b57099834",
       "image": {
         "engine": "python",
         "environment": "local",
@@ -62,17 +266,17 @@
       "outputs": [
         {
           "path": "assets/img/generated/06-analisi-geoprocessament-vectorial/buffer-parameters.svg",
-          "sha256": "78c5fdff2acf0dc6711c69a71f349e39c12475e3397d40357c83cb00c4628e3f",
-          "size": 8958
+          "sha256": "1cb455380410b883066e8da9e7480ad6dada4b40fb53b354011f0e763e597bc6",
+          "size": 8263
         }
       ],
-      "rendered_at": "2026-09-07T00:23:02+00:00"
+      "rendered_at": "2026-09-07T19:15:29+00:00"
     },
-    "assets/quarto/06-analisi-geoprocessament-vectorial/selection-overlay.qmd": {
+    "assets/quarto/06-analisi-geoprocessament-vectorial/derived-vector-operations.qmd": {
       "dependencies": [
         {
-          "path": "assets/quarto/06-analisi-geoprocessament-vectorial/selection-overlay.qmd",
-          "sha256": "01541be712447b762781f4afdee866c63111897b82b7a333d3058309fae58ec2"
+          "path": "assets/quarto/06-analisi-geoprocessament-vectorial/derived-vector-operations.qmd",
+          "sha256": "87afef5ce54361fe844e54a163a3302b9a8954f007a6c527a9fe358cd45cfa90"
         },
         {
           "path": ".unaltraweb/computations.yml",
@@ -80,7 +284,109 @@
         }
       ],
       "engine": "python",
-      "fingerprint": "5e931cc35b48ac698927c7a30879821064cb5df8b93a5a38411e616ce3c28a19",
+      "fingerprint": "fb8af70f93c6e867ba13e339f9d33a051fc8c13c3ac8121aff97d33f1ee33e5a",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/06-analisi-geoprocessament-vectorial/derived-vector-operations.svg",
+          "sha256": "d8331b00839edbecb018c485a1d0198c4f568a884cb509be0c20f73f04cc71e9",
+          "size": 5265
+        }
+      ],
+      "rendered_at": "2026-09-07T19:19:58+00:00"
+    },
+    "assets/quarto/06-analisi-geoprocessament-vectorial/distance-models.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/06-analisi-geoprocessament-vectorial/distance-models.qmd",
+          "sha256": "9c2bb5d8b713e577f450658d319afac4137204308a90a0720f9313fde7581a89"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "e19b07941ec038dc196bdc7473769f00de144bb8b07428ce371291126909d06f",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/06-analisi-geoprocessament-vectorial/distance-models.svg",
+          "sha256": "c07278ab57ea86838a44c42d4fdee395025f421e09a5d774aa9837d6bdeed6d7",
+          "size": 5138
+        }
+      ],
+      "rendered_at": "2026-09-07T22:58:50+00:00"
+    },
+    "assets/quarto/06-analisi-geoprocessament-vectorial/envelopes-and-hulls.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/06-analisi-geoprocessament-vectorial/envelopes-and-hulls.qmd",
+          "sha256": "d56a44cb109f7040442927d4f621ddb63a7acb3ddc7ddff84501f8402f3b20a3"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "e5ec9ab89ab92e66ba174820fe67b35b9b4407552252459a0b5bd9af87e99883",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/06-analisi-geoprocessament-vectorial/envelopes-and-hulls.svg",
+          "sha256": "a4cbc17c9692f98b76dc6c108c89a7cf10c1ac56169adae8e2451bf645735707",
+          "size": 4160
+        }
+      ],
+      "rendered_at": "2026-09-07T22:58:59+00:00"
+    },
+    "assets/quarto/06-analisi-geoprocessament-vectorial/selection-overlay.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/06-analisi-geoprocessament-vectorial/selection-overlay.qmd",
+          "sha256": "5261df2069dbe80f8e64bbd6f458501f223ae1aedcbedbcad10672d49fb453fa"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "bb7b95bc7d9c845000394129eaeb8823e5e3b728c99c72825420554b84e88534",
       "image": {
         "engine": "python",
         "environment": "local",
@@ -96,11 +402,215 @@
       "outputs": [
         {
           "path": "assets/img/generated/06-analisi-geoprocessament-vectorial/selection-overlay.svg",
-          "sha256": "6d644fc786a96da3faf8c76ac1e036f83f10396cb07ee24e749b929e3a8f7950",
-          "size": 6347
+          "sha256": "ab7cf9477281d31586e67957325636bf0d556d4f01c32ec49f6e1b1ac9ed2c4a",
+          "size": 5148
         }
       ],
-      "rendered_at": "2026-09-07T00:23:10+00:00"
+      "rendered_at": "2026-09-07T15:49:02+00:00"
+    },
+    "assets/quarto/06-analisi-geoprocessament-vectorial/spatial-predicates-by-geometry.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/06-analisi-geoprocessament-vectorial/spatial-predicates-by-geometry.qmd",
+          "sha256": "861ed9c4d4e5d4e7088ed22a39af33cf0eaa79730191196002d710d5ec521790"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "9d197665620742db63300e188121aca7f3ac058ed43ce1f99d3f803814625c79",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/06-analisi-geoprocessament-vectorial/spatial-predicates-by-geometry.svg",
+          "sha256": "62f44ca8c09448ebac0bebbeac5ae6c324a13606d46194a0b1d54540a20a389a",
+          "size": 6534
+        }
+      ],
+      "rendered_at": "2026-09-07T15:58:08+00:00"
+    },
+    "assets/quarto/06-analisi-geoprocessament-vectorial/spatial-tessellations.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/06-analisi-geoprocessament-vectorial/spatial-tessellations.qmd",
+          "sha256": "723be84c29c30aa050a061c7e48a0a5e2e15168fb17000e802cab1275859fa64"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "88204cbfea0843dee564e5439162a67a0ac119570cd923bab0ef61e55a63c3d1",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/06-analisi-geoprocessament-vectorial/spatial-tessellations.svg",
+          "sha256": "09f4f0dcc4ec540670c178749aa8001c67ca9b187f85a23b55243de70fd61c5b",
+          "size": 10904
+        }
+      ],
+      "rendered_at": "2026-09-09T02:45:41+00:00"
+    },
+    "assets/quarto/06-analisi-geoprocessament-vectorial/union-geometry-and-attributes.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/06-analisi-geoprocessament-vectorial/union-geometry-and-attributes.qmd",
+          "sha256": "8ea79977b9f780bb7426012222d7f1665291cb64c7fbf6c59e523397a4475f6a"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "4a56ff5fcd0c11131303853c4df5205ec5d447f9daaf691ea0acb0683e833934",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/06-analisi-geoprocessament-vectorial/union-geometry-and-attributes.svg",
+          "sha256": "35552172ed85abbfa0ebf9313965fc29a9974dbfa521e04c41107f52368ee6de",
+          "size": 4773
+        }
+      ],
+      "rendered_at": "2026-09-07T19:20:07+00:00"
+    },
+    "assets/quarto/07-model-analisi-raster/raster-neighborhood-operations.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/07-model-analisi-raster/raster-neighborhood-operations.qmd",
+          "sha256": "df41e380caec62d551a3baf4859f1c83b2fad4e52d043fec5f7943cb040fc3fb"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "ee8d8aa432c0887e544dd8046054996f5a3f62e4aeeb9b111930809de44a6438",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/07-model-analisi-raster/raster-neighborhood-operations.svg",
+          "sha256": "387ccf0f63c3b429271445e696523bae2d20782fefa34ec0eb25ef9a4acfdf17",
+          "size": 19487
+        }
+      ],
+      "rendered_at": "2026-09-07T23:06:50+00:00"
+    },
+    "assets/quarto/07-model-analisi-raster/terrain-gradient-slope-aspect.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/07-model-analisi-raster/terrain-gradient-slope-aspect.qmd",
+          "sha256": "2df7e461eb08076b1aaec9c2106ea9a10f180ecbc3af9f0769227f8f7faaa100"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "18b0b78a1adbcd9aca0b987a06ea6fd1d71083e2770537ca46ad1106ab20d849",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/07-model-analisi-raster/terrain-gradient-slope-aspect.svg",
+          "sha256": "aec79f2d2df8ce1d0ae1d8314b096fdb9d7fbdd28d7f7cfac33a84b497758b56",
+          "size": 7765
+        }
+      ],
+      "rendered_at": "2026-09-09T13:13:39+00:00"
+    },
+    "assets/quarto/07-model-analisi-raster/vector-raster-conversion.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/07-model-analisi-raster/vector-raster-conversion.qmd",
+          "sha256": "39ba647819ff53694be6382d79d178a48ea5c4d47710bc81d5f41dd84957f847"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "7e28f0eefa9b995a6278988a3ad985ec3ecaf960ec8bdd4b82f5b99709ce61bd",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/07-model-analisi-raster/vector-raster-conversion.svg",
+          "sha256": "4172eb6bcba200b35ecc6d2eb49945347b7c7ecdcf6bdf64840b616b1ada67e4",
+          "size": 8721
+        }
+      ],
+      "rendered_at": "2026-09-07T22:59:26+00:00"
     }
   },
   "version": 1

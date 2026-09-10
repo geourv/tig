@@ -42,134 +42,129 @@ width = 1400
 height = 1000
 svg = [
     f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
-    '  <title id="title">Geometries d’entrada i paràmetres que controlen un buffer</title>',
-    '  <desc id="desc">Quatre panells mostren el radi al voltant d’un punt, una línia i un polígon; l’aproximació circular amb un o quatre segments per quadrant; els extrems arrodonit, pla i quadrat; i les unions arrodonida, bisellada i en punta.</desc>',
+    '  <title id="title">Paràmetres geomètrics d’un buffer</title>',
+    '  <desc id="desc">Quatre seccions comparen el radi d’un buffer de punt, línia i polígon; un o quatre segments per quadrant; els extrems arrodonit, pla i quadrat; i les unions arrodonida, bisellada i en punta.</desc>',
     '  <defs>',
     '    <style>',
-    "      .bg { fill: #f5f7f8; }",
-    "      .card { fill: #ffffff; stroke: #c8d3d9; stroke-width: 2; }",
     "      text { font-family: Arial, 'Liberation Sans', sans-serif; }",
-    "      .title { font-size: 36px; font-weight: 700; fill: #17202a; }",
-    "      .subtitle { font-size: 25px; fill: #52616b; }",
-    "      .heading { font-size: 28px; font-weight: 700; fill: #17202a; }",
-    "      .label { font-size: 25px; font-weight: 700; fill: #33434c; }",
-    "      .body { font-size: 25px; fill: #33434c; }",
-    "      .buffer { fill: #7fc4de; fill-opacity: .5; stroke: #2878a5; stroke-width: 3; }",
-    "      .buffer-stroke { fill: none; stroke: #7fc4de; stroke-opacity: .58; stroke-width: 72; }",
-    "      .buffer-stroke-small { fill: none; stroke: #7fc4de; stroke-opacity: .58; stroke-width: 60; }",
-    "      .source { fill: #d65f43; stroke: #8c3225; stroke-width: 3; }",
-    "      .source-line { fill: none; stroke: #8c3225; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }",
-    "      .ideal { fill: none; stroke: #84949c; stroke-width: 2; stroke-dasharray: 7 6; }",
-    "      .vertex { fill: #ffffff; stroke: #2878a5; stroke-width: 2; }",
-    "      .measure { fill: none; stroke: #d65f43; stroke-width: 3; }",
-    "      .endpoint { stroke: #84949c; stroke-width: 2; stroke-dasharray: 6 5; }",
-    "      .negative { fill: none; stroke: #d65f43; stroke-width: 3; stroke-dasharray: 7 5; }",
+    "      .heading { font-size: 30px; font-weight: 700; fill: #17242c; }",
+    "      .label { font-size: 25px; font-weight: 700; fill: #263943; }",
+    "      .note { font-size: 25px; fill: #4c606a; }",
+    "      .separator { stroke: #aebcc3; stroke-width: 1.5; }",
+    "      .buffer { fill: #8fcde1; fill-opacity: .52; stroke: #176b92; stroke-width: 3; }",
+    "      .buffer-stroke { fill: none; stroke: #8fcde1; stroke-opacity: .62; stroke-width: 76; }",
+    "      .buffer-stroke-small { fill: none; stroke: #8fcde1; stroke-opacity: .62; stroke-width: 64; }",
+    "      .source { fill: #d85f45; stroke: #873629; stroke-width: 3; }",
+    "      .source-line { fill: none; stroke: #873629; stroke-width: 7; stroke-linecap: butt; stroke-linejoin: miter; }",
+    "      .ideal { fill: none; stroke: #748791; stroke-width: 2; stroke-dasharray: 7 6; }",
+    "      .vertex { fill: #ffffff; stroke: #176b92; stroke-width: 2; }",
+    "      .measure { fill: none; stroke: #c64c34; stroke-width: 3; }",
+    "      .endpoint { stroke: #748791; stroke-width: 2; stroke-dasharray: 6 5; }",
+    "      .negative { fill: none; stroke: #c64c34; stroke-width: 3; stroke-dasharray: 7 5; }",
     '    </style>',
     '    <marker id="arrow" markerWidth="11" markerHeight="11" refX="8" refY="3.5" orient="auto" markerUnits="strokeWidth">',
-    '      <path d="M0,0 L0,7 L9,3.5 z" fill="#d65f43"/>',
+    '      <path d="M0,0 L0,7 L9,3.5 z" fill="#c64c34"/>',
     '    </marker>',
     '  </defs>',
-    f'  <rect class="bg" width="{width}" height="{height}"/>',
-    '  <text x="35" y="47" class="title">Què determina la forma d’un buffer?</text>',
-    '  <text x="35" y="80" class="subtitle">La distància defineix l’escala; la segmentació, els extrems i les unions defineixen l’aproximació geomètrica.</text>',
+    '  <line x1="700" y1="20" x2="700" y2="470" class="separator"/>',
+    '  <line x1="20" y1="490" x2="1380" y2="490" class="separator"/>',
+    '  <line x1="700" y1="510" x2="700" y2="980" class="separator"/>',
 
-    # Geometry and radius panel.
-    '  <rect x="35" y="105" width="650" height="385" rx="12" class="card"/>',
-    '  <text x="65" y="146" class="heading">1. Geometria d’entrada i radi d</text>',
-    '  <text x="143" y="184" text-anchor="middle" class="label">Punt</text>',
-    '  <circle cx="143" cy="286" r="67" class="buffer"/>',
-    '  <circle cx="143" cy="286" r="9" class="source"/>',
-    '  <line x1="143" y1="286" x2="207" y2="286" class="measure" marker-end="url(#arrow)"/>',
-    '  <text x="170" y="274" class="label">d</text>',
-    '  <text x="347" y="184" text-anchor="middle" class="label">Línia</text>',
-    '  <path d="M 285,315 C 320,235 385,235 430,300" class="buffer-stroke" stroke-linecap="round" stroke-linejoin="round"/>',
-    '  <path d="M 285,315 C 320,235 385,235 430,300" class="source-line"/>',
-    '  <line x1="352" y1="256" x2="352" y2="220" class="measure" marker-end="url(#arrow)"/>',
-    '  <text x="364" y="238" class="label">d</text>',
-    '  <text x="559" y="184" text-anchor="middle" class="label">Polígon</text>',
-    '  <rect x="488" y="216" width="143" height="137" rx="38" class="buffer"/>',
-    '  <rect x="520" y="248" width="79" height="73" class="source"/>',
-    '  <rect x="543" y="269" width="33" height="31" class="negative"/>',
-    '  <line x1="599" y1="284" x2="630" y2="284" class="measure" marker-end="url(#arrow)"/>',
-    '  <text x="607" y="272" class="label">+d</text>',
-    '  <text x="559" y="298" text-anchor="middle" class="label">−d</text>',
-    '  <text x="65" y="407" class="body">Punt: disc aproximat</text>',
-    '  <text x="65" y="441" class="body">Línia: franja amb extrems</text>',
-    '  <text x="65" y="475" class="body">Polígon: expansió (+d) o retracció (−d)</text>',
+    # Geometry and radius.
+    '  <text x="30" y="43" class="heading">Geometria i radi d</text>',
+    '  <text x="125" y="88" text-anchor="middle" class="label">Punt</text>',
+    '  <circle cx="125" cy="220" r="72" class="buffer"/>',
+    '  <circle cx="125" cy="220" r="9" class="source"/>',
+    '  <line x1="125" y1="220" x2="194" y2="220" class="measure" marker-end="url(#arrow)"/>',
+    '  <text x="157" y="207" class="label">d</text>',
+    '  <text x="360" y="88" text-anchor="middle" class="label">Línia</text>',
+    '  <path d="M 290,230 L 430,230" class="buffer-stroke" stroke-linecap="round"/>',
+    '  <path d="M 290,230 L 430,230" class="source-line"/>',
+    '  <line x1="360" y1="230" x2="360" y2="193" class="measure" marker-end="url(#arrow)"/>',
+    '  <text x="372" y="216" class="label">d</text>',
+    '  <text x="580" y="88" text-anchor="middle" class="label">Polígon</text>',
+    '  <path d="M 520,135 H 640 A 35,35 0 0 1 675,170 V 270 A 35,35 0 0 1 640,305 H 520 A 35,35 0 0 1 485,270 V 170 A 35,35 0 0 1 520,135 Z" class="buffer"/>',
+    '  <polygon points="520,170 640,170 640,270 520,270" class="source"/>',
+    '  <polygon points="555,205 605,205 605,235 555,235" class="negative"/>',
+    '  <line x1="580" y1="170" x2="580" y2="137" class="measure" marker-end="url(#arrow)"/>',
+    '  <text x="592" y="158" class="label">+d</text>',
+    '  <line x1="520" y1="220" x2="553" y2="220" class="measure" marker-end="url(#arrow)"/>',
+    '  <text x="523" y="254" class="label">−d</text>',
+    '  <text x="125" y="353" text-anchor="middle" class="note">disc</text>',
+    '  <text x="360" y="353" text-anchor="middle" class="note">franja</text>',
+    '  <text x="580" y="353" text-anchor="middle" class="note">expansió / retracció</text>',
 
-    # Segments per quadrant panel.
-    '  <rect x="715" y="105" width="650" height="385" rx="12" class="card"/>',
-    '  <text x="745" y="146" class="heading">2. Segments per quadrant</text>',
-    '  <text x="745" y="177" class="subtitle">Mateix radi, aproximació diferent de la corba</text>',
-    '  <circle cx="875" cy="295" r="82" class="ideal"/>',
-    f'  <polygon points="{regular_polygon(875, 295, 82, 4)}" class="buffer"/>',
-    '  <circle cx="875" cy="295" r="8" class="source"/>',
-    '  <circle cx="875" cy="213" r="5" class="vertex"/>',
-    '  <circle cx="957" cy="295" r="5" class="vertex"/>',
-    '  <circle cx="875" cy="377" r="5" class="vertex"/>',
-    '  <circle cx="793" cy="295" r="5" class="vertex"/>',
-    '  <text x="875" y="414" text-anchor="middle" class="label">1 segment/quadrant</text>',
-    '  <text x="875" y="445" text-anchor="middle" class="body">4 vèrtexs</text>',
-    '  <circle cx="1195" cy="295" r="82" class="ideal"/>',
-    f'  <polygon points="{regular_polygon(1195, 295, 82, 16)}" class="buffer"/>',
-    '  <circle cx="1195" cy="295" r="8" class="source"/>',
+    # Segments per quadrant.
+    '  <text x="730" y="43" class="heading">Segments per quadrant</text>',
+    f'  <polygon points="{regular_polygon(900, 220, 82, 4)}" class="buffer"/>',
+    '  <circle cx="900" cy="220" r="82" class="ideal"/>',
+    '  <circle cx="900" cy="220" r="8" class="source"/>',
+    '  <circle cx="900" cy="138" r="5" class="vertex"/>',
+    '  <circle cx="982" cy="220" r="5" class="vertex"/>',
+    '  <circle cx="900" cy="302" r="5" class="vertex"/>',
+    '  <circle cx="818" cy="220" r="5" class="vertex"/>',
+    '  <text x="900" y="338" text-anchor="middle" class="label">1 segment</text>',
+    '  <text x="900" y="370" text-anchor="middle" class="label">per quadrant</text>',
+    '  <text x="900" y="410" text-anchor="middle" class="note">4 vèrtexs</text>',
+    f'  <polygon points="{regular_polygon(1190, 220, 82, 16)}" class="buffer"/>',
+    '  <circle cx="1190" cy="220" r="82" class="ideal"/>',
+    '  <circle cx="1190" cy="220" r="8" class="source"/>',
 ]
 
 for index in range(16):
     angle = -pi / 2 + index * 2 * pi / 16
-    x = 1195 + 82 * cos(angle)
-    y = 295 + 82 * sin(angle)
+    x = 1190 + 82 * cos(angle)
+    y = 220 + 82 * sin(angle)
     svg.append(f'  <circle cx="{x:.1f}" cy="{y:.1f}" r="4" class="vertex"/>')
 
 svg.extend([
-    '  <text x="1195" y="414" text-anchor="middle" class="label">4 segments/quadrant</text>',
-    '  <text x="1195" y="445" text-anchor="middle" class="body">16 vèrtexs</text>',
+    '  <text x="1190" y="338" text-anchor="middle" class="label">4 segments</text>',
+    '  <text x="1190" y="370" text-anchor="middle" class="label">per quadrant</text>',
+    '  <text x="1190" y="410" text-anchor="middle" class="note">16 vèrtexs</text>',
+    '  <text x="1045" y="462" text-anchor="middle" class="note">Més segments = corba més suau</text>',
 
-    # End caps panel.
-    '  <rect x="35" y="520" width="650" height="425" rx="12" class="card"/>',
-    '  <text x="65" y="562" class="heading">3. Extrems d’una línia</text>',
-    '  <text x="65" y="593" class="subtitle">La línia original acaba a les guies discontínues</text>',
+    # Line caps.
+    '  <text x="30" y="542" class="heading">Extrems de línia</text>',
 ])
 
 cap_rows = [
-    (660, "Arrodonit", "round"),
-    (770, "Pla", "butt"),
-    (880, "Quadrat", "square"),
+    (650, "Arrodonit", "round"),
+    (775, "Pla", "butt"),
+    (900, "Quadrat", "square"),
 ]
 for y, label, cap in cap_rows:
     svg.extend([
-        f'  <text x="65" y="{y + 8}" class="label">{label}</text>',
-        f'  <line x1="270" y1="{y - 45}" x2="270" y2="{y + 45}" class="endpoint"/>',
-        f'  <line x1="570" y1="{y - 45}" x2="570" y2="{y + 45}" class="endpoint"/>',
-        f'  <path d="M 270,{y} L 570,{y}" class="buffer-stroke-small" stroke-linecap="{cap}"/>',
-        f'  <path d="M 270,{y} L 570,{y}" class="source-line"/>',
+        f'  <text x="30" y="{y + 8}" class="label">{label}</text>',
+        f'  <line x1="270" y1="{y - 44}" x2="270" y2="{y + 44}" class="endpoint"/>',
+        f'  <line x1="590" y1="{y - 44}" x2="590" y2="{y + 44}" class="endpoint"/>',
+        f'  <path d="M 270,{y} L 590,{y}" class="buffer-stroke-small" stroke-linecap="{cap}"/>',
+        f'  <path d="M 270,{y} L 590,{y}" class="source-line"/>',
         f'  <circle cx="270" cy="{y}" r="6" class="source"/>',
-        f'  <circle cx="570" cy="{y}" r="6" class="source"/>',
+        f'  <circle cx="590" cy="{y}" r="6" class="source"/>',
     ])
 
 svg.extend([
-    # Joins panel.
-    '  <rect x="715" y="520" width="650" height="425" rx="12" class="card"/>',
-    '  <text x="745" y="562" class="heading">4. Unions entre segments</text>',
-    '  <text x="745" y="593" class="subtitle">Els angles aguts amplifiquen la diferència</text>',
+    '  <text x="30" y="972" class="note">Les guies marquen els extrems originals.</text>',
+
+    # Segment joins.
+    '  <text x="730" y="542" class="heading">Unions entre segments</text>',
 ])
 
 join_columns = [
-    (825, "Arrodonida", "round", 4),
-    (1040, "Bisellada", "bevel", 4),
-    (1255, "En punta", "miter", 8),
+    (835, "Arrodonida", "round", 4),
+    (1050, "Bisellada", "bevel", 4),
+    (1265, "En punta", "miter", 8),
 ]
 for x, label, join, miter_limit in join_columns:
-    path = f'M {x - 68},810 L {x},670 L {x + 68},810'
+    path = f'M {x - 72},810 L {x},660 L {x + 72},810'
     svg.extend([
         f'  <path d="{path}" class="buffer-stroke-small" stroke-linecap="butt" stroke-linejoin="{join}" stroke-miterlimit="{miter_limit}"/>',
         f'  <path d="{path}" class="source-line"/>',
-        f'  <text x="{x}" y="867" text-anchor="middle" class="label">{label}</text>',
+        f'  <text x="{x}" y="875" text-anchor="middle" class="label">{label}</text>',
     ])
 
 svg.extend([
-    '  <text x="1040" y="914" text-anchor="middle" class="body">El límit de punta restringeix prolongacions extremes.</text>',
-    '  <text x="700" y="982" text-anchor="middle" class="subtitle">Només la configuració arrodonida aproxima literalment tots els punts situats a una distància màxima d.</text>',
+    '  <text x="1050" y="945" text-anchor="middle" class="note">Mateix angle, tres contorns.</text>',
     '</svg>',
 ])
 

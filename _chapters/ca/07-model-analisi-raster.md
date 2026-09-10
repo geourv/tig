@@ -33,6 +33,42 @@ El terme **píxel** descriu l'element d'una imatge digital i sovint s'utilitza c
 
 La distinció habitual entre **objectes discrets** i **camps continus** orienta l'elecció entre vector i ràster, però no la resol mecànicament. Una carretera es pot modelar com una línia connectada, com la superfície pavimentada d'un polígon o com cel·les d'una imatge. Una coberta del sòl està formada per classes, però es pot emmagatzemar en una graella per analitzar-la conjuntament amb elevació, clima o teledetecció. El model adequat és el que conserva les relacions necessàries per a la pregunta i fa visibles les simplificacions introduïdes.
 
+### Semàntica dels valors ràster
+
+Variable contínua
+: Pot prendre valors intermedis dins del seu domini, com l'elevació, la temperatura o una concentració.
+
+Variable categòrica
+: Assigna etiquetes nominals o ordinals, com el tipus de coberta o un nivell de qualitat.
+
+Magnitud intensiva
+: No creix pel simple fet d'ampliar l'àrea, com una temperatura mitjana, una proporció o una densitat.
+
+Magnitud extensiva
+: Representa una quantitat que s'ha de conservar quan s'agrega, com un total de població distribuït en cel·les.
+
+Aquestes distincions determinen quines operacions tenen sentit. La mitjana pot resumir temperatures o elevacions sobre un suport més gran, mentre que la suma pot conservar un recompte distribuït. Una superfície de densitat és contínua encara que provingui de punts o totals administratius: cada cel·la estima una intensitat per unitat d'àrea, no un nombre independent de persones observades al seu centre. Una coberta del sòl, en canvi, continua sent categòrica encara que els codis siguin enters. Per això interpolar-ne una mitjana produiria nombres sense categoria.
+
+### Mida de cel·la i resolució efectiva
+
+La **mida de cel·la** descriu l'amplada i l'alçada de la graella en les unitats del `CRS`. La **resolució espacial efectiva** descriu el detall que el conjunt pot distingir de manera fiable i depèn també de la font, el mostreig, el procés d'interpolació o classificació i l'exactitud. Un GeoTIFF de 2 m creat a partir d'observacions escasses no conté necessàriament informació independent cada 2 m; de la mateixa manera, un punt LiDAR per metre quadrat no és una cel·la ràster d'1 m. La densitat de punts i la mida de la graella són propietats diferents.
+
+Els noms dels productes d'elevacions utilitzen tres sigles que cal distingir abans de comparar-ne la resolució. Un **model digital d'elevacions (MDE)** és una representació numèrica d'altures sobre una superfície de referència; un **model digital del terreny (MDT)** intenta representar el sòl nu; i un **model digital de superfície (MDS)** representa la superfície superior observada, que pot incloure edificis, vegetació i altres objectes. Alguns materials també utilitzen la sigla MET per al model del terreny.
+
+Els noms dels productes d'elevacions de l'IGN/CNIG fan visible la separació nominal de la graella. Els exemples següents corresponen a productes disponibles per a l'entorn del full `0473`, que inclou Vila-seca; la data, la resolució i les especificacions s'han de tornar a comprovar per a cada full i cobertura descarregats.
+
+::: table "Exemples de productes ràster de l'IGN/CNIG i usos compatibles"
+| Producte d'exemple | Suport espacial nominal | Ús docent plausible | Limitació que s'ha de conservar |
+| --- | --- | --- | --- |
+| [Ortofoto PNOA de màxima actualitat, full 0473-1](https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=11558987) | GSD de 25 cm a l'edició local de 2021 | Reconèixer cobertes, vies i canvis visibles; context de digitalització | La mida del píxel no és l'exactitud posicional ni garanteix identificar qualsevol objecte de 25 cm |
+| [MDT02 de segona cobertura, tessel·la 0473-1](https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=10323995) | Cel·la de 2 m | Derivar relleu local i generar graelles agregades de 25 i 200 m des d'una font comuna | Representa terreny interpolat, no edificis o arbres; les especificacions d'error no són l'error de cada cel·la |
+| [MDT05 de primera cobertura, full 0473](https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=9072569) | Cel·la de 5 m | Inspeccionar `NoData`, cotes zero, perfils i pendents senzills | La font i el període 2008–2011 són diferents dels de la segona cobertura i no s'han de barrejar sense contrast |
+| MDT25 i MDT200 derivats | Cel·les de 25 i 200 m | Context regional i comparació amb una generalització publicada | El productor no documenta necessàriament el mateix mètode d'agregació que l'experiment; no aïllen per si sols l'efecte de la mida |
+| Núvol de punts PNOA-LiDAR | Mostres irregulars descrites per densitat, no per mida de cel·la | Crear un MDT, un MDS o estimar altura d'objectes després de classificar retorns | Cal triar interpolació i cel·la; restar MDS i MDT només és defensable si les superfícies són compatibles |
+:::
+
+Les [especificacions tècniques PNOA-LiDAR](https://pnoa.ign.es/web/portal/pnoa-lidar/especificaciones-tecnicas) i les [especificacions històriques de les ortofotos PNOA](https://pnoa.ign.es/web/portal/pnoa-imagen/especificaciones-tecnicas-pnoa-anual-y-otros-productos) permeten separar mida de píxel, densitat de mostreig i exactitud declarada. Els valors publicats són objectius o controls del producte i de la campanya, no una garantia local idèntica per a totes les cel·les. Per a qualsevol decisió a escala de parcel·la cal llegir la fitxa concreta i contrastar una referència adequada.
+
 ## Geometria i alineació de la graella
 
 La geometria completa d'un ràster es pot descriure amb el `CRS`, l'extensió, l'origen, la mida de cel·la, el nombre de files i columnes i, si existeix, la rotació. En una graella orientada al nord, les columnes avancen habitualment cap a l'est i les files cap al sud des de la cantonada superior esquerra. Tanmateix, el fitxer pot conservar una transformació afí més general, amb píxels rectangulars o eixos girats. Pressuposar sempre cel·les quadrades i sense rotació pot fer que una exportació canviï lleugerament la posició o l'àrea representada.
@@ -84,6 +120,8 @@ Els codis de classe no són magnituds encara que s'emmagatzemin com a nombres. E
 `NoData` indica que una cel·la no té un valor vàlid per a aquella banda. Pot correspondre a una zona fora de cobertura, a un núvol, a aigua exclosa del producte, a una fallada de sensor o a una operació que no es pot calcular. Aquestes causes no són equivalents. Si una anàlisi necessita diferenciar-les, un únic codi d'absència és insuficient i cal conservar una capa de qualitat o una classificació de motius.
 
 `NoData` no és zero. En un model d'elevacions, 0 m pot ser una cota vàlida; en una distància, 0 identifica la font; en una màscara binària, 0 pot significar que la condició és falsa. Substituir absències per zero incorpora observacions inexistents al càlcul i pot abaixar mitjanes, crear costes artificials o convertir àrees no avaluades en àrees que no compleixen el criteri.
+
+![QGIS mostra el MDT05 del full 0473 amb una cota zero dins de la cobertura acolorida i una cel·la NoData dins de la zona transparent]({{ site.baseurl }}/assets/img/qgis/qgis-raster-nodata.png "El MDT05 oficial conserva un domini vàlid de -6,1 a 173,5 m, que inclou la cota zero, i utilitza -32767 com a sentinella NoData. QGIS exclou aquest sentinella de la llegenda i el representa transparent; el color blau d'una cota baixa no significa absència."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
 
 La validesa es pot expressar mitjançant un valor sentinella, una màscara interna o externa i, en alguns productes d'imatge, un canal alfa de transparència. La transparència és sobretot una propietat de representació i no sempre equival a una màscara analítica. Un valor sentinella, com `-9999`, només és segur si queda fora del domini possible; en una conversió de tipus o d'unitat podria col·lidir amb un valor real. Els ràsters de coma flotant també poden utilitzar `NaN`, però el comportament de les eines s'ha de provar en lloc de pressuposar-lo.
 
@@ -149,9 +187,7 @@ Retallar massa aviat pot eliminar context necessari. Un pendent necessita veïns
 
 ## Semàntica i remostreig dels valors
 
-El **remostreig** estima quin valor correspon a cada cel·la d'una graella de destinació. Apareix quan canvien la resolució, l'origen o el `CRS`, i també quan un canvi d'extensió obliga a crear una graella diferent. Un retall rectangular alineat amb les vores de la malla pot conservar exactament les cel·les font i no necessita estimar-ne valors nous. Encara que la interfície presenti aquestes operacions per separat, una reprojecció ràster sempre necessita decidir on queda la nova graella i com obté els seus valors. El mètode s'ha de triar segons què representa la banda i segons si es redueix o s'augmenta la mida de cel·la.
-
-Una variable **contínua** pot prendre valors intermedis dins del seu domini: elevació, temperatura o concentració en són exemples habituals. Una variable **categòrica** assigna etiquetes nominals o ordinals, com tipus de coberta o nivell de qualitat. Una magnitud **intensiva**, com una temperatura mitjana o una proporció, no creix pel simple fet d'ampliar l'àrea; una magnitud **extensiva**, com un total de població distribuït en cel·les, sí que s'ha de conservar quan s'agrega. Aquesta darrera distinció impedeix aplicar la mitjana a totals o la suma a valors que ja són densitats.
+El **remostreig** estima quin valor correspon a cada cel·la d'una graella de destinació. Apareix quan canvien la resolució, l'origen o el `CRS`, i també quan un canvi d'extensió obliga a crear una graella diferent. Un retall rectangular alineat amb les vores de la malla pot conservar exactament les cel·les font i no necessita estimar-ne valors nous. Encara que la interfície presenti aquestes operacions per separat, una reprojecció ràster sempre necessita decidir on queda la nova graella i com obté els seus valors. El mètode s'ha de triar segons què representa la banda i segons si es redueix o s'augmenta la mida de cel·la. La distinció anterior entre variables contínues, categories i magnituds intensives o extensives impedeix aplicar la mitjana a codis o totals i la suma a valors que ja són densitats.
 
 ::: table "Mètodes de remostreig i conseqüències"
 | Mètode | Com obté el valor | Ús orientatiu | Precaució |
@@ -181,7 +217,7 @@ Una seqüència eficient evita remostreigs acumulats. Si la font comuna es pot t
 
 ## Models digitals d'elevacions
 
-Un **model digital d'elevacions** (MDE) és una representació numèrica d'altures sobre una superfície de referència. La terminologia dels productes no és completament uniforme. En aquest manual, **model digital del terreny** (MDT, també anomenat MET en alguns materials) designa una superfície que intenta representar el sòl nu, mentre que **model digital de superfície** (MDS) representa la superfície superior observada i pot incloure edificis, vegetació i altres objectes. Cal comprovar sempre la definició del productor en lloc de deduir el contingut només de les sigles {% cite felicisimoModelosDigitalesTerreno1994 nunesDiccionariSIG2012 %}.
+La terminologia dels productes no és completament uniforme. Cal comprovar sempre la definició del productor en lloc de deduir el contingut només de les sigles {% cite felicisimoModelosDigitalesTerreno1994 nunesDiccionariSIG2012 %}.
 
 La diferència entre MDS i MDT pot aproximar l'altura d'objectes si les dues superfícies comparteixen adquisició compatible, referència vertical, alineació i tractament. Restar productes de dates o procediments diferents pot barrejar creixement de vegetació, obres, errors de classificació, moviments reals i desajustos geomètrics. Una diferència positiva no identifica automàticament un edifici, i una diferència petita pot quedar dins de la incertesa vertical.
 
@@ -213,6 +249,8 @@ L'**orientació** indica la direcció de màxim descens. Sol expressar-se com un
 
 En una superfície gairebé plana, petits errors verticals poden canviar molt l'orientació perquè no hi ha una direcció dominant. Convé separar cel·les per sota d'un llindar de pendent justificat abans d'agrupar exposicions nord, est, sud i oest. Aquest llindar no és universal: depèn de la qualitat del MDE i de la finalitat. La classe «pla» ha de continuar distingida de `NoData`.
 
+![Una finestra de nou elevacions mostra el gradient local, la direcció de màxim descens, el pendent corresponent en perfil i la diferència entre una cel·la plana i NoData]({{ site.baseurl }}/assets/quarto/07-model-analisi-raster/terrain-gradient-slope-aspect.qmd "En aquest esquema didàctic de diferències centrals, una graella de 25 m produeix un pendent de 10,1°, equivalent al 17,9%, i un aspecte de 153,4° mesurat en sentit horari des del nord. El mateix gradient determina les dues magnituds; els proveïdors poden aplicar altres estimadors. Una superfície plana conté dades vàlides però no una direcció estable, mentre que NoData indica absència de valor."){: data-figure-width-web="33.5rem" data-figure-width-pdf="75%"}
+
 ### Ombrejat, curvatura i rugositat
 
 L'**ombrejat del relleu** simula la il·luminació d'una superfície segons un azimut i una altura solar. Ajuda a percebre formes, però no és una observació de llum ni una banda d'elevació. Canviar la direcció de la llum pot fer més visibles unes valls i ocultar-ne d'altres, i la il·lusió perceptiva pot invertir el relleu si la llum sembla venir de baix. Un ombrejat multidireccional pot reduir part del biaix, però també és una representació derivada i n'ha de conservar els paràmetres.
@@ -237,7 +275,23 @@ Els derivats del municipi s'han de calcular sobre una franja de dades exterior i
 
 ## Àlgebra de mapes i reclassificació
 
-L'**àlgebra de mapes** tracta les graelles com a operands. Una operació **local** calcula cada cel·la a partir dels valors de la mateixa posició; una operació **focal** utilitza un veïnatge; una operació **zonal** resumeix cel·les que pertanyen a una zona; i una operació **global** pot dependre de tota la superfície, com una distància acumulada. Aquesta classificació ajuda a anticipar quines capes han d'estar alineades i quin context exterior necessita cada càlcul.
+L'**àlgebra de mapes** tracta les graelles com a operands.
+
+Operació local
+: Calcula cada cel·la a partir dels valors de la mateixa posició.
+
+Operació focal
+: Utilitza un veïnatge al voltant de cada cel·la.
+
+Operació zonal
+: Resumeix les cel·les que pertanyen a una zona comuna.
+
+Operació global
+: Pot dependre de tota la superfície, com una distància acumulada.
+
+Aquesta classificació ajuda a anticipar quines capes han d'estar alineades i quin context exterior necessita cada càlcul.
+
+![Quatre panells comparen una operació ràster local entre cel·les alineades, una mitjana focal en una finestra de tres per tres, un resum zonal i una superfície global de distància]({{ site.baseurl }}/assets/quarto/07-model-analisi-raster/raster-neighborhood-operations.qmd "El suport necessari creix de la posició compartida al veïnatge, a les cel·les d'una zona i a la superfície completa; aquesta dependència determina alineació, marge i regles de vora."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
 
 Una expressió local pot sumar bandes, calcular una diferència, normalitzar un valor o avaluar una condició. Abans d'executar-la cal comprovar unitats i dominis. Restar metres a graus no té sentit; dividir per una banda que conté zeros necessita una regla; combinar una data amb una altra pot descriure canvi només si les fonts són comparables. El fet que la calculadora retorni nombres no valida l'operació.
 
@@ -245,21 +299,41 @@ La **reclassificació** converteix valors o intervals en classes. Els intervals 
 
 Els llindars poden provenir d'una norma, d'una relació funcional, de la distribució observada o d'una decisió exploratòria. Aquestes justificacions no són intercanviables. Si un llindar canvia entre municipis perquè s'adapta a quantils locals, les classes ja no representen els mateixos valors absoluts; si es manté un llindar comú, alguns municipis poden quedar gairebé en una sola classe. La comparació exigeix decidir quina propietat es vol conservar.
 
+### Combinació categòrica de ràsters
+
+La **combinació categòrica**, anomenada sovint *Combine* en alguns SIG, crea una classe nova per a cada combinació única dels codis d'entrada. Si una cel·la és `bosc` a la coberta de 2020 i `urbà` a la de 2025, la sortida no conserva només que hi ha hagut canvi: identifica específicament la transició `bosc → urbà`. Una taula associada ha de relacionar cada codi de sortida amb les classes originals, el nombre de cel·les i, si correspon, la superfície.
+
+Aquesta operació és l'anàleg ràster més pròxim a una unió geomètrica vectorial perquè conserva zones exclusives i combinacions de pertinença, però **no és la mateixa operació**. La unió vectorial talla geometries pels seus límits i combina atributs; la combinació ràster compara posicions d'una graella comuna i la mida i l'origen de les cel·les decideixen els límits resultants. Les entrades han de compartir `CRS`, extensió, resolució i alineació, i els nombres de classe no s'han d'interpretar com magnituds.
+
+En una calculadora ràster es pot construir un codi sense col·lisions quan els dominis són coneguts. Si totes dues entrades utilitzen enters de `0` a `99`, una forma possible és:
+
+::: listing "Codi de combinació per a dues classificacions amb dominis controlats"
+```text
+("coberta_2020@1" * 100) + "coberta_2025@1"
+```
+:::
+
+El codi `103` significaria classe 1 a la primera entrada i classe 3 a la segona només perquè la base 100 s'ha declarat abans. Amb codis negatius, decimals o superiors, la fórmula podria col·lidir i caldria una altra codificació o una eina de taula creuada. `NoData` s'ha de mantenir separat: una combinació desconeguda no és una nova classe territorial. Per exemple, forçar `NoData` a zero faria aparèixer transicions fictícies des d'una classe 0. Aquesta tècnica és útil per estudiar canvis de coberta, creuar classe de sòl i classe de pendent o inventariar combinacions de criteris abans de decidir quines són admissibles.
+
 Una comparació genera una màscara booleana i els operadors lògics combinen condicions. Per exemple:
 
 ::: listing "Màscara exploratòria de terreny baix i pendent suau"
-```sql
+```text
 ("elevacio@1" < 20) AND ("pendent_graus@1" < 2)
 ```
 :::
 
 Aquesta expressió és sintaxi de la calculadora ràster de QGIS quan les capes carregades s'anomenen `elevacio` i `pendent_graus`; els llindars s'interpreten en les unitats documentades de les bandes, metres i graus respectivament. Identifica cel·les que compleixen dos criteris pedagògics i no determina per si sola una aptitud urbanística o ambiental. `AND` conserva només la coincidència de totes les condicions; `OR` accepta qualsevol condició. La diferència entre les dues sortides és una comprovació útil de la lògica, però cal decidir també què passa quan una entrada és `NoData`. Convertir l'absència automàticament en fals ocultaria zones no avaluades.
 
+>>>> **Terreny baix no és inundabilitat.** La coincidència d'elevació baixa i pendent suau només descriu dues propietats del relleu representat. Per estimar inundació caldrien, segons la pregunta, cabals o períodes de retorn, connectivitat hidràulica, drenatge, rugositat, infraestructures, condicions de contorn i un model validat. La màscara no s'ha d'etiquetar ni interpretar com a zona inundable. Fins i tot una inundabilitat modelada descriuria el perill; parlar de risc exigiria incorporar també l'exposició i la vulnerabilitat.
+
 Una anàlisi multicriteri ponderada necessita encara més decisions: transformar variables a una escala comuna, establir la direcció de preferència, tractar valors extrems, justificar pesos i distingir restriccions absolutes de factors compensables. Un pes alt no converteix una font incerta en una evidència millor. Abans d'acceptar un mapa final convé variar llindars i pesos dins d'un rang justificable i identificar quines zones depenen d'una elecció fràgil.
 
 ## Superfícies de distància i cost
 
 Una **distància euclidiana** assigna a cada cel·la la separació en línia recta fins a la font més pròxima. La font pot provenir de punts, línies, polígons o cel·les seleccionades, però ha de quedar rasteritzada sobre una graella definida. El resultat depèn del `CRS`, de les unitats i de com es representa el límit de la font. En un `CRS` geogràfic, una diferència angular no s'ha d'interpretar directament com metres.
+
+A diferència d'una àrea d'influència vectorial, que crea un polígon dins o fora d'un llindar, la superfície de distància conserva un valor per a totes les cel·les avaluades. Reclassificar-la amb `distància <= d` produeix una aproximació ràster del buffer, sensible a la mida i l'origen de la graella. Tampoc no equival a una matriu vectorial: la matriu enumera parelles d'entitats, mentre que la superfície respon quina font és més pròxima a cada posició del domini.
 
 La distància entre centres introdueix una aproximació que es fa més visible en cel·les grosses. Una font estreta pot desplaçar-se fins al centre de la cel·la que la representa, i la seva forma pot desaparèixer o engruixir-se. Quan el llindar és semblant a la mida de cel·la, la classificació dins o fora de la distància és especialment sensible a l'origen de la malla. Convé comparar una mostra amb mesures vectorials i quantificar la franja d'incertesa al voltant del llindar.
 
@@ -275,13 +349,19 @@ Rasteritzar una capa vectorial exigeix fixar una graella de referència, selecci
 
 Vectoritzar un ràster crea geometries que segueixen les vores de les cel·les. Una classificació sorollosa pot produir milers de polígons petits i contorns esglaonats. Dissoldre per classe redueix registres però no recupera el límit original ni elimina la incertesa de classificació. Suavitzar el contorn canvia novament la geometria i s'ha de considerar una generalització, no una restauració.
 
+![Un polígon vectorial sobre una graella es rasteritza segons els centres de cel·la i es torna a vectoritzar com un contorn esglaonat]({{ site.baseurl }}/assets/quarto/07-model-analisi-raster/vector-raster-conversion.qmd "Rasteritzar exigeix una graella i una regla d'activació; vectoritzar després conserva les vores de les cel·les classificades, però no recupera el límit continu original."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
+
 ### Estadístiques zonals
 
-Les **estadístiques zonals** resumeixen els valors d'un ràster dins de zones, normalment polígons vectorials. Per a elevació o pendent poden ser útils el recompte vàlid, la mitjana, la mediana, la desviació, el mínim i el màxim. Alguns proveïdors ofereixen també percentils, però l'algorisme `native:zonalstatisticsfb` de QGIS 3.44 no els calcula. La suma d'elevacions o pendents no té una interpretació territorial directa. Per a categories interessen els recomptes i proporcions per classe, no la mitjana dels codis.
+Les **estadístiques zonals** resumeixen els valors d'un ràster dins de zones, normalment polígons vectorials. Per a elevació o pendent poden ser útils el recompte vàlid, la mitjana, la mediana, la desviació, el mínim i el màxim. Alguns proveïdors ofereixen també percentils, però l'algorisme d'estadístiques zonals de QGIS 3.44 no els calcula. El seu identificador tècnic és `native:zonalstatisticsfb`. La suma d'elevacions o pendents no té una interpretació territorial directa. Per a categories interessen els recomptes i proporcions per classe, no la mitjana dels codis.
 
-La regla de pertinença de cel·les a una zona condiciona el resultat. Alguns algorismes utilitzen el centre, altres inclouen cel·les tocades i altres ponderen la fracció coberta. Un municipi petit o estret pot no contenir cap centre de cel·la a 200 m encara que intersequi la graella. La documentació de l'eina i una geometria de prova simple permeten saber què s'està comptant.
+La regla de pertinença de cel·les a una zona condiciona el resultat. Aquest algorisme prova primer els centres de les cel·les: només incorpora els centres situats dins del polígon que tenen un valor vàlid, diferent de `NoData`. Si aquesta primera passada produeix zero o una cel·la, en descarta els acumulats i repeteix el càlcul mitjançant interseccions precises entre cada píxel i el polígon. En aquesta segona passada, cada píxel contribueix al recompte amb la fracció de la seva àrea intersectada i a la suma amb el valor multiplicat per la mateixa fracció. Per això el recompte pot ser decimal i la mitjana és una mitjana ponderada per l'àrea intersectada.
 
-Per a una classe ràster, la superfície aproximada es calcula multiplicant el nombre de cel·les completes per l'àrea d'una cel·la. A 25 m, cada cel·la quadrada representa 625 m²; a 200 m, 40.000 m². Aquesta fórmula és exacta per a la superfície de les cel·les en un `CRS` projectat adequat, però la seva assignació íntegra a un municipi és una aproximació al límit vectorial. Si es ponderen fraccions de cel·la, cal conservar el mètode i no tornar a multiplicar com si totes fossin completes.
+Aquesta ponderació no converteix automàticament tots els estadístics disponibles en estimadors ponderats de la mateixa manera. En el recàlcul precís, la mediana i la desviació no tenen el mateix contracte fraccionari que el recompte, la suma i la mitjana. Per això la comparació controlada d'aquest capítol no les utilitza quan alguna zona activa aquesta segona passada. Si fossin necessàries, caldria calcular-les amb una regla de pesos explícita i idèntica a totes dues resolucions.
+
+>>>> **Un recompte fraccionari no indica una taula corrupta.** En una zona petita o estreta pot revelar que QGIS ha activat el càlcul precís de píxel contra polígon. Arrodonir-lo abans de calcular superfícies o percentatges eliminaria justament la ponderació aplicada a les cel·les de vora; cal conservar el valor i registrar la versió de l'algorisme.
+
+Per a una màscara binària on 1 representa la classe, 0 una cel·la avaluada que no hi pertany i `NoData` una absència, la superfície de la classe s'aproxima multiplicant la suma zonal per l'àrea d'una cel·la; el recompte multiplicat per aquesta àrea representa, en canvi, la superfície avaluada. A 25 m, cada cel·la quadrada representa 625 m²; a 200 m, 40.000 m². La mitjana de la màscara, equivalent a suma dividida per recompte, estima la proporció de superfície de la classe dins de l'àrea vàlida. Amb la prova ordinària de centres, recompte i suma acumulen cel·les completes i l'aproximació es concentra al límit vectorial. Amb el recàlcul precís de QGIS, tots dos acumulen fraccions d'intersecció; no s'han d'arrodonir ni tornar a ponderar com si totes les contribucions fossin cel·les completes.
 
 Les estadístiques zonals afegeixen camps a una capa o generen una taula. Els noms han d'incloure la variable, la resolució i l'estadístic, com `z25_elev_mean` o `z200_slope_max`, dins dels límits del format. Abans de la unió cal assegurar que l'identificador de zona és únic; després, comprovar zones sense valors, recompte de files i unitats. Una taula llarga amb una fila per zona, resolució, variable i estadístic pot ser més fàcil de comparar i ampliar que desenes de camps amb noms abreujats.
 
@@ -350,12 +430,12 @@ Una implementació de referència per a QGIS 3.44 fixa els algorismes i els par�
 | Orientació | `gdal:aspect` | `BAND = 1`; azimut des del nord; mateixa fórmula; `COMPUTE_EDGES = False`; classe plana derivada del llindar de pendent, no del codi d'orientació |
 | Reclassificació | `native:reclassifybytable` | Banda, taula d'intervals, inclusió dels límits, valor per a rangs absents, `NoData` i tipus de sortida idèntics a les dues resolucions |
 | Màscara de dos criteris | `native:rastercalc` | Capes explícites, expressió `("elevacio@1" < 20) AND ("pendent_graus@1" < 2)`, extensió, mida de cel·la, CRS, tractament de `NoData` i sortida persistent |
-| Resum municipal | `native:zonalstatisticsfb` | Municipi original, banda 1, prefix per variable i resolució, i només estadístics admesos: recompte, mitjana, mediana, desviació, mínim i màxim |
+| Resum municipal | `native:zonalstatisticsfb` | `municipi_treball`, banda 1 i prefix per variable i resolució; recompte, mitjana, mínim i màxim per a elevació i pendent; suma, recompte i mitjana per a la màscara binària 0/1 |
 :::
 
-`native:zonalstatisticsfb` assigna habitualment els píxels pel centre i aplica una selecció per intersecció quan una zona petita no conté cap centre. Aquesta regla s'ha de conservar a totes dues resolucions i provar amb un polígon simple. El percentatge de cel·les vàlides només es calcularà si també s'obté un denominador amb una graella constant, vàlida i perfectament alineada: el recompte del MDE dividit pel recompte de la graella constant sobre el mateix municipi. Sense aquest segon recompte s'informarà només el nombre de valors vàlids.
+`native:zonalstatisticsfb` seguirà a cada resolució les dues passades descrites: prova de centres vàlids i, quan el primer recompte és zero o un, recàlcul complet amb fraccions d'intersecció. La taula ha d'admetre recomptes decimals i no pot comparar-los com si sempre fossin nombres enters de píxels. El percentatge de superfície vàlida només es calcularà si també s'obté un denominador amb una graella constant, vàlida i perfectament alineada, sotmesa al mateix algorisme sobre `municipi_treball`, i s'ha comprovat que numerador i denominador han seguit la mateixa regla de pertinença. Aleshores el recompte del MDE es dividirà pel recompte de la graella constant. Si les dues execucions activen passades diferents, cal calcular les àrees vàlida i total amb una única regla explícita d'intersecció; sense un denominador compatible s'informarà només el recompte vàlid retornat per l'eina.
 
-La taula de resultats es prepararà abans de l'execució i deixarà les cel·les de valor buides. Per a cada resolució registrarà dimensions, nombre de cel·les vàlides, superfície ràster assignada al municipi, mínim, màxim, mitjana, mediana i desviació d'elevació, distribució del pendent, proporció de terreny pla, proporcions de classes i superfície de la màscara. El percentatge vàlid només s'hi afegirà amb el denominador anterior. També inclourà el temps i la mida de fitxer només com a mesures operatives de l'execució, no com a criteris de qualitat geogràfica.
+La taula de resultats es prepararà abans de l'execució i deixarà les cel·les de valor buides. Per a cada resolució registrarà dimensions, nombre de cel·les vàlides, superfície ràster assignada al municipi, mínim, màxim i mitjana d'elevació, distribució del pendent, proporció de terreny pla, proporcions de classes i superfície de la màscara. El percentatge vàlid només s'hi afegirà amb el denominador anterior. També inclourà el temps i la mida de fitxer només com a mesures operatives de l'execució, no com a criteris de qualitat geogràfica.
 
 No s'ha de pressuposar que totes les mitjanes canviaran poc ni que tots els màxims i pendents disminuiran. Aquestes són hipòtesis plausibles quan s'agrega una superfície, però poden fallar per la forma del territori, `NoData`, regles de vora o artefactes. El protocol obliga a observar primer els valors i després explicar-los. Una diferència inesperada començarà amb un diagnòstic de graella, validesa i paràmetres abans d'atribuir-se a l'escala geogràfica.
 
@@ -371,31 +451,42 @@ Abans d'acceptar una sortida cal tornar-la a obrir i comprovar `CRS`, referènci
 
 ## Activitats
 
-### Comprovació: zero o absència
+### Comprovació guiada: zero o absència
 
-Cal preparar una graella petita amb valors positius, zero i `NoData`, i predir el resultat d'una mitjana, una suma i una condició booleana sota dues polítiques d'absència.
+Cal descarregar el [MDT05 oficial del full 0473](https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=9072569), carregar-lo sense modificar-lo en un projecte amb `EPSG:25831` i comprovar a les propietats de la capa que té 5 m de mida de cel·la, una banda de coma flotant i `-32767` com a `NoData`. La simbologia s'ha de fixar entre `-6,1` i `173,5` m i ha de representar `NoData` transparent, tal com mostra la figura anterior.
 
-Després s'executaran les operacions i es compararà la predicció amb el recompte de valors vàlids. L'activitat ha d'explicar quina conclusió falsa apareix si `NoData` es converteix en zero i quina informació es perd si qualsevol absència es converteix automàticament en fals.
+Amb l'eina d'identificació s'han de consultar els dos centres de cel·la següents. Les coordenades pertanyen a `EPSG:25831`; per tant, abans de comparar-les cal assegurar que QGIS no les interpreta en el `CRS` d'una altra capa.
+
+::: table "Dos valors de control al MDT05 del full 0473"
+| Coordenada X (m) | Coordenada Y (m) | Resultat esperat | Interpretació |
+| --- | --- | --- | --- |
+| 355160 | 4550680 | 0 m | Cota vàlida que participa en els càlculs |
+| 363360 | 4545635 | `NoData` | Absència exclosa dels càlculs, emmagatzemada amb el sentinella `-32767` |
+:::
+
+La comprovació acaba repetint una mitjana sobre una finestra que inclogui cel·les vàlides i absents: primer s'ha de mantenir `NoData` i després, només en una còpia temporal, substituir-lo per zero. Cal registrar el recompte vàlid i explicar per què la segona mitjana canvia sense que hagi aparegut cap cota nova al territori. Aquesta activitat és una prova de diagnòstic i no forma part de la micropràctica lliurable 5.
 
 ### Pràctica guiada: el relleu de Vila-seca a dues resolucions
 
 La pràctica seguirà el protocol i el contracte executable de referència sense completar per endavant la taula de resultats. Primer s'identificarà el producte oficial d'elevacions, la superfície representada, les referències horitzontal i vertical, la resolució original, el tipus, `NoData` i les limitacions. Després es crearà una regió d'interès amb marge i s'anotaran les coordenades d'una extensió ajustada a la graella de 200 m.
 
-A partir de la mateixa font, `gdal:warpreproject` generarà directament models de 25 m i 200 m amb l'extensió comuna, `-tap` i el mètode de remostreig justificat. `gdal:slope`, `gdal:aspect`, `native:reclassifybytable` i `native:rastercalc` produiran respectivament pendent en graus, orientació, classes d'elevació i la màscara booleana, amb els paràmetres de la taula anterior. `native:zonalstatisticsfb` calcularà les estadístiques admeses sobre el municipi original, no sobre la regió amb marge. Els mapes utilitzaran els mateixos intervals, colors, extensió i escala.
+A partir de la mateixa font, `gdal:warpreproject` generarà directament models de 25 m i 200 m amb l'extensió comuna, `-tap` i el mètode de remostreig justificat. `gdal:slope`, `gdal:aspect`, `native:reclassifybytable` i `native:rastercalc` produiran respectivament pendent en graus, orientació, classes d'elevació i la màscara booleana, amb els paràmetres de la taula anterior. `native:zonalstatisticsfb` calcularà les estadístiques admeses sobre `municipi_treball`, no sobre la regió amb marge. Els mapes utilitzaran els mateixos intervals, colors, extensió i escala.
 
 La validació inclourà la relació 8 × 8 entre graelles, dimensions esperades, valors vàlids, rangs, histogrames, superfície de les classes i comparació entre franja de vora i interior. Només després s'escriurà quins resultats són sensibles a la resolució. Si una diferència no es pot separar d'un canvi de remostreig, alineació o `NoData`, quedarà descrita com una limitació del disseny i no com un efecte demostrat de la mida de cel·la.
 
 ### Micropràctica 5: anàlisi ràster
 
+La micropràctica reprèn el mateix punt de control acumulatiu de les anteriors; no crea un segon projecte. Abans de processar cal obrir `projecte_tig.qgz`, comprovar que `municipi_treball` resol la capa persistent de `dades_preparades/projecte_tig.gpkg` i contrastar aquest estat amb el projecte QGIS incrustat al mateix GeoPackage. Les dues representacions del projecte han de mostrar la mateixa entrada canònica, els mateixos grups i les mateixes fonts. Després d'incorporar els resultats validats, cal actualitzar tant el `.qgz` extern com el projecte incrustat, tancar QGIS i provar separadament l'obertura de tots dos.
+
 ::: table "Contracte de la micropràctica 5"
 | Component | Requisit |
 | --- | --- |
-| Entrades | Límit del municipi assignat i subconjunt d'un model d'elevacions oficial amb marge suficient |
+| Entrades | Capa canònica `municipi_treball` de `dades_preparades/projecte_tig.gpkg` i subconjunt documentat d'un model d'elevacions oficial amb marge suficient |
 | Operacions mínimes | Preparar dues resolucions niades amb `gdal:warpreproject`, calcular pendent i orientació amb `gdal:slope` i `gdal:aspect`, reclassificar amb `native:reclassifybytable`, combinar dues condicions amb `native:rastercalc` i resumir amb `native:zonalstatisticsfb` |
-| Resultats | GeoTIFF continus i categòrics, taula d'estadístiques al GeoPackage i mapa comparatiu |
-| Evidències del diari | Font i procedència de l'elevació, `CRS`, referència vertical, resolució, alineació, `NoData`, remostreig, llindars, controls i interpretació de les diferències |
-| Comprovacions | Dimensions esperades, relació de niament, rangs plausibles, cel·les vàlides, superfície ràster comparada amb la vectorial, efectes de vora i simbologia comuna |
-| Fitxers que cal conservar | Ràsters finals, taula comparativa al GeoPackage, projecte `.qgz` i diari amb els controls |
+| Resultats | GeoTIFF continus i categòrics, taula d'estadístiques persistent al GeoPackage i mapa comparatiu incorporat al projecte acumulatiu |
+| Evidències del diari | Font i procedència de l'elevació, `CRS`, referència vertical, resolució, alineació, `NoData`, remostreig, llindars, comportament del recompte zonal, controls i interpretació de les diferències |
+| Comprovacions | Dimensions esperades, relació de niament, rangs plausibles, recomptes zonals sense arrodonir, superfície ràster comparada amb la vectorial, efectes de vora, simbologia comuna i obertura equivalent de les dues representacions del projecte |
+| Fitxers que cal conservar | Ràsters finals, `dades_preparades/projecte_tig.gpkg` amb la taula comparativa i el projecte incrustat actualitzat, `projecte_tig.qgz` extern i diari amb els controls |
 :::
 
 Els llindars de Vila-seca no s'han de copiar automàticament a un municipi de muntanya. La transferència exigeix revisar la distribució, la mida dels processos, la qualitat de l'elevació i la finalitat de cada classe. El lliurament ha de diferenciar els valors observats dels esperats i conservar buides, fins a executar els càlculs, totes les caselles destinades als resultats de la comparació.

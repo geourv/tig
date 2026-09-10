@@ -1,0 +1,117 @@
+---
+title: "Topologia entre torres i trams de cable"
+lang: ca
+ref: network_cross_layer_topology
+format:
+  gfm:
+    output-file: network-cross-layer-topology.generated.md
+execute:
+  echo: false
+  warning: false
+  message: false
+execute-dir: project
+unaltraweb_compute:
+  engine: python
+  mode: figure
+  outputs:
+    - assets/img/generated/04-model-vectorial-digitalitzacio/network-cross-layer-topology.svg
+---
+
+```{python}
+from pathlib import Path
+
+
+def find_project_root(start):
+    path = Path(start).resolve()
+    for candidate in (path, *path.parents):
+        if (candidate / ".unaltraweb" / "computations.yml").is_file():
+            return candidate
+    raise RuntimeError("Project root not found: missing .unaltraweb/computations.yml")
+
+
+width, height = 1500, 720
+svg = [
+    f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
+    '  <title id="title">Regles topològiques entre una capa de torres i una capa de trams de cable</title>',
+    '  <desc id="desc">Tres panells mostren relacions entre capes. El primer representa un tram amb els dos extrems coincidents amb torres. El segon mostra una torre intermèdia que divideix el cable en dos trams. El tercer contrasta un extrem sense torre i un cable que passa per una torre sense quedar segmentat.</desc>',
+    '  <defs>',
+    '    <style>',
+    "      text { font-family: Arial, 'Liberation Sans', sans-serif; }",
+    '      .background { fill: #f7f9fa; }',
+    '      .panel { fill: #ffffff; stroke: #c5d0d5; stroke-width: 2; }',
+    '      .heading { fill: #21313c; font-size: 31px; font-weight: 700; }',
+    '      .note { fill: #53656e; font-size: 28px; }',
+    '      .small { fill: #53656e; font-size: 28px; }',
+    '      .cable { fill: none; stroke: #176486; stroke-width: 12; stroke-linecap: butt; }',
+    '      .tower { fill: #f4c56b; stroke: #664b16; stroke-width: 4; }',
+    '      .tower-label { fill: #49370f; font-size: 28px; font-weight: 700; }',
+    '      .span-label { fill: #176486; font-size: 28px; font-weight: 700; }',
+    '      .valid { fill: none; stroke: #2f875f; stroke-width: 6; }',
+    '      .error { fill: none; stroke: #c84232; stroke-width: 6; }',
+    '      .error-fill { fill: #c84232; stroke: #ffffff; stroke-width: 3; }',
+    '      .leader { fill: none; stroke: #c84232; stroke-width: 3; }',
+    '      .separator { stroke: #d4dde1; stroke-width: 2; }',
+    '    </style>',
+    '    <marker id="arrow" markerWidth="11" markerHeight="11" refX="8" refY="3.5" orient="auto" markerUnits="strokeWidth">',
+    '      <path d="M0,0 L0,7 L9,3.5 z" fill="#c84232"/>',
+    '    </marker>',
+    '  </defs>',
+    '  <rect width="1500" height="720" class="background"/>',
+    '  <rect x="25" y="25" width="450" height="670" class="panel"/>',
+    '  <rect x="525" y="25" width="450" height="670" class="panel"/>',
+    '  <rect x="1025" y="25" width="450" height="670" class="panel"/>',
+
+    # A span whose endpoints coincide with tower points.
+    '  <text x="250" y="78" text-anchor="middle" class="heading">Extrems coberts</text>',
+    '  <path d="M 105,330 L 395,330" class="cable"/>',
+    '  <circle cx="105" cy="330" r="18" class="tower"/>',
+    '  <circle cx="395" cy="330" r="18" class="tower"/>',
+    '  <circle cx="105" cy="330" r="30" class="valid"/>',
+    '  <circle cx="395" cy="330" r="30" class="valid"/>',
+    '  <text x="105" y="285" text-anchor="middle" class="tower-label">T01</text>',
+    '  <text x="395" y="285" text-anchor="middle" class="tower-label">T02</text>',
+    '  <text x="250" y="310" text-anchor="middle" class="span-label">C01</text>',
+    '  <text x="250" y="515" text-anchor="middle" class="note">Cada extrem del tram</text>',
+    '  <text x="250" y="552" text-anchor="middle" class="note">coincideix amb una torre.</text>',
+
+    # An intermediate tower creates two distinct spans.
+    '  <text x="750" y="78" text-anchor="middle" class="heading">Torre intermèdia</text>',
+    '  <path d="M 585,330 L 750,330" class="cable"/>',
+    '  <path d="M 750,330 L 915,330" class="cable"/>',
+    '  <circle cx="585" cy="330" r="18" class="tower"/>',
+    '  <circle cx="750" cy="330" r="18" class="tower"/>',
+    '  <circle cx="915" cy="330" r="18" class="tower"/>',
+    '  <circle cx="750" cy="330" r="30" class="valid"/>',
+    '  <text x="585" y="285" text-anchor="middle" class="tower-label">T03</text>',
+    '  <text x="750" y="285" text-anchor="middle" class="tower-label">T04</text>',
+    '  <text x="915" y="285" text-anchor="middle" class="tower-label">T05</text>',
+    '  <text x="665" y="310" text-anchor="middle" class="span-label">C02</text>',
+    '  <text x="835" y="310" text-anchor="middle" class="span-label">C03</text>',
+    '  <text x="750" y="515" text-anchor="middle" class="note">La torre funcional divideix</text>',
+    '  <text x="750" y="552" text-anchor="middle" class="note">el cable en dos trams.</text>',
+
+    # Cross-layer error candidates.
+    '  <text x="1250" y="78" text-anchor="middle" class="heading">Candidats a error</text>',
+    '  <line x1="1065" y1="355" x2="1435" y2="355" class="separator"/>',
+    '  <path d="M 1085,225 L 1265,225" class="cable"/>',
+    '  <circle cx="1085" cy="225" r="18" class="tower"/>',
+    '  <circle cx="1305" cy="195" r="18" class="tower"/>',
+    '  <circle cx="1265" cy="225" r="13" class="error-fill"/>',
+    '  <path d="M 1275,215 L 1290,202" class="leader" marker-end="url(#arrow)"/>',
+    '  <text x="1180" y="190" text-anchor="middle" class="small">extrem sense torre</text>',
+    '  <path d="M 1085,500 L 1415,500" class="cable"/>',
+    '  <circle cx="1085" cy="500" r="18" class="tower"/>',
+    '  <circle cx="1250" cy="500" r="18" class="tower"/>',
+    '  <circle cx="1415" cy="500" r="18" class="tower"/>',
+    '  <circle cx="1250" cy="500" r="31" class="error"/>',
+    '  <text x="1250" y="570" text-anchor="middle" class="small">cable sense segmentar</text>',
+    '  <text x="1250" y="625" text-anchor="middle" class="note">La proximitat o el contacte</text>',
+    '  <text x="1250" y="662" text-anchor="middle" class="note">visual no validen la relació.</text>',
+    '</svg>',
+]
+
+project_root = find_project_root(Path.cwd())
+output = project_root / "assets/img/generated/04-model-vectorial-digitalitzacio/network-cross-layer-topology.svg"
+output.parent.mkdir(parents=True, exist_ok=True)
+output.write_text("\n".join(svg) + "\n", encoding="utf-8")
+```

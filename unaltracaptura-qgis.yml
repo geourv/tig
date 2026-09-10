@@ -1,0 +1,103 @@
+runtime:
+  default_image: qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc
+  display_backend: offscreen
+  pull_policy: never
+  docker_network: none
+  locale: ca_ES
+
+paths:
+  recipes:
+    - recipes/qgis-interface-overview.yml
+    - recipes/qgis-applied-workflows.yml
+  data_root: tmp/unaltracaptura-qgis/data
+  output_root: assets/img/qgis
+  cache_root: tmp/unaltracaptura-qgis/cache
+
+plugins: []
+data:
+  - id: cnig-vila-seca-administrative-unit
+    type: vector
+    path: prepared/cnig/administrative-units/vila-seca-cnig.raw.json
+  - id: cnig-mdt05-0473
+    type: raster
+    path: prepared/cnig/mdt05/source/pnoa_mdt05_etrs89_hu31_0473_lid.tif
+    sha256: 27f9112c036be5923d458a1b5fb4da646aba091a325d262dd03ed13eb0ce1c3d
+
+teaching_resources:
+  - id: cnig-vila-seca-administrative-unit
+    kind: downloadable
+    provider: cnig
+    type: vector
+    title: Unitat administrativa de Vila-seca
+    description: Extracció municipal de l'API OGC Features oficial de l'IGN/CNIG.
+    url: https://api-features.ign.es/collections/administrativeunit
+    licence: CC BY 4.0 ign.es
+    size: small
+    formats: [geojson]
+    tags: [vilaseca, municipality, administrative_boundaries, cnig, geojson]
+    teaching_use:
+      - Preparar el límit municipal oficial del miniprojecte de Vila-seca.
+    preparation:
+      - id: download_vila_seca_administrative_unit
+        operation: download
+        description: Descarrega exactament la unitat municipal de Vila-seca en GeoJSON.
+        area: vila_seca
+        downloads:
+          - id: vila_seca_administrative_unit
+            description: Unitat de nivell Municipio amb nom Vila-seca.
+            url: https://api-features.ign.es/collections/administrativeunit/items/1172246?f=json
+            output: prepared/cnig/administrative-units/vila-seca-cnig.raw.json
+            max_bytes: 2000000
+        outputs:
+          - prepared/cnig/administrative-units/vila-seca-cnig.raw.json
+        tools: [ign:ogc-api-features]
+        steps:
+          - Descarregar només la consulta declarada a l'API oficial.
+          - Comprovar l'identificador, el nom, el nivell i el codi oficial de la unitat.
+          - Canonicalitzar la serialització JSON sense modificar-ne el contingut geogràfic.
+          - Verificar el SHA-256 canònic abans de crear la còpia preparada.
+        notes: L'API alterna serialitzacions equivalents; no es fixa el hash de la resposta bruta i build_project.py valida el SHA-256 de la representació JSON canònica.
+
+  - id: cnig-mdt05-0473
+    kind: downloadable
+    provider: cnig
+    type: raster
+    title: MDT05 de primera cobertura, full 0473
+    description: COG oficial de 5 metres de l'IGN/CNIG que cobreix Vila-seca i conserva NoData sobre les zones sense cota vàlida.
+    url: https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=9072569
+    licence: CC BY 4.0 ign.es
+    size: medium
+    formats: [cog, geotiff]
+    tags: [vilaseca, dem, mdt, elevation, nodata, raster, cnig, cog]
+    teaching_use:
+      - Distingir cotes zero de cel·les NoData amb una font oficial.
+      - Inspeccionar resolució, rang, referència vertical i cobertura abans de calcular derivats.
+    layers:
+      - name: mdt05_0473
+        title: MDT05 0473
+        geometry: raster
+        crs: EPSG:25831
+    preparation:
+      - id: download_cnig_mdt05_0473
+        operation: download
+        description: Descarrega el COG oficial MDT05 del full 0473 mitjançant el formulari declarat pel CNIG.
+        area: vila_seca
+        downloads:
+          - id: pnoa_mdt05_etrs89_hu31_0473_lid
+            description: MDT05 de primera cobertura, full MTN50 0473, ETRS89 UTM 31N i altures ortomètriques.
+            url: https://centrodedescargas.cnig.es/CentroDescargas/descargaDir
+            method: POST
+            form:
+              secDescDirLA: "9072569"
+              secuencial: "9072569"
+              codSerie: MDT05
+            output: prepared/cnig/mdt05/source/pnoa_mdt05_etrs89_hu31_0473_lid.tif
+            sha256: 27f9112c036be5923d458a1b5fb4da646aba091a325d262dd03ed13eb0ce1c3d
+            max_bytes: 30000000
+        outputs:
+          - prepared/cnig/mdt05/source/pnoa_mdt05_etrs89_hu31_0473_lid.tif
+        tools: [cnig:download-centre]
+        steps:
+          - Utilitzar exclusivament el recurs 9072569 del centre de descàrregues oficial.
+          - Verificar la mida i el SHA-256 abans d'utilitzar el COG.
+          - Conservar la descàrrega a la memòria cau, fora dels fitxers versionats.

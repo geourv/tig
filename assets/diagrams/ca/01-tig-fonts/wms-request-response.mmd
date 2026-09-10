@@ -1,4 +1,15 @@
-flowchart TB
-  request["Client SIG<br/>GetMap<br/>capes · estil · CRS · BBOX<br/>mida · format"] --> server["Servidor WMS<br/>consulta les dades<br/>aplica l'estil i renderitza"]
-  data[("Dades font")] --> server
-  server --> response["Resposta GetMap<br/>representació renderitzada<br/>PNG o JPEG"]
+%%{init: {
+  "sequence": { "showSequenceNumbers": false }
+}}%%
+sequenceDiagram
+    participant Q as QGIS
+    participant S as Servidor WMS
+    participant D as Dades
+
+    Q->>S: GetCapabilities
+    S-->>Q: Capes, formats i CRS
+    Q->>S: GetMap amb BBOX i paràmetres
+    S->>D: Consulta espacial
+    D-->>S: Geometries o cel·les
+    S->>S: Aplica estil i renderitza
+    S-->>Q: Imatge per a la BBOX

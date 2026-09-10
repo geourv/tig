@@ -1,0 +1,367 @@
+{
+  "ok": true,
+  "capture_id": "web-service-connection",
+  "provenance": {
+    "recipe_id": "qgis-applied-workflows",
+    "recipe_title": "Fluxos aplicats amb QGIS",
+    "recipe_path": "/workspace/recipes/qgis-applied-workflows.yml",
+    "capture_title": "Connexi\u00f3 a un servei WMS/WMTS",
+    "source_prompt": "Necessito set captures procedimentals en catal\u00e0 que mostrin com connectar\nun servei WMS/WMTS, triar un SRC projectat, distingir en un MDT les cotes\nv\u00e0lides de les cel\u00b7les NoData, interpretar una taula d'atributs, localitzar\nles eines de digitalitzaci\u00f3, configurar un buffer sense arribar a executar-lo\ni recon\u00e8ixer les regions funcionals del Dissenyador de models.\n",
+    "recipe_source_prompt": "Necessito set captures procedimentals en catal\u00e0 que mostrin com connectar\nun servei WMS/WMTS, triar un SRC projectat, distingir en un MDT les cotes\nv\u00e0lides de les cel\u00b7les NoData, interpretar una taula d'atributs, localitzar\nles eines de digitalitzaci\u00f3, configurar un buffer sense arribar a executar-lo\ni recon\u00e8ixer les regions funcionals del Dissenyador de models.\n",
+    "capture_source_prompt": null
+  },
+  "image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "image_digest": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "probe": {
+    "ok": true,
+    "image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+    "digest": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+    "qgis_version": "3.44.11",
+    "raw": "QGIS 3.44.11-Solothurn 'Solothurn' (f8f5812197f)\nQGIS code revision f8f5812197f\nQt version 5.15.17\nPython version 3.13.7\nGDAL/OGR version 3.10.3\nPROJ version 9.6.0\nEPSG Registry database version v12.004 (2025-03-02)\nGEOS version 3.13.1-CAPI-1.19.2\nSQLite version 3.46.1\nOS Ubuntu 25.10\n",
+    "returncode": 0
+  },
+  "output": "/workspace/assets/img/qgis/qgis-web-service-connection.png",
+  "annotation_svg": "/workspace/assets/img/qgis/qgis-web-service-connection.annotations.svg",
+  "annotation_svg_background": {
+    "mode": "embedded_png_data_uri",
+    "width": 1000,
+    "height": 600
+  },
+  "manifest": "/workspace/assets/img/qgis/qgis-web-service-connection.manifest.yml",
+  "backend": "offscreen",
+  "locale": {
+    "requested": "ca_ES",
+    "qsettings_user_locale": "ca_ES",
+    "qsettings_override": true
+  },
+  "device_pixel_ratio": 1.0426788330078125,
+  "coordinate_space": "logical pixels in the captured image; recipe relative coordinates share this space for PNG and SVG annotations",
+  "camera": {
+    "mode": "full",
+    "requested": {
+      "mode": "full",
+      "target": null,
+      "padding": 0,
+      "output_size": null
+    },
+    "full_capture": {
+      "width": 1000,
+      "height": 600
+    },
+    "scale": 1.0
+  },
+  "layout_policy": {
+    "reading_direction": "left_to_right",
+    "prefer_local_empty_space": true,
+    "prefer_leaderless_labels": false,
+    "avoid_diagonal_leaders": true,
+    "allow_diagonal_leaders": "when_no_clear_local_candidate",
+    "protect_text": true,
+    "protect_controls": true,
+    "obstacle_padding": 4.0
+  },
+  "project_crs": "EPSG:4326",
+  "canvas_crs": "EPSG:4326",
+  "warnings": [],
+  "target": {
+    "object_name": null,
+    "class_name": "QgsDataSourceManagerDialog",
+    "text": null,
+    "item_text": null,
+    "layer_name": null,
+    "target_part": null,
+    "title": null,
+    "parent_window": null,
+    "fallback": []
+  },
+  "annotations": [
+    {
+      "type": "callout",
+      "source": "target",
+      "colour": {
+        "mode": "auto_contrast",
+        "token": "ember",
+        "hex": "#b84200",
+        "score": 13.376,
+        "family": "warm"
+      },
+      "shadow": true,
+      "target": {
+        "object_name": "unaltracapturaDataSourceProvider:WMS/WMTS",
+        "class_name": null,
+        "text": null,
+        "item_text": null,
+        "layer_name": null,
+        "target_part": null,
+        "title": null,
+        "parent_window": null,
+        "fallback": []
+      },
+      "text": "Tria WMS/WMTS",
+      "number": 1,
+      "number_style": "label",
+      "target_anchor": {
+        "x": 258,
+        "y": 506
+      },
+      "target_bbox": {
+        "x": 0,
+        "y": 468,
+        "width": 336,
+        "height": 36
+      },
+      "target_marker": "box",
+      "label_topology": "outside",
+      "target_marker_bbox": {
+        "x": -3,
+        "y": 465,
+        "width": 342,
+        "height": 42
+      },
+      "label_bbox": {
+        "x": 178,
+        "y": 548,
+        "width": 161,
+        "height": 28
+      },
+      "layout_candidate": "halo:r1:bottom:end",
+      "layout_candidate_score": 11265.561,
+      "label_style": "numbered_box",
+      "number_bbox": {
+        "x": 178,
+        "y": 548,
+        "width": 25,
+        "height": 28
+      },
+      "text_bbox": {
+        "x": 203,
+        "y": 548,
+        "width": 136,
+        "height": 28
+      },
+      "label_lines": {
+        "title": [
+          "Tria WMS/WMTS"
+        ],
+        "body": []
+      },
+      "leader": {
+        "from": {
+          "x": 258,
+          "y": 553
+        },
+        "to": {
+          "x": 258,
+          "y": 506
+        },
+        "label_edge": {
+          "x": 258,
+          "y": 548
+        },
+        "label_snap": "top",
+        "target_snap": "bottom",
+        "vanishing_point": "lower_center_right",
+        "vanishing_point_xy": {
+          "x": 750,
+          "y": 408
+        },
+        "stroke_width": 3,
+        "target_dot": true
+      }
+    },
+    {
+      "type": "callout",
+      "source": "target",
+      "colour": {
+        "mode": "auto_contrast",
+        "token": "ember",
+        "hex": "#b84200",
+        "score": 26.39,
+        "family": "warm"
+      },
+      "shadow": true,
+      "target": {
+        "object_name": "unaltracapturaDataSourceGroup:connection-controls",
+        "class_name": null,
+        "text": null,
+        "item_text": null,
+        "layer_name": null,
+        "target_part": null,
+        "title": null,
+        "parent_window": null,
+        "fallback": []
+      },
+      "text": "Crea o selecciona una connexi\u00f3",
+      "number": 2,
+      "number_style": "label",
+      "target_anchor": {
+        "x": 806,
+        "y": 66
+      },
+      "target_bbox": {
+        "x": 367,
+        "y": 41,
+        "width": 617,
+        "height": 23
+      },
+      "target_marker": "box",
+      "label_topology": "outside",
+      "target_marker_bbox": {
+        "x": 364,
+        "y": 38,
+        "width": 623,
+        "height": 29
+      },
+      "label_bbox": {
+        "x": 536,
+        "y": 146,
+        "width": 279,
+        "height": 28
+      },
+      "layout_candidate": "halo:r2:bottom:mid",
+      "layout_candidate_score": 4584.869,
+      "label_style": "numbered_box",
+      "number_bbox": {
+        "x": 536,
+        "y": 146,
+        "width": 25,
+        "height": 28
+      },
+      "text_bbox": {
+        "x": 561,
+        "y": 146,
+        "width": 254,
+        "height": 28
+      },
+      "label_lines": {
+        "title": [
+          "Crea o selecciona una connexi\u00f3"
+        ],
+        "body": []
+      },
+      "leader": {
+        "from": {
+          "x": 806,
+          "y": 151
+        },
+        "to": {
+          "x": 806,
+          "y": 66
+        },
+        "label_edge": {
+          "x": 806,
+          "y": 146
+        },
+        "label_snap": "top",
+        "target_snap": "bottom",
+        "vanishing_point": "lower_center_left",
+        "vanishing_point_xy": {
+          "x": 250,
+          "y": 408
+        },
+        "stroke_width": 3,
+        "target_dot": true
+      }
+    },
+    {
+      "type": "callout",
+      "source": "target",
+      "colour": {
+        "mode": "auto_contrast",
+        "token": "ember",
+        "hex": "#b84200",
+        "score": 16.099,
+        "family": "warm"
+      },
+      "shadow": true,
+      "target": {
+        "object_name": null,
+        "class_name": null,
+        "text": "Connecta",
+        "item_text": null,
+        "layer_name": null,
+        "target_part": null,
+        "title": null,
+        "parent_window": "QgsDataSourceManagerDialog",
+        "fallback": [
+          {
+            "object_name": null,
+            "class_name": null,
+            "text": "Connect",
+            "item_text": null,
+            "layer_name": null,
+            "target_part": null,
+            "title": null,
+            "parent_window": "QgsDataSourceManagerDialog",
+            "fallback": []
+          }
+        ]
+      },
+      "text": "Connecta per consultar les capes",
+      "number": 3,
+      "number_style": "label",
+      "target_anchor": {
+        "x": 372,
+        "y": 17
+      },
+      "target_bbox": {
+        "x": 365,
+        "y": 17,
+        "width": 8,
+        "height": 0
+      },
+      "target_marker": "point",
+      "label_topology": "outside",
+      "label_bbox": {
+        "x": 223,
+        "y": 134,
+        "width": 291,
+        "height": 28
+      },
+      "layout_candidate": "halo:r3:bottom:mid",
+      "layout_candidate_score": 22858.549,
+      "label_style": "numbered_box",
+      "number_bbox": {
+        "x": 223,
+        "y": 134,
+        "width": 25,
+        "height": 28
+      },
+      "text_bbox": {
+        "x": 248,
+        "y": 134,
+        "width": 266,
+        "height": 28
+      },
+      "label_lines": {
+        "title": [
+          "Connecta per consultar les capes"
+        ],
+        "body": []
+      },
+      "leader": {
+        "from": {
+          "x": 228,
+          "y": 139
+        },
+        "to": {
+          "x": 372,
+          "y": 17
+        },
+        "label_edge": {
+          "x": 223,
+          "y": 134
+        },
+        "label_snap": "top_left",
+        "target_snap": "point",
+        "vanishing_point": "lower_center_right",
+        "vanishing_point_xy": {
+          "x": 750,
+          "y": 408
+        },
+        "stroke_width": 3,
+        "target_dot": true
+      }
+    }
+  ]
+}

@@ -1,5 +1,11 @@
 flowchart TB
-  basis["Pregunta i criteris<br/>fonts i originals identificats"] --> prepared["Dades preparades<br/>amb canvis documentats"]
-  prepared --> process["Operació i intermedis<br/>algorisme + paràmetres"]
-  process --> result["Resultat final<br/>interpretació i limitacions"]
-  controls["Controls, incidències<br/>i correccions"] -.-> process
+  boundary["Límit municipal"] --> municipal["Municipi preparat"]
+  thematic["Dades temàtiques"] --> prepared["Capa preparada"]
+  municipal --> analysis["Anàlisi"]
+  prepared --> analysis
+  analysis --> result["Resultat"]
+  result --> map["Mapa"]
+  wms["WMS de context"] --> map
+  result --> validation["Validació"]
+  validation -.-> review["Revisió de preparació o anàlisi"]
+  review -.-> analysis

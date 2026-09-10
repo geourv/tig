@@ -1,0 +1,16 @@
+@startfiles
+/projecte_tig/
+/projecte_tig/README.md
+/projecte_tig/dades_originals/
+/projecte_tig/dades_originals/paquets/
+/projecte_tig/dades_originals/extrets/
+/projecte_tig/dades_preparades/
+/projecte_tig/dades_preparades/projecte_tig.gpkg
+/projecte_tig/treball/
+/projecte_tig/resultats_intermedis/
+/projecte_tig/resultats/
+/projecte_tig/resultats/raster/
+/projecte_tig/resultats/mapes/
+/projecte_tig/projecte_tig.qgz
+/projecte_tig/diari.pdf
+@endfiles

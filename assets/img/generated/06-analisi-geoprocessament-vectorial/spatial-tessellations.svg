@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760" role="img" aria-labelledby="title desc">
+  <title id="title">Comparació de tessel·lacions regulars i irregulars</title>
+  <desc id="desc">Una graella quadrada agrega punts en unitats comunes, una malla hexagonal destaca sis veïns laterals homogenis i un esquema de Voronoi assigna dominis irregulars als punts generadors amb arestes de Delaunay entre veïns.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, 'Liberation Sans', sans-serif; }
+      .panel { fill: #ffffff; stroke: #c5d0d5; stroke-width: 2; }
+      .heading { fill: #21313c; font-size: 36px; font-weight: 700; }
+      .note { fill: #4f626b; font-size: 28px; }
+      .cell { fill: #edf3f5; stroke: #7b8d95; stroke-width: 2; }
+      .cell-low { fill: #d7e8ee; stroke: #7b8d95; stroke-width: 2; }
+      .cell-high { fill: #74abc1; stroke: #58747f; stroke-width: 2; }
+      .hex-neighbour { fill: #dcebdc; stroke: #4e8965; stroke-width: 3; }
+      .hex-centre { fill: #e8b17f; stroke: #a65a35; stroke-width: 4; }
+      .voronoi-a { fill: #d7e8ee; stroke: #ffffff; stroke-width: 4; }
+      .voronoi-b { fill: #e8dce8; stroke: #ffffff; stroke-width: 4; }
+      .voronoi-c { fill: #e8e4c7; stroke: #ffffff; stroke-width: 4; }
+      .voronoi-d { fill: #dcebdc; stroke: #ffffff; stroke-width: 4; }
+      .voronoi-e { fill: #f0dacf; stroke: #ffffff; stroke-width: 4; }
+      .event { fill: #a63f2c; stroke: #ffffff; stroke-width: 3; }
+      .generator { fill: #21313c; stroke: #ffffff; stroke-width: 4; }
+      .delaunay { stroke: #6e4e80; stroke-width: 4; stroke-dasharray: 10 8; fill: none; }
+      .count { fill: #21313c; font-size: 28px; font-weight: 700; }
+    </style>
+  </defs>
+  <rect width="1600" height="760" fill="#f7f9fa"/>
+  <rect x="20" y="25" width="510" height="710" class="panel"/>
+  <rect x="545" y="25" width="510" height="710" class="panel"/>
+  <rect x="1070" y="25" width="510" height="710" class="panel"/>
+  <text x="275" y="80" text-anchor="middle" class="heading">Graella quadrada</text>
+  <rect x="85" y="130" width="75" height="85" class="cell"/>
+  <text x="122.5" y="182" text-anchor="middle" class="count">0</text>
+  <rect x="85" y="215" width="75" height="85" class="cell"/>
+  <text x="122.5" y="267" text-anchor="middle" class="count">0</text>
+  <rect x="85" y="300" width="75" height="85" class="cell-low"/>
+  <text x="122.5" y="352" text-anchor="middle" class="count">1</text>
+  <rect x="85" y="385" width="75" height="85" class="cell"/>
+  <text x="122.5" y="437" text-anchor="middle" class="count">0</text>
+  <rect x="85" y="470" width="75" height="85" class="cell"/>
+  <text x="122.5" y="522" text-anchor="middle" class="count">0</text>
+  <rect x="160" y="130" width="75" height="85" class="cell"/>
+  <text x="197.5" y="182" text-anchor="middle" class="count">0</text>
+  <rect x="160" y="215" width="75" height="85" class="cell-high"/>
+  <text x="197.5" y="267" text-anchor="middle" class="count">2</text>
+  <rect x="160" y="300" width="75" height="85" class="cell"/>
+  <text x="197.5" y="352" text-anchor="middle" class="count">0</text>
+  <rect x="160" y="385" width="75" height="85" class="cell-low"/>
+  <text x="197.5" y="437" text-anchor="middle" class="count">1</text>
+  <rect x="160" y="470" width="75" height="85" class="cell"/>
+  <text x="197.5" y="522" text-anchor="middle" class="count">0</text>
+  <rect x="235" y="130" width="75" height="85" class="cell"/>
+  <text x="272.5" y="182" text-anchor="middle" class="count">0</text>
+  <rect x="235" y="215" width="75" height="85" class="cell"/>
+  <text x="272.5" y="267" text-anchor="middle" class="count">0</text>
+  <rect x="235" y="300" width="75" height="85" class="cell-high"/>
+  <text x="272.5" y="352" text-anchor="middle" class="count">3</text>
+  <rect x="235" y="385" width="75" height="85" class="cell"/>
+  <text x="272.5" y="437" text-anchor="middle" class="count">0</text>
+  <rect x="235" y="470" width="75" height="85" class="cell"/>
+  <text x="272.5" y="522" text-anchor="middle" class="count">0</text>
+  <rect x="310" y="130" width="75" height="85" class="cell-low"/>
+  <text x="347.5" y="182" text-anchor="middle" class="count">1</text>
+  <rect x="310" y="215" width="75" height="85" class="cell"/>
+  <text x="347.5" y="267" text-anchor="middle" class="count">0</text>
+  <rect x="310" y="300" width="75" height="85" class="cell"/>
+  <text x="347.5" y="352" text-anchor="middle" class="count">0</text>
+  <rect x="310" y="385" width="75" height="85" class="cell-high"/>
+  <text x="347.5" y="437" text-anchor="middle" class="count">2</text>
+  <rect x="310" y="470" width="75" height="85" class="cell"/>
+  <text x="347.5" y="522" text-anchor="middle" class="count">0</text>
+  <rect x="385" y="130" width="75" height="85" class="cell"/>
+  <text x="422.5" y="182" text-anchor="middle" class="count">0</text>
+  <rect x="385" y="215" width="75" height="85" class="cell-low"/>
+  <text x="422.5" y="267" text-anchor="middle" class="count">1</text>
+  <rect x="385" y="300" width="75" height="85" class="cell"/>
+  <text x="422.5" y="352" text-anchor="middle" class="count">0</text>
+  <rect x="385" y="385" width="75" height="85" class="cell"/>
+  <text x="422.5" y="437" text-anchor="middle" class="count">0</text>
+  <rect x="385" y="470" width="75" height="85" class="cell"/>
+  <text x="422.5" y="522" text-anchor="middle" class="count">0</text>
+  <text x="275" y="588" text-anchor="middle" class="note">recomptes comparables</text>
+  <text x="275" y="623" text-anchor="middle" class="note">però sensibles a mida,</text>
+  <text x="275" y="658" text-anchor="middle" class="note">origen i orientació</text>
+  <text x="800" y="80" text-anchor="middle" class="heading">Graella hexagonal</text>
+  <polygon points="667.0,165.0 646.0,201.4 604.0,201.4 583.0,165.0 604.0,128.6 646.0,128.6" class="cell"/>
+  <polygon points="667.0,237.7 646.0,274.1 604.0,274.1 583.0,237.7 604.0,201.4 646.0,201.4" class="cell"/>
+  <polygon points="667.0,310.5 646.0,346.9 604.0,346.9 583.0,310.5 604.0,274.1 646.0,274.1" class="cell"/>
+  <polygon points="667.0,383.2 646.0,419.6 604.0,419.6 583.0,383.2 604.0,346.9 646.0,346.9" class="cell"/>
+  <polygon points="667.0,456.0 646.0,492.4 604.0,492.4 583.0,456.0 604.0,419.6 646.0,419.6" class="cell"/>
+  <polygon points="730.0,201.4 709.0,237.7 667.0,237.7 646.0,201.4 667.0,165.0 709.0,165.0" class="cell"/>
+  <polygon points="730.0,274.1 709.0,310.5 667.0,310.5 646.0,274.1 667.0,237.7 709.0,237.7" class="cell"/>
+  <polygon points="730.0,346.9 709.0,383.2 667.0,383.2 646.0,346.9 667.0,310.5 709.0,310.5" class="cell"/>
+  <polygon points="730.0,419.6 709.0,456.0 667.0,456.0 646.0,419.6 667.0,383.2 709.0,383.2" class="cell"/>
+  <polygon points="730.0,492.4 709.0,528.7 667.0,528.7 646.0,492.4 667.0,456.0 709.0,456.0" class="cell"/>
+  <polygon points="793.0,165.0 772.0,201.4 730.0,201.4 709.0,165.0 730.0,128.6 772.0,128.6" class="cell"/>
+  <polygon points="793.0,237.7 772.0,274.1 730.0,274.1 709.0,237.7 730.0,201.4 772.0,201.4" class="hex-neighbour"/>
+  <polygon points="793.0,310.5 772.0,346.9 730.0,346.9 709.0,310.5 730.0,274.1 772.0,274.1" class="hex-neighbour"/>
+  <polygon points="793.0,383.2 772.0,419.6 730.0,419.6 709.0,383.2 730.0,346.9 772.0,346.9" class="cell"/>
+  <polygon points="793.0,456.0 772.0,492.4 730.0,492.4 709.0,456.0 730.0,419.6 772.0,419.6" class="cell"/>
+  <polygon points="856.0,201.4 835.0,237.7 793.0,237.7 772.0,201.4 793.0,165.0 835.0,165.0" class="cell"/>
+  <polygon points="856.0,274.1 835.0,310.5 793.0,310.5 772.0,274.1 793.0,237.7 835.0,237.7" class="hex-neighbour"/>
+  <polygon points="856.0,346.9 835.0,383.2 793.0,383.2 772.0,346.9 793.0,310.5 835.0,310.5" class="hex-centre"/>
+  <polygon points="856.0,419.6 835.0,456.0 793.0,456.0 772.0,419.6 793.0,383.2 835.0,383.2" class="hex-neighbour"/>
+  <polygon points="856.0,492.4 835.0,528.7 793.0,528.7 772.0,492.4 793.0,456.0 835.0,456.0" class="cell"/>
+  <polygon points="919.0,165.0 898.0,201.4 856.0,201.4 835.0,165.0 856.0,128.6 898.0,128.6" class="cell"/>
+  <polygon points="919.0,237.7 898.0,274.1 856.0,274.1 835.0,237.7 856.0,201.4 898.0,201.4" class="hex-neighbour"/>
+  <polygon points="919.0,310.5 898.0,346.9 856.0,346.9 835.0,310.5 856.0,274.1 898.0,274.1" class="hex-neighbour"/>
+  <polygon points="919.0,383.2 898.0,419.6 856.0,419.6 835.0,383.2 856.0,346.9 898.0,346.9" class="cell"/>
+  <polygon points="919.0,456.0 898.0,492.4 856.0,492.4 835.0,456.0 856.0,419.6 898.0,419.6" class="cell"/>
+  <polygon points="982.0,201.4 961.0,237.7 919.0,237.7 898.0,201.4 919.0,165.0 961.0,165.0" class="cell"/>
+  <polygon points="982.0,274.1 961.0,310.5 919.0,310.5 898.0,274.1 919.0,237.7 961.0,237.7" class="cell"/>
+  <polygon points="982.0,346.9 961.0,383.2 919.0,383.2 898.0,346.9 919.0,310.5 961.0,310.5" class="cell"/>
+  <polygon points="982.0,419.6 961.0,456.0 919.0,456.0 898.0,419.6 919.0,383.2 961.0,383.2" class="cell"/>
+  <polygon points="982.0,492.4 961.0,528.7 919.0,528.7 898.0,492.4 919.0,456.0 961.0,456.0" class="cell"/>
+  <text x="800" y="605" text-anchor="middle" class="note">sis veïns que comparteixen costat</text>
+  <text x="800" y="640" text-anchor="middle" class="note">a igual distància entre centres</text>
+  <text x="1325" y="80" text-anchor="middle" class="heading">Voronoi i Delaunay</text>
+  <polygon points="1110.0,325.0 1110.0,130.0 1293.5,130.0 1301.5,301.4 1284.7,325.0" class="voronoi-a"/>
+  <polygon points="1301.5,301.4 1293.5,130.0 1540.0,130.0 1540.0,287.4" class="voronoi-b"/>
+  <polygon points="1243.5,555.0 1110.0,555.0 1110.0,325.0 1284.7,325.0 1303.7,410.5" class="voronoi-c"/>
+  <polygon points="1303.7,410.5 1284.7,325.0 1301.5,301.4 1540.0,287.4 1540.0,495.6" class="voronoi-d"/>
+  <polygon points="1243.5,555.0 1303.7,410.5 1540.0,495.6 1540.0,555.0" class="voronoi-e"/>
+  <line x1="1190" y1="220" x2="1405" y2="210" class="delaunay"/>
+  <line x1="1190" y1="220" x2="1190" y2="430" class="delaunay"/>
+  <line x1="1190" y1="220" x2="1415" y2="380" class="delaunay"/>
+  <line x1="1405" y1="210" x2="1415" y2="380" class="delaunay"/>
+  <line x1="1190" y1="430" x2="1415" y2="380" class="delaunay"/>
+  <line x1="1190" y1="430" x2="1370" y2="505" class="delaunay"/>
+  <line x1="1415" y1="380" x2="1370" y2="505" class="delaunay"/>
+  <circle cx="1190" cy="220" r="12" class="generator"/>
+  <circle cx="1405" cy="210" r="12" class="generator"/>
+  <circle cx="1190" cy="430" r="12" class="generator"/>
+  <circle cx="1415" cy="380" r="12" class="generator"/>
+  <circle cx="1370" cy="505" r="12" class="generator"/>
+  <text x="1325" y="605" text-anchor="middle" class="note">domini del generador més pròxim</text>
+  <text x="1325" y="640" text-anchor="middle" class="note">i veïnatge geomètric dual</text>
+  <text x="800" y="700" text-anchor="middle" class="note">Cap d’aquestes estructures incorpora per si sola població, barreres, capacitat ni temps de recorregut.</text>
+</svg>

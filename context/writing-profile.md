@@ -5,8 +5,8 @@ Aquest document defineix els criteris editorials duradors del manual de Tecnolog
 ## Públic i coneixements previs
 
 - El manual s'adreça principalment a estudiants de segon curs del Grau en Geografia, Anàlisi Territorial i Sostenibilitat.
-- Es pressuposa una primera experiència amb dades territorials, taules, mapes, sistemes de coordenades i operacions bàsiques de QGIS adquirida a l'assignatura TIGIT.
-- Els conceptes previs necessaris s'han de recordar breument quan condicionin una decisió, però no cal repetir el curs anterior.
+- L'alumnat pot haver tingut una primera experiència amb dades territorials, taules, mapes i QGIS a l'assignatura TIGIT, especialment amb unions, simbologia temàtica, composició i exportació. Aquesta exposició pot variar segons el curs i no s'ha de tractar com un domini consolidat.
+- Els conceptes previs necessaris s'han de recordar quan condicionin una decisió. El manual ha de començar des dels significats essencials, especialment en sistemes de referència, geoprocessament, dades ràster i control de qualitat, sense repetir innecessàriament tot el curs anterior.
 - El text també ha de poder servir com a manual introductori de consulta fora de l'assignatura. Cap explicació essencial no pot dependre d'haver seguit una demostració presencial.
 
 ## Finalitat del manual
@@ -55,19 +55,23 @@ No cal forçar tots els moviments en cada paràgraf. La seqüència serveix per 
 - Les dades principals procediran del CNIG. L'ICGC, el Cadastre i altres fonts oficials o obertes s'utilitzaran quan el cas ho requereixi.
 - Cada font s'ha de valorar per autoria, data, escala o resolució, CRS, llicència, unitat d'observació, esquema i limitacions.
 - Les taules d'atributs reals s'han de llegir amb les metadades disponibles i amb raonament explícit sobre el significat, el tipus i el domini de cada camp.
-- Vila-seca i l'entorn de la Facultat poden actuar com a demostració comuna. Els fanals del carrer de Joanot Martorell, els carrils bici, les plaques solars i altres elements recognoscibles són casos adequats quan permeten comprovar el resultat sobre el terreny.
-- Les activitats han d'ajudar a transferir el procediment al municipi assignat. No s'ha de confondre el cas resolt a classe amb la resposta que correspon lliurar.
+- El recorregut pràctic ha de començar amb un fons WMS i el límit municipal oficial del CNIG. Vila-seca i l'entorn de la Facultat són el cas de demostració a l'aula; cada estudiant aplica el mateix contracte al municipi assignat.
+- Els fanals del carrer de Joanot Martorell, els carrils bici, les plaques solars i altres elements recognoscibles són casos adequats quan permeten comprovar el resultat sobre el terreny.
+- Les activitats han d'ajudar a transferir el procediment al municipi assignat. No s'ha de confondre el cas resolt a classe amb la resposta que correspon conservar i, si escau, lliurar.
 - Les distàncies, llindars i criteris d'una anàlisi multicriteri s'han de justificar com a decisions del cas, no presentar-se com a valors universals.
 
 ## Projecte acumulatiu i evidències
 
-- El curs construeix un projecte acumulatiu format per un GeoPackage, un projecte QGIS reproduïble i un diari d'activitats.
+- El curs construeix un únic projecte QGIS acumulatiu, aplicat al municipi assignat i documentat mitjançant un GeoPackage i un diari d'activitats.
 - Cal distingir dades originals, dades preparades, resultats intermedis i resultats finals. Les fonts originals no s'han de sobreescriure.
-- El projecte s'ha de conservar dins del GeoPackage quan la funcionalitat utilitzada ho permeti i també en un fitxer `.qgz` independent que permeti revisar-ne l'estructura.
+- La còpia de treball canònica és el fitxer extern `projecte_tig.qgz`. És la que s'ha d'obrir per continuar el curs i la que s'ha de desar abans de crear qualsevol fita.
+- El GeoPackage també ha de contenir un projecte QGIS incrustat amb el nom `projecte_tig`, actualitzat només en les fites que el manual indiqui explícitament.
+- El projecte extern i l'incrustat són representacions independents del projecte: desar-ne un no actualitza l'altre. Només han de reflectir el mateix estat quan es crea o es renova una fita; cada fita ha d'indicar quin s'ha obert, quin s'ha desat i com s'ha comprovat la coincidència esperada.
 - Les rutes, els noms de capes, els camps, els CRS i les dependències han de permetre obrir i diagnosticar el projecte en un altre equip.
 - El diari ha d'explicar l'objectiu, les fonts, les operacions, els paràmetres, les incidències, les correccions, els resultats i les limitacions.
 - Les captures han de provar una decisió, una configuració, una incidència o un resultat. No s'ha de convertir el diari en una seqüència de captures de cada clic.
 - Una activitat només es pot considerar reproduïble si els fitxers es tornen a obrir, les fonts es resolen i el resultat es pot relacionar amb les entrades i els paràmetres documentats.
+- Les activitats s'han de formular com a resultats observables que queden incorporats al projecte, al GeoPackage, a l'inventari o al diari, no com una successió d'accions efímeres.
 
 ## Estructura dels capítols i activitats
 
@@ -92,6 +96,10 @@ No cal forçar tots els moviments en cada paràgraf. La seqüència serveix per 
 ## Figures, taules i diagrames
 
 - Les figures, taules i diagrames només s'han d'incorporar quan fan visible una relació que la prosa no explica amb la mateixa claredat.
+- Els recursos visuals s'han de concebre com a figures de llibre de text integrades en l'argument, no com a diapositives autònomes.
+- Quan el peu o el context ja anomenen la relació representada, la figura ha d'ometre títols i subtítols interns visibles que la repeteixin.
+- Per defecte s'han d'evitar contenidors arrodonits, targetes i pastilles. Les cantonades arrodonides i les corbes només s'han d'utilitzar quan siguin intrínseques a la geometria o a la relació explicada.
+- Una figura no ha de transcriure paràgrafs ni reproduir una taula. Les etiquetes han de ser breus i identificar objectes, relacions o resultats observables.
 - No s'han d'inserir placeholders en contingut publicable. Una figura pendent s'ha de gestionar fora del capítol fins que n'existeixi una font aprovada.
 - Les imatges han de tenir text alternatiu i peu explícit. Les taules han d'utilitzar el component numerat admès per `unaltremanual`.
 - Els diagrames s'han de conservar com a fonts editables sota `assets/diagrams/` i renderitzar amb `diavisuals`.

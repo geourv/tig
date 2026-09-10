@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="500" viewBox="0 0 1500 500" role="img" aria-labelledby="title desc">
+  <title id="title">De la posició sobre la Terra a les coordenades UTM</title>
+  <desc id="desc">Cadena conceptual sense valors numèrics: una posició física es relaciona amb un marc i un el·lipsoide, s’expressa com a longitud i latitud, se situa en un fus UTM i es projecta com a coordenades d’est i nord.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, 'Liberation Sans', sans-serif; }
+      .background { fill: #ffffff; }
+      .stage { fill: #21313c; font-size: 30px; font-weight: 700; }
+      .unit { fill: #5f7079; font-size: 28px; }
+      .relation { fill: #5f7079; font-size: 28px; font-weight: 700; }
+      .outline { fill: #edf5f7; stroke: #2878a5; stroke-width: 4; }
+      .land { fill: #b9d9c7; stroke: #5f8d70; stroke-width: 2; }
+      .grid { fill: none; stroke: #7aa9bd; stroke-width: 2.5; }
+      .reference { fill: none; stroke: #52646d; stroke-width: 3; stroke-dasharray: 8 7; }
+      .zone { fill: #dceef4; stroke: #2878a5; stroke-width: 3; }
+      .zone-neighbour { fill: #f4f8f9; stroke: #91aab5; stroke-width: 2; }
+      .axis { fill: #21313c; font-size: 28px; font-weight: 700; }
+      .point { fill: #c95338; stroke: #ffffff; stroke-width: 4; }
+      .guide { fill: none; stroke: #c95338; stroke-width: 2.5; stroke-dasharray: 7 6; }
+      .arrow { fill: none; stroke: #52646d; stroke-width: 4; }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,8 L10,4 z" fill="#52646d"/>
+    </marker>
+    <clipPath id="earth-clip">
+      <circle cx="130" cy="245" r="84"/>
+    </clipPath>
+  </defs>
+  <rect class="background" width="1500" height="500"/>
+  <line x1="225" y1="245" x2="300" y2="245" class="arrow" marker-end="url(#arrow)"/>
+  <text x="262" y="95" text-anchor="middle" class="relation">referenciar</text>
+  <line x1="515" y1="245" x2="585" y2="245" class="arrow" marker-end="url(#arrow)"/>
+  <text x="550" y="95" text-anchor="middle" class="relation">expressar</text>
+  <line x1="805" y1="245" x2="885" y2="245" class="arrow" marker-end="url(#arrow)"/>
+  <text x="845" y="95" text-anchor="middle" class="relation">triar el fus</text>
+  <line x1="1090" y1="245" x2="1170" y2="245" class="arrow" marker-end="url(#arrow)"/>
+  <text x="1130" y="95" text-anchor="middle" class="relation">projectar</text>
+  <circle cx="130" cy="245" r="84" class="outline"/>
+  <g clip-path="url(#earth-clip)">
+    <path d="M48,218 C73,186 101,192 115,170 C136,184 144,207 166,207 C191,207 200,228 218,238 L218,290 C191,277 176,294 151,282 C128,271 111,288 88,273 C67,260 59,240 48,236 Z" class="land"/>
+    <path d="M61,298 C89,281 112,300 122,329 L73,329 Z" class="land"/>
+  </g>
+  <circle cx="166" cy="214" r="10" class="point"/>
+  <text x="130" y="382" text-anchor="middle" class="stage">Posició</text>
+  <text x="130" y="416" text-anchor="middle" class="stage">física</text>
+  <text x="130" y="462" text-anchor="middle" class="unit">Terra real</text>
+  <ellipse cx="410" cy="245" rx="96" ry="76" class="outline"/>
+  <path d="M314,245 C340,221 480,221 506,245 C480,269 340,269 314,245" class="grid"/>
+  <path d="M410,169 C371,190 371,300 410,321 C449,300 449,190 410,169" class="grid"/>
+  <line x1="300" y1="245" x2="520" y2="245" class="reference"/>
+  <line x1="410" y1="151" x2="410" y2="339" class="reference"/>
+  <circle cx="452" cy="194" r="10" class="point"/>
+  <text x="410" y="382" text-anchor="middle" class="stage">Marc +</text>
+  <text x="410" y="416" text-anchor="middle" class="stage">el·lipsoide</text>
+  <text x="410" y="462" text-anchor="middle" class="unit">superfície de referència</text>
+  <circle cx="700" cy="245" r="88" class="outline"/>
+  <ellipse cx="700" cy="245" rx="45" ry="88" class="grid"/>
+  <ellipse cx="700" cy="245" rx="78" ry="88" class="grid"/>
+  <path d="M617,215 C661,232 739,232 783,215" class="grid"/>
+  <path d="M612,260 C658,243 742,243 788,260" class="grid"/>
+  <path d="M630,298 C670,281 730,281 770,298" class="grid"/>
+  <circle cx="736" cy="208" r="10" class="point"/>
+  <path d="M700,245 C716,235 727,222 736,208" class="guide"/>
+  <text x="700" y="382" text-anchor="middle" class="stage">Longitud λ</text>
+  <text x="700" y="416" text-anchor="middle" class="stage">latitud φ</text>
+  <text x="700" y="462" text-anchor="middle" class="unit">angles en graus</text>
+  <path d="M904,166 C924,211 924,279 904,324 L954,324 C966,279 966,211 954,166 Z" class="zone-neighbour"/>
+  <path d="M954,166 C966,211 966,279 954,324 L1026,324 C1014,279 1014,211 1026,166 Z" class="zone"/>
+  <path d="M1026,166 C1014,211 1014,279 1026,324 L1076,324 C1056,279 1056,211 1076,166 Z" class="zone-neighbour"/>
+  <line x1="990" y1="166" x2="990" y2="324" class="reference"/>
+  <line x1="918" y1="214" x2="1062" y2="214" class="grid"/>
+  <line x1="918" y1="276" x2="1062" y2="276" class="grid"/>
+  <circle cx="976" cy="224" r="10" class="point"/>
+  <text x="990" y="258" text-anchor="middle" class="axis">31N</text>
+  <text x="990" y="382" text-anchor="middle" class="stage">Fus</text>
+  <text x="990" y="416" text-anchor="middle" class="stage">UTM</text>
+  <text x="990" y="452" text-anchor="middle" class="unit">projecció i</text>
+  <text x="990" y="482" text-anchor="middle" class="unit">àrea d’ús</text>
+  <rect x="1200" y="160" width="205" height="175" class="outline"/>
+  <line x1="1241" y1="160" x2="1241" y2="335" class="grid"/>
+  <line x1="1282" y1="160" x2="1282" y2="335" class="grid"/>
+  <line x1="1323" y1="160" x2="1323" y2="335" class="grid"/>
+  <line x1="1364" y1="160" x2="1364" y2="335" class="grid"/>
+  <line x1="1200" y1="195" x2="1405" y2="195" class="grid"/>
+  <line x1="1200" y1="230" x2="1405" y2="230" class="grid"/>
+  <line x1="1200" y1="265" x2="1405" y2="265" class="grid"/>
+  <line x1="1200" y1="300" x2="1405" y2="300" class="grid"/>
+  <line x1="1200" y1="350" x2="1425" y2="350" class="arrow" marker-end="url(#arrow)"/>
+  <line x1="1185" y1="335" x2="1185" y2="140" class="arrow" marker-end="url(#arrow)"/>
+  <text x="1435" y="359" class="axis">E</text>
+  <text x="1175" y="132" text-anchor="middle" class="axis">N</text>
+  <line x1="1348" y1="220" x2="1348" y2="335" class="guide"/>
+  <line x1="1200" y1="220" x2="1348" y2="220" class="guide"/>
+  <circle cx="1348" cy="220" r="10" class="point"/>
+  <text x="1302" y="382" text-anchor="middle" class="stage">Est E</text>
+  <text x="1302" y="416" text-anchor="middle" class="stage">nord N</text>
+  <text x="1302" y="452" text-anchor="middle" class="unit">coordenades</text>
+  <text x="1302" y="482" text-anchor="middle" class="unit">en metres</text>
+</svg>

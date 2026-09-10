@@ -1,0 +1,101 @@
+schema_version: 1
+project:
+  id: tig-vila-seca-starter
+  title: "Projecte TIG: punt de partida de Vila-seca"
+  status: draft
+  access_date: "2026-09-08"
+
+vector_source:
+  producer: Instituto Geografico Nacional / Centro Nacional de Informacion Geografica
+  service: API OGC Features de l'IGN/CNIG
+  collection: administrativeunit
+  collection_url: https://api-features.ign.es/collections/administrativeunit
+  item_id: "1172246"
+  item_url: https://api-features.ign.es/collections/administrativeunit/items/1172246?f=json
+  metadata_url: https://www.idee.es/csw-codsi-idee/srv/spa/catalog.search#/metadata/spaignLLM
+  storage_crs: OGC:CRS84
+  qgis_source_crs: EPSG:4326
+  geometry_type: MultiPolygon
+  identity:
+    nameunit: Vila-seca
+    nationallevelname: Municipio
+    nationalcode: "34094343171"
+    country: ES
+    codnut3: ES514
+  licence:
+    name: CC BY 4.0
+    attribution: ign.es
+    url: https://www.ign.es/resources/licencia/Condiciones_licenciaUso_IGN.pdf
+    evidence: Enllaç rel=license publicat per la col·lecció i condicions de l'IGN.
+  serialization:
+    raw_sha256_observed:
+      - cc791921d25b797180a66041ee48af1e2b4cb5bb756e0708935a99f3e51a1643
+      - 5757e8d9271c32d88424f76bd5ddb7cf390d5d9b118a444ff85d2dd575dfda3
+      - a9f53a0042a493713be007634602de513cfc00b4aa190cc5d00c61d9d2aa29c5
+      - af2d3f3c03ecd5327097cb38c3d0eb7e3771955bba1897183b57c8606231306f
+    canonicalization: JSON UTF-8, claus ordenades, separadors compactes i un salt de linia final.
+    canonical_sha256: abf389424da192263a1f44a569a8f5c9ffb6eeaec5245b22932fb0859831f321
+
+prepared_layer:
+  file: dades_preparades/projecte_tig.gpkg
+  layer: municipi_treball
+  feature_count: 1
+  geometry_type: MultiPolygon
+  crs: EPSG:25831
+  transformation:
+    source_crs: EPSG:4326
+    target_crs: EPSG:25831
+    geometry_repairs: none
+    simplification: none
+  identifiers:
+    source_id_field: id_origen
+    source_id_value: "1172246"
+    official_code_field: codi_oficial
+    official_code_value: "34094343171"
+    internal_code_field: codi_muni
+    internal_code_rule: right(nationalcode, 5)
+    internal_code_value: "43171"
+    unique_not_null_fields: [id_origen, codi_muni]
+  attribution: Obra derivada de la unitat administrativa 1172246 de l'IGN/CNIG, CC BY 4.0 ign.es.
+
+context_service:
+  producer: IGN/CNIG i Sistema Cartografico Nacional
+  type: WMS 1.3.0
+  title: Ortofotos PNOA maxima actualitat
+  base_url: https://www.ign.es/wms-inspire/pnoa-ma
+  capabilities_url: https://www.ign.es/wms-inspire/pnoa-ma?SERVICE=WMS&REQUEST=GetCapabilities
+  layer: OI.OrthoimageCoverage
+  project_crs: EPSG:25831
+  role: context_visual_only
+  access_date: "2026-09-08"
+  licence:
+    name: CC BY 4.0
+    attribution: scne.es
+    evidence: AccessConstraints del document GetCapabilities.
+
+qgis_project:
+  external: projecte_tig.qgz
+  embedded_file: dades_preparades/projecte_tig.gpkg
+  embedded_name: projecte_tig
+  canonical_working_copy: external
+  path_storage: relative
+  project_crs: EPSG:25831
+  groups:
+    - 40_resultats
+    - 30_intermedies
+    - 20_preparades
+    - 10_originals_inspeccio
+    - 00_context
+  layers:
+    - municipi_treball
+    - IGN/CNIG PNOA maxima actualitat
+
+build_environment:
+  script: build_project.py
+  qgis_version: 3.44.11-Solothurn
+  qgis_image: qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc
+  qgis_image_id: sha256:5de84700f98132a26f8b64f24a7785c91b53fc91107fb5f28ac98b3aadc160db
+  data_provider_repository: https://github.com/dosquartsdedocs/unaltracaptura-qgis-mcp
+  data_provider_revision: 2178540c4c9ae2c9b4e5fa6cf1520a7c726f13a2
+  normalized_timestamp: "2026-09-08T00:00:00Z"
+  qgis_serialization: XML amb atributs ordenats, identificadors interns deterministes i membres QGZ amb noms estables.

@@ -1,0 +1,292 @@
+---
+title: "Operacions vectorials derivades"
+lang: ca
+ref: derived_vector_operations
+format:
+  gfm:
+    output-file: derived-vector-operations.generated.md
+execute:
+  echo: false
+  warning: false
+  message: false
+execute-dir: project
+unaltraweb_compute:
+  engine: python
+  mode: figure
+  outputs:
+    - assets/img/generated/06-analisi-geoprocessament-vectorial/derived-vector-operations.svg
+---
+
+```{python}
+from math import atan2, cos, hypot, radians, sin
+from pathlib import Path
+
+
+def find_project_root(start):
+    path = Path(start).resolve()
+    for candidate in (path, *path.parents):
+        if (candidate / ".unaltraweb" / "computations.yml").is_file():
+            return candidate
+    raise RuntimeError("Project root not found: missing .unaltraweb/computations.yml")
+
+
+def points_attribute(points):
+    return " ".join(f"{x:.1f},{y:.1f}" for x, y in points)
+
+
+def polygon_centroid(points):
+    area_twice = 0.0
+    x_sum = 0.0
+    y_sum = 0.0
+    for start, end in zip(points, points[1:] + points[:1]):
+        cross = start[0] * end[1] - end[0] * start[1]
+        area_twice += cross
+        x_sum += (start[0] + end[0]) * cross
+        y_sum += (start[1] + end[1]) * cross
+    if area_twice == 0:
+        raise ValueError("A polygon centroid needs a non-zero area")
+    return x_sum / (3 * area_twice), y_sum / (3 * area_twice)
+
+
+def convex_hull(points):
+    ordered = sorted(set(points))
+    if len(ordered) <= 1:
+        return ordered
+
+    def turn(origin, first, second):
+        return ((first[0] - origin[0]) * (second[1] - origin[1])
+                - (first[1] - origin[1]) * (second[0] - origin[0]))
+
+    lower = []
+    for point in ordered:
+        while len(lower) >= 2 and turn(lower[-2], lower[-1], point) <= 0:
+            lower.pop()
+        lower.append(point)
+    upper = []
+    for point in reversed(ordered):
+        while len(upper) >= 2 and turn(upper[-2], upper[-1], point) <= 0:
+            upper.pop()
+        upper.append(point)
+    return lower[:-1] + upper[:-1]
+
+
+def rotate_points(points, center_x, center_y, angle):
+    angle_cos = cos(angle)
+    angle_sin = sin(angle)
+    return [
+        (
+            center_x + x * angle_cos - y * angle_sin,
+            center_y + x * angle_sin + y * angle_cos,
+        )
+        for x, y in points
+    ]
+
+
+def minimum_bounding_rectangle(points):
+    hull = convex_hull(points)
+    best = None
+    for start, end in zip(hull, hull[1:] + hull[:1]):
+        angle = atan2(end[1] - start[1], end[0] - start[0])
+        angle_cos = cos(angle)
+        angle_sin = sin(angle)
+        rotated = [
+            (x * angle_cos + y * angle_sin, -x * angle_sin + y * angle_cos)
+            for x, y in hull
+        ]
+        min_x = min(x for x, _ in rotated)
+        max_x = max(x for x, _ in rotated)
+        min_y = min(y for _, y in rotated)
+        max_y = max(y for _, y in rotated)
+        candidate = ((max_x - min_x) * (max_y - min_y), angle, min_x, max_x, min_y, max_y)
+        if best is None or candidate[0] < best[0]:
+            best = candidate
+
+    _, angle, min_x, max_x, min_y, max_y = best
+    angle_cos = cos(angle)
+    angle_sin = sin(angle)
+    corners = [(min_x, min_y), (max_x, min_y), (max_x, max_y), (min_x, max_y)]
+    return [
+        (x * angle_cos - y * angle_sin, x * angle_sin + y * angle_cos)
+        for x, y in corners
+    ]
+
+
+def nearest_point_on_segment(point, start, end):
+    delta_x = end[0] - start[0]
+    delta_y = end[1] - start[1]
+    squared_length = delta_x * delta_x + delta_y * delta_y
+    if squared_length == 0:
+        return start
+    ratio = ((point[0] - start[0]) * delta_x + (point[1] - start[1]) * delta_y) / squared_length
+    ratio = max(0.0, min(1.0, ratio))
+    return start[0] + ratio * delta_x, start[1] + ratio * delta_y
+
+
+def shortest_connector(first_polygon, second_polygon):
+    best_distance = float("inf")
+    best_pair = None
+    second_edges = list(zip(second_polygon, second_polygon[1:] + second_polygon[:1]))
+    first_edges = list(zip(first_polygon, first_polygon[1:] + first_polygon[:1]))
+
+    for first_point in first_polygon:
+        for start, end in second_edges:
+            second_point = nearest_point_on_segment(first_point, start, end)
+            distance = hypot(second_point[0] - first_point[0], second_point[1] - first_point[1])
+            if distance < best_distance:
+                best_distance = distance
+                best_pair = first_point, second_point
+    for second_point in second_polygon:
+        for start, end in first_edges:
+            first_point = nearest_point_on_segment(second_point, start, end)
+            distance = hypot(second_point[0] - first_point[0], second_point[1] - first_point[1])
+            if distance < best_distance:
+                best_distance = distance
+                best_pair = first_point, second_point
+    return best_pair
+
+
+width = 1500
+height = 1000
+
+concave_polygon = [
+    (90, 120),
+    (430, 120),
+    (430, 420),
+    (350, 420),
+    (350, 205),
+    (170, 205),
+    (170, 420),
+    (90, 420),
+]
+centroid = polygon_centroid(concave_polygon)
+surface_point = (260, 160)
+
+hull_inputs = [
+    (840, 340),
+    (900, 160),
+    (930, 325),
+    (1040, 235),
+    (1020, 420),
+    (1160, 120),
+    (1210, 250),
+    (1385, 205),
+    (1340, 390),
+    (1150, 355),
+]
+hull = convex_hull(hull_inputs)
+
+local_envelope_shape = [
+    (-160, -60),
+    (160, -60),
+    (160, 60),
+    (45, 60),
+    (45, 5),
+    (-45, 5),
+    (-45, 60),
+    (-160, 60),
+]
+envelope_shape = rotate_points(local_envelope_shape, 360, 765, radians(-24))
+axis_min_x = min(x for x, _ in envelope_shape)
+axis_max_x = max(x for x, _ in envelope_shape)
+axis_min_y = min(y for _, y in envelope_shape)
+axis_max_y = max(y for _, y in envelope_shape)
+oriented_rectangle = minimum_bounding_rectangle(envelope_shape)
+
+distance_polygon_a = [(835, 685), (980, 645), (1065, 780), (965, 900), (835, 840)]
+distance_polygon_b = [(1240, 690), (1435, 720), (1415, 900), (1240, 870)]
+connector_start, connector_end = shortest_connector(distance_polygon_a, distance_polygon_b)
+connector_length = hypot(
+    connector_end[0] - connector_start[0],
+    connector_end[1] - connector_start[1],
+)
+tick_x = -(connector_end[1] - connector_start[1]) * 11 / connector_length
+tick_y = (connector_end[0] - connector_start[0]) * 11 / connector_length
+connector_mid_x = (connector_start[0] + connector_end[0]) / 2
+connector_mid_y = (connector_start[1] + connector_end[1]) / 2
+
+svg = [
+    f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
+    '  <title id="title">Comparació d’operacions que deriven geometries vectorials</title>',
+    '  <desc id="desc">Quatre exemples esquemàtics mostren que el centroide d’un polígon còncau pot quedar-ne fora mentre el punt sobre la superfície queda dins; una envolupant convexa encercla un conjunt de punts; una caixa alineada amb els eixos és diferent del rectangle mínim orientat; i la distància entre dos polígons correspon al segment més curt que els uneix.</desc>',
+    '  <defs>',
+    '    <style>',
+    "      text { font-family: Arial, 'Liberation Sans', sans-serif; }",
+    "      .heading { font-size: 29px; font-weight: 700; fill: #1d2a32; }",
+    "      .label { font-size: 27px; font-weight: 700; fill: #33434c; }",
+    "      .legend { font-size: 26px; font-weight: 700; fill: #33434c; }",
+    "      .separator { stroke: #c5d0d5; stroke-width: 2; }",
+    "      .source-area { fill: #76aec5; fill-opacity: .26; stroke: #145f80; stroke-width: 5; }",
+    "      .area-a { fill: #dc6b4f; fill-opacity: .25; stroke: #a63f29; stroke-width: 5; }",
+    "      .area-b { fill: #58a5c5; fill-opacity: .25; stroke: #145f80; stroke-width: 5; }",
+    "      .surface-point { fill: #287a57; stroke: #ffffff; stroke-width: 4; }",
+    "      .centroid { fill: #ffffff; stroke: #b84a2f; stroke-width: 5; }",
+    "      .centroid-cross { stroke: #b84a2f; stroke-width: 4; }",
+    "      .leader { fill: none; stroke: #687780; stroke-width: 2.5; }",
+    "      .hull { fill: #73ad84; fill-opacity: .18; stroke: #287a57; stroke-width: 5; }",
+    "      .input-point { fill: #b84a2f; stroke: #ffffff; stroke-width: 3; }",
+    "      .axis-envelope { fill: none; stroke: #687780; stroke-width: 4; stroke-dasharray: 12 8; }",
+    "      .oriented-envelope { fill: none; stroke: #b84a2f; stroke-width: 5; }",
+    "      .shortest { fill: none; stroke: #684c83; stroke-width: 6; }",
+    "      .tick { stroke: #684c83; stroke-width: 4; }",
+    "      .distance { font-size: 27px; font-weight: 700; fill: #684c83; }",
+    "      .label-a { fill: #a63f29; }",
+    "      .label-b { fill: #145f80; }",
+    '    </style>',
+    '  </defs>',
+    '  <line x1="750" y1="25" x2="750" y2="975" class="separator"/>',
+    '  <line x1="25" y1="500" x2="1475" y2="500" class="separator"/>',
+
+    # Centroid and point-on-surface.
+    '  <text x="45" y="55" class="heading">Centroide i punt sobre la superfície</text>',
+    f'  <polygon points="{points_attribute(concave_polygon)}" class="source-area"/>',
+    f'  <line x1="{surface_point[0]}" y1="{surface_point[1]}" x2="472" y2="151" class="leader"/>',
+    f'  <circle cx="{surface_point[0]}" cy="{surface_point[1]}" r="11" class="surface-point"/>',
+    '  <text x="485" y="159" class="label">punt sobre la superfície</text>',
+    f'  <line x1="{centroid[0]:.1f}" y1="{centroid[1]:.1f}" x2="472" y2="287" class="leader"/>',
+    f'  <circle cx="{centroid[0]:.1f}" cy="{centroid[1]:.1f}" r="13" class="centroid"/>',
+    f'  <line x1="{centroid[0] - 8:.1f}" y1="{centroid[1]:.1f}" x2="{centroid[0] + 8:.1f}" y2="{centroid[1]:.1f}" class="centroid-cross"/>',
+    f'  <line x1="{centroid[0]:.1f}" y1="{centroid[1] - 8:.1f}" x2="{centroid[0]:.1f}" y2="{centroid[1] + 8:.1f}" class="centroid-cross"/>',
+    '  <text x="485" y="296" class="label">centroide: fora</text>',
+
+    # Convex hull.
+    '  <text x="795" y="55" class="heading">Envolupant convexa</text>',
+    f'  <polygon points="{points_attribute(hull)}" class="hull"/>',
+]
+
+for x, y in hull_inputs:
+    svg.append(f'  <circle cx="{x}" cy="{y}" r="10" class="input-point"/>')
+
+svg.extend([
+    '  <circle cx="830" cy="465" r="9" class="input-point"/>',
+    '  <text x="850" y="473" class="label">entrades</text>',
+    '  <line x1="1060" y1="465" x2="1125" y2="465" class="hull"/>',
+    '  <text x="1142" y="473" class="label">envolupant</text>',
+
+    # Axis-aligned and oriented envelopes.
+    '  <text x="45" y="555" class="heading">Envolupants rectangulars</text>',
+    f'  <rect x="{axis_min_x:.1f}" y="{axis_min_y:.1f}" width="{axis_max_x - axis_min_x:.1f}" height="{axis_max_y - axis_min_y:.1f}" class="axis-envelope"/>',
+    f'  <polygon points="{points_attribute(envelope_shape)}" class="source-area"/>',
+    f'  <polygon points="{points_attribute(oriented_rectangle)}" class="oriented-envelope"/>',
+    '  <line x1="55" y1="951" x2="115" y2="951" class="axis-envelope"/>',
+    '  <text x="132" y="959" class="legend">envolupant (eixos)</text>',
+    '  <line x1="430" y1="951" x2="490" y2="951" class="oriented-envelope"/>',
+    '  <text x="507" y="959" class="legend">rectangle orientat</text>',
+
+    # Shortest line and distance.
+    '  <text x="795" y="555" class="heading">Línia més curta i distància</text>',
+    f'  <polygon points="{points_attribute(distance_polygon_a)}" class="area-a"/>',
+    f'  <polygon points="{points_attribute(distance_polygon_b)}" class="area-b"/>',
+    '  <text x="895" y="760" class="label label-a">A</text>',
+    '  <text x="1350" y="790" class="label label-b">B</text>',
+    f'  <line x1="{connector_start[0]:.1f}" y1="{connector_start[1]:.1f}" x2="{connector_end[0]:.1f}" y2="{connector_end[1]:.1f}" class="shortest"/>',
+    f'  <line x1="{connector_start[0] - tick_x:.1f}" y1="{connector_start[1] - tick_y:.1f}" x2="{connector_start[0] + tick_x:.1f}" y2="{connector_start[1] + tick_y:.1f}" class="tick"/>',
+    f'  <line x1="{connector_end[0] - tick_x:.1f}" y1="{connector_end[1] - tick_y:.1f}" x2="{connector_end[0] + tick_x:.1f}" y2="{connector_end[1] + tick_y:.1f}" class="tick"/>',
+    f'  <text x="{connector_mid_x:.1f}" y="{connector_mid_y - 18:.1f}" text-anchor="middle" class="distance">d</text>',
+    '</svg>',
+])
+
+project_root = find_project_root(Path.cwd())
+output = project_root / "assets/img/generated/06-analisi-geoprocessament-vectorial/derived-vector-operations.svg"
+output.parent.mkdir(parents=True, exist_ok=True)
+output.write_text("\n".join(svg) + "\n", encoding="utf-8")
+```

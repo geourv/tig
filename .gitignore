@@ -14,8 +14,11 @@ sandbox/
 test-results/
 vendor/
 tmp/
+.unaltracaptura-qgis/
 __pycache__/
 *.pyc
+*.gpkg-shm
+*.gpkg-wal
 
 # Generated unaltremanual publication outputs are never versioned.
 /assets/img/manual-cover-ca.png

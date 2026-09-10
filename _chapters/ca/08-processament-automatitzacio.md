@@ -1,7 +1,7 @@
 ---
 layout: manual-chapter
 title: Síntesi, processament i automatització
-description: Tancament del projecte municipal i ús d'historials, lots, models, SQL espacial i PyQGIS per repetir processos validats.
+description: Tancament del projecte municipal amb Processament de QGIS, execució per lots i construcció i validació d'un model; SQL, PostGIS i PyQGIS com a ampliació opcional.
 lang: ca
 ref: manual-processing-automation
 profiles: [unaltremanual]
@@ -16,25 +16,30 @@ El tram final del projecte converteix els resultats acumulats en un producte coh
 
 Executar una eina una vegada resol una operació; construir un flux permet repetir-la, revisar-la i aplicar-la a un altre territori. L'automatització no consisteix només a estalviar clics. Obliga a convertir decisions implícites en entrades, paràmetres, dependències, sortides i controls, però només té sentit després d'haver validat el procés. Un error automatitzat continua sent un error i pot afectar moltes més sortides abans de ser detectat.
 
->>>>> En acabar el capítol, cal poder tancar el projecte municipal i, quan sigui útil, expressar una seqüència validada com un procés parametritzat, auditable i transferible.
+>>>>> En acabar el capítol, cal poder tancar el projecte municipal, executar manualment i per lots un procés de QGIS i construir i validar un model parametritzat, auditable i transferible.
 >>>>>
 >>>>> - Organitzar el GeoPackage, el projecte QGIS, els mapes, les exportacions i el diari com un producte final coherent.
 >>>>> - Interpretar un algorisme a partir d'entrades, precondicions, paràmetres, context, destinacions, resultats i controls.
->>>>> - Distingir historial, execució per lots i graf de dependències, i decidir quins resultats són temporals o persistents.
->>>>> - Diferenciar reproductibilitat d'automatització i reconèixer els límits conceptuals de SQL espacial i PyQGIS.
+>>>>> - Utilitzar l'historial i el processament per lots per repetir un contracte validat amb paràmetres i destinacions diferents.
+>>>>> - Construir, desar i validar un model QGIS `.model3`; situar SQL, PostGIS i PyQGIS exclusivament com a ampliacions opcionals.
 >>>>> - Auditar i transportar el projecte, documentar-ne procedència i limitacions i preparar-ne l'explicació oral.
 
-El marc de **Processament de QGIS** ofereix una interfície comuna per als algorismes natius i per a proveïdors com GDAL. L'historial, el processament per lots i el Dissenyador de models representen graus diferents de formalització. El mateix contracte es pot expressar després amb SQL espacial o PyQGIS, però el criteri geogràfic continua sent independent de la interfície o del llenguatge {% cite qgisUserGuide344 rouaultGDAL2026 %}. La secció següent és una ampliació opcional per formalitzar processos ja validats; el nucli obligatori del tancament comença a [Auditoria completa del projecte final](#auditoria-completa-del-projecte-final).
+## Processament i automatització amb QGIS
 
-## Ampliació opcional: reproductibilitat i automatització
-
-L'ampliació presenta historial, lots, models, SQL espacial i PyQGIS com a alternatives, no com a requisits acumulatius. Es pot ometre en una primera lectura orientada a la micropràctica 6 i reprendre-la quan hi hagi un flux estable que realment calgui repetir.
+El marc de **Processament de QGIS** ofereix una interfície comuna per als algorismes natius i per a proveïdors com GDAL. Interpretar-ne el contracte, validar una execució manual, comparar distàncies mitjançant un lot i construir i validar un model al Dissenyador formen el recorregut obligatori del capítol. L'historial, el processament per lots i el graf del model representen graus diferents de formalització, però el criteri geogràfic continua sent independent de la interfície {% cite qgisUserGuide344 rouaultGDAL2026 %}. SQL, PostGIS i PyQGIS es reserven per a l'ampliació opcional situada al final de les activitats.
 
 ### Reproductibilitat no és automatització
 
-En aquest manual, un procés és **repetible** quan es pot tornar a executar en el mateix entorn amb les mateixes entrades i decisions; és **reproduïble** quan una altra persona pot reconstruir-lo en una ubicació o un equip diferent i obtenir un resultat analíticament equivalent. La terminologia varia entre disciplines, però el criteri operatiu del curs és clar: les fonts es resolen, els paràmetres es coneixen, les dependències estan identificades i els controls tornen a complir-se.
+Procés repetible
+: Es pot tornar a executar en el mateix entorn amb les mateixes entrades i decisions.
 
-L'**automatització** és la delegació d'una seqüència d'operacions a un lot, un model o un programa. Pot reforçar la reproductibilitat perquè fa explícit l'ordre i redueix variacions manuals, però no la garanteix. Un script amb una ruta personal, una consulta que depèn d'una taula que canvia o un model que utilitza una selecció activa no documentada són automatitzacions fràgils. A l'inrevés, una seqüència manual pot ser reproduïble si les entrades, els paràmetres, l'ordre, els controls i les sortides estan descrits amb precisió.
+Procés reproduïble
+: Una altra persona el pot reconstruir en una ubicació o un equip diferent i obtenir un resultat analíticament equivalent.
+
+Automatització
+: Delegació d'una seqüència d'operacions a un lot, un model o un programa.
+
+La terminologia varia entre disciplines, però el criteri operatiu del curs és clar: les fonts es resolen, els paràmetres es coneixen, les dependències estan identificades i els controls tornen a complir-se. Automatitzar pot reforçar la reproductibilitat perquè explicita l'ordre i redueix variacions manuals, però no la garanteix. Un script amb una ruta personal, una consulta dependent d'una taula mutable o un model que utilitza una selecció no documentada continuen sent fràgils. A l'inrevés, una seqüència manual pot ser reproduïble si està descrita amb precisió.
 
 ::: table "Formalització d'un procés i allò que conserva"
 | Modalitat | Què fa explícit | Què pot continuar ocult | Ús adequat |
@@ -43,8 +48,8 @@ L'**automatització** és la delegació d'una seqüència d'operacions a un lot,
 | Historial | Algorisme, paràmetres executats i missatges | Justificació, versió immutable de les entrades i part de l'estat del projecte | Reconstruir i diagnosticar execucions recents |
 | Lot | Repetició del mateix contracte sobre diverses files | Dependències entre algorismes i validació global | Variar entrades o un paràmetre d'una sola operació |
 | Model gràfic | Dependències i transformacions d'una seqüència | Fonts externes, entorn, supòsits i controls no representats | Reexecutar un flux estable i visualment inspeccionable |
-| SQL espacial | Relacions i transformacions declaratives sobre dades de base | Preparació externa, dialecte, extensions i estat de la base | Consultes de conjunt i processos propers a les dades |
-| PyQGIS | Paràmetres, lògica, bucles i controls programables | Entorn QGIS, paquets, dades i decisions mal documentades | Fluxos dinàmics, comprovacions i integració avançada |
+| SQL tabular o espacial (ampliació opcional) | Filtres, relacions, agregacions i transformacions declaratives sobre dades de base | Preparació externa, dialecte, extensions i estat de la base | Consultes de conjunt i processos propers a les dades |
+| PyQGIS (ampliació opcional) | Paràmetres, lògica, bucles i controls programables | Entorn QGIS, paquets, dades i decisions mal documentades | Fluxos dinàmics, comprovacions i integració avançada |
 :::
 
 ![Flux reproduïble que relaciona entrades, paràmetres i entorn amb el procés, les sortides, els registres, els controls i la repetició correctiva]({{ site.baseurl }}/assets/diagrams/ca/08-processament-automatitzacio/reproducible-processing.mmd "De la pregunta i les fonts documentades es passa a explicitar entrades, paràmetres, entorn i procés; els resultats i registres se sotmeten a controls i, si fallen, es corregeix i es repeteix. Automatitzar aquest circuit no en garanteix la correcció."){: data-figure-width-web="49rem" data-figure-width-pdf="100%"}
@@ -64,14 +69,27 @@ identificador + entrades + precondicions + paràmetres + context + destinacions
 ```
 :::
 
-Les **entrades** són capes, taules, bandes, camps, expressions o valors. Les **precondicions** indiquen què han de complir abans de començar: tipus geomètric, camps presents, identificadors únics, `CRS`, unitats, resolució, validesa o absència de filtres no previstos. Els **paràmetres** defineixen l'operació, per exemple distància, nombre de segments, predicat, llindar, extensió o mètode de remostreig. El **context** inclou transformacions, variables, tractament de geometries invàlides, seleccions, entorn temporal i altres configuracions. Les **destinacions** decideixen format, fitxer o taula, nom de capa i persistència.
+Entrades
+: Capes, taules, bandes, camps, expressions o valors que consumeix l'algorisme.
+
+Precondicions
+: Requisits que s'han de complir abans de començar, com el tipus geomètric, els camps, els identificadors, el `CRS`, les unitats, la resolució o la validesa.
+
+Paràmetres
+: Decisions que defineixen l'operació, com una distància, un predicat, un llindar, una extensió o un mètode de remostreig.
+
+Context
+: Transformacions, variables, tractament de geometries invàlides, seleccions, entorn temporal i altres configuracions que poden alterar el resultat.
+
+Destinacions
+: Format, fitxer o taula, nom de capa i persistència de cada sortida.
 
 ::: table "Elements que cal fixar en un contracte de processament"
 | Element | Exemple | Pregunta de control |
 | --- | --- | --- |
 | Proveïdor i identificador | `native:buffer` | S'ha utilitzat exactament l'algorisme previst? |
-| Entrada | Capa `vies_principals` del GeoPackage | És la capa, la versió i el subconjunt correctes? |
-| Esquema | Camp `codi_muni` de text i únic | El camp existeix, té el tipus esperat i conserva zeros? |
+| Entrada | Capa preparada `vies_principals` del GeoPackage, amb una fila per segment | És la capa, la versió i el subconjunt correctes? |
+| Esquema | Camp preparat `id_tram` únic, no nul i estable; `codi_muni` de text pot repetir-se | Es pot seguir cada segment després del procés sense tractar el municipi com una clau de tram? |
 | Referència espacial | `EPSG:25831`, metres | El `CRS` és realment el de la capa i és adequat per a la mesura? |
 | Paràmetre | `distancia_m = 200` | La unitat i la justificació són explícites? |
 | Estat | Sense selecció; filtre documentat | L'entrada completa és la que s'ha volgut processar? |
@@ -79,7 +97,9 @@ Les **entrades** són capes, taules, bandes, camps, expressions o valors. Les **
 | Postcondició | Àrea dissolta no superior a la suma individual | Quin resultat faria fallar la validació? |
 :::
 
-Per exemple, el contracte anterior no queda complet dient només «fer un buffer de 200 m». En QGIS 3.44, una execució persistent de `native:buffer` sobre línies ha de fixar almenys `INPUT = vies_principals`, `DISTANCE = 200`, `SEGMENTS = 10`, `END_CAP_STYLE = Round`, `JOIN_STYLE = Round`, `MITER_LIMIT = 2` i `DISSOLVE = True`. `OUTPUT` ha d'escriure el fitxer `dades_preparades/projecte_tig.gpkg` amb el nom de capa `vies_buffer_200m`. Els noms dels estils són els de la interfície; en una crida programada s'han de conservar també els codis enumerats corresponents. Abans cal exigir un `CRS` projectat en metres, geometries aptes i cap selecció imprevista; després, comprovar que la sortida és vàlida, no és buida i té una àrea no superior a la suma dels buffers individuals equivalents.
+>>> **Contracte complet d'un buffer.** Dir només «fer un buffer de 200 m» no basta. En QGIS 3.44, una execució persistent de `native:buffer` sobre línies ha de fixar almenys `INPUT = vies_principals`, `DISTANCE = 200`, `SEGMENTS = 10`, `END_CAP_STYLE = Round`, `JOIN_STYLE = Round`, `MITER_LIMIT = 2`, `DISSOLVE = True` i `SEPARATE_DISJOINT = False`. `OUTPUT` ha d'identificar tant el fitxer `dades_preparades/projecte_tig.gpkg` com el nom intern `vies_buffer_200m`. Els noms dels estils són els de la interfície; en una crida programada s'han de conservar també els codis enumerats corresponents.
+
+Abans del buffer cal exigir un `CRS` projectat en metres, geometries aptes, cap selecció imprevista i un identificador estable per segment. `codi_muni` agrupa potencialment molts segments i, per tant, no és una clau única de la xarxa. El nom `id_tram` designa el camp verificat o creat a la capa preparada del projecte; no pressuposa cap nom físic concret a la descàrrega original. Després cal comprovar que la sortida és vàlida, no és buida i té una àrea no superior a la suma dels buffers individuals equivalents.
 
 Els valors predeterminats també són paràmetres. Acceptar els segments d'un `buffer`, el tractament de geometries invàlides o la resolució suggerida per una eina és una decisió, encara que no s'hagi escrit res al quadre. Si el valor afecta el resultat, s'ha de registrar. Un model que confia en el predeterminat d'una versió pot canviar de comportament quan el proveïdor actualitza l'algorisme.
 
@@ -87,11 +107,25 @@ El `CRS` del projecte és principalment una configuració de visualització. Un 
 
 Una selecció activa, un filtre de capa, una edició encara no desada, una variable de projecte, una relació temporal o una capa de memòria també formen part de l'estat. Si condicionen el resultat i no apareixen al contracte, la reexecució pot donar una sortida diferent sense cap error visible. Abans d'automatitzar convé materialitzar el subconjunt necessari o convertir el filtre en un paràmetre o pas explícit.
 
+### Programació visual: QGIS i ArcGIS
+
+Un diagrama de processament és un programa visual: les caixes representen entrades, paràmetres o algorismes, i les connexions indiquen quina sortida alimenta el pas següent. En un primer model municipal, `municipi_treball` i `distancia_m` alimenten `Buffer`, que produeix una regió d'interès (`ROI`). L'ordre d'execució no depèn de la posició esquerra-dreta de les caixes, sinó d'aquestes dependències.
+
+En QGIS 3.44, el recorregut `Procés > Model Designer...` obre el **Dissenyador de models**. La pestanya `Entrades` defineix els valors que es demanaran en executar el model; `Toolbox` conté els algorismes; i el llenç mostra els nodes i les connexions. La captura situa aquestes regions abans de construir cap model i evita confondre el diagrama amb una capa o un mapa {% cite qgisUserGuide344 %}.
+
+![Dissenyador de models de QGIS amb el panell d'entrades, el llenç de dependències i el botó d'execució identificats]({{ site.baseurl }}/assets/img/qgis/qgis-model-designer.png "En el Dissenyador de models, primer es defineixen les entrades, després s'afegeixen algorismes des de Toolbox i es connecten al llenç. El botó d'execució només s'utilitza quan el graf i els paràmetres ja s'han validat."){: data-figure-width-web="43rem" data-figure-width-pdf="90%"}
+
+Per construir el cas mínim, s'afegeix una entrada de capa vectorial, una entrada numèrica descrita en metres i l'algorisme `native:buffer`; la capa i la distància es vinculen als paràmetres corresponents i la sortida del buffer es marca com a sortida del model. El fitxer `.model3` o el model desat al projecte conserva el graf, però no incorpora automàticament les fonts externes, la justificació de la distància ni els controls. Abans de reutilitzar-lo cal comparar-ne una execució amb el procediment manual conegut.
+
+ArcGIS Pro ofereix el mateix paradigma amb **ModelBuilder**, que la seva [documentació oficial descriu com un llenguatge de programació visual](https://pro.arcgis.com/en/pro-app/latest/help/analysis/geoprocessing/modelbuilder/what-is-modelbuilder-.htm). Les variables i dades alimenten eines de geoprocessament, els connectors expressen dependències i el model es pot executar per passos o publicar com una eina. El concepte es transfereix entre QGIS i ArcGIS, però els formats, els identificadors d'algorisme, els paràmetres i els entorns no són interoperables: un model s'ha de reconstruir i validar al programa de destinació, no només copiar-ne el diagrama.
+
 ### Historial, registre i diagnòstic
 
-L'**historial de processament** registra execucions recents, paràmetres i missatges. Permet consultar com es va cridar una eina, repetir-la o recuperar una representació de l'ordre. És especialment útil quan una sortida inesperada obliga a respondre si es va seleccionar una capa equivocada, si la distància era 200 o 2.000, o si l'eina va ometre geometries.
+L'**historial de processament** conserva les crides recents als algorismes, amb els paràmetres i una representació de l'ordre que es pot copiar o repetir. És especialment útil quan una sortida inesperada obliga a respondre si es va seleccionar una capa equivocada o si la distància era 200 o 2.000.
 
 L'historial no conserva una còpia immutable de les entrades. Si `municipis_preparats` s'ha modificat després, repetir la mateixa ordre actua sobre l'estat actual. Tampoc explica per què es va triar un llindar ni demostra que s'hagi inspeccionat el resultat. Una entrada de l'historial pot dir que el procés va acabar sense excepció, però no que la capa tingui sentit territorial. Per això és una font per completar el diari, no un substitut del diari.
+
+El panell **Registre de missatges** compleix una altra funció: reuneix avisos i errors emesos per QGIS i pels proveïdors durant la sessió, com geometries omeses, problemes de connexió o dependències absents. No és una recepta completa ni substitueix els paràmetres de l'historial. Per diagnosticar una execució cal relacionar tots dos registres amb la sortida i amb l'estat de les entrades.
 
 Els missatges mereixen una lectura completa. Un avís sobre geometries omeses, un sistema de referència desconegut, una capa sense índex o una sortida parcial pot quedar amagat si només es comprova que ha aparegut una capa al panell. Cal diferenciar tres estats: execució completada i validada; execució completada amb avisos pendents; i execució fallida o parcial. Només el primer estat pot alimentar silenciosament el pas següent.
 
@@ -137,9 +171,9 @@ La idea d'una taula **llarga** o de registres és útil per auditar el lot. Cada
 | `buf_003` | `vies_43123` | `500 m` | `vies_43123_buffer_500m` | `fallit` | Geometria d'entrada no acceptada |
 :::
 
-### El Dissenyador de models
+### Dissenyar i validar un model
 
-Un model gràfic és un **graf dirigit de dependències**. Les entrades i els paràmetres alimenten algorismes; les sortides d'uns passos es converteixen en entrades dels següents. L'ordre visual de les caixes no determina l'execució: les connexions ho fan. Dues branques independents es poden resoldre sense seguir l'ordre d'esquerra a dreta, mentre que un node no pot començar fins que les dependències necessàries estiguin disponibles.
+El diagrama creat al Dissenyador és un **graf dirigit de dependències**. Les entrades i els paràmetres alimenten algorismes; les sortides d'uns passos es converteixen en entrades dels següents. L'ordre visual de les caixes no determina l'execució: les connexions ho fan. Dues branques independents es poden resoldre sense seguir l'ordre d'esquerra a dreta, mentre que un node no pot començar fins que les dependències necessàries estiguin disponibles.
 
 El disseny comença amb una pregunta ja resolta i validada manualment. Després s'identifica què varia entre execucions, què és una constant metodològica i què és un resultat intern. La capa municipal, el codi, el model d'elevacions i la distància de marge poden ser entrades; l'algorisme de pendent i la unitat en graus poden formar part del mètode fix; la taula zonal i el GeoTIFF final són sortides. Exposar-ho tot com a paràmetre trasllada decisions sense orientar-les, mentre que ocultar una decisió que ha de variar fa el model poc reutilitzable.
 
@@ -196,7 +230,7 @@ Abans d'executar, el contracte exigeix que el codi sigui text i identifiqui una 
 | --- | --- | --- |
 | 1 | `native:extractbyexpression` amb `EXPRESSION = attribute(@feature, 'codi_muni') = @codi_municipi` i sortida temporal | Una sola entitat, codi i nom comprovats; zero o més d'una fan fallar el flux |
 | 2 | `native:checkvalidity` amb mètode GEOS i, només si cal, `native:reprojectlayer` amb `TARGET_CRS = EPSG:25831` | Cap entitat invàlida ni error; geometria apta, extensió plausible i unitats mètriques explícites |
-| 3 | `native:buffer` amb `DISTANCE = @distancia_marge_m`, `SEGMENTS = 10`, extrems i unions arrodonits, `MITER_LIMIT = 2` i `DISSOLVE = True` | ROI temporal o persistent, superfície superior a la municipal i distància mostrejada |
+| 3 | `native:buffer` amb `DISTANCE = @distancia_marge_m`, `SEGMENTS = 10`, extrems i unions arrodonits, `MITER_LIMIT = 2`, `DISSOLVE = True` i `SEPARATE_DISJOINT = False` | ROI temporal o persistent, una sola entitat eventualment multipart, superfície superior a la municipal i distància mostrejada |
 | 4 | `gdal:cliprasterbymasklayer` amb ROI, `CROP_TO_CUTLINE = True`, resolució de la font conservada, `NODATA` explícit i tipus de dada preservat | Ràster temporal no buit; resolució, origen, dimensions, `NoData` i rang comparats amb la font |
 | 5 | `gdal:slope` sobre la banda 1, `SCALE = 1` si totes les unitats són metres, sortida en graus, fórmula fixada i `COMPUTE_EDGES = False` | GeoTIFF persistent `pendent_roi_graus.tif`, rang de 0° a 90° i vores `NoData` esperades |
 | 6 | `native:zonalstatisticsfb` sobre el municipi original, banda 1 i prefix `slope_`, amb recompte, mitjana, desviació, mínim i màxim | Capa o taula persistent amb una fila municipal, recompte vàlid positiu i estadístics dins del rang del ràster |
@@ -210,13 +244,13 @@ La ROI pot ser una sortida persistent perquè fa visible l'àmbit de càlcul. El
 
 La prova manual i el model han de coincidir segons controls definits: una entitat municipal, mateixa extensió de ROI, mateixa mida i origen de cel·la, mateix recompte de valors vàlids i estadístiques equivalents dins de la precisió esperada. Si difereixen, cal revisar les seleccions, el tractament de `NoData`, les destinacions i els valors predeterminats. No s'ha de triar el resultat del model només perquè sembla més recent.
 
-El cas és una pràctica per entendre dependències i no un requisit automàtic de la micropràctica final. Quan Moodle no exigeixi cap model, es pot completar com a exercici de laboratori i conservar-ne o no el `.model3` segons la seva utilitat. El tancament del projecte continua tenint com a objecte principal la síntesi verificada de les micropràctiques 1–5.
+El cas integrat permet entendre dependències d'una branca llarga, però la micropràctica final no exigeix convertir necessàriament els sis passos en un sol model. El requisit mínim és construir, validar i conservar el `.model3` `municipi_treball + distancia_m -> ROI` de la pràctica guiada; el model es pot ampliar amb passos d'aquest cas sempre que es tornin a validar. El tancament del projecte continua tenint com a objecte principal la síntesi verificada de les micropràctiques 1–5.
 
 ### Desar, versionar i transportar processos
 
 QGIS permet conservar models al perfil d'usuari, exportar-los com a fitxers `.model3` i, segons el flux utilitzat, associar-los al projecte. Un model inclòs en un projecte viatja amb el `.qgz`, però no incorpora automàticament les fonts, els proveïdors, els complements ni les credencials. Un `.model3` facilita reutilització i comparació de versions, però manté les mateixes dependències externes.
 
-Un model desat només al perfil personal pot desaparèixer del paquet encara que funcioni a l'ordinador d'origen. Si forma part del resultat, cal exportar-lo a la carpeta del projecte, donar-li un nom estable i registrar-ne la versió. El fitxer `.qgz` independent es conservarà encara que el projecte també s'hagi desat dins del GeoPackage, perquè permet revisar la seva estructura i recuperar-lo amb més facilitat.
+Un model desat només al perfil personal pot desaparèixer del paquet encara que funcioni a l'ordinador d'origen. Com que el model validat forma part del resultat obligatori, cal exportar-lo com a `.model3` a la carpeta del projecte, donar-li un nom estable i registrar-ne la versió. El fitxer `.qgz` independent es conservarà encara que el projecte també s'hagi desat dins del GeoPackage, perquè permet revisar la seva estructura i recuperar-lo amb més facilitat.
 
 Les rutes relatives funcionen quan el projecte i les dades mantenen una estructura comuna. No resolen dependències situades fora de l'arrel, connexions amb noms locals ni recursos disponibles només al perfil de QGIS. Abans d'empaquetar cal inventariar totes les fonts des de les propietats del projecte i decidir si cada una s'inclou, es pot tornar a obtenir o només serveix com a context remot. La llicència pot impedir redistribuir una entrada encara que tècnicament càpiga al ZIP.
 
@@ -225,11 +259,11 @@ La **prova de transport** no consisteix a moure només el `.qgz`. S'ha de copiar
 ::: table "Protocol de prova de transport"
 | Fase | Acció | Criteri d'acceptació |
 | --- | --- | --- |
-| Preparació | Tancar edicions, desar el `.qgz` i generar el paquet des de la carpeta canònica | No hi ha cap capa pendent ni fitxer temporal imprescindible |
+| Preparació | Tancar edicions, actualitzar el `.qgz` extern i el projecte incrustat al GeoPackage, i generar el paquet des de la carpeta canònica | No hi ha cap capa pendent ni fitxer temporal imprescindible, i les dues representacions parteixen del mateix estat validat |
 | Aïllament | Extreure el paquet en una ruta nova | El projecte no pot resoldre fonts per coincidència amb la carpeta original |
-| Obertura | Obrir el `.qgz` i revisar el registre de missatges | No hi ha fonts perdudes ni proveïdors imprescindibles desconeguts |
+| Obertura | Obrir per separat el `.qgz` i el projecte incrustat, tancant QGIS entre proves, i revisar el registre de missatges | No hi ha fonts perdudes ni proveïdors imprescindibles desconeguts en cap representació |
 | Inventari | Obrir una capa de cada grup, les taules i els ràsters | Esquema, `CRS`, extensió, estils i valors continuen disponibles |
-| Procés | Reexecutar una operació o model representatiu, si existeix | Les entrades es resolen i els controls semàntics coincideixen |
+| Procés | Reexecutar el model QGIS obligatori i una operació representativa | Les entrades es resolen i els controls semàntics coincideixen |
 | Composició | Obrir i exportar el mapa final | Fonts, llegenda, escala, textos i recursos enllaçats es mantenen |
 | Fitxers externs | Obrir l'exportació en un visor diferent | La peça és llegible i no depèn de la sessió de QGIS |
 | Registre | Anotar entorn, incidències i resultat de la prova | Una altra persona pot saber què s'ha comprovat i què continua extern |
@@ -241,73 +275,13 @@ La versió de QGIS, el sistema operatiu i els proveïdors es registraran quan pu
 
 Els fluxos de desenvolupament reproduïble aporten principis útils encara que no s'escrigui codi. El primer és separar entrades originals, dades preparades, resultats regenerables i productes finals. El segon és declarar les dependències: una sortida no apareix «després» d'una altra només pel seu nom, sinó perquè l'utilitza com a entrada. El tercer és corregir sempre la font canònica i tornar a generar els descendents.
 
-Els **controls executables** són comprovacions que una eina podria repetir, com exigir 22 codis únics, una fila concreta de referència, cap geometria buida o una extensió dins d'un rang. No són exclusius de Python: molts es poden expressar amb estadístiques, consultes o expressions de QGIS i registrar en una taula. El valor metodològic és definir la condició abans d'interpretar la sortida i fer que una violació sigui visible.
+Control executable
+: Comprovació que una eina pot repetir, com exigir 22 codis únics, cap geometria buida o una extensió dins d'un rang.
 
-Una comprovació coneguda o **cas sentinella** ajuda a detectar desplaçaments. Pot ser el codi i el nom d'un municipi, una geometria que ha de quedar dins de la ROI o una cel·la amb valor conegut. No valida tot el conjunt, però revela errors de columna, `CRS`, filtre o ordre. S'ha de combinar amb recomptes, distribucions i mostres, no utilitzar-se com a única prova.
+Cas sentinella
+: Comprovació coneguda que ajuda a detectar desplaçaments, com el codi i el nom d'un municipi, una geometria dins de la ROI o una cel·la amb valor esperat.
 
-L'automatització es justifica quan redueix una font identificada de variació o cost. Un model pot assegurar que tots els municipis reben el mateix ordre d'operacions; un lot pot evitar errors en trenta conversions; un script pot comprovar esquemes abans de processar. Afegir automatització només per mostrar codi crea una dependència que també s'ha de mantenir. El projecte final es valora per la coherència i l'explicació del procés, no pel nombre de tecnologies que incorpora.
-
-### Límits conceptuals de SQL espacial
-
-SQL descriu operacions sobre conjunts de files. Amb una extensió espacial com PostGIS, les files poden contenir geometries i les consultes poden aplicar predicats, mesures i transformacions. Aquesta aproximació és adequada quan les dades viuen en una base compartida, quan cal combinar filtres temàtics i espacials o quan una consulta s'ha de reutilitzar sense exportar moltes capes intermèdies.
-
-Una consulta pot seleccionar municipis que intersecten almenys una regió d'interès:
-
-::: listing "Predicat espacial expressat en SQL"
-```sql
-SELECT m.*
-FROM municipis AS m
-WHERE EXISTS (
-    SELECT 1
-    FROM roi AS r
-    WHERE ST_Intersects(m.geom, r.geom)
-);
-```
-:::
-
-`ST_Intersects` avalua un predicat: retorna cert quan les geometries comparteixen almenys un punt, inclosos determinats contactes de frontera. No retalla la geometria municipal. Per crear la part comuna caldria una operació d'intersecció geomètrica i caldria decidir què fer amb geometries buides, fragments i atributs. La distinció entre seleccionar i transformar és la mateixa que al geoprocessament vectorial, encara que canviï la sintaxi {% cite ogcSimpleFeatures2011 %}.
-
-L'ús de `EXISTS` evita duplicar una fila municipal si coincideix amb diverses files de `roi`. Una unió SQL ordinària podria produir una fila per cada coincidència, cosa que pot ser correcta per analitzar parelles però incorrecta per obtenir un conjunt únic de municipis. La cardinalitat continua sent una decisió analítica. SQL no elimina la necessitat d'entendre claus, nuls i múltiples correspondències.
-
-Assignar un identificador de referència espacial a una geometria no transforma les coordenades. Les dues entrades han d'estar en referències compatibles i qualsevol transformació s'ha de fer explícita. Les mesures de distància i superfície depenen també del tipus geomètric, la projecció i les unitats. Una consulta sintàcticament correcta pot continuar responent una pregunta inadequada si tracta graus com metres o ignora una geometria invàlida.
-
-PostGIS és una extensió de PostgreSQL amb el seu propi catàleg de funcions. Un GeoPackage és un contenidor basat en SQLite, però aquesta base comuna no implica que totes les funcions `ST_...` de PostGIS estiguin disponibles ni que tinguin exactament el mateix comportament. Les capes virtuals de QGIS, SQLite amb extensions espacials i altres motors tenen dialectes i capacitats diferents. Una consulta s'ha de documentar amb el motor i la versió on s'ha provat.
-
-### Límits conceptuals de PyQGIS
-
-PyQGIS és l'API de Python de QGIS. Permet accedir a projectes, capes, geometries, expressions, composicions i al marc de Processament. És útil quan el flux necessita bucles, condicions, validacions, integració amb altres operacions o una eina reutilitzable que el Dissenyador de models no expressa amb claredat. No és sinònim de Python geoespacial en general: el codi depèn de l'entorn i de les classes de QGIS.
-
-Un fragment executable dins de la consola Python de QGIS, una vegada definida una capa `municipi` vàlida en un `CRS` mètric, pot escriure's així:
-
-::: listing "Correspondència entre Processament i PyQGIS"
-```python
-from qgis import processing
-
-resultat = processing.run(
-    "native:buffer",
-    {
-        "INPUT": municipi,
-        "DISTANCE": 500.0,
-        "SEGMENTS": 10,
-        "END_CAP_STYLE": 0,  # Round
-        "JOIN_STYLE": 0,     # Round
-        "MITER_LIMIT": 2.0,
-        "DISSOLVE": True,
-        "OUTPUT": "TEMPORARY_OUTPUT",
-    },
-)
-
-buffer_roi = resultat["OUTPUT"]
-if not buffer_roi.isValid() or buffer_roi.featureCount() == 0:
-    raise RuntimeError("El buffer no ha produït cap geometria vàlida")
-```
-:::
-
-El fragment és executable en l'entorn indicat, però no és un programa autònom: pressuposa que `municipi` identifica una entrada vàlida, no buida, sense selecció imprevista i en metres. El diccionari fa visibles tots els paràmetres geomètrics del buffer i la destinació temporal; `0` és el codi de l'estil arrodonit per a extrems i unions en QGIS 3.44. La comprovació només valida l'existència tècnica de la sortida. No explica per què s'han triat 500 m, no comprova el `CRS` ni demostra la distància sobre una mostra, de manera que el mètode continua necessitant les precondicions i postcondicions declarades fora del codi.
-
-El codi pot versionar-se i comparar-se línia a línia, cosa que ajuda a revisar canvis. Aquesta propietat no incorpora automàticament les dades, la versió de QGIS, els complements ni les biblioteques. Una ruta absoluta dins del script és tan poc transportable com una ruta absoluta dins del `.qgz`. Cal separar configuració i lògica, utilitzar rutes relatives a una arrel coneguda i registrar l'entorn validat quan el procés s'hagi de compartir.
-
-El Dissenyador de models és preferible quan la seqüència és un graf estable, visualment explicable i basat en algorismes disponibles. PyQGIS és preferible quan hi ha lògica iterativa, validacions complexes, noms dinàmics, tractament específic d'errors o integració que el model faria opaca. SQL és preferible quan la consulta de conjunt s'ha d'executar prop d'una base espacial compartida. Cap opció és un nivell obligatori de maduresa: són formes diferents d'expressar un problema.
+Els controls executables no són exclusius de Python: molts es poden expressar amb estadístiques, consultes o expressions de QGIS i registrar en una taula. Un cas sentinella no valida tot el conjunt, però revela errors de columna, `CRS`, filtre o ordre. S'ha de combinar amb recomptes, distribucions i mostres.
 
 ## Auditoria completa del projecte final
 
@@ -320,14 +294,14 @@ La pregunta final ha d'identificar fenomen, municipi, període, unitat d'anàlis
 L'inventari relaciona cada peça amb una funció: font original, dada preparada, intermedi de diagnòstic, resultat analític, taula de control, mapa o documentació. Una capa sense funció identificable no s'ha de conservar només perquè existeix; una capa necessària no s'ha d'eliminar perquè no apareix al mapa final. El nom, la ubicació, el format, el productor i la dependència immediata han de permetre seguir-ne el llinatge.
 
 ::: table "Continuïtat de les micropràctiques dins del projecte final"
-| Fase | Evidència acumulada | Pregunta d'auditoria final |
-| --- | --- | --- |
-| Micropràctica 1 | Pregunta, fonts, estructura, GeoPackage, `.qgz` i prova inicial de trasllat | Les fonts i l'àmbit continuen sent els que sostenen el resultat final? |
-| Micropràctica 2 | Capes digitalitzades, esquemes, dominis i controls geomètrics o topològics | Les correccions posteriors conserven identificadors, autoria i regles de captura? |
-| Micropràctica 3 | Expressions, extraccions, claus, unions i diagnòstic de nuls | Es poden reconstruir seleccions, cardinalitats i registres sense correspondència? |
-| Micropràctica 4 | Criteris vectorials, buffers, superposicions, recomptes i superfícies | L'ordre, les unitats i els llindars continuen justificats i sense doble comptatge? |
-| Micropràctica 5 | MDE, graelles, derivats, classes, màscares i estadístiques zonals | Resolució, alineació, `NoData`, referència vertical i sensibilitat estan documentats? |
-| Micropràctica 6 | Síntesi, composició, exportació, limitacions i explicació | Cada afirmació final es pot seguir fins a les evidències anteriors? |
+| Fase | Entrada canònica | Sortida persistent | Consumidor següent |
+| --- | --- | --- | --- |
+| Micropràctica 1 | Pregunta territorial, límit municipal oficial, paquets originals autoritzats i metadades de les fonts | `municipi_treball` creat amb una sola entitat validada, capes inicials al GeoPackage, inventari, diari i punt de control format per `projecte_tig.qgz` i el projecte QGIS incrustat | Preparació de capes, consultes i totes les branques analítiques posteriors |
+| Micropràctica 2 | Punt de control de la micropràctica 1 i fonts de captura documentades | Capes digitalitzades al GeoPackage amb identificadors estables, esquema, dominis i controls de geometria o topologia | Branca de geoprocessament vectorial i auditoria d'autoria |
+| Micropràctica 3 | `municipi_treball` creat a la micropràctica 1 i capes i taules preparades del GeoPackage | `municipi_treball` verificat sense substituir-lo, atributs derivats en sortides diferenciades, subconjunts materialitzats, claus preparades, unions o relacions i diagnòstic de nuls | Micropràctiques 4 i 5, composicions i auditoria final |
+| Micropràctica 4 | `municipi_treball`, xarxa i equipaments preparats i una capa capturada | Capes persistents de cada criteri vectorial i resultat combinat al GeoPackage, amb mesures recalculades | Composició analítica i reexecució de control de la micropràctica 6 |
+| Micropràctica 5 | `municipi_treball` i MDE oficial documentat amb marge | GeoTIFF finals i taula zonal o comparativa al GeoPackage | Composició comparativa i reexecució de control de la micropràctica 6 |
+| Micropràctica 6 | Sortides canòniques de les micropràctiques 1–5, diari i les dues representacions del projecte QGIS | GeoPackage i GeoTIFF auditats, `.model3` validat, `.qgz` extern i projecte incrustat actualitzats deliberadament i amb la coherència verificada, exportacions finals i diari complet | Prova de transport, lliurament i explicació oral |
 :::
 
 ### Fonts, llicències i procedència
@@ -360,11 +334,17 @@ Cada resultat analític s'ha de relacionar amb entrades, algorisme, paràmetres,
 
 La validació s'ha de fer després de cada transformació decisiva i repetir-se al final. Es compararan recomptes, superfícies, rangs, esquemes i una mostra espacial. Un resultat no queda validat perquè el pas següent l'ha acceptat com a entrada. Si una incidència es va corregir, el registre ha d'indicar la causa, la modificació i quins descendents es van regenerar.
 
-Si hi ha un lot, model, consulta o script, s'auditarà com una peça addicional, no com a substitut del resultat. Cal comprovar versió, dependències, paràmetres i prova de reexecució. Si no hi ha automatització perquè no era necessària o Moodle no la demana, el projecte pot ser igualment complet sempre que la seqüència manual sigui reconstruïble.
+El lot i el model QGIS obligatoris s'auditaran com a peces addicionals, no com a substituts dels resultats. Cal comprovar-ne versió, dependències, paràmetres, destinacions i prova de reexecució. Les consultes SQL o PostGIS i els scripts PyQGIS són ampliacions opcionals i, si s'incorporen, s'auditen i es conserven separadament.
 
 ### Estat del projecte QGIS
 
-El projecte `.qgz` ha d'obrir-se sense fonts perdudes. Els grups de capes han de separar originals o referències, dades preparades, resultats vectorials, ràsters i composicions. Les capes temporals, duplicades o descartades s'eliminaran del panell després d'assegurar que no són necessàries. Els noms visibles han de correspondre als noms del registre, encara que una etiqueta més llegible pugui complementar el nom tècnic.
+El punt de control del curs té dues representacions del mateix projecte QGIS: `projecte_tig.qgz` a l'arrel i el projecte incrustat a `dades_preparades/projecte_tig.gpkg`. El `.qgz` ha d'obrir-se sense fonts perdudes i continua sent la referència més fàcil de revisar i recuperar. La còpia incrustada també s'ha d'actualitzar expressament; no canvia només perquè s'hagi desat el fitxer extern.
+
+Després de netejar el panell i validar les sortides, cal desar el `.qgz` i actualitzar el projecte incrustat des del mateix estat de la sessió. Tot seguit es tanca QGIS i es prova cada representació per separat, obrint-la des de la seva ubicació i no des de la llista de projectes recents. En totes dues s'han de contrastar fonts, grups, noms de capa, filtres, estils, composicions i una mostra de recomptes o valors; no n'hi ha prou que el llenç tingui una aparença semblant.
+
+>>>> **Desar una representació no refresca l'altra.** Si el `.qgz` conté la composició nova però el projecte incrustat encara mostra una capa anterior, el punt de control és incoherent encara que tots els fitxers existeixin. Cal tornar a l'estat validat, actualitzar totes dues representacions i repetir-ne les obertures independents abans d'empaquetar.
+
+Els grups de capes han de separar originals o referències, dades preparades, resultats vectorials, ràsters i composicions. Les capes temporals, duplicades o descartades s'eliminaran del panell després d'assegurar que no són necessàries. Els noms visibles han de correspondre als noms del registre, encara que una etiqueta més llegible pugui complementar el nom tècnic.
 
 Cal revisar filtres, seleccions, mode d'edició, unions temporals, formularis, variables, estils, ordre de dibuix i visibilitat dependent de l'escala. El `CRS` del projecte serà adequat per a la composició, però cada capa conservarà el seu `CRS` real. Una capa que només encaixa gràcies a una assignació incorrecta no s'ha de dissimular amb reprojecció al vol.
 
@@ -430,17 +410,18 @@ Quan el treball s'ha fet en equip, cada participant ha de poder explicar les dec
 
 ## Tancament del producte final SIG
 
-Les peces finals tenen funcions complementàries. El GeoPackage reuneix capes vectorials i taules; els GeoTIFF conserven ràsters analítics; el `.qgz` registra organització, estils, relacions i composicions; les exportacions comuniquen una selecció; i el diari conserva decisions, controls i limitacions. Cap peça no substitueix les altres.
+Les peces finals tenen funcions complementàries. El GeoPackage reuneix capes vectorials i taules; els GeoTIFF conserven ràsters analítics; el `.qgz` registra organització, estils, relacions i composicions; el `.model3` conserva el procés QGIS parametritzat; les exportacions comuniquen una selecció; i el diari conserva decisions, controls i limitacions. Cap peça no substitueix les altres.
 
 ::: table "Peces del producte final"
 | Peça | Funció i control final |
 | --- | --- |
 | GeoPackage | Capes i taules amb noms estables, `CRS` identificats, esquemes comprensibles, claus i geometries comprovades |
 | Ràsters | GeoTIFF amb procedència, graella, tipus, unitat i `NoData` explícits |
-| Projecte `.qgz` | Obertura sense fonts perdudes, grups i estils coherents, rutes transportables i composicions vinculades als resultats correctes |
+| Projectes QGIS | `.qgz` extern i projecte incrustat al GeoPackage actualitzats des del mateix estat, oberts per separat sense fonts perdudes i amb grups, estils, rutes i composicions coherents |
 | Mapes i resultats exportats | Pregunta, àmbit, fonts, unitats, període i interpretació llegibles fora de QGIS |
 | Diari d'activitats | Fonts, operacions, paràmetres, incidències, controls, decisions, procedència i limitacions relacionats |
-| Procés opcional | Historial, lot, `.model3`, consulta o script amb dependències i prova de reexecució, si s'ha desenvolupat o s'ha exigit |
+| Processament de QGIS | Historial revisat, registre del lot i `.model3` obligatori amb dependències, paràmetres, destinacions i prova de reexecució documentats |
+| Ampliació opcional | Consultes SQL o PostGIS i scripts PyQGIS amb entorn i dependències documentats, conservats separadament del procés QGIS obligatori |
 | Explicació oral | Justificació d'una mostra del procés, diferència entre dades i inferències i resposta sobre autoria i límits |
 :::
 
@@ -452,9 +433,13 @@ La neteja final es farà sobre una còpia controlada del projecte. Abans de desc
 
 Cal triar una operació de l'historial i reconstruir-ne el proveïdor i identificador, les entrades, les precondicions, els paràmetres, l'estat rellevant i la destinació. Després s'ha d'explicar quina informació necessària per interpretar el resultat no apareix al registre. La comprovació acaba repetint l'operació sobre una còpia i comparant un control semàntic, no només el nom del fitxer.
 
-### Pràctica guiada opcional: manual, lot i model
+### Pràctica guiada: execució manual, lot i model
 
-Una extracció municipal s'executarà amb `native:extractbyexpression` sobre la capa preparada i el camp textual `codi_muni`. La primera execució usarà l'expressió `attribute(@feature, 'codi_muni') = '43171'`, una sortida persistent `municipi_43171` i el control d'una sola entitat. Després s'executarà per lots per a tres codis vàlids de la capa, amb una expressió i un nom de sortida únic a cada fila, i s'afegirà deliberadament un codi inexistent que s'ha de registrar com a resultat buit no validat. Finalment es construirà un model de pràctica amb `codi_municipi` com a paràmetre de text, la mateixa expressió i una postcondició d'una sola entitat. Cal comparar què expressa cada modalitat, com es generen els noms de sortida i quin mecanisme representa dependències. El model no forma automàticament part del lliurament final; serveix per aprendre a formalitzar una operació ja validada.
+Primer s'executarà manualment `native:buffer` sobre `municipi_treball`, sense seleccions ni filtres imprevistos i en un `CRS` projectat en metres. Amb `DISTANCE = 500`, els paràmetres geomètrics fixats al contracte del capítol i la destinació d'auditoria `roi_manual_500m_auditoria`, cal comprovar que la sortida té una geometria vàlida, no buida, una sola entitat eventualment multipart i una superfície superior a la municipal. L'entrada `municipi_treball` no s'ha de modificar ni utilitzar mai com a destinació.
+
+Després s'executarà el mateix buffer per lots amb les distàncies diferenciades de 250, 500 i 750 m. Cada fila tindrà una destinació pròpia, com `roi_lot_250m_auditoria`, `roi_lot_500m_auditoria` i `roi_lot_750m_auditoria`, o una sortida temporal inequívoca equivalent. Cal revisar totes les files, comparar l'evolució de l'extensió i la superfície i contrastar la fila de 500 m amb la sortida manual validada; una sortida buida, repetida o escrita sobre una altra fila invalida el lot.
+
+Finalment es construirà i es desarà un model QGIS `.model3` amb el graf `municipi_treball + distancia_m -> ROI`: una entrada vectorial, un paràmetre numèric en metres i `native:buffer` amb els mateixos paràmetres fixos. Una execució amb 500 m s'escriurà a `roi_model_500m_auditoria`, mai sobre l'entrada ni sobre les sortides manual o de lot. El model es considerarà validat quan coincideixin amb `roi_manual_500m_auditoria` el `CRS`, el recompte, la validesa, l'extensió, la superfície i la diferència espacial dins de la tolerància documentada.
 
 ### Pràctica guiada: prova de transport adversa
 
@@ -462,25 +447,326 @@ Sobre una còpia del paquet es provocarà una dependència controlada, com una c
 
 ### Micropràctica 6: síntesi i tancament del projecte
 
-La sisena micropràctica és la síntesi final de les cinc anteriors. El nucli obligatori és auditar, ordenar, interpretar, compondre i transportar el projecte acumulatiu. L'automatització només serà obligatòria si Moodle ho indica explícitament per al lliurament vigent.
+La sisena micropràctica és la síntesi final de les cinc anteriors. El nucli obligatori és auditar, ordenar, interpretar, compondre i transportar el projecte acumulatiu, executar i documentar el lot de buffers, conservar el model QGIS `.model3` validat i reexecutar una branca que ja alimenta un resultat final. No s'obre una segona pregunta territorial ni es crea un projecte paral·lel. SQL, PostGIS i PyQGIS continuen sent ampliacions opcionals.
 
 ::: table "Contracte de la micropràctica 6"
 | Component | Requisit |
 | --- | --- |
-| Entrades | GeoPackage, projecte `.qgz`, diari i resultats conservats de les micropràctiques 1–5 |
-| Operacions mínimes | Ordenar i netejar el projecte, auditar fonts i dependències, repetir els controls crítics, preparar la simbolització, compondre i exportar almenys un mapa i documentar les limitacions |
-| Resultats | GeoPackage final, GeoTIFF necessaris, projecte `.qgz` transportable, mapes o resultats exportats i diari complet |
-| Evidències del diari | Inventari i llinatge finals, relació entre pregunta i resultats, controls repetits, incidències, decisions de neteja, limitacions, prova de transport i guió breu de l'explicació oral |
-| Comprovacions | Absència de fonts perdudes, esquemes i `CRS` identificats, resultats traçables, ràsters documentats, composició llegible i obertura correcta des d'una altra ubicació |
-| Fitxers que cal conservar | GeoPackage, projecte `.qgz`, ràsters finals, exportacions, diari i, només si s'ha desenvolupat o requerit, model `.model3`, consulta o script |
+| Entrades | Sortides canòniques de les micropràctiques 1–5, `municipi_treball`, `dades_preparades/projecte_tig.gpkg`, `projecte_tig.qgz`, projecte incrustat al GeoPackage i diari acumulatiu |
+| Operacions mínimes | Completar una auditoria integrada; executar i validar el buffer manual; comparar distàncies amb el lot; construir, desar i validar el model `municipi_treball + distancia_m -> ROI`; reexecutar des de l'entrada canònica una branca vectorial o ràster existent i comparar-la amb el resultat conservat; repetir els controls crítics; preparar la simbolització; compondre i exportar almenys un mapa; documentar les limitacions; i actualitzar deliberadament les dues representacions del projecte |
+| Resultats | Auditoria integrada, GeoPackage i GeoTIFF finals auditats, `.model3` validat, `.qgz` extern i projecte incrustat amb la coherència verificada, almenys un mapa exportat i diari complet |
+| Evidències del diari | Inventari i llinatge finals, contractes i comparacions de l'execució manual, el lot, el model i la branca reexecutada, relació entre pregunta i resultats, incidències, decisions de neteja, limitacions, prova de les dues representacions, prova neta del paquet i guió de la defensa oral |
+| Comprovacions | Equivalència del model amb el buffer manual i de la branca reexecutada amb el resultat canònic dins de les toleràncies declarades; cap sobreescriptura de `municipi_treball`; absència de fonts perdudes; esquemes i `CRS` identificats; resultats traçables; ràsters documentats; mapa llegible; i obertura independent correcta de les dues representacions des del paquet extret |
+| Fitxers que cal conservar | GeoPackage amb el projecte incrustat actualitzat, `.qgz` extern, model QGIS `.model3`, ràsters finals, mapa exportat, paquet final i diari |
+| Paquet final i prova neta | Crear el paquet final, extreure'l en una carpeta neta que no comparteixi la ruta original i comprovar-hi l'obertura del `.qgz`, del projecte incrustat, de les dades, del `.model3` i del mapa exportat sense reparar dependències de manera implícita |
+| Defensa oral | Fer una defensa oral breu que relacioni pregunta, fonts, model, paràmetres, un control, resultat, autoria i limitacions |
+| Ampliacions opcionals | Les consultes SQL o PostGIS i els scripts PyQGIS no formen part del nucli obligatori; si es presenten, els fitxers corresponents s'han de conservar separadament i documentar-ne l'entorn |
 :::
 
-Quan Moodle no exigeixi automatització, no cal crear un model artificial per completar la micropràctica. Es pot conservar l'historial com a suport de documentació i utilitzar el model guiat del capítol com a exercici separat. La qualitat del tancament es demostrarà amb la cadena d'evidència, els controls, la composició, la prova de transport i l'explicació oral.
+El model obligatori és deliberadament petit: formalitza un buffer ja validat sense convertir tota l'anàlisi acumulada en un diagrama artificial. La seva evidència és la comparació controlada amb la sortida manual; la reexecució de la branca acumulada comprova, de manera separada, que el resultat final continua derivant de les entrades canòniques.
 
-### Activitat integradora
+### Activitat integradora: reexecutar una branca acumulada
 
-Com a assaig de síntesi, es pot resoldre un cas que reuneixi les peces del curs: obtenir les capes oficials, delimitar una zona circular de 2 km al voltant d'un punt de referència de Vila-seca, digitalitzar a escala 1:500 una xarxa de carrils bici topològicament connectada i localitzar àrees candidates per a un equipament termal. El model de candidatura pot exigir una distància superior a 600 m de l'AP-7 i l'A-7, inferior a 50 m d'altres vies i inferior a 200 m d'assentaments, sempre com a criteris de l'exercici i no com a norma general.
+Cal escollir una branca que ja intervingui en la conclusió del projecte: per exemple, un criteri vectorial de la micropràctica 4 que parteixi de `municipi_treball` i de capes preparades, o la seqüència de pendent, reclassificació i resum zonal de la micropràctica 5. La taula de continuïtat n'identifica l'entrada canònica, la sortida persistent i el consumidor. La reexecució parteix exactament d'aquesta entrada; no torna a descarregar una edició diferent ni inicia un altre cas d'estudi.
 
-El cas incorporarà un model d'elevacions i conservarà les capes vectorials i les taules en un únic GeoPackage. Els ràsters es mantindran com a GeoTIFF llevat que l'enunciat exigeixi i validi explícitament una cobertura ràster dins del GeoPackage. El projecte `.qgz` independent i una nota tècnica permetran revisar fonts, topologia, paràmetres, resultats i limitacions.
+Abans d'executar es reconstrueixen des del diari el proveïdor i l'identificador de cada algorisme, els paràmetres, el `CRS`, les seleccions o filtres, la versió de l'entorn i la destinació. La sortida de prova serà temporal o rebrà un nom inequívoc d'auditoria; no reemplaçarà el resultat canònic. En una branca vectorial es compararan esquema, identificadors d'origen, nombre d'entitats, geometries buides, àrea o longitud i diferència espacial. En una branca ràster es compararan dimensions, geotransformació, `NoData`, rang, recompte vàlid i estadístiques zonals sense arrodonir.
 
-Com a ampliació, una part estable del flux es pot repetir amb un lot o un model, i els resultats s'han de contrastar amb la versió manual. Aquesta automatització és opcional tret que Moodle la converteixi explícitament en requisit. Moodle concretarà també si l'assaig forma part d'una prova, una pràctica o una activitat no avaluable; el manual conserva el cas com a síntesi transferible i no com a calendari de lliurament.
+La mateixa activitat inclou la reexecució del `.model3` `municipi_treball + distancia_m -> ROI` amb la distància de 500 m i una destinació d'auditoria nova, diferent de les sortides manual i de lot. La comparació amb `roi_manual_500m_auditoria` repetirà els controls de `CRS`, recompte, validesa, extensió, superfície i diferència espacial; ni aquesta prova ni la branca acumulada no poden sobreescriure `municipi_treball`.
+
+Si les reexecucions són equivalents dins de les toleràncies declarades, el diari registra els controls i les sortides de prova es poden descartar quan no aporten cap diagnòstic. Si difereixen, cal localitzar el primer pas divergent, corregir l'entrada o el contracte que pertoqui i regenerar-ne els descendents; no s'edita manualment el resultat final per fer-lo coincidir. Finalment s'actualitzen deliberadament la composició afectada, `projecte_tig.qgz` i el projecte incrustat al GeoPackage, se'n verifica la coherència, es crea el paquet final i se'n repeteixen les obertures després d'una extracció neta.
+
+### Ampliació opcional: SQL i PyQGIS
+
+SQL
+: Llenguatge declaratiu per consultar i transformar conjunts de files dins d'un sistema de bases de dades. El dialecte i les funcions disponibles depenen del motor.
+
+PostGIS
+: Extensió espacial de PostgreSQL que incorpora tipus geomètrics, índexs i funcions SQL per treballar amb dades geogràfiques.
+
+PyQGIS
+: Interfície de programació de QGIS per a Python. Dona accés al projecte, les capes, les geometries i el marc de Processament dins d'un entorn QGIS compatible.
+
+Una expressió de QGIS és el primer nivell reproduïble per formular un filtre, una classe o un camp derivat. SQL aplica la mateixa disciplina a conjunts de files dins d'una base de dades, i PyQGIS permet encadenar expressions, capes i algorismes amb comprovacions programables. Són nivells addicionals de formalització, no substituts de perfilar les dades, comprovar claus, inspeccionar geometries ni validar les sortides.
+
+#### SQL tabular en un GeoPackage
+
+L'entorn d'execució dels exemples següents és la finestra SQL del **Gestor de bases de dades de QGIS 3.44**, amb la connexió SQLite oberta directament sobre `dades_preparades/projecte_tig.gpkg`. No és una capa virtual ni una connexió PostgreSQL. Les dues primeres consultes utilitzen la capa real del miniprojecte; després s'introdueixen dues taules didàctiques petites per practicar nuls i unions sense atribuir aquests camps a cap producte oficial.
+
+::: listing "Primera lectura SQL de la capa municipal real"
+```sql
+SELECT codi_muni, nom_muni
+FROM municipi_treball;
+
+SELECT codi_muni, nom_muni
+FROM municipi_treball
+WHERE codi_muni = '43171';
+```
+:::
+
+Cada sentència s'executa per separat. `SELECT` tria les columnes, `FROM` identifica la taula i `WHERE` restringeix les files. La primera sentència ha de retornar l'única entitat del miniprojecte de Vila-seca; la segona comprova la clau textual `43171`. Si el resultat és zero o més d'una fila, no cal afegir més SQL: primer s'ha de revisar que la connexió, la taula i la còpia del projecte siguin les previstes.
+
+::: table "Taules genèriques per introduir SQL tabular"
+| Taula | Una fila representa | Camps de l'exemple |
+| --- | --- | --- |
+| `municipis_exemple` | Un municipi del conjunt didàctic | `muni_id` com a clau, `nom` i `actiu` amb valors 0/1 |
+| `observacions_exemple` | Una observació per municipi i any | `obs_id` com a clau, `muni_id` com a referència, `any_ref` i `valor`, que pot ser nul |
+:::
+
+Les taules temporals següents permeten practicar consultes sense modificar les capes persistents del projecte. S'han de crear a la mateixa connexió SQLite abans dels exemples i desapareixen en tancar-la. Si la finestra SQL no executa tot el bloc alhora, cal executar cada sentència acabada en `;` per ordre i mantenir oberta la connexió. L'observació amb `muni_id = 'M04'` queda sense municipi deliberadament per comprovar una clau òrfena.
+
+::: listing "Dades temporals per executar els exemples SQLite"
+```sql
+DROP TABLE IF EXISTS temp.municipis_exemple;
+DROP TABLE IF EXISTS temp.observacions_exemple;
+
+CREATE TEMP TABLE municipis_exemple (
+    muni_id TEXT PRIMARY KEY,
+    nom TEXT NOT NULL,
+    actiu INTEGER NOT NULL CHECK (actiu IN (0, 1))
+);
+
+CREATE TEMP TABLE observacions_exemple (
+    obs_id INTEGER PRIMARY KEY,
+    muni_id TEXT,
+    any_ref INTEGER NOT NULL,
+    valor REAL
+);
+
+INSERT INTO municipis_exemple (muni_id, nom, actiu) VALUES
+    ('M01', 'Alfa', 1),
+    ('M02', 'Beta', 1),
+    ('M03', 'Gamma', 1);
+
+INSERT INTO observacions_exemple (obs_id, muni_id, any_ref, valor) VALUES
+    (1, 'M01', 2025, 12.5),
+    (2, 'M02', 2024, 8.0),
+    (3, 'M02', 2025, NULL),
+    (4, 'M04', 2025, 7.0);
+```
+:::
+
+Un cop comprovats `SELECT`, `FROM` i `WHERE`, la consulta següent deriva una etiqueta amb `CASE`. El llindar de 10 només serveix per mostrar la sintaxi i no és un criteri territorial.
+
+::: listing "Selecció i classificació tabular amb SQLite"
+```sql
+SELECT
+    obs_id,
+    muni_id,
+    valor,
+    CASE
+        WHEN valor IS NULL THEN 'sense dada'
+        WHEN valor >= 10 THEN 'deu o més'
+        ELSE 'menys de deu'
+    END AS classe
+FROM observacions_exemple
+WHERE any_ref = 2025
+ORDER BY obs_id;
+```
+:::
+
+La consulta següent parteix de tots els municipis actius, hi associa les observacions de 2025 amb una `LEFT JOIN` i calcula una fila per municipi amb `GROUP BY`.
+
+::: listing "Unió esquerra i resum per municipi amb SQLite"
+```sql
+SELECT
+    m.muni_id,
+    m.nom,
+    COUNT(o.obs_id) AS n_observacions,
+    COUNT(o.valor) AS n_valors,
+    AVG(o.valor) AS valor_mitja
+FROM municipis_exemple AS m
+LEFT JOIN observacions_exemple AS o
+    ON o.muni_id = m.muni_id
+   AND o.any_ref = 2025
+WHERE m.actiu = 1
+GROUP BY m.muni_id, m.nom
+ORDER BY m.muni_id;
+```
+:::
+
+La condició de l'any queda a `ON` perquè els municipis actius sense observacions de 2025 continuïn presents. `COUNT(o.obs_id)` retorna zero en aquests casos; `COUNT(*)` retornaria una fila produïda per la unió. `AVG(o.valor)` ignora els nuls, de manera que el recompte i el nombre de valors no nuls s'han d'interpretar conjuntament. Abans d'utilitzar el resum cal contrastar claus duplicades, municipis sense parella i observacions que no troben municipi.
+
+>>>> **La connexió i la quadrícula de resultats no són detalls.** Si la capçalera del Gestor no mostra el GeoPackage previst, la consulta s'executa contra un altre motor o una altra base. Un `SELECT` completat només mostra un resultat; no crea una taula persistent. Cal desar el text SQL i, si el resultat ha d'alimentar el projecte, exportar-lo explícitament a una taula amb nom estable i tornar-la a obrir abans de considerar-la una sortida.
+
+#### SQL espacial amb PostGIS
+
+L'exemple espacial utilitza un entorn diferent: la finestra SQL del Gestor de bases de dades sobre una connexió **PostgreSQL amb PostGIS habilitat**. Pressuposa `projecte.municipis_exemple`, amb `muni_id` únic i geometria poligonal, i `projecte.vies_exemple`, amb `id_tram` únic i geometria lineal. Les dues geometries són vàlides, tenen SRID 25831 i emmagatzemen coordenades en metres; `codi_muni`, si existeix a les vies, pot repetir-se i no intervé com a identificador de segment.
+
+::: listing "Longitud viària dins d'un municipi amb PostGIS"
+```sql
+WITH fragments AS (
+    SELECT
+        m.muni_id,
+        v.id_tram,
+        ST_CollectionExtract(
+            ST_Intersection(v.geom, m.geom), 2
+        ) AS geom
+    FROM projecte.municipis_exemple AS m
+    JOIN projecte.vies_exemple AS v
+      ON ST_Intersects(v.geom, m.geom)
+    WHERE m.muni_id = 'M01'
+)
+SELECT muni_id, id_tram, geom, ST_Length(geom) AS longitud_m
+FROM fragments
+WHERE NOT ST_IsEmpty(geom)
+ORDER BY id_tram;
+```
+:::
+
+`ST_Intersects` filtra parelles candidates que comparteixen algun punt; `ST_Intersection` construeix la part comuna; `ST_CollectionExtract(..., 2)` conserva només components lineals, i `ST_Length` els mesura en metres sota els supòsits declarats. Així, un simple contacte puntual no es converteix en longitud. Si només calgués seleccionar municipis sense duplicar-los, una subconsulta amb `EXISTS` seria preferible a retornar una fila per cada tram coincident. La distinció entre seleccionar i transformar continua sent la mateixa que al geoprocessament vectorial {% cite ogcSimpleFeatures2011 %}.
+
+Assignar un SRID no transforma coordenades. Si les columnes no comparteixen una referència adequada, cal verificar-ne primer el SRID i aplicar `ST_Transform` explícitament a la geometria que correspongui. Aquestes funcions i la qualificació `esquema.taula` són pròpies de l'entorn PostGIS de l'exemple; un GeoPackage basat en SQLite no ofereix necessàriament el mateix catàleg ni el mateix comportament.
+
+>>>> **`no such function` sol assenyalar l'entorn abans que la geometria.** Enganxar la consulta PostGIS a la connexió SQLite del GeoPackage pot fallar encara que les taules tinguin noms semblants. Cal registrar motor, extensió i versió, i comprovar la connexió activa abans de canviar la consulta o les dades.
+
+#### Primers passos amb PyQGIS
+
+L'entorn d'execució d'aquests fragments és la **consola Python integrada de QGIS 3.44**, amb `projecte_tig.qgz` obert i les capes del projecte ja resoltes. No són programes destinats a l'intèrpret Python del sistema. El primer contacte només llegeix l'estat del projecte i escriu informació a la consola; no modifica cap capa.
+
+::: listing "Primer contacte amb el projecte des de la consola PyQGIS"
+```python
+from qgis.core import QgsProject
+
+projecte = QgsProject.instance()
+print(projecte.fileName())
+
+for capa in projecte.mapLayers().values():
+    print(capa.name())
+```
+:::
+
+`QgsProject.instance()` retorna el projecte obert, `fileName()` permet comprovar quina còpia s'està utilitzant i `mapLayers()` dona accés a les capes carregades. El resultat esperat inclou `municipi_treball`; si no apareix, cal resoldre el projecte abans de continuar. El pas següent obté aquesta capa sense confiar que el nom visible sigui únic, en comprova l'esquema i inspecciona les entitats.
+
+::: listing "Obtenir, inspeccionar i seleccionar una capa amb PyQGIS"
+```python
+from qgis.core import QgsProject
+
+coincidencies = QgsProject.instance().mapLayersByName("municipi_treball")
+if len(coincidencies) != 1:
+    raise RuntimeError(
+        f"S'esperava una capa municipi_treball i se n'han trobat {len(coincidencies)}"
+    )
+
+municipi = coincidencies[0]
+if not municipi.isValid():
+    raise RuntimeError("La capa municipi_treball no es pot llegir")
+if "codi_muni" not in {camp.name() for camp in municipi.fields()}:
+    raise RuntimeError("Falta el camp preparat codi_muni")
+
+ids_valids = []
+for entitat in municipi.getFeatures():
+    geometria = entitat.geometry()
+    if geometria.isNull() or geometria.isEmpty():
+        raise RuntimeError("municipi_treball conté una geometria absent o buida")
+    print(entitat["codi_muni"], geometria.area())
+    ids_valids.append(entitat.id())
+
+if len(ids_valids) != 1:
+    raise RuntimeError("municipi_treball ha de contenir una sola entitat")
+municipi.selectByIds(ids_valids)
+```
+:::
+
+El bucle llegeix un atribut amb `entitat['codi_muni']`, obté la geometria amb `geometry()` i utilitza els identificadors interns per crear una selecció temporal. Aquests identificadors de proveïdor són adequats per a `selectByIds()` dins de la sessió, però no substitueixen la clau estable de la taula. L'àrea impresa s'expressa en les unitats de la capa i només es pot interpretar com a metres quadrats després de comprovar un `CRS` projectat en metres. El fragment següent neteja la selecció abans de processar perquè no quedi com a estat implícit.
+
+La primera crida a Processament pot mantenir la sortida en memòria i mostrar només el contracte mínim. El fragment reutilitza la variable `municipi` comprovada a l'exemple anterior:
+
+::: listing "Primer algorisme de Processament amb PyQGIS"
+```python
+from qgis import processing
+
+resultat = processing.run(
+    "native:buffer",
+    {
+        "INPUT": municipi,
+        "DISTANCE": 500,
+        "SEGMENTS": 8,
+        "DISSOLVE": True,
+        "OUTPUT": "TEMPORARY_OUTPUT",
+    },
+)
+
+buffer_prova = resultat["OUTPUT"]
+print(buffer_prova.featureCount())
+```
+:::
+
+Aquesta prova encara confia en alguns valors predeterminats i desapareix en tancar la sessió. És adequada per entendre `processing.run()`, el diccionari de paràmetres i la sortida retornada, no com a resultat final. La versió següent explicita més precondicions i paràmetres, deriva un camp sense modificar l'entrada i escriu una capa persistent amb un nom controlat.
+
+Per derivar atributs no cal obrir una edició i canviar files casualment dins del bucle. La Calculadora de camps de la interfície o `native:fieldcalculator` fan explícites l'expressió, el tipus i la destinació, i poden crear una capa nova sense modificar l'entrada. El fragment següent afegeix una àrea a una sortida temporal i executa després un buffer persistent amb nom de capa explícit.
+
+::: listing "Calcular un camp i escriure un buffer en una capa GeoPackage"
+```python
+from pathlib import Path
+
+from qgis import processing
+from qgis.core import (
+    Qgis,
+    QgsProcessingOutputLayerDefinition,
+    QgsProject,
+    QgsVectorLayer,
+)
+
+if municipi.crs().isGeographic() or municipi.crs().mapUnits() != Qgis.DistanceUnit.Meters:
+    raise RuntimeError("El CRS de municipi_treball no té unitats mètriques")
+municipi.removeSelection()
+if "area_m2" in {camp.name() for camp in municipi.fields()}:
+    raise RuntimeError("El camp area_m2 ja existeix a la capa d'entrada")
+
+municipi_area = processing.run(
+    "native:fieldcalculator",
+    {
+        "INPUT": municipi,
+        "FIELD_NAME": "area_m2",
+        "FIELD_TYPE": 0,
+        "FIELD_LENGTH": 20,
+        "FIELD_PRECISION": 2,
+        "FORMULA": "area($geometry)",
+        "OUTPUT": "TEMPORARY_OUTPUT",
+    },
+)["OUTPUT"]
+if not municipi_area.isValid() or "area_m2" not in {
+    camp.name() for camp in municipi_area.fields()
+}:
+    raise RuntimeError("No s'ha creat correctament el camp area_m2")
+
+arrel = Path(QgsProject.instance().homePath())
+gpkg = arrel / "dades_preparades" / "projecte_tig.gpkg"
+if not gpkg.is_file():
+    raise RuntimeError(f"No s'ha trobat el GeoPackage: {gpkg}")
+
+nom_sortida = "municipi_buffer_500m_auditoria"
+uri_sortida = f"{gpkg}|layername={nom_sortida}"
+if QgsVectorLayer(uri_sortida, nom_sortida, "ogr").isValid():
+    raise RuntimeError(f"La capa de sortida ja existeix: {nom_sortida}")
+
+destinacio = QgsProcessingOutputLayerDefinition(
+    f"ogr:dbname='{gpkg.as_posix()}' table=\"{nom_sortida}\" (geom) sql="
+)
+
+processing.run(
+    "native:buffer",
+    {
+        "INPUT": municipi_area,
+        "DISTANCE": 500.0,
+        "SEGMENTS": 10,
+        "END_CAP_STYLE": 0,
+        "JOIN_STYLE": 0,
+        "MITER_LIMIT": 2.0,
+        "DISSOLVE": True,
+        "SEPARATE_DISJOINT": False,
+        "OUTPUT": destinacio,
+    },
+)
+
+buffer_roi = QgsVectorLayer(uri_sortida, nom_sortida, "ogr")
+if not buffer_roi.isValid() or buffer_roi.featureCount() != 1:
+    raise RuntimeError("La capa de buffer persistent no és vàlida o no té una fila")
+if any(f.geometry().isNull() or f.geometry().isEmpty() for f in buffer_roi.getFeatures()):
+    raise RuntimeError("La capa de buffer conté una geometria absent o buida")
+```
+:::
+
+El codi evita modificar `municipi_treball`, rebutja un camp `area_m2` preexistent per no substituir-lo silenciosament, calcula una àrea plana en les unitats quadrades del CRS mètric comprovat i valida el resultat intermedi. Després atura l'execució si el nom de sortida ja existeix. La destinació OGR identifica explícitament el GeoPackage, la taula nova i la columna geomètrica; passar només el camí del contenidor podria fer que l'escriptura el tractés com un fitxer que cal reemplaçar. `uri_sortida` identifica la mateixa capa per tornar-la a obrir. Per reemplaçar-la caldria aplicar una política explícita i documentada, no confiar en una sobreescriptura implícita que pugui eliminar altres taules.
+
+>>>> **Consola, versió i destinació formen un sol entorn d'execució.** Un error `No module named qgis` sol indicar que el fragment s'ha executat fora de QGIS; un paràmetre desconegut pot indicar una altra versió o un altre proveïdor; i una capa absent després d'una execució correcta sol exigir revisar el fitxer `.gpkg` i el `layername`, no només el panell de capes. La informació de l'algorisme de la versió instal·lada permet confirmar els noms i els codis enumerats.

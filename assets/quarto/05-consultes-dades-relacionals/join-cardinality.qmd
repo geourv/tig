@@ -1,0 +1,151 @@
+---
+title: "Cardinalitat de les relacions"
+lang: ca
+ref: join_cardinality
+format:
+  gfm:
+    output-file: join-cardinality.generated.md
+execute:
+  echo: false
+  warning: false
+  message: false
+execute-dir: project
+unaltraweb_compute:
+  engine: python
+  mode: figure
+  outputs:
+    - assets/img/generated/05-consultes-dades-relacionals/join-cardinality.svg
+---
+
+```{python}
+from pathlib import Path
+
+
+def find_project_root(start):
+    path = Path(start).resolve()
+    for candidate in (path, *path.parents):
+        if (candidate / ".unaltraweb" / "computations.yml").is_file():
+            return candidate
+    raise RuntimeError("Project root not found: missing .unaltraweb/computations.yml")
+
+
+def record(x, y, label, css_class):
+    return [
+        f'  <rect x="{x}" y="{y}" width="82" height="54" class="{css_class}"/>',
+        f'  <text x="{x + 41}" y="{y + 36}" text-anchor="middle" class="record-label">{label}</text>',
+    ]
+
+
+def relation(x1, y1, x2, y2):
+    return f'  <line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" class="relation"/>'
+
+
+width, height = 1600, 820
+svg = [
+    f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
+    '  <title id="title">Cardinalitats 1 a 1, N a 1, 1 a N i N a M</title>',
+    '  <desc id="desc">Quatre esquemes mostren parelles úniques, molts centres associats a un municipi, moltes observacions associades a un municipi i una relació entre equipaments i serveis resolta amb una taula intermèdia.</desc>',
+    '  <defs>',
+    '    <style>',
+    "      text { font-family: Arial, 'Liberation Sans', sans-serif; }",
+    '      .panel { fill: #ffffff; stroke: #c5d0d5; stroke-width: 2; }',
+    '      .heading { fill: #21313c; font-size: 36px; font-weight: 700; }',
+    '      .side { fill: #5b6d76; font-size: 28px; font-weight: 700; }',
+    '      .note { fill: #40545e; font-size: 28px; }',
+    '      .left-record { fill: #dceef4; stroke: #2878a5; stroke-width: 3; }',
+    '      .right-record { fill: #f5e5d8; stroke: #b65c35; stroke-width: 3; }',
+    '      .pair-record { fill: #e5efe7; stroke: #3d7e5c; stroke-width: 3; }',
+    '      .record-label { fill: #243640; font-size: 28px; font-weight: 700; }',
+    '      .relation { stroke: #6b7b82; stroke-width: 3; }',
+    '      .warning { fill: #a53b2b; font-size: 28px; font-weight: 700; }',
+    '    </style>',
+    '  </defs>',
+    '  <rect width="1600" height="820" fill="#f7f9fa"/>',
+]
+
+panel_x = [20, 415, 810, 1205]
+for x in panel_x:
+    svg.append(f'  <rect x="{x}" y="25" width="375" height="770" class="panel"/>')
+
+# 1:1
+svg.extend([
+    '  <text x="207" y="80" text-anchor="middle" class="heading">1 : 1</text>',
+    '  <text x="91" y="125" text-anchor="middle" class="side">municipi</text>',
+    '  <text x="324" y="125" text-anchor="middle" class="side">fitxa vigent</text>',
+])
+for index, label in enumerate(("M1", "M2", "M3")):
+    y = 175 + index * 145
+    svg.extend(record(50, y, label, "left-record"))
+    svg.extend(record(283, y, f"F{index + 1}", "right-record"))
+    svg.append(relation(132, y + 27, 283, y + 27))
+svg.extend([
+    '  <text x="207" y="665" text-anchor="middle" class="note">una candidata única</text>',
+    '  <text x="207" y="700" text-anchor="middle" class="note">per fila objectiu</text>',
+    '  <text x="207" y="748" text-anchor="middle" class="side">unió directa</text>',
+])
+
+# N:1
+svg.extend([
+    '  <text x="602" y="80" text-anchor="middle" class="heading">N : 1</text>',
+    '  <text x="486" y="125" text-anchor="middle" class="side">centres</text>',
+    '  <text x="719" y="125" text-anchor="middle" class="side">municipi</text>',
+])
+for index in range(3):
+    y = 175 + index * 145
+    svg.extend(record(445, y, f"C{index + 1}", "left-record"))
+    svg.append(relation(527, y + 27, 678, 347))
+svg.extend(record(678, 320, "M1", "right-record"))
+svg.extend([
+    '  <text x="602" y="665" text-anchor="middle" class="note">cada centre troba</text>',
+    '  <text x="602" y="700" text-anchor="middle" class="note">un sol municipi</text>',
+    '  <text x="602" y="748" text-anchor="middle" class="side">files objectiu conservades</text>',
+])
+
+# 1:N
+svg.extend([
+    '  <text x="997" y="80" text-anchor="middle" class="heading">1 : N</text>',
+    '  <text x="881" y="125" text-anchor="middle" class="side">municipi</text>',
+    '  <text x="1170" y="125" text-anchor="end" class="side">observacions</text>',
+])
+svg.extend(record(840, 320, "M1", "left-record"))
+for index in range(3):
+    y = 175 + index * 145
+    svg.extend(record(1073, y, f"O{index + 1}", "right-record"))
+    svg.append(relation(922, 347, 1073, y + 27))
+svg.extend([
+    '  <text x="997" y="650" text-anchor="middle" class="note">una unió plana pot</text>',
+    '  <text x="997" y="685" text-anchor="middle" class="warning">repetir la geometria</text>',
+    '  <text x="997" y="748" text-anchor="middle" class="side">relació o agregació</text>',
+])
+
+# N:M through a relation table.
+svg.extend([
+    '  <text x="1392" y="80" text-anchor="middle" class="heading">N : M</text>',
+    '  <text x="1220" y="125" text-anchor="start" class="side">equipaments</text>',
+    '  <text x="1528" y="125" text-anchor="middle" class="side">serveis</text>',
+])
+svg.extend(record(1225, 210, "E1", "left-record"))
+svg.extend(record(1225, 455, "E2", "left-record"))
+svg.extend(record(1497, 210, "S1", "right-record"))
+svg.extend(record(1497, 455, "S2", "right-record"))
+pair_rows = [("E1·S1", 185), ("E1·S2", 320), ("E2·S2", 455)]
+for label, y in pair_rows:
+    svg.extend(record(1360, y, label, "pair-record"))
+svg.extend([
+    relation(1307, 237, 1360, 212),
+    relation(1442, 212, 1497, 237),
+    relation(1307, 237, 1360, 347),
+    relation(1442, 347, 1497, 482),
+    relation(1307, 482, 1360, 482),
+    relation(1442, 482, 1497, 482),
+    '  <text x="1392" y="650" text-anchor="middle" class="note">una fila per parella</text>',
+    '  <text x="1392" y="685" text-anchor="middle" class="note">admesa</text>',
+    '  <text x="1392" y="748" text-anchor="middle" class="side">taula intermèdia</text>',
+    '</svg>',
+])
+
+project_root = find_project_root(Path.cwd())
+output = project_root / "assets/img/generated/05-consultes-dades-relacionals/join-cardinality.svg"
+output.parent.mkdir(parents=True, exist_ok=True)
+output.write_text("\n".join(svg) + "\n", encoding="utf-8")
+```
