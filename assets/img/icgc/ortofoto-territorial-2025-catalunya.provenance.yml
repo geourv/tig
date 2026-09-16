@@ -1,0 +1,60 @@
+schema_version: 1
+
+assets:
+  - path: assets/img/icgc/ortofoto-territorial-2025-catalunya-800.jpg
+    sha256: 7011a924327585d4243725318157853aa6c428cf759a011702917194cc71f622
+    width: 800
+    height: 600
+    bytes: 162117
+    request_pixel_size_m: 12.5
+  - path: assets/img/icgc/ortofoto-territorial-2025-catalunya-1600.jpg
+    sha256: 2b852045d8cecdbed7ba860261b6dd008c43256049049e7d2f8eeec580b9ed30
+    width: 1600
+    height: 1200
+    bytes: 652933
+    request_pixel_size_m: 6.25
+
+source:
+  producer: Institut Cartogràfic i Geològic de Catalunya
+  product: Ortofoto Territorial
+  service_title: WMS Ortofoto Territorial
+  service_url: https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms
+  service_page: https://www.icgc.cat/ca/Geoinformacio-i-mapes/Geoinformacio-en-linia-Geoserveis/WMS-Ortoimatges/WMS-Ortofoto-Territorial
+  service_page_last_update: "2026-07"
+  access_date: "2026-09-15"
+  layer:
+    name: ortofoto_25cm_color_2025
+    title: Ortofoto de Catalunya color 25cm any 2025
+    advertised_source_resolution_m: 0.25
+  capabilities:
+    version: "1.3.0"
+    request_url: https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities
+    sha256: 82782185927096e8a4162c4e8e1527edb007e1cd04ce6bb43d8d1624218151bc
+
+request:
+  operation: GetMap
+  version: "1.3.0"
+  crs: EPSG:25831
+  bbox: [340000, 4549500, 350000, 4557000]
+  layers: [ortofoto_25cm_color_2025]
+  styles: ""
+  format: image/jpeg
+  transparent: false
+  responses:
+    - width: 800
+      height: 600
+      url: https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&LAYERS=ortofoto_25cm_color_2025&STYLES=&CRS=EPSG:25831&BBOX=340000,4549500,350000,4557000&WIDTH=800&HEIGHT=600&FORMAT=image/jpeg
+    - width: 1600
+      height: 1200
+      url: https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&LAYERS=ortofoto_25cm_color_2025&STYLES=&CRS=EPSG:25831&BBOX=340000,4549500,350000,4557000&WIDTH=1600&HEIGHT=1200&FORMAT=image/jpeg
+
+capture:
+  captured_at: "2026-09-15T20:01:30+02:00"
+  method: Respostes JPEG directes del servei; cada mida es va sol·licitar per separat i no és un reescalat local.
+  role: Context visual de Vila-seca i l'entorn; no és una entrada ràster analítica ni conserva la resolució font de 25 cm.
+  variability: El servei pot actualitzar les dades o la representació; els fitxers conservats s'identifiquen pels seus SHA-256.
+
+rights:
+  licence: CC BY 4.0
+  attribution: Institut Cartogràfic i Geològic de Catalunya (ICGC)
+  note: Cal conservar l'atribució, la identificació del producte, la capa, l'any declarat i la data d'accés.

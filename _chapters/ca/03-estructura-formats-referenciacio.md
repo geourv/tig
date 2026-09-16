@@ -5,7 +5,7 @@ description: Models de dades, formats geogràfics, sistemes de referència i cri
 lang: ca
 ref: manual-data-structures-formats-crs
 profiles: [unaltremanual]
-content_status: draft
+content_status: approved
 permalink: /ca/chapters/estructura-formats-referenciacio/
 weight: 40
 part: Continguts
@@ -16,12 +16,13 @@ Dues capes poden representar el mateix territori i, tanmateix, no ser directamen
 
 El nom d'un fitxer no resol aquestes preguntes. L'extensió informa del format, però no determina si la dada és adequada ni si el CRS declarat és correcte. Aquest capítol separa quatre conceptes que sovint es confonen: **model**, **estructura**, **format** i **sistema de referència de coordenades**.
 
->>>>> En acabar el capítol, cal poder diagnosticar l'estructura i la referenciació d'una capa abans de transformar-la o combinar-la.
+>>>>> En acabar el capítol, cal poder diagnosticar l'estructura i la referenciació d'una capa, transformar-la amb criteri i completar la primera micropràctica.
 >>>>>
 >>>>> - Distingir model vectorial, model ràster, estructura interna i format d'emmagatzematge.
 >>>>> - Triar un format segons edició, anàlisi, intercanvi i conservació.
 >>>>> - Explicar què aporta un CRS i diferenciar assignació, transformació i visualització al vol.
 >>>>> - Relacionar escala, resolució, precisió i exactitud amb l'ús previst.
+>>>>> - Materialitzar en `EPSG:25831` les dues representacions municipals, validar el projecte `pr1` i preparar-ne els dos fitxers lliurables.
 
 ## De la Terra a una parella de coordenades
 
@@ -140,7 +141,7 @@ L'esquema ha de declarar unitat d'observació, geometria o graella, camps o band
 
 Un **fitxer** és una unitat d'emmagatzematge, però una dada pot dependre de diverses peces: el Shapefile distribueix una capa i una imatge pot requerir un *world file* i un `.prj`. Un **contenidor** agrupa continguts gestionats; un `.gpkg` pot allotjar taules, índexs i metadades dins de SQLite. Ni la carpeta ni el contenidor substitueixen la còpia de seguretat i la documentació.
 
-Una base espacial de servidor afegeix concurrència, permisos i transaccions multiusuari; compartir un GeoPackage en una carpeta sincronitzada no hi equival. El `.qgz` tampoc no és un contenidor de dades: conserva referències, estils, formularis i composicions, però no incorpora automàticament les fonts. El projecte del curs utilitza rutes relatives i manté el `.qgz` independent per fer visible aquesta dependència.
+Una base espacial de servidor afegeix concurrència, permisos i transaccions multiusuari; compartir un GeoPackage en una carpeta sincronitzada no hi equival. El `.qgz` tampoc no és un contenidor de dades: conserva referències, estils, formularis i composicions, però no incorpora automàticament les fonts. A la primera micropràctica, el GeoPackage conté les capes locals i el projecte de treball incrustat; el `.qgz` independent es crea al final com a versió lliurable i ha de continuar referenciant el GeoPackage que l'acompanya.
 
 ## Formats d'ús habitual
 
@@ -191,7 +192,7 @@ GeoPackage és un estàndard d'implementació de l'OGC basat en SQLite. Defineix
 
 «GeoPackage pot contenir ràsters» necessita precisió: el nucli inclou piràmides de tessel·les d'imatges o mapes, mentre que les cobertures numèriques en tessel·les depenen d'una extensió. Un lector vectorial no ha de suportar totes les extensions; per intercanviar un ràster analític de coma flotant, GeoTIFF sol ser més previsible.
 
-La taula `gpkg_extensions` declara funcionalitats addicionals, que poden ser compartides o pròpies d'un productor. `layer_styles` pot contenir estils de QGIS i `qgis_projects`, projectes; un altre client pot llegir les entitats i ignorar aquesta configuració. Al curs, `projecte_tig.qgz` continua sent la còpia canònica i l'entrada incrustada `projecte_tig` només s'actualitza a les fites explícites.
+La taula `gpkg_extensions` declara funcionalitats addicionals, que poden ser compartides o pròpies d'un productor. `layer_styles` pot contenir estils de QGIS i `qgis_projects`, projectes; un altre client pot llegir les entitats i ignorar aquesta configuració. A `sandbox/pr1-fonts-cognom.gpkg`, l'entrada incrustada `pr1` és la còpia de treball de la primera micropràctica. La representació externa només es prepara després dels controls.
 
 Durant una escriptura SQLite poden aparèixer fitxers `-journal`, `-wal` o `-shm`, que no s'han de separar ni eliminar. Abans de copiar el contenidor cal tancar les connexions i provar la còpia. Un GeoPackage en una carpeta sincronitzada no és una base multiusuari i pot patir conflictes si s'edita simultàniament.
 
@@ -240,9 +241,30 @@ El *world file* no conté el CRS, ni els valors `NoData`, ni les bandes. Una ima
 
 ## Codificació i interoperabilitat
 
-La **interoperabilitat** exigeix que dos programes interpretin de manera compatible geometries, camps, nuls, text, dates, CRS i extensions, no només que obrin el fitxer.
+La **interoperabilitat** exigeix que dos programes interpretin de manera compatible geometries, camps, nuls, text, dates, CRS i extensions, no només que obrin el fitxer. Una codificació de caràcters defineix com una seqüència de bytes representa lletres, dígits i signes. Si s'interpreta malament, `Móra d'Ebre` pot continuar tenint una geometria correcta mentre els accents, els símbols o els noms dels atributs es mostren alterats.
 
-GeoJSON utilitza UTF-8 i GeoPackage no necessita `.cpg`; en Shapefile, el `.cpg` i la pàgina de codis dBase poden faltar o discrepar. Cal rellegir els bytes amb la codificació documentada, no substituir accents manualment. Els tipus també s'han de conservar: `00123` pot ser text, una data no és una cadena, i `NULL`, buit, zero i `-9999` no són equivalents. La truncació de noms pot crear col·lisions que obliguen a actualitzar expressions i diccionaris.
+### Diagnosticar el text d'un Shapefile
+
+En un Shapefile, els textos són al `.dbf`. El controlador de GDAL intenta llegir primer la codificació declarada al `.cpg` i, si no hi és, pot recórrer a la marca de pàgina de codis del mateix DBF. Totes dues indicacions poden faltar, ser ambigües o no descriure correctament els bytes; per això una capa que s'obre sense error encara pot mostrar text mal interpretat {% cite gdalContributorsESRIShapefileDBF2026 %}.
+
+>> El `.cpg` és un fitxer de text separat que comparteix nom base amb `.shp`, `.shx` i `.dbf`. Es pot obrir amb un editor de text i pot contenir valors com `UTF-8`, `1252` o `ISO-8859-1`. Modificar aquesta etiqueta no converteix els bytes del DBF: només canvia com un lector intenta interpretar-los.
+
+Windows-1252 i ISO-8859-1, també anomenada Latin-1, comparteixen ASCII i molts caràcters occidentals, però no són sinònims. Als bytes entre `0x80` i `0x9F`, Windows-1252 defineix, entre altres signes, l'euro i cometes tipogràfiques, mentre que ISO-8859-1 reserva codis de control. Escollir una opció perquè «els accents es veuen bé» pot deixar altres caràcters equivocats.
+
+Un diagnòstic reproduïble segueix aquests passos:
+
+1. Conservar intactes el paquet i totes les peces originals del Shapefile.
+2. Consultar les metadades del productor i inspeccionar el `.cpg`; si falta, registrar també aquesta absència.
+3. Obrir una còpia amb el selector de codificació de la font i contrastar paraules conegudes que continguin accents, `ç`, euro o cometes. Canviar aquest selector rellegeix els mateixos bytes; no els recodifica.
+4. Quan s'ha identificat la codificació d'origen, exportar a una font nova, preferentment GeoPackage per al treball del curs, i tornar-la a obrir per comparar recompte, camps, nuls, caràcters i identificadors.
+
+Substituir manualment els accents visibles no resol el problema: pot alterar només alguns registres i ocultar que tota la columna s'ha descodificat amb una regla equivocada. Tampoc no s'ha de declarar `UTF-8` en un `.cpg` si el DBF continua codificat en Windows-1252. La conversió real necessita llegir els bytes amb la codificació correcta i escriure una sortida nova amb la codificació de destinació.
+
+### Formats amb altres contractes de text
+
+GeoPackage no necessita un `.cpg` lateral perquè el text es gestiona dins de la base SQLite. Un CSV, en canvi, no fixa per si sol una única codificació i l'ha de declarar el productor o el contracte d'intercanvi. GeoJSON és text JSON: RFC 7946 recomana seguir el perfil I-JSON i l'estàndard JSON vigent exigeix UTF-8 per a l'intercanvi entre sistemes fora d'un ecosistema tancat. Per tant, un GeoJSON conforme destinat a intercanvi s'ha d'escriure en UTF-8, no acompanyar-se d'un `.cpg` {% cite butlerGeoJSON2016 brayJSON2017 %}.
+
+La codificació no resol els tipus. `00123` pot ser un identificador textual, una data no és una cadena, i `NULL`, buit, zero i `-9999` no són equivalents. La truncació de noms d'un Shapefile també pot crear col·lisions que obliguen a actualitzar expressions i diccionaris.
 
 La sortida s'ha de reobrir com una font nova i comparar recompte, geometria, esquema, nuls, caràcters, identificadors, extensió, CRS i valors. En ràster s'afegeixen dimensions, bandes, tipus, resolució, alineació i `NoData`. Un checksum només prova identitat de bytes.
 
@@ -383,7 +405,7 @@ L'ordre operatiu següent redueix els diagnòstics per prova i error:
 
 L'acció **Estableix el CRS de la capa** o una opció equivalent canvia la interpretació i correspon a l'assignació; no és una eina per moure coordenades. **Desa les entitats com a...** amb un CRS de destinació o els algorismes de reprojecció creen una font nova transformada. En ràster, la reprojecció es fa amb una operació de deformació de graella i paràmetres de remostreig. Els noms exactes de menú poden variar entre versions, de manera que el diari ha de registrar l'operació i els paràmetres, no només una successió de clics.
 
->>> **Assignació o reprojecció.** Desactiveu temporalment una capa de referència i llegiu una coordenada concreta en el CRS de la font i en el del projecte. Si en canviar només el CRS del projecte la capa continua al mateix lloc visual, està actuant la transformació al vol. Si s'exporta una còpia i els valors numèrics canvien però la posició coincideix, s'ha materialitzat una reprojecció. Si els nombres no canvien després d'«assignar» un altre codi i la capa salta de lloc, s'ha canviat el significat sense transformar-la.
+>>> **Assignació o reprojecció.** La prova consisteix a desactivar temporalment una capa de referència i llegir una coordenada concreta en el CRS de la font i en el del projecte. Si en canviar només el CRS del projecte la capa continua al mateix lloc visual, està actuant la transformació al vol. Si s'exporta una còpia i els valors numèrics canvien però la posició coincideix, s'ha materialitzat una reprojecció. Si els nombres no canvien després d'«assignar» un altre codi i la capa salta de lloc, s'ha canviat el significat sense transformar-la.
 
 ## Resolució, precisió i exactitud
 
@@ -423,22 +445,41 @@ La conversió també pot revelar incompatibilitats legítimes. Una `GeometryColl
 
 ## Activitats
 
-### Fitxa comparativa de quatre recursos
+### Fitxa comparativa de les tres fonts inicials
 
-El resultat conservat serà una fitxa d'una capa municipal, una ortofoto, un model d'elevacions i una taula CSV amb coordenades. Per a cada recurs identificarà model, estructura, format, CRS, unitat d'observació, escala o resolució, font i data. La conclusió explicarà per què compartir extensió territorial no implica compartir model, resolució ni aptitud analítica, i distingirà quins elements pertanyen a una imatge i quins a un mapa.
+La fitxa iniciada al capítol anterior es completa amb l'Ortofoto Territorial de 2025, les divisions administratives 1:5.000 accessibles mitjançant Open ICGC i la capa municipal `AdministrativeUnit` de `LINEAS_LIMITE_GML.ZIP` del CNIG. Per a cada recurs cal identificar productor, producte, model, estructura, format o servei, CRS, unitat d'observació, escala o resolució i data. La conclusió ha d'explicar per què el WMS només aporta context visual i per què les dues geometries municipals poden ser vàlides per a finalitats diferents.
 
-### Registre d'assignació i reprojecció
+### Comprovació de la visualització al vol
 
-La pràctica partirà d'una capa amb el CRS correctament declarat i d'una còpia sense aquesta informació. El diari conservarà les prediccions i els resultats observats en assignar la definició correcta, assignar-ne una d'incorrecta i reprojectar l'original. Per a cada estat registrarà els valors d'una coordenada, l'extensió, el CRS declarat i la posició respecte d'una font de referència. Les còpies de prova descartades no s'incorporaran com a resultats finals.
+Amb `pr1` obert des de `sandbox/pr1-fonts-cognom.gpkg`, cal confirmar que la barra d'estat mostra `EPSG:25831` com a CRS del projecte. A continuació s'inspecciona el CRS de cadascuna de les dues fonts municipals a `Propietats > Informació`. Que la capa del CNIG declarada en `EPSG:4258` coincideixi visualment amb l'ortofoto no significa que les coordenades ja s'hagin transformat al fitxer: QGIS la representa al vol en el CRS del projecte.
+
+El diari ha de conservar el CRS del projecte, el CRS de cada font, les unitats i l'extensió observada. Canviar el CRS del projecte no forma part de la prova; l'objectiu és distingir la referència de la vista de la referència emmagatzemada a cada capa.
 
 >>>> **Canviar el format o el CRS del projecte no repara una capa mal referenciada.** Una correcció només és justificable si la font permet saber què significaven les coordenades originals; en cas contrari, la incertesa s'ha de conservar i la capa es pot haver de descartar.
 
-### Fita del projecte: formats i CRS comprovats
+### Micropràctica 1: municipi i ortofoto
 
-L'inventari del projecte s'actualitzarà amb el model, el format, el CRS, l'escala o resolució i la data del WMS de context, del límit municipal oficial del CNIG i de les altres fonts incorporades. Quan correspongui, també registrarà ordre dels eixos, referència vertical, codificació, valor nul, extensió utilitzada i operació de coordenades prevista. Si l'original és un Shapefile, l'inventari identificarà el conjunt complet i no només el `.shp`.
+La micropràctica iniciada al capítol 02 es completa materialitzant les dues geometries municipals en un únic CRS i preparant una composició cartogràfica. Vila-seca és el cas de demostració; les capes i el mapa conservats han de correspondre al municipi assignat.
 
-Per a cada conversió realment necessària es conservaran l'entrada original, la sortida amb un nom funcional i els controls de recompte, esquema, nuls, extensió, CRS i una posició coneguda. Si l'eina posterior transforma de manera explícita i segura, no es crearà una còpia redundant: el resultat observable serà la decisió documentada, amb el CRS i les unitats efectives del càlcul.
+::: table "Contracte final de la micropràctica 1"
+| Component | Requisit |
+| --- | --- |
+| Entrades | Projecte de treball `pr1`; WMS de l'Ortofoto Territorial de 2025; divisions administratives 1:5.000 d'Open ICGC; `LINEAS_LIMITE_GML.ZIP` del CNIG conservat a `data/raw` i la seva capa municipal `AdministrativeUnit` en `EPSG:4258` |
+| Operacions mínimes | Comprovar els CRS; seleccionar una única entitat municipal a cada font; exportar totes dues seleccions a `sandbox/pr1-fonts-cognom.gpkg` en `EPSG:25831`; substituir les capes d'inspecció per les dues capes exportades; preparar una composició de mapa; desar el projecte incrustat i crear la versió externa homònima |
+| Resultats | Capes `municipality_icgc_5k` i `municipality_cnig`, ortofoto de context, composició cartogràfica i projecte incrustat `pr1` dins del GeoPackage |
+| Evidències del diari | Producte i data de cada font, camps i valors de selecció, CRS d'origen i destinació, recompte, extensió, incidències, diferències observades entre límits i controls de transport |
+| Comprovacions | Una entitat a cada capa; geometria de polígon; `EPSG:25831`; identificador oficial conservat; cap capa local temporal ni URI cap a `data/raw`; composició llegible; obertura independent del projecte incrustat i de l'extern |
+| Lliurables | `dist/pr1-fonts-cognom.gpkg` i `dist/pr1-fonts-cognom.qgz`, amb `cognom` substituït pel de l'estudiant |
+:::
 
-La fita es tanca desant primer `projecte_tig.qgz`, comprovant que el WMS continua separat de les entrades analítiques i que el límit municipal preparat conserva identificador, geometria, CRS i extensió, i actualitzant després l'entrada incrustada `projecte_tig` del GeoPackage. Des d'una còpia de l'arbre es tornaran a obrir per separat el `.qgz` i el projecte incrustat, sense utilitzar la llista de projectes recents.
+Per crear cada capa municipal, cal activar la selecció verificada i utilitzar `Exporta > Desa les entitats seleccionades com a...`. El format de destinació és GeoPackage, el fitxer és `sandbox/pr1-fonts-cognom.gpkg` i el CRS de sortida és `EPSG:25831`. La capa de l'ICGC rep el nom `municipality_icgc_5k` i la del CNIG, `municipality_cnig`. L'exportació ha de conservar l'identificador oficial útil de cada font i produir exactament una entitat. Després cal reobrir totes dues capes des del GeoPackage i comprovar geometria, esquema, recompte, extensió i CRS. Quan les còpies han superat aquests controls, substitueixen les capes font al panell i a la composició; les dues capes d'inspecció s'eliminen del projecte perquè cap representació desada depengui d'Open ICGC, de `data/raw` ni d'una extracció externa.
 
->> **Resultat de la fita.** Es conserven l'inventari actualitzat, els controls de format i CRS, les conversions justificades, el diari, el `.qgz` canònic i la representació incrustada `projecte_tig` comprovada. Desar una representació no sincronitza l'altra i la fita incrustada no és una còpia de seguretat del GeoPackage que la conté.
+El WMS es manté com a context remot i no es converteix en una capa analítica del GeoPackage. Amb les dues geometries sobre l'Ortofoto Territorial de 2025, cal descriure qualsevol diferència visible sense decidir automàticament que el contorn més detallat és el més correcte. La comparació ha de referir-se a l'escala, la data, la finalitat i les metadades de cada producte.
+
+La composició recupera els criteris treballats a TIGIT. Ha d'incloure el municipi assignat, una extensió i una escala justificades, la identificació de les dues geometries, l'ortofoto de context i les fonts i dates necessàries per interpretar el mapa. La llegenda, l'orientació i l'escala gràfica s'incorporen quan resolen una necessitat de lectura, no com a ornaments automàtics.
+
+Quan les capes exportades i la composició han superat els controls, es confirma que les úniques capes vectorials municipals carregades són `municipality_icgc_5k` i `municipality_cnig`, que totes dues apunten al GeoPackage homònim i que el projecte desa camins relatius. Aleshores es desa `pr1` dins de `sandbox/pr1-fonts-cognom.gpkg`. Sense canviar aquestes fonts locals, es crea al mateix directori la representació externa `sandbox/pr1-fonts-cognom.qgz` i es comprova que referencia el GeoPackage homònim. Desar el `.qgz` no actualitza l'entrada incrustada. Després de validar les dues representacions, es tanca QGIS i es copien conjuntament a `dist/`; les còpies de distribució conserven els noms `pr1-fonts-cognom.gpkg` i `pr1-fonts-cognom.qgz`.
+
+La prova final copia només els dos fitxers de `dist` a una ubicació neta. Primer s'obre explícitament `pr1-fonts-cognom.qgz` i després, en una sessió separada, `pr1` des de `pr1-fonts-cognom.gpkg`. Totes dues representacions han de mostrar les dues capes municipals, el WMS, el CRS `EPSG:25831` i la composició. Si una capa local apunta encara a `sandbox`, a `data/raw`, a la font d'inspecció o a una carpeta personal, el lliurament no està preparat.
+
+>> **Resultat de la micropràctica.** `dist` conté exactament `pr1-fonts-cognom.gpkg`, amb totes les capes locals i la instantània incrustada `pr1`, i `pr1-fonts-cognom.qgz`, amb el mateix nom base. No cal crear cap paquet ZIP en aquesta fase.

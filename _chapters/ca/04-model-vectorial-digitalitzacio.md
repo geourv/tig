@@ -5,7 +5,7 @@ description: Disseny i captura d'entitats vectorials amb criteris d'escala, atri
 lang: ca
 ref: manual-vector-model-digitizing
 profiles: [unaltremanual]
-content_status: draft
+content_status: approved
 permalink: /ca/chapters/model-vectorial-digitalitzacio/
 weight: 50
 part: Continguts
@@ -204,7 +204,7 @@ Les eines de digitalització avançada afegeixen restriccions geomètriques com 
 
 La interfície separa aquestes funcions en controls diferents. La barra d'**Autoensamblat** configura a quines capes i components es pot ajustar el cursor; la de **Digitalització** inicia i desa l'edició o captura entitats; la de **Digitalització avançada** agrupa transformacions i tècniques addicionals; i el panell homònim permet imposar coordenades, distàncies i angles durant una captura. Fer visibles els quatre elements ajuda a localitzar-los, però encara cal decidir quins són pertinents per a la regla que s'aplica.
 
-![Interfície de QGIS amb les barres d'Autoensamblat, Digitalització i Digitalització avançada i el panell de Digitalització avançada identificats]({{ site.baseurl }}/assets/img/qgis/qgis-digitizing-tools.png "Les barres donen accés a famílies d'accions diferents; els controls del panell s'activen en iniciar una captura editable. Veure una eina no demostra que la geometria compleixi la regla del projecte."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
+![Interfície de QGIS amb una capa temporal de pràctica seleccionada, el municipi visible com a referència i les barres d'Autoensamblat, Digitalització i Digitalització avançada identificades]({{ site.baseurl }}/assets/img/qgis/qgis-digitizing-tools.png "La capa temporal de pràctica és la destinació editable i el municipi de treball es manté visible com a referència. Les barres donen accés a famílies d'accions diferents, però veure una eina no demostra que la geometria compleixi la regla del projecte."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
 
 Per treballar amb distàncies i angles territorials, la pràctica utilitza un CRS projectat adequat, `EPSG:25831`. El panell de digitalització avançada no s'ha d'interpretar com una calculadora mètrica sobre longitud i latitud: QGIS en limita les restriccions quan el llenç treballa amb coordenades geogràfiques. Canviar el CRS del projecte tampoc no millora una font ni transforma mesures aproximades en observacions exactes.
 
@@ -337,13 +337,15 @@ Els errors detectats necessiten un registre mínim amb identificador, regla, ubi
 
 ## Un cas de captura a Vila-seca
 
-La demostració reobre i amplia el mateix projecte extern `projecte_tig.qgz` i el mateix GeoPackage `dades_preparades/projecte_tig.gpkg` iniciats als capítols anteriors; no parteix d'un projecte buit ni crea un contenidor paral·lel. Abans d'editar, cal comprovar que les fonts es resolen, que no hi ha cap capa temporal pendent i que el punt de control incrustat `projecte_tig` del GeoPackage correspon al mateix estat que el fitxer extern.
+Amb QGIS tancat, es copia `dist/pr1-fonts-cognom.gpkg` a `sandbox/pr2-digitalitzacio-cognom.gpkg`; no es copia ni es reanomena `pr1-fonts-cognom.qgz`. Des de la còpia s'obre el projecte incrustat heretat, es desa com a `pr2` i s'elimina l'entrada `pr1`, de manera que al GeoPackage només hi quedi `pr2`. Abans d'editar, totes les fonts locals es reorienten a `sandbox/pr2-digitalitzacio-cognom.gpkg` i es comprova que cap URI apunti a `dist/`, a `pr1-fonts-cognom.gpkg` ni a una ruta personal.
+
+Les capes `municipality_icgc_5k` i `municipality_cnig` es conserven sense modificacions com les dues representacions municipals de referència. `municipi_treball` es materialitza dins del GeoPackage `pr2` com una capa derivada de la representació escollida: el diari identifica la font, l'operació, l'identificador oficial i la derivació del camp textual `codi_muni`. La capa nova no substitueix ni reanomena cap de les dues fonts.
 
 El cas combina tres capes creades amb finalitats diferents. Els **fanals** es capturen com a punts a partir d'una observació adequada; els **carrils bici**, com a línies connectades; i les **plaques o conjunts de plaques solars**, com a polígons quan la font permet delimitar-ne la superfície. Les capes comparteixen l'àmbit i el CRS, però no l'esquema ni les regles topològiques.
 
 La preparació comença amb una taula de fonts i tres frases d'unitat d'observació. Per als fanals, cada fila representa un suport individual i la posició correspon al peu observat o a la coordenada documentada de l'inventari. Per als carrils, cada fila representa un tram homogeni entre canvis de connectivitat o atributs. Per a les plaques, cada fila pot representar una superfície contínua visible; si es vol representar la instal·lació completa, les peces separades s'agrupen només quan una font permet afirmar que hi pertanyen.
 
-El GeoPackage incorpora tres taules homogènies amb identificadors independents i camps comuns de font i data. Els identificadors es creen com a valors estables, únics i no nuls, i no es recalculen a partir del número de fila, la geometria o una categoria mutable: els capítols posteriors els necessitaran per a unions, diagnòstics i anàlisis. Abans de capturar es prova un registre vàlid i un d'invàlid de cada esquema, es configura l'ajust només a les capes necessàries i es fixa una escala de captura compatible amb la font. La zona pilot inclou una cruïlla, una coberta amb ombres i un fanal ambigu per comprovar les tres decisions que no resol l'eina.
+Al GeoPackage `pr2` s'hi incorporen tres capes de captura homogènies, amb identificadors independents i camps comuns de font i data. Els identificadors es creen com a valors estables, únics i no nuls, i no es recalculen a partir del número de fila, la geometria o una categoria mutable: els capítols posteriors els necessitaran per a unions, diagnòstics i anàlisis. Abans de capturar es prova un registre vàlid i un d'invàlid de cada esquema, es configura l'ajust només a les capes necessàries i es fixa una escala de captura compatible amb la font. La zona pilot inclou una cruïlla, una coberta amb ombres i un fanal ambigu per comprovar les tres decisions que no resol l'eina.
 
 Per als carrils bici, els extrems s'han d'ajustar quan existeix continuïtat física i s'han de mantenir separats quan la infraestructura s'interromp. Per als polígons solars, la generalització ha de ser coherent amb la resolució de la imatge i no ha d'inventar límits ocults. Per als fanals, l'activitat ha d'indicar si la posició prové de camp, d'un inventari o d'una imatge i quina exactitud es pot defensar.
 
@@ -351,7 +353,7 @@ La captura s'organitza per carrers o illes i cada lot es tanca amb una consulta 
 
 El control final combina recompte, identificadors, camps obligatoris, geometries invàlides, duplicats, extrems de xarxa i una mostra contrastada amb la font. Corregir un error obliga a repetir els controls afectats i a registrar la incidència al diari.
 
-La mostra de contrast ha d'incloure casos ordinaris i extrems, no només les entitats més netes. El diari conserva la fitxa de captura, la configuració d'ajust amb unitats, els resultats de validació, les excepcions i una breu interpretació del que cada capa permet analitzar. Després del control es desa el mateix `projecte_tig.qgz`, s'actualitza el punt de control incrustat `projecte_tig` al mateix GeoPackage i es tanquen i reobren tots dos estats. El mapa final pot mostrar les tres capes, però la verificació es basa en les dades reobertes des del GeoPackage i en la conservació dels identificadors, no en una captura de pantalla del llenç.
+La mostra de contrast ha d'incloure casos ordinaris i extrems, no només les entitats més netes. El diari conserva la fitxa de captura, la configuració d'ajust amb unitats, els resultats de validació, les excepcions i una breu interpretació del que cada capa permet analitzar. Després dels controls es desa el projecte incrustat `pr2` i es crea de nou `sandbox/pr2-digitalitzacio-cognom.qgz`, amb camins relatius al GeoPackage homònim; aquest fitxer no deriva d'una còpia del `.qgz` de `pr1`. Amb QGIS tancat, la parella validada es copia a `dist/` sense canviar-ne els noms i les dues representacions es proven des d'una ubicació neta. El mapa final pot mostrar les tres capes capturades, però la verificació es basa en les dades reobertes des del GeoPackage i en la conservació dels identificadors, no en una captura de pantalla del llenç.
 
 ## Activitats
 
@@ -370,12 +372,12 @@ La segona micropràctica lliurable aplica el model de punts, línies i polígons
 ::: table "Contracte de la micropràctica 2"
 | Component | Requisit |
 | --- | --- |
-| Entrades | `projecte_tig.qgz` i `dades_preparades/projecte_tig.gpkg` existents, font oficial o observació documentada, límit de treball i criteris de captura |
-| Operacions mínimes | Dissenyar tres esquemes, configurar dominis i ajust, capturar punts, línies i polígons i executar controls geomètrics i topològics |
-| Resultats | Tres capes noves dins del mateix GeoPackage, amb identificadors estables i atributs complets |
+| Entrades | `dist/pr1-fonts-cognom.gpkg`, que es copia a `sandbox/pr2-digitalitzacio-cognom.gpkg`; fonts de captura oficials o observacions documentades; `municipality_icgc_5k` i `municipality_cnig` preservades |
+| Operacions mínimes | No copiar el `.qgz` de `pr1`; establir un únic projecte incrustat `pr2`; reorientar les fonts locals; derivar `municipi_treball` sense substituir les capes font; dissenyar tres esquemes, configurar dominis i ajust, capturar punts, línies i polígons i executar controls geomètrics i topològics |
+| Resultats | `municipality_icgc_5k` i `municipality_cnig` intactes, `municipi_treball` documentada i tres capes de captura noves dins de `pr2-digitalitzacio-cognom.gpkg`, amb identificadors estables i atributs complets |
 | Evidències del diari | Finalitat de cada capa, font, escala, esquema, regles, incidències i correccions |
-| Comprovacions | Identificadors únics, geometries vàlides, connectivitat justificada, absència de solapaments no admesos i mostra contrastada |
-| Fitxers que cal conservar | El mateix GeoPackage actualitzat amb el punt de control incrustat `projecte_tig`, `projecte_tig.qgz` actualitzat i diari amb la taula de controls |
+| Comprovacions | Exactament un projecte incrustat `pr2`; cap URI local cap a `dist/` o `pr1`; camins relatius al `.qgz`; identificadors únics, geometries vàlides, connectivitat justificada, absència de solapaments no admesos i mostra contrastada |
+| Fitxers que cal conservar | `dist/pr2-digitalitzacio-cognom.gpkg`, amb el projecte incrustat `pr2`; `dist/pr2-digitalitzacio-cognom.qgz`; i diari amb la taula de controls |
 :::
 
 El cas resolt de Vila-seca utilitzarà fanals, carrils bici i plaques solars. El lliurament ha de respondre al municipi assignat i no reproduir sense comprovació les geometries de la demostració.

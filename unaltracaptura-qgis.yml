@@ -9,6 +9,9 @@ paths:
   recipes:
     - recipes/qgis-interface-overview.yml
     - recipes/qgis-applied-workflows.yml
+    - recipes/qgis-vector-workflows.yml
+    - recipes/qgis-raster-workflows.yml
+    - recipes/qgis-source-discovery.yml
   data_root: tmp/unaltracaptura-qgis/data
   output_root: assets/img/qgis
   cache_root: tmp/unaltracaptura-qgis/cache

@@ -1,0 +1,196 @@
+id: qgis-source-discovery
+title: Descoberta de fonts i complements a QGIS
+source_prompt: |
+  Necessito captures procedimentals en català que mostrin vies d'accés a fonts
+  oficials sense confondre el complement, el servei i les dades: Open ICGC,
+  el connector cadastral INSPIRE i les connexions WMS i WFS del Cadastre.
+
+runtime:
+  image: qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc
+  locale: ca_ES
+
+compat:
+  qgis: "==3.44.11"
+
+plugins:
+  - OpenICGC
+  - Spanish_Inspire_Catastral_Downloader
+
+connections:
+  - id: cadastre-wms
+    type: wms
+    name: Cadastre INSPIRE WMS
+    url: https://ovc.catastro.meh.es/cartografia/INSPIRE/spadgcwms.aspx
+  - id: cadastre-wfs
+    type: wfs
+    name: Cadastre INSPIRE WFS parcel·les
+    url: https://ovc.catastro.meh.es/INSPIRE/wfsCP.aspx
+
+setup:
+  - action: trigger_action
+    name: mActionNewProject
+  - action: close_transients
+  - action: clear_message_bar
+
+captures:
+  - id: open-icgc-menu
+    title: Accés a les divisions administratives 1:5.000 d'Open ICGC
+    mode: window
+    steps:
+      - action: close_transients
+      - action: open_toolbutton_menu_path
+        button: Background maps
+        path:
+          - Divisions administratives
+          - Municipis
+          - Municipis 1:5.000
+        wait_ms: 900
+      - action: wait
+        ms: 700
+    target:
+      class_name: QgisApp
+      fallback:
+        - class_name: QMainWindow
+    drawings:
+      - type: callout
+        text: Open ICGC és la interfície d'accés
+        colour: auto
+        number: 1
+        number_style: label
+        target_marker: box
+        label_topology: outside
+        placement: below
+        leader: true
+        target:
+          class_name: QToolButton
+          text: Mapes de fons
+          fallback:
+            - class_name: QToolButton
+              text: Background maps
+      - type: callout
+        text: Divisions administratives 1:5.000
+        colour: auto
+        number: 2
+        number_style: label
+        target_marker: box
+        label_topology: outside
+        placement: right
+        leader: true
+        target:
+          object_name: "unaltracapturaVisibleMenu:Municipis 1:5.000"
+          fallback:
+            - text: Municipis 1:5.000
+            - text: Municipalities 1:5.000
+    output:
+      path: assets/img/qgis/qgis-open-icgc-menu.png
+      annotations_svg: assets/img/qgis/qgis-open-icgc-menu.annotations.svg
+      manifest: assets/img/qgis/qgis-open-icgc-menu.manifest.yml
+
+  - id: cadastre-plugin-menu
+    title: Menú del connector cadastral
+    mode: window
+    steps:
+      - action: close_transients
+      - action: open_top_menu
+        title: Complements
+        active_text: Spanish Inspire Catastral Downloader
+      - action: wait
+        ms: 700
+    target:
+      class_name: QgisApp
+      fallback:
+        - class_name: QMainWindow
+    drawings:
+      - type: callout
+        text: Accés convenient des de Complements
+        colour: auto
+        target_marker: box
+        label_topology: outside
+        placement: right
+        leader: true
+        target:
+          text: Spanish Inspire Catastral Downloader
+    output:
+      path: assets/img/qgis/qgis-cadastre-plugin-menu.png
+      annotations_svg: assets/img/qgis/qgis-cadastre-plugin-menu.annotations.svg
+      manifest: assets/img/qgis/qgis-cadastre-plugin-menu.manifest.yml
+
+  - id: cadastre-wms-connection
+    title: Entrada per configurar el WMS del Cadastre
+    mode: window
+    steps:
+      - action: close_transients
+      - action: open_data_source_manager
+        provider: WMS
+      - action: wait
+        ms: 500
+    target:
+      class_name: QgsDataSourceManagerDialog
+    drawings:
+      - type: callout
+        text: WMS retorna una imatge
+        colour: auto
+        number: 1
+        number_style: label
+        target_marker: box
+        label_topology: outside
+        placement: right
+        leader: true
+        target:
+          object_name: "unaltracapturaDataSourceProvider:WMS/WMTS"
+      - type: callout
+        text: Crea la connexió amb l'URL oficial
+        colour: auto
+        number: 2
+        number_style: label
+        target_marker: box
+        label_topology: outside
+        placement: below
+        leader: true
+        target:
+          class_name: QPushButton
+          text: Nova
+    output:
+      path: assets/img/qgis/qgis-cadastre-wms-connection.png
+      annotations_svg: assets/img/qgis/qgis-cadastre-wms-connection.annotations.svg
+      manifest: assets/img/qgis/qgis-cadastre-wms-connection.manifest.yml
+
+  - id: cadastre-wfs-connection
+    title: Entrada per configurar el WFS del Cadastre
+    mode: window
+    steps:
+      - action: close_transients
+      - action: open_data_source_manager
+        provider: WFS
+      - action: wait
+        ms: 500
+    target:
+      class_name: QgsDataSourceManagerDialog
+    drawings:
+      - type: callout
+        text: WFS retorna objectes i atributs
+        colour: auto
+        number: 1
+        number_style: label
+        target_marker: box
+        label_topology: outside
+        placement: right
+        leader: true
+        target:
+          object_name: "unaltracapturaDataSourceProvider:WFS / OGC API - Features"
+      - type: callout
+        text: Crea la connexió amb l'URL oficial
+        colour: auto
+        number: 2
+        number_style: label
+        target_marker: box
+        label_topology: outside
+        placement: below
+        leader: true
+        target:
+          class_name: QPushButton
+          text: Nova
+    output:
+      path: assets/img/qgis/qgis-cadastre-wfs-connection.png
+      annotations_svg: assets/img/qgis/qgis-cadastre-wfs-connection.annotations.svg
+      manifest: assets/img/qgis/qgis-cadastre-wfs-connection.manifest.yml

@@ -1,0 +1,13 @@
+flowchart TB
+  people["Persones"]
+  data["Dades"]
+  methods["Mètodes"]
+  gis["SIG"]
+  software["Programari"]
+  infrastructure["Infraestructura"]
+
+  people --- gis
+  data --- gis
+  methods --- gis
+  gis --- software
+  gis --- infrastructure
