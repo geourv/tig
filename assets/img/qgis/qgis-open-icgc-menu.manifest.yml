@@ -1,0 +1,314 @@
+{
+  "ok": true,
+  "capture_id": "open-icgc-menu",
+  "provenance": {
+    "recipe_id": "qgis-source-discovery",
+    "recipe_title": "Descoberta de fonts i complements a QGIS",
+    "recipe_path": "/workspace/recipes/qgis-source-discovery.yml",
+    "capture_title": "Acc\u00e9s a les divisions administratives 1:5.000 d'Open ICGC",
+    "source_prompt": "Necessito captures procedimentals en catal\u00e0 que mostrin vies d'acc\u00e9s a fonts\noficials sense confondre el complement, el servei i les dades: Open ICGC,\nel connector cadastral INSPIRE i les connexions WMS i WFS del Cadastre.\n",
+    "recipe_source_prompt": "Necessito captures procedimentals en catal\u00e0 que mostrin vies d'acc\u00e9s a fonts\noficials sense confondre el complement, el servei i les dades: Open ICGC,\nel connector cadastral INSPIRE i les connexions WMS i WFS del Cadastre.\n",
+    "capture_source_prompt": null
+  },
+  "image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "image_digest": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "probe": {
+    "ok": true,
+    "image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+    "digest": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+    "qgis_version": "3.44.11",
+    "raw": "QGIS 3.44.11-Solothurn 'Solothurn' (f8f5812197f)\nQGIS code revision f8f5812197f\nQt version 5.15.17\nPython version 3.13.7\nGDAL/OGR version 3.10.3\nPROJ version 9.6.0\nEPSG Registry database version v12.004 (2025-03-02)\nGEOS version 3.13.1-CAPI-1.19.2\nSQLite version 3.46.1\nOS Ubuntu 25.10\n",
+    "returncode": 0
+  },
+  "output": "/workspace/assets/img/qgis/qgis-open-icgc-menu.png",
+  "annotation_svg": "/workspace/assets/img/qgis/qgis-open-icgc-menu.annotations.svg",
+  "annotation_svg_background": {
+    "mode": "embedded_png_data_uri",
+    "width": 1440,
+    "height": 900
+  },
+  "manifest": "/workspace/assets/img/qgis/qgis-open-icgc-menu.manifest.yml",
+  "backend": "offscreen",
+  "locale": {
+    "requested": "ca_ES",
+    "qsettings_user_locale": "ca_ES",
+    "qsettings_override": true
+  },
+  "device_pixel_ratio": 1.0426788330078125,
+  "coordinate_space": "logical pixels in the captured image; recipe relative coordinates share this space for PNG and SVG annotations",
+  "camera": {
+    "mode": "full",
+    "requested": {
+      "mode": "full",
+      "target": null,
+      "padding": 0,
+      "output_size": null
+    },
+    "full_capture": {
+      "width": 1440,
+      "height": 900
+    },
+    "scale": 1.0
+  },
+  "layout_policy": {
+    "reading_direction": "left_to_right",
+    "prefer_local_empty_space": true,
+    "prefer_leaderless_labels": true,
+    "avoid_diagonal_leaders": true,
+    "allow_diagonal_leaders": "when_no_clear_local_candidate",
+    "protect_text": true,
+    "protect_controls": true,
+    "obstacle_padding": 4.0
+  },
+  "project_crs": "EPSG:4326",
+  "canvas_crs": "EPSG:4326",
+  "warnings": [],
+  "target": {
+    "object_name": null,
+    "class_name": "QgisApp",
+    "text": null,
+    "item_text": null,
+    "layer_name": null,
+    "target_part": null,
+    "title": null,
+    "parent_window": null,
+    "fallback": [
+      {
+        "object_name": null,
+        "class_name": "QMainWindow",
+        "text": null,
+        "item_text": null,
+        "layer_name": null,
+        "target_part": null,
+        "title": null,
+        "parent_window": null,
+        "fallback": []
+      }
+    ]
+  },
+  "annotations": [
+    {
+      "type": "callout",
+      "source": "target",
+      "colour": {
+        "mode": "auto_contrast",
+        "token": "ember",
+        "hex": "#b84200",
+        "score": 20.468,
+        "family": "warm"
+      },
+      "shadow": true,
+      "target": {
+        "object_name": null,
+        "class_name": "QToolButton",
+        "text": "Mapes de fons",
+        "item_text": null,
+        "layer_name": null,
+        "target_part": null,
+        "title": null,
+        "parent_window": null,
+        "fallback": [
+          {
+            "object_name": null,
+            "class_name": "QToolButton",
+            "text": "Background maps",
+            "item_text": null,
+            "layer_name": null,
+            "target_part": null,
+            "title": null,
+            "parent_window": null,
+            "fallback": []
+          }
+        ]
+      },
+      "text": "Open ICGC \u00e9s la interf\u00edcie d'acc\u00e9s",
+      "number": 1,
+      "number_style": "label",
+      "target_anchor": {
+        "x": 480,
+        "y": 118
+      },
+      "target_bbox": {
+        "x": 434,
+        "y": 102,
+        "width": 44,
+        "height": 31
+      },
+      "target_marker": "box",
+      "label_topology": "outside",
+      "target_marker_bbox": {
+        "x": 431,
+        "y": 99,
+        "width": 50,
+        "height": 37
+      },
+      "label_bbox": {
+        "x": 560,
+        "y": 99,
+        "width": 294,
+        "height": 28
+      },
+      "layout_candidate": "halo:r2:right:start",
+      "layout_candidate_score": 37580.208,
+      "label_style": "numbered_box",
+      "number_bbox": {
+        "x": 560,
+        "y": 99,
+        "width": 25,
+        "height": 28
+      },
+      "text_bbox": {
+        "x": 585,
+        "y": 99,
+        "width": 269,
+        "height": 28
+      },
+      "label_lines": {
+        "title": [
+          "Open ICGC \u00e9s la interf\u00edcie d'acc\u00e9s"
+        ],
+        "body": []
+      },
+      "leader": {
+        "from": {
+          "x": 565,
+          "y": 118
+        },
+        "to": {
+          "x": 480,
+          "y": 118
+        },
+        "label_edge": {
+          "x": 560,
+          "y": 118
+        },
+        "label_snap": "left",
+        "target_snap": "right",
+        "vanishing_point": "upper_center_right",
+        "vanishing_point_xy": {
+          "x": 1080,
+          "y": 288
+        },
+        "stroke_width": 3,
+        "target_dot": true
+      }
+    },
+    {
+      "type": "callout",
+      "source": "target",
+      "colour": {
+        "mode": "auto_contrast",
+        "token": "ember",
+        "hex": "#b84200",
+        "score": 17.428,
+        "family": "warm"
+      },
+      "shadow": true,
+      "target": {
+        "object_name": "unaltracapturaVisibleMenu:Municipis 1:5.000",
+        "class_name": null,
+        "text": null,
+        "item_text": null,
+        "layer_name": null,
+        "target_part": null,
+        "title": null,
+        "parent_window": null,
+        "fallback": [
+          {
+            "object_name": null,
+            "class_name": null,
+            "text": "Municipis 1:5.000",
+            "item_text": null,
+            "layer_name": null,
+            "target_part": null,
+            "title": null,
+            "parent_window": null,
+            "fallback": []
+          },
+          {
+            "object_name": null,
+            "class_name": null,
+            "text": "Municipalities 1:5.000",
+            "item_text": null,
+            "layer_name": null,
+            "target_part": null,
+            "title": null,
+            "parent_window": null,
+            "fallback": []
+          }
+        ]
+      },
+      "text": "Divisions administratives 1:5.000",
+      "number": 2,
+      "number_style": "label",
+      "target_anchor": {
+        "x": 1162,
+        "y": 289
+      },
+      "target_bbox": {
+        "x": 1068,
+        "y": 292,
+        "width": 189,
+        "height": 21
+      },
+      "target_marker": "box",
+      "label_topology": "outside",
+      "target_marker_bbox": {
+        "x": 1065,
+        "y": 289,
+        "width": 195,
+        "height": 27
+      },
+      "label_bbox": {
+        "x": 1017,
+        "y": 182,
+        "width": 291,
+        "height": 28
+      },
+      "layout_candidate": "halo:r2:top:mid",
+      "layout_candidate_score": -1099.313,
+      "label_style": "numbered_box",
+      "number_bbox": {
+        "x": 1017,
+        "y": 182,
+        "width": 25,
+        "height": 28
+      },
+      "text_bbox": {
+        "x": 1042,
+        "y": 182,
+        "width": 266,
+        "height": 28
+      },
+      "label_lines": {
+        "title": [
+          "Divisions administratives 1:5.000"
+        ],
+        "body": []
+      },
+      "leader": {
+        "from": {
+          "x": 1162,
+          "y": 204
+        },
+        "to": {
+          "x": 1162,
+          "y": 289
+        },
+        "label_edge": {
+          "x": 1162,
+          "y": 209
+        },
+        "label_snap": "bottom",
+        "target_snap": "top",
+        "vanishing_point": "upper_center_left",
+        "vanishing_point_xy": {
+          "x": 360,
+          "y": 288
+        },
+        "stroke_width": 3,
+        "target_dot": true
+      }
+    }
+  ]
+}

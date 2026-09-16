@@ -510,6 +510,40 @@
       ],
       "rendered_at": "2026-09-07T19:20:07+00:00"
     },
+    "assets/quarto/07-model-analisi-raster/elevation-surface-models.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/07-model-analisi-raster/elevation-surface-models.qmd",
+          "sha256": "7e23ed162548fd6aa563e73a091d4a09101dd629f03407eaf5624435f05afaf7"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "482889064d947aa4a0b8cdb1a8b175873d1600443ad0462154962dddeca4a153",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/07-model-analisi-raster/elevation-surface-models.svg",
+          "sha256": "95b228a41e41fe16f9626b51721e99df065ddee57a825563362403adc63f83f0",
+          "size": 4193
+        }
+      ],
+      "rendered_at": "2026-09-15T22:33:06+00:00"
+    },
     "assets/quarto/07-model-analisi-raster/raster-neighborhood-operations.qmd": {
       "dependencies": [
         {

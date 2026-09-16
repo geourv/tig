@@ -3,11 +3,11 @@
   "capture_id": "crs-selection",
   "provenance": {
     "recipe_id": "qgis-applied-workflows",
-    "recipe_title": "Fluxos aplicats amb QGIS",
+    "recipe_title": "Configuraci\u00f3 b\u00e0sica amb QGIS",
     "recipe_path": "/workspace/recipes/qgis-applied-workflows.yml",
     "capture_title": "Selecci\u00f3 d'un sistema de refer\u00e8ncia projectat",
-    "source_prompt": "Necessito set captures procedimentals en catal\u00e0 que mostrin com connectar\nun servei WMS/WMTS, triar un SRC projectat, distingir en un MDT les cotes\nv\u00e0lides de les cel\u00b7les NoData, interpretar una taula d'atributs, localitzar\nles eines de digitalitzaci\u00f3, configurar un buffer sense arribar a executar-lo\ni recon\u00e8ixer les regions funcionals del Dissenyador de models.\n",
-    "recipe_source_prompt": "Necessito set captures procedimentals en catal\u00e0 que mostrin com connectar\nun servei WMS/WMTS, triar un SRC projectat, distingir en un MDT les cotes\nv\u00e0lides de les cel\u00b7les NoData, interpretar una taula d'atributs, localitzar\nles eines de digitalitzaci\u00f3, configurar un buffer sense arribar a executar-lo\ni recon\u00e8ixer les regions funcionals del Dissenyador de models.\n",
+    "source_prompt": "Necessito tres captures procedimentals en catal\u00e0 que mostrin on crear una\nconnexi\u00f3 al WMS de l'Ortofoto Territorial de l'ICGC, triar un SRC projectat\ni recon\u00e8ixer les regions funcionals del Dissenyador de models.\n",
+    "recipe_source_prompt": "Necessito tres captures procedimentals en catal\u00e0 que mostrin on crear una\nconnexi\u00f3 al WMS de l'Ortofoto Territorial de l'ICGC, triar un SRC projectat\ni recon\u00e8ixer les regions funcionals del Dissenyador de models.\n",
     "capture_source_prompt": null
   },
   "image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",

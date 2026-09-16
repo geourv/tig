@@ -8,6 +8,31 @@ baseurl: "/tig"
 lang: "ca"
 default_lang: "ca"
 languages: ["ca"]
+exclude:
+  - .bundle/
+  - AGENTS.md
+  - bin/
+  - CONTRIBUTING.md
+  - context/
+  - CUSTOMIZE.md
+  - Dockerfile
+  - docker-compose.yml
+  - docker-compose-slim.yml
+  - docs/
+  - FAQ.md
+  - Gemfile
+  - Gemfile.lock
+  - INSTALL.md
+  - LICENSE
+  - package.json
+  - package-lock.json
+  - purgecss.config.js
+  - README.md
+  - sandbox/
+  - tmp/
+  - vendor
+  - _site/
+  - assets/projectes/vila-seca/
 icon: "brand/dosquartsdedocs-logo-white.svg"
 theme: unaltraweb
 author:

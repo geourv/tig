@@ -2,13 +2,13 @@
   "ok": true,
   "capture_id": "raster-nodata",
   "provenance": {
-    "recipe_id": "qgis-applied-workflows",
-    "recipe_title": "Fluxos aplicats amb QGIS",
-    "recipe_path": "/workspace/recipes/qgis-applied-workflows.yml",
+    "recipe_id": "qgis-raster-workflows",
+    "recipe_title": "Inspecci\u00f3 d'un MDT oficial amb QGIS",
+    "recipe_path": "/workspace/recipes/qgis-raster-workflows.yml",
     "capture_title": "Dades v\u00e0lides i NoData en un MDT oficial",
     "source_prompt": "Necessito una captura de QGIS en catal\u00e0 que mostri sobre el MDT05 oficial\ndel full 0473 que les cel\u00b7les NoData s\u00f3n abs\u00e8ncies i no cotes de zero metres.\n",
-    "recipe_source_prompt": "Necessito set captures procedimentals en catal\u00e0 que mostrin com connectar\nun servei WMS/WMTS, triar un SRC projectat, distingir en un MDT les cotes\nv\u00e0lides de les cel\u00b7les NoData, interpretar una taula d'atributs, localitzar\nles eines de digitalitzaci\u00f3, configurar un buffer sense arribar a executar-lo\ni recon\u00e8ixer les regions funcionals del Dissenyador de models.\n",
-    "capture_source_prompt": "Necessito una captura de QGIS en catal\u00e0 que mostri sobre el MDT05 oficial\ndel full 0473 que les cel\u00b7les NoData s\u00f3n abs\u00e8ncies i no cotes de zero metres.\n"
+    "recipe_source_prompt": "Necessito una captura de QGIS en catal\u00e0 que mostri sobre el MDT05 oficial\ndel full 0473 que les cel\u00b7les NoData s\u00f3n abs\u00e8ncies i no cotes de zero metres.\n",
+    "capture_source_prompt": null
   },
   "image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
   "image_digest": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
@@ -94,62 +94,62 @@
         "mode": "auto_contrast",
         "token": "ember",
         "hex": "#b84200",
-        "score": 13.652,
+        "score": 19.032,
         "family": "warm"
       },
       "shadow": true,
       "coordinate": {
-        "x": 0.55,
-        "y": 0.5,
+        "x": 0.05,
+        "y": 0.27,
         "unit": "relative",
         "relative_to": "capture",
         "widget": null
       },
-      "text": "Valors v\u00e0lids: el rang inclou 0 m",
+      "text": "Rang v\u00e0lid: de -6,1 a 173,5 m; inclou 0 m",
       "target_anchor": {
-        "x": 792,
-        "y": 450
+        "x": 72,
+        "y": 243
       },
       "target_bbox": {
-        "x": 792,
-        "y": 450,
+        "x": 72,
+        "y": 243,
         "width": 1,
         "height": 1
       },
       "target_marker": "point",
       "label_topology": "inside",
       "label_bbox": {
-        "x": 872,
-        "y": 530,
-        "width": 256,
+        "x": 72,
+        "y": 323,
+        "width": 327,
         "height": 28
       },
-      "layout_candidate": "halo:r2:bottom_right",
-      "layout_candidate_score": 3159.723,
+      "layout_candidate": "halo:r2:bottom:start",
+      "layout_candidate_score": 8149.873,
       "label_lines": {
         "title": [
-          "Valors v\u00e0lids: el rang inclou 0 m"
+          "Rang v\u00e0lid: de -6,1 a 173,5 m; inclou 0 m"
         ],
         "body": []
       },
       "leader": {
         "from": {
-          "x": 877,
-          "y": 535
+          "x": 77,
+          "y": 328
         },
         "to": {
-          "x": 792,
-          "y": 450
+          "x": 72,
+          "y": 243
         },
         "label_edge": {
-          "x": 872,
-          "y": 530
+          "x": 72,
+          "y": 323
         },
         "label_snap": "top_left",
         "target_snap": "point",
-        "vanishing_point": "lower_center_left",
+        "vanishing_point": "lower_center_right",
         "vanishing_point_xy": {
-          "x": 360,
+          "x": 1080,
           "y": 612
         },
         "stroke_width": 3,

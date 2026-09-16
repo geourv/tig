@@ -1,0 +1,98 @@
+id: qgis-raster-workflows
+title: Inspecció d'un MDT oficial amb QGIS
+source_prompt: |
+  Necessito una captura de QGIS en català que mostri sobre el MDT05 oficial
+  del full 0473 que les cel·les NoData són absències i no cotes de zero metres.
+
+runtime:
+  image: qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc
+  locale: ca_ES
+
+compat:
+  qgis: "==3.44.11"
+
+data:
+  - id: cnig-mdt05-0473
+    type: raster
+    path: prepared/cnig/mdt05/source/pnoa_mdt05_etrs89_hu31_0473_lid.tif
+    sha256: 27f9112c036be5923d458a1b5fb4da646aba091a325d262dd03ed13eb0ce1c3d
+
+setup:
+  - action: trigger_action
+    name: mActionNewProject
+  - action: close_transients
+  - action: clear_message_bar
+  - action: set_project_crs
+    auth_id: EPSG:25831
+
+captures:
+  - id: raster-nodata
+    title: Dades vàlides i NoData en un MDT oficial
+    mode: window
+    layout_policy:
+      reading_direction: left_to_right
+      prefer_local_empty_space: true
+      prefer_leaderless_labels: false
+      avoid_diagonal_leaders: true
+      allow_diagonal_leaders: when_no_clear_local_candidate
+      protect_text: true
+      protect_controls: true
+    steps:
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/cnig/mdt05/source/pnoa_mdt05_etrs89_hu31_0473_lid.tif
+        name: MDT05 0473
+      - action: style_raster
+        layer: MDT05 0473
+        nodata: -32767
+        minimum: -6.1
+        maximum: 173.5
+        palette: terrain
+        unit: m
+      - action: zoom_to_layer
+        layer: MDT05 0473
+        scale: 1.02
+      - action: hide_panel
+        title: Browser
+      - action: show_panel
+        title: Layers
+      - action: expand_tree_item
+        item_text: MDT05 0473
+      - action: wait
+        ms: 1000
+    target:
+      class_name: QgisApp
+      fallback:
+        - class_name: QMainWindow
+    drawings:
+      - type: callout
+        text: "Rang vàlid: de -6,1 a 173,5 m; inclou 0 m"
+        colour: auto
+        number: "none"
+        target_marker: point
+        label_topology: inside
+        placement: right
+        leader: true
+        anchor:
+          x: 0.05
+          y: 0.27
+          unit: relative
+          relative_to: capture
+
+      - type: callout
+        text: "NoData: absència de cota, no zero metres"
+        colour: auto
+        number: "none"
+        target_marker: point
+        label_topology: inside
+        placement: above
+        leader: true
+        anchor:
+          x: 0.78
+          y: 0.72
+          unit: relative
+          relative_to: capture
+
+    output:
+      path: assets/img/qgis/qgis-raster-nodata.png
+      annotations_svg: assets/img/qgis/qgis-raster-nodata.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-nodata.manifest.yml

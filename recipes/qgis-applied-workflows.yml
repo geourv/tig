@@ -1,10 +1,8 @@
 id: qgis-applied-workflows
-title: Fluxos aplicats amb QGIS
+title: Configuració bàsica amb QGIS
 source_prompt: |
-  Necessito set captures procedimentals en català que mostrin com connectar
-  un servei WMS/WMTS, triar un SRC projectat, distingir en un MDT les cotes
-  vàlides de les cel·les NoData, interpretar una taula d'atributs, localitzar
-  les eines de digitalització, configurar un buffer sense arribar a executar-lo
+  Necessito tres captures procedimentals en català que mostrin on crear una
+  connexió al WMS de l'Ortofoto Territorial de l'ICGC, triar un SRC projectat
   i reconèixer les regions funcionals del Dissenyador de models.
 
 runtime:
@@ -17,20 +15,11 @@ compat:
 plugins:
   - processing
 
-data:
-  - id: municipi-treball
-    type: gpkg
-    path: assets/projectes/vila-seca/dades_preparades/projecte_tig.gpkg
-  - id: cnig-mdt05-0473
-    type: raster
-    path: prepared/cnig/mdt05/source/pnoa_mdt05_etrs89_hu31_0473_lid.tif
-    sha256: 27f9112c036be5923d458a1b5fb4da646aba091a325d262dd03ed13eb0ce1c3d
-
 connections:
-  - id: pnoa-wms
+  - id: icgc-ortofoto-territorial-2025
     type: wms
-    name: PNOA màxima actualitat
-    url: https://www.ign.es/wms-inspire/pnoa-ma
+    name: ICGC Ortofoto Territorial 2025
+    url: https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms
 
 setup:
   - action: trigger_action
@@ -40,7 +29,7 @@ setup:
 
 captures:
   - id: web-service-connection
-    title: Connexió a un servei WMS/WMTS
+    title: Entrada per configurar un servei WMS/WMTS
     mode: window
     layout_policy:
       reading_direction: left_to_right
@@ -51,6 +40,7 @@ captures:
       protect_text: true
       protect_controls: true
     steps:
+      - action: close_transients
       - action: open_data_source_manager
         provider: WMS
       - action: wait
@@ -71,7 +61,7 @@ captures:
           object_name: "unaltracapturaDataSourceProvider:WMS/WMTS"
 
       - type: callout
-        text: Crea o selecciona una connexió
+        text: Crea la connexió oficial de l'ICGC
         colour: auto
         number: 2
         number_style: label
@@ -80,23 +70,20 @@ captures:
         placement: below
         leader: true
         target:
-          object_name: "unaltracapturaDataSourceGroup:connection-controls"
+          class_name: QPushButton
+          text: Nova
 
       - type: callout
-        text: Connecta per consultar les capes
+        text: Connecta després de desar-la
         colour: auto
         number: 3
         number_style: label
-        target_marker: point
+        target_marker: box
         label_topology: outside
         placement: above
         leader: true
         target:
-          text: Connecta
-          parent_window: QgsDataSourceManagerDialog
-          fallback:
-            - text: Connect
-              parent_window: QgsDataSourceManagerDialog
+          object_name: btnConnect
 
     output:
       path: assets/img/qgis/qgis-web-service-connection.png
@@ -115,6 +102,7 @@ captures:
       protect_text: true
       protect_controls: true
     steps:
+      - action: close_transients
       - action: open_project_crs_dialog
         auth_id: EPSG:25831
         search: "25831"
@@ -166,334 +154,6 @@ captures:
       annotations_svg: assets/img/qgis/qgis-crs-selection.annotations.svg
       manifest: assets/img/qgis/qgis-crs-selection.manifest.yml
 
-  - id: raster-nodata
-    title: Dades vàlides i NoData en un MDT oficial
-    source_prompt: |
-      Necessito una captura de QGIS en català que mostri sobre el MDT05 oficial
-      del full 0473 que les cel·les NoData són absències i no cotes de zero metres.
-    mode: window
-    layout_policy:
-      reading_direction: left_to_right
-      prefer_local_empty_space: true
-      prefer_leaderless_labels: false
-      avoid_diagonal_leaders: true
-      allow_diagonal_leaders: when_no_clear_local_candidate
-      protect_text: true
-      protect_controls: true
-    steps:
-      - action: close_transients
-      - action: clear_message_bar
-      - action: set_project_crs
-        auth_id: EPSG:25831
-      - action: load_raster
-        path: tmp/unaltracaptura-qgis/cache/prepared/cnig/mdt05/source/pnoa_mdt05_etrs89_hu31_0473_lid.tif
-        name: MDT05 0473
-      - action: style_raster
-        layer: MDT05 0473
-        nodata: -32767
-        minimum: -6.1
-        maximum: 173.5
-        palette: terrain
-        unit: m
-      - action: zoom_to_layer
-        layer: MDT05 0473
-        scale: 1.02
-      - action: hide_panel
-        title: Browser
-      - action: show_panel
-        title: Layers
-      - action: expand_tree_item
-        item_text: MDT05 0473
-      - action: wait
-        ms: 1000
-    target:
-      class_name: QgisApp
-      fallback:
-        - class_name: QMainWindow
-    drawings:
-      - type: callout
-        text: "Valors vàlids: el rang inclou 0 m"
-        colour: auto
-        number: "none"
-        target_marker: point
-        label_topology: inside
-        placement: right
-        leader: true
-        anchor:
-          x: 0.55
-          y: 0.50
-          unit: relative
-          relative_to: capture
-
-      - type: callout
-        text: "NoData: absència de cota, no zero metres"
-        colour: auto
-        number: "none"
-        target_marker: point
-        label_topology: inside
-        placement: above
-        leader: true
-        anchor:
-          x: 0.78
-          y: 0.72
-          unit: relative
-          relative_to: capture
-
-    output:
-      path: assets/img/qgis/qgis-raster-nodata.png
-      annotations_svg: assets/img/qgis/qgis-raster-nodata.annotations.svg
-      manifest: assets/img/qgis/qgis-raster-nodata.manifest.yml
-
-  - id: attribute-table
-    title: Camps i registres d'una taula d'atributs
-    mode: window
-    layout_policy:
-      reading_direction: left_to_right
-      prefer_local_empty_space: true
-      prefer_leaderless_labels: false
-      avoid_diagonal_leaders: true
-      allow_diagonal_leaders: when_no_clear_local_candidate
-      protect_text: true
-      protect_controls: true
-    steps:
-      - action: load_vector
-        path: assets/projectes/vila-seca/dades_preparades/projecte_tig.gpkg|layername=municipi_treball
-        name: Municipi de treball
-      - action: open_attribute_table
-        layer: Municipi de treball
-      - action: wait
-        ms: 500
-    target:
-      class_name: QgsAttributeTableDialog
-    drawings:
-      - type: callout
-        text: "Camp: una variable"
-        colour: auto
-        number: 1
-        number_style: label
-        target_marker: box
-        label_topology: outside
-        placement: above
-        leader: true
-        target:
-          object_name: "unaltracapturaAttributeColumn:nom_muni"
-
-      - type: callout
-        text: "Registre: una entitat"
-        colour: auto
-        number: 2
-        number_style: label
-        target_marker: box
-        label_topology: outside
-        placement: below
-        leader: true
-        target:
-          object_name: "unaltracapturaAttributeRow:Vila-seca"
-
-      - type: callout
-        text: Clau estable per relacionar taules
-        colour: auto
-        number: 3
-        number_style: label
-        target_marker: box
-        label_topology: outside
-        placement: above
-        leader: true
-        target:
-          object_name: "unaltracapturaAttributeColumn:codi_muni"
-
-    output:
-      path: assets/img/qgis/qgis-attribute-table.png
-      annotations_svg: assets/img/qgis/qgis-attribute-table.annotations.svg
-      manifest: assets/img/qgis/qgis-attribute-table.manifest.yml
-
-  - id: digitizing-tools
-    title: Eines de captura i edició vectorial
-    mode: window
-    layout_policy:
-      reading_direction: left_to_right
-      prefer_local_empty_space: true
-      prefer_leaderless_labels: false
-      avoid_diagonal_leaders: true
-      allow_diagonal_leaders: when_no_clear_local_candidate
-      protect_text: true
-      protect_controls: true
-    steps:
-      - action: close_transients
-      - action: clear_message_bar
-      - action: set_project_crs
-        auth_id: EPSG:25831
-      - action: zoom_to_layer
-        layer: Municipi de treball
-        scale: 1.35
-      - action: select_layer
-        layer: Municipi de treball
-      - action: hide_panel
-        title: Browser
-      - action: show_panel
-        title: Layers
-      - action: show_panel
-        title: AdvancedDigitizingTools
-      - action: show_toolbar
-        name: mSnappingToolBar
-      - action: show_toolbar
-        name: mDigitizeToolBar
-      - action: show_toolbar
-        name: mAdvancedDigitizeToolBar
-      - action: wait
-        ms: 800
-    target:
-      class_name: QgisApp
-      fallback:
-        - class_name: QMainWindow
-    drawings:
-      - type: callout
-        text: Autoensamblat
-        colour: auto
-        number: 1
-        number_style: label
-        target_marker: box
-        label_topology: outside
-        placement: below
-        target_anchor_position: bottom
-        label_anchor_position: top
-        gap: 18
-        leader: true
-        target:
-          object_name: mSnappingToolBar
-
-      - type: callout
-        text: Digitalització
-        colour: auto
-        number: 2
-        number_style: label
-        target_marker: box
-        label_topology: outside
-        placement: below
-        target_anchor_position: bottom
-        label_anchor_position: top
-        gap: 18
-        leader: true
-        target:
-          object_name: mDigitizeToolBar
-
-      - type: callout
-        text: Digitalització avançada
-        colour: auto
-        number: 3
-        number_style: label
-        target_marker: box
-        label_topology: outside
-        placement: below
-        target_anchor_position: bottom
-        label_anchor_position: top
-        gap: 18
-        leader: true
-        target:
-          object_name: mAdvancedDigitizeToolBar
-
-      - type: callout
-        text: Restriccions de captura
-        colour: auto
-        number: 4
-        number_style: label
-        target_marker: box
-        label_topology: outside
-        placement: right
-        target_anchor_position: right
-        label_anchor_position: left
-        gap: 18
-        leader: true
-        target:
-          object_name: AdvancedDigitizingTools
-
-    output:
-      path: assets/img/qgis/qgis-digitizing-tools.png
-      annotations_svg: assets/img/qgis/qgis-digitizing-tools.annotations.svg
-      manifest: assets/img/qgis/qgis-digitizing-tools.manifest.yml
-
-  - id: buffer-dialog
-    title: Paràmetres d'un buffer mètric
-    mode: window
-    layout_policy:
-      reading_direction: left_to_right
-      prefer_local_empty_space: true
-      prefer_leaderless_labels: false
-      avoid_diagonal_leaders: true
-      allow_diagonal_leaders: when_no_clear_local_candidate
-      protect_text: true
-      protect_controls: true
-    steps:
-      - action: set_project_crs
-        auth_id: EPSG:25831
-      - action: load_vector
-        path: assets/projectes/vila-seca/dades_preparades/projecte_tig.gpkg|layername=municipi_treball
-        name: Municipi de treball
-      - action: select_layer
-        layer: Municipi de treball
-      - action: open_processing_algorithm_dialog
-        algorithm: native:buffer
-        parameters:
-          INPUT: Municipi de treball
-          DISTANCE: 500
-          SEGMENTS: 8
-          DISSOLVE: false
-      - action: wait
-        ms: 500
-    target:
-      object_name: "unaltracapturaProcessingDialog:native:buffer"
-      fallback:
-        - class_name: AlgorithmDialog
-    drawings:
-      - type: callout
-        text: 1. Capa d'entrada
-        colour: auto
-        number: "none"
-        target_marker: box
-        label_topology: outside
-        placement: right
-        leader: true
-        target:
-          object_name: "unaltracapturaProcessingParameter:INPUT"
-
-      - type: callout
-        text: 2. Distància en metres
-        colour: auto
-        number: "none"
-        target_marker: box
-        label_topology: outside
-        placement: right
-        leader: true
-        target:
-          object_name: "unaltracapturaProcessingParameter:DISTANCE"
-
-      - type: callout
-        text: 3. Dissol només si cal
-        colour: auto
-        number: "none"
-        target_marker: box
-        label_topology: outside
-        placement: right
-        leader: true
-        target:
-          object_name: "unaltracapturaProcessingParameter:DISSOLVE"
-
-      - type: callout
-        text: 4. Executa i revisa el resultat
-        colour: auto
-        number: "none"
-        target_marker: point
-        label_topology: outside
-        placement: above
-        leader: true
-        target:
-          object_name: "unaltracapturaProcessingButton:Run"
-
-    output:
-      path: assets/img/qgis/qgis-buffer-dialog.png
-      annotations_svg: assets/img/qgis/qgis-buffer-dialog.annotations.svg
-      manifest: assets/img/qgis/qgis-buffer-dialog.manifest.yml
-
   - id: model-designer
     title: Regions funcionals del Dissenyador de models
     mode: window
@@ -506,6 +166,8 @@ captures:
       protect_text: true
       protect_controls: true
     steps:
+      - action: close_transients
+      - action: clear_message_bar
       - action: trigger_action
         name: Model Designer...
       - action: wait

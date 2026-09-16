@@ -5,7 +5,7 @@ description: Relacions espacials, àrees d'influència, superposicions i tessel�
 lang: ca
 ref: manual-vector-analysis-geoprocessing
 profiles: [unaltremanual]
-content_status: draft
+content_status: approved
 permalink: /ca/chapters/analisi-geoprocessament-vectorial/
 weight: 70
 part: Continguts
@@ -385,7 +385,7 @@ La validació externa contrasta la sortida amb una font o una observació que no
 
 ## Cas guiat: vies, portals i fanals
 
-La demostració de Vila-seca reobre `projecte_tig.qgz` i utilitza `municipi_treball`, creada al capítol 02, i `transport_candidats_c06`, preparada al capítol 05. A partir de l'esquema real del producte de transport, se selecciona el subconjunt justificat per la pregunta i es retalla pel límit municipal. La sortida preparada es desa com a `vies_principals`: conserva l'identificador d'origen, incorpora el `codi_muni` textual de `municipi_treball` com a camp de grup i crea un camp ordinari `id_tram`, únic i no nul, verificat després de la fragmentació. Els noms de la capa i dels camps són contractes interns del projecte, no noms atribuïts a la descàrrega del CNIG.
+Amb QGIS tancat, es copia `dist/pr3-consultes-cognom.gpkg` a `sandbox/pr4-geoprocessament-cognom.gpkg`; no es copia ni es reanomena el `.qgz` de `pr3`. Des de la còpia s'obre el projecte incrustat heretat, es desa com a `pr4` i s'elimina l'entrada `pr3`. Totes les fonts locals es reorienten al GeoPackage `pr4` i es comprova que no apuntin a `dist/`, a `pr3-consultes-cognom.gpkg` ni a una ruta personal. La demostració de Vila-seca utilitza `municipi_treball`, derivada a la micropràctica 2, i `transport_candidats_c06`, preparada a la micropràctica 3. A partir de l'esquema real del producte de transport, se selecciona el subconjunt justificat per la pregunta i es retalla pel límit municipal. La sortida preparada es desa com a `vies_principals`: conserva l'identificador d'origen, incorpora el `codi_muni` textual de `municipi_treball` com a camp de grup i crea un camp ordinari `id_tram`, únic i no nul, verificat després de la fragmentació. Els noms de la capa i dels camps són contractes interns del projecte, no noms atribuïts a la descàrrega del CNIG.
 
 Sobre `vies_principals` es creen àrees d'influència amb distàncies justificades. Una selecció espacial identifica els portals que intersecten aquestes zones, mentre que un retall o una intersecció permetria crear geometries noves. Comparar les sortides fa visible la diferència entre conservar una entitat completa i fragmentar-la.
 
@@ -533,14 +533,14 @@ Es crearan àrees d'influència de 100, 300 i 500 m, amb i sense dissolució, so
 ::: table "Contracte de la micropràctica 4"
 | Component | Requisit |
 | --- | --- |
-| Entrades | `municipi_treball`, `transport_candidats_c06`, portals o equipaments i una capa capturada a la micropràctica 2 |
-| Operacions mínimes | Materialitzar `vies_principals` amb `id_tram` verificat, validar, crear dos buffers justificats, aplicar una selecció espacial i una superposició geomètrica |
-| Resultats | `vies_principals` amb `codi_muni`, `id_tram` i identificadors d'origen verificats, capes persistents de cada criteri i resultat vectorial combinat dins del GeoPackage, amb mesures recalculades |
+| Entrades | `dist/pr3-consultes-cognom.gpkg`, que es copia a `sandbox/pr4-geoprocessament-cognom.gpkg`, amb `municipi_treball`, `transport_candidats_c06`, portals o equipaments i una capa capturada a la micropràctica 2 |
+| Operacions mínimes | No copiar el `.qgz` de `pr3`; establir un únic projecte incrustat `pr4`; reorientar les fonts locals; materialitzar `vies_principals` amb `id_tram` verificat; validar; crear dos buffers justificats; aplicar una selecció espacial i una superposició geomètrica |
+| Resultats | `vies_principals` amb `codi_muni`, `id_tram` i identificadors d'origen verificats, capes persistents de cada criteri i resultat vectorial combinat dins de `pr4-geoprocessament-cognom.gpkg`, amb mesures recalculades |
 | Evidències del diari | Pregunta, llindars, CRS, ordre d'operacions, recompte i àrea després de cada pas i limitacions |
-| Comprovacions | Distàncies en metres, geometries vàlides, coincidències múltiples identificades i inspecció d'una mostra |
-| Fitxers que cal conservar | `dades_preparades/projecte_tig.gpkg`, `projecte_tig.qgz`, diari i capes intermèdies necessàries per auditar el flux |
+| Comprovacions | Exactament un projecte incrustat `pr4`; cap URI local cap a `dist/` o `pr3`; camins relatius al `.qgz`; distàncies en metres, geometries vàlides, coincidències múltiples identificades i inspecció d'una mostra |
+| Fitxers que cal conservar | `dist/pr4-geoprocessament-cognom.gpkg`, amb el projecte incrustat `pr4`; `dist/pr4-geoprocessament-cognom.qgz`; diari i capes intermèdies necessàries per auditar el flux |
 :::
 
-En acabar, es desa primer `projecte_tig.qgz` i s'actualitza explícitament el projecte QGIS incrustat `projecte_tig` al mateix GeoPackage. Tancar i obrir separadament totes dues representacions ha de confirmar les mateixes capes persistents, grups i fonts; desar-ne una no actualitza automàticament l'altra.
+En acabar, es desa el projecte incrustat `pr4` i es crea de nou `sandbox/pr4-geoprocessament-cognom.qgz` amb camins relatius al GeoPackage homònim. Amb QGIS tancat, la parella validada es copia a `dist/` sense canviar-ne els noms. Tancar i obrir separadament les dues representacions des d'una ubicació neta ha de confirmar les mateixes capes persistents, grups i fonts; desar-ne una no actualitza automàticament l'altra.
 
 Com a ampliació, el resultat es pot agregar sobre una malla quadrada o hexagonal amb dues mides de cel·la i, per a una mida, amb dos orígens. La comparació ha de separar l'efecte d'escala de l'efecte de zonificació del MAUP i explicar quins patrons es mantenen i quins depenen de la tessel·lació.

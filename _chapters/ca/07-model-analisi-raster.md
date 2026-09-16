@@ -5,7 +5,7 @@ description: Graelles, resolució, relleu, àlgebra de mapes i estadístiques zo
 lang: ca
 ref: manual-raster-model-analysis
 profiles: [unaltremanual]
-content_status: draft
+content_status: approved
 permalink: /ca/chapters/model-analisi-raster/
 weight: 80
 part: Continguts
@@ -53,7 +53,9 @@ Aquestes distincions determinen quines operacions tenen sentit. La mitjana pot r
 
 La **mida de cel·la** descriu l'amplada i l'alçada de la graella en les unitats del `CRS`. La **resolució espacial efectiva** descriu el detall que el conjunt pot distingir de manera fiable i depèn també de la font, el mostreig, el procés d'interpolació o classificació i l'exactitud. Un GeoTIFF de 2 m creat a partir d'observacions escasses no conté necessàriament informació independent cada 2 m; de la mateixa manera, un punt LiDAR per metre quadrat no és una cel·la ràster d'1 m. La densitat de punts i la mida de la graella són propietats diferents.
 
-Els noms dels productes d'elevacions utilitzen tres sigles que cal distingir abans de comparar-ne la resolució. Un **model digital d'elevacions (MDE)** és una representació numèrica d'altures sobre una superfície de referència; un **model digital del terreny (MDT)** intenta representar el sòl nu; i un **model digital de superfície (MDS)** representa la superfície superior observada, que pot incloure edificis, vegetació i altres objectes. Alguns materials també utilitzen la sigla MET per al model del terreny.
+Els noms dels productes d'elevacions utilitzen tres sigles que cal distingir abans de comparar-ne la resolució. Un **model digital d'elevacions (MDE)** és el terme general per a una representació numèrica d'altures sobre una superfície de referència; un **model digital del terreny (MDT)** intenta representar el sòl nu; i un **model digital de superfície (MDS)** representa la superfície superior observada, que pot incloure edificis, vegetació i altres objectes.
+
+![Perfil que compara el terreny nu amb la superfície superior sobre una mateixa referència horitzontal]({{ site.baseurl }}/assets/quarto/07-model-analisi-raster/elevation-surface-models.qmd "Un MDE pot representar superfícies diferents: l'MDT estima el sòl nu i l'MDS segueix la superfície superior observada. On el sòl és descobert poden coincidir; sobre edificis o vegetació, la resta MDS menys MDT només aproxima l'altura dels objectes si la referència, la graella, la data i el tractament són compatibles."){: data-figure-width-web="43.5rem" data-figure-width-pdf="100%"}
 
 Els noms dels productes d'elevacions de l'IGN/CNIG fan visible la separació nominal de la graella. Els exemples següents corresponen a productes disponibles per a l'entorn del full `0473`, que inclou Vila-seca; la data, la resolució i les especificacions s'han de tornar a comprovar per a cada full i cobertura descarregats.
 
@@ -433,6 +435,8 @@ Una implementació de referència per a QGIS 3.44 fixa els algorismes i els par�
 | Resum municipal | `native:zonalstatisticsfb` | `municipi_treball`, banda 1 i prefix per variable i resolució; recompte, mitjana, mínim i màxim per a elevació i pendent; suma, recompte i mitjana per a la màscara binària 0/1 |
 :::
 
+Les deu sortides ràster persistents s'escriuen a `sandbox/`, al costat de la parella `pr5-raster-cognom`, amb noms fixos: `pr5_elevacio_25m.tif`, `pr5_elevacio_200m.tif`, `pr5_pendent_25m_graus.tif`, `pr5_pendent_200m_graus.tif`, `pr5_orientacio_25m_graus.tif`, `pr5_orientacio_200m_graus.tif`, `pr5_elevacio_classes_25m.tif`, `pr5_elevacio_classes_200m.tif`, `pr5_mascara_elevacio_pendent_25m.tif` i `pr5_mascara_elevacio_pendent_200m.tif`. Les sortides temporals o de diagnòstic reben altres noms i no poden substituir cap d'aquests GeoTIFF.
+
 `native:zonalstatisticsfb` seguirà a cada resolució les dues passades descrites: prova de centres vàlids i, quan el primer recompte és zero o un, recàlcul complet amb fraccions d'intersecció. La taula ha d'admetre recomptes decimals i no pot comparar-los com si sempre fossin nombres enters de píxels. El percentatge de superfície vàlida només es calcularà si també s'obté un denominador amb una graella constant, vàlida i perfectament alineada, sotmesa al mateix algorisme sobre `municipi_treball`, i s'ha comprovat que numerador i denominador han seguit la mateixa regla de pertinença. Aleshores el recompte del MDE es dividirà pel recompte de la graella constant. Si les dues execucions activen passades diferents, cal calcular les àrees vàlida i total amb una única regla explícita d'intersecció; sense un denominador compatible s'informarà només el recompte vàlid retornat per l'eina.
 
 La taula de resultats es prepararà abans de l'execució i deixarà les cel·les de valor buides. Per a cada resolució registrarà dimensions, nombre de cel·les vàlides, superfície ràster assignada al municipi, mínim, màxim i mitjana d'elevació, distribució del pendent, proporció de terreny pla, proporcions de classes i superfície de la màscara. El percentatge vàlid només s'hi afegirà amb el denominador anterior. També inclourà el temps i la mida de fitxer només com a mesures operatives de l'execució, no com a criteris de qualitat geogràfica.
@@ -476,17 +480,17 @@ La validació inclourà la relació 8 × 8 entre graelles, dimensions esperades,
 
 ### Micropràctica 5: anàlisi ràster
 
-La micropràctica reprèn el mateix punt de control acumulatiu de les anteriors; no crea un segon projecte. Abans de processar cal obrir `projecte_tig.qgz`, comprovar que `municipi_treball` resol la capa persistent de `dades_preparades/projecte_tig.gpkg` i contrastar aquest estat amb el projecte QGIS incrustat al mateix GeoPackage. Les dues representacions del projecte han de mostrar la mateixa entrada canònica, els mateixos grups i les mateixes fonts. Després d'incorporar els resultats validats, cal actualitzar tant el `.qgz` extern com el projecte incrustat, tancar QGIS i provar separadament l'obertura de tots dos.
+Amb QGIS tancat, es copia `dist/pr4-geoprocessament-cognom.gpkg` a `sandbox/pr5-raster-cognom.gpkg`; no es copia ni es reanomena el `.qgz` de `pr4`. Des de la còpia s'obre el projecte incrustat heretat, es desa com a `pr5` i s'elimina l'entrada `pr4`. Totes les fonts locals es reorienten al GeoPackage `pr5` i es comprova que no apuntin a `dist/`, a `pr4-geoprocessament-cognom.gpkg` ni a una ruta personal. Després d'incorporar els resultats validats es crea de nou `sandbox/pr5-raster-cognom.qgz`, amb camins relatius al GeoPackage homònim i als GeoTIFF germans. Amb QGIS tancat, el conjunt complet es copia a `dist/` sense canviar-ne els noms i les dues representacions del projecte es proven des d'una ubicació neta.
 
 ::: table "Contracte de la micropràctica 5"
 | Component | Requisit |
 | --- | --- |
-| Entrades | Capa canònica `municipi_treball` de `dades_preparades/projecte_tig.gpkg` i subconjunt documentat d'un model d'elevacions oficial amb marge suficient |
-| Operacions mínimes | Preparar dues resolucions niades amb `gdal:warpreproject`, calcular pendent i orientació amb `gdal:slope` i `gdal:aspect`, reclassificar amb `native:reclassifybytable`, combinar dues condicions amb `native:rastercalc` i resumir amb `native:zonalstatisticsfb` |
-| Resultats | GeoTIFF continus i categòrics, taula d'estadístiques persistent al GeoPackage i mapa comparatiu incorporat al projecte acumulatiu |
+| Entrades | `dist/pr4-geoprocessament-cognom.gpkg`, que es copia a `sandbox/pr5-raster-cognom.gpkg`, amb `municipi_treball`; i subconjunt documentat d'un model d'elevacions oficial amb marge suficient |
+| Operacions mínimes | No copiar el `.qgz` de `pr4`; establir un únic projecte incrustat `pr5`; reorientar les fonts locals; preparar dues resolucions niades amb `gdal:warpreproject`; calcular pendent i orientació amb `gdal:slope` i `gdal:aspect`; reclassificar amb `native:reclassifybytable`; combinar dues condicions amb `native:rastercalc`; i resumir amb `native:zonalstatisticsfb` |
+| Resultats | Deu GeoTIFF continus i categòrics amb els noms fixats, com a fitxers germans de la parella `pr5-raster-cognom`; taula d'estadístiques persistent al GeoPackage; i mapa comparatiu incorporat a la instantània `pr5` |
 | Evidències del diari | Font i procedència de l'elevació, `CRS`, referència vertical, resolució, alineació, `NoData`, remostreig, llindars, comportament del recompte zonal, controls i interpretació de les diferències |
-| Comprovacions | Dimensions esperades, relació de niament, rangs plausibles, recomptes zonals sense arrodonir, superfície ràster comparada amb la vectorial, efectes de vora, simbologia comuna i obertura equivalent de les dues representacions del projecte |
-| Fitxers que cal conservar | Ràsters finals, `dades_preparades/projecte_tig.gpkg` amb la taula comparativa i el projecte incrustat actualitzat, `projecte_tig.qgz` extern i diari amb els controls |
+| Comprovacions | Exactament un projecte incrustat `pr5`; cap URI local cap a `dist/` o `pr4`; camins relatius des del `.qgz` al GeoPackage i als GeoTIFF germans; dimensions esperades, relació de niament, rangs plausibles, recomptes zonals sense arrodonir, superfície ràster comparada amb la vectorial, efectes de vora, simbologia comuna i obertura equivalent de les dues representacions del projecte |
+| Fitxers que cal conservar | `dist/pr5-raster-cognom.gpkg`, amb la taula comparativa i el projecte incrustat `pr5`; `dist/pr5-raster-cognom.qgz`; els deu GeoTIFF analítics amb els noms fixats; i diari amb els controls |
 :::
 
 Els llindars de Vila-seca no s'han de copiar automàticament a un municipi de muntanya. La transferència exigeix revisar la distribució, la mida dels processos, la qualitat de l'elevació i la finalitat de cada classe. El lliurament ha de diferenciar els valors observats dels esperats i conservar buides, fins a executar els càlculs, totes les caselles destinades als resultats de la comparació.

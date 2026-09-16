@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760" role="img" aria-labelledby="title desc">
+  <title id="title">Relació entre un model digital del terreny i un model digital de superfície</title>
+  <desc id="desc">Un perfil comparteix la mateixa graella horitzontal. El model del terreny segueix una estimació del sòl nu, mentre que el model de superfície puja sobre un edifici i la vegetació. Les línies coincideixen al terreny descobert. La diferència vertical només estima l’altura dels objectes quan les dues superfícies són compatibles.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, 'Liberation Sans', sans-serif; }
+      .heading { fill: #21313c; font-size: 38px; font-weight: 700; }
+      .label { fill: #344851; font-size: 32px; }
+      .small { fill: #53666f; font-size: 32px; }
+      .mdt-label { fill: #176486; font-size: 32px; font-weight: 700; }
+      .mds-label { fill: #ad5a35; font-size: 32px; font-weight: 700; }
+      .ground-fill { fill: #dce7d5; }
+      .ground-line { fill: none; stroke: #176486; stroke-width: 8; }
+      .surface-line { fill: none; stroke: #ad5a35; stroke-width: 8; stroke-linejoin: round; }
+      .building { fill: #d8dee1; stroke: #677983; stroke-width: 4; }
+      .roof { fill: #bac5ca; stroke: #677983; stroke-width: 4; }
+      .trunk { fill: #85684b; }
+      .canopy { fill: #83ad82; stroke: #52785a; stroke-width: 4; }
+      .measure { fill: none; stroke: #5b6770; stroke-width: 4; marker-start: url(#arrow); marker-end: url(#arrow); }
+      .guide { fill: none; stroke: #87969d; stroke-width: 3; stroke-dasharray: 10 8; }
+      .coincide { fill: none; stroke: #566972; stroke-width: 3; marker-end: url(#arrow); }
+      .axis { fill: none; stroke: #9ba8ae; stroke-width: 3; }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="6" refY="6" orient="auto-start-reverse" viewBox="0 0 12 12">
+      <path d="M1,1 L11,6 L1,11 z" fill="#5b6770"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="760" fill="#f7f9fa"/>
+  <text x="80" y="70" class="heading">MDE</text>
+  <text x="195" y="70" class="label">terme general per a una representació numèrica d’altures</text>
+  <line x1="85" y1="112" x2="165" y2="112" class="surface-line"/>
+  <text x="185" y="122" class="mds-label">MDS: superfície superior observada</text>
+  <line x1="785" y1="112" x2="865" y2="112" class="ground-line"/>
+  <text x="885" y="122" class="mdt-label">MDT: estimació del sòl nu</text>
+  <path d="M 70 555 C 230 525 335 545 470 510 C 650 465 810 500 930 520 C 1100 548 1280 505 1530 535 L 1530 700 L 70 700 Z" class="ground-fill"/>
+  <rect x="500" y="315" width="235" height="195" class="building"/>
+  <path d="M 475 315 L 617 230 L 760 315 Z" class="roof"/>
+  <rect x="1045" y="405" width="42" height="120" class="trunk"/>
+  <circle cx="1060" cy="390" r="78" class="canopy"/>
+  <circle cx="1130" cy="390" r="72" class="canopy"/>
+  <circle cx="1190" cy="410" r="66" class="canopy"/>
+  <path d="M 70 555 C 230 525 335 545 470 510 C 650 465 810 500 930 520 C 1100 548 1280 505 1530 535" class="ground-line"/>
+  <path d="M 70 555 C 230 525 335 545 470 510 L 475 315 L 617 230 L 760 315 L 760 490 C 805 495 870 510 930 520 C 955 500 970 430 982 390 A 78 78 0 0 1 1101 324 A 72 72 0 0 1 1186 344 A 66 66 0 0 1 1256 410 C 1260 465 1280 500 1310 507 C 1380 515 1450 525 1530 535" class="surface-line"/>
+  <line x1="617" y1="230" x2="617" y2="489" class="measure"/>
+  <line x1="647" y1="230" x2="790" y2="230" class="guide"/>
+  <line x1="647" y1="489" x2="790" y2="489" class="guide"/>
+  <text x="805" y="245" class="heading">MDS − MDT</text>
+  <text x="805" y="285" class="small">estimació d’altura condicionada</text>
+  <path d="M 250 440 C 320 405 385 425 438 493" class="coincide"/>
+  <text x="95" y="395" class="label">Coincideixen al sòl descobert</text>
+  <line x1="70" y1="700" x2="1530" y2="700" class="axis"/>
+  <line x1="70" y1="690" x2="70" y2="710" class="axis"/>
+  <line x1="1530" y1="690" x2="1530" y2="710" class="axis"/>
+  <text x="800" y="745" text-anchor="middle" class="small">La resta exigeix referència, graella, data i tractament compatibles.</text>
+</svg>

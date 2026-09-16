@@ -5,7 +5,7 @@ description: Manual de teoria aplicada, pràctiques i criteris per analitzar inf
 lang: ca
 ref: home
 profiles: [unaltremanual]
-content_status: draft
+content_status: approved
 permalink: /ca/
 nav: false
 show_chapter_index: true
@@ -19,7 +19,7 @@ L'objectiu del curs **no és memoritzar una col·lecció d'eines**. Es tracta d'
 
 >>>>> En acabar aquest capítol, cal poder situar el paper del manual dins del curs i identificar com s'organitzen el treball, els dubtes i l'avaluació.
 >>>>>
->>>>> - Explicar la relació entre teoria, pràctica i projecte acumulatiu.
+>>>>> - Explicar la relació entre teoria, pràctica i les sis instantànies encadenades del projecte.
 >>>>> - Distingir quina informació correspon al manual, a Moodle i a la guia docent.
 >>>>> - Formular un dubte tècnic amb prou informació per poder-lo reproduir.
 >>>>> - Identificar les condicions generals de l'avaluació i de la recuperació.
@@ -62,17 +62,17 @@ El recorregut és acumulatiu: cada bloc aporta les decisions necessàries per en
 | Procés manual validat i controls | Contracte d'un algorisme i graf de dependències | Repetir per lots, construir un model i, opcionalment, utilitzar SQL o PyQGIS |
 :::
 
-El treball pràctic construirà **un únic projecte QGIS acumulatiu aplicat al municipi assignat**. Començarà amb un servei web de mapes (WMS) com a fons visual i un límit municipal oficial del CNIG, i conservarà els resultats de cada fase per utilitzar-los en les següents. Vila-seca i l'entorn de la Facultat seran el cas de demostració a l'aula perquè permeten relacionar les dades amb llocs recognoscibles. Els fanals del carrer de Joanot Martorell, els carrils bici, les edificacions, les plaques solars o els models d'elevacions poden convertir-se en geometries, atributs i criteris d'anàlisi. **El cas demostrat no substitueix l'aplicació al municipi assignat** ni la comprovació de les fonts que hi estiguin disponibles.
+El treball pràctic construirà **sis instantànies QGIS encadenades i autònomes aplicades al municipi assignat**. Començarà amb un servei web de mapes (WMS) com a fons visual i dues representacions municipals oficials, de l'ICGC i del CNIG. Cada fase heretarà físicament les dades locals validades de l'anterior, però produirà un lliurable nou i no modificarà les fites ja tancades. Vila-seca i l'entorn de la Facultat seran el cas de demostració a l'aula perquè permeten relacionar les dades amb llocs recognoscibles. Els fanals del carrer de Joanot Martorell, els carrils bici, les edificacions, les plaques solars o els models d'elevacions poden convertir-se en geometries, atributs i criteris d'anàlisi. **El cas demostrat no substitueix l'aplicació al municipi assignat** ni la comprovació de les fonts que hi estiguin disponibles.
 
-::: table "Fases del projecte acumulatiu"
+::: table "Fases i instantànies del treball pràctic"
 | Fase | Pregunta principal | Resultat que es conserva |
 | --- | --- | --- |
-| Projecte i fonts | Quines dades permeten estudiar el municipi i amb quines condicions? | Inventari de fonts, connexió WMS, límit municipal preparat, `projecte_tig.qgz` i primera fita incrustada al GeoPackage |
-| Digitalització | Com es converteix una observació o una font visual en entitats fiables? | Capa pròpia amb geometries, atributs i controls topològics |
-| Consultes | Quines entitats compleixen un criteri alfanumèric? | Expressions, seleccions, filtres i camps derivats comprovats |
-| Anàlisi vectorial | Quines zones compleixen relacions de distància, contacte o superposició? | Capes intermèdies, resultat multicriteri i mesures interpretades |
-| Anàlisi ràster | Com condicionen la resolució i les cel·les el resultat territorial? | Ràsters preparats, estadístiques i comparacions documentades |
-| Síntesi final | Com es converteixen les anàlisis acumulades en un producte traçable i comunicable? | GeoPackage i projecte revisats, mapes exportats, diari complet i preparació de l'explicació oral |
+| Projecte i fonts | Quines dades permeten estudiar el municipi i amb quines condicions? | `pr1-fonts-cognom.gpkg`, amb el projecte incrustat `pr1` i les capes `municipality_icgc_5k` i `municipality_cnig`; `pr1-fonts-cognom.qgz`; inventari, WMS i diari |
+| Digitalització | Com es converteix una observació o una font visual en entitats fiables? | `pr2-digitalitzacio-cognom.gpkg`, amb el projecte incrustat `pr2`, les dues fonts municipals, la derivada `municipi_treball` i les capes capturades; `.qgz` homònim i diari |
+| Consultes | Quines entitats compleixen un criteri alfanumèric? | `pr3-consultes-cognom.gpkg`, amb el projecte incrustat `pr3`, consultes, taules, relacions i diagnòstics; `.qgz` homònim i diari |
+| Anàlisi vectorial | Quines zones compleixen relacions de distància, contacte o superposició? | `pr4-geoprocessament-cognom.gpkg`, amb el projecte incrustat `pr4`, capes intermèdies, resultats multicriteri i mesures; `.qgz` homònim i diari |
+| Anàlisi ràster | Com condicionen la resolució i les cel·les el resultat territorial? | `pr5-raster-cognom.gpkg`, amb el projecte incrustat `pr5`, `.qgz` homònim, GeoTIFF analítics germans, estadístiques i diari |
+| Síntesi final | Com es converteixen les anàlisis encadenades en un producte traçable i comunicable? | `pr6-sintesi-cognom.gpkg`, amb el projecte incrustat `pr6`, `.qgz` homònim, còpies locals dels GeoTIFF de `pr5`, `pr6_pendent_roi_graus.tif`, `pr6_roi_municipal.model3`, mapes i diari complet |
 :::
 
 ## Com es relacionen la teoria i la pràctica
@@ -89,7 +89,7 @@ Cada capítol combina explicació conceptual, exemples, procediments, criteris d
 
 Tots els capítols de contingut acabaran amb activitats. Algunes seran preguntes de comprensió o exercicis breus; altres desenvoluparan una pràctica guiada, proposaran una aplicació al municipi propi o ampliaran el contingut. Només les activitats identificades com a **micropràctica lliurable** formaran part del treball continuat obligatori. Moodle publicarà l'enunciat vigent, el termini i les condicions concretes de cada lliurament.
 
-La còpia de treball canònica serà el projecte extern **`projecte_tig.qgz`**. El GeoPackage acumulatiu contindrà les capes vectorials i les taules adequades i, en les fites indicades, una representació incrustada del projecte amb el nom **`projecte_tig`**. Totes dues representacions són independents: desar el `.qgz` no actualitza el projecte incrustat, ni desar o obrir el projecte incrustat modifica automàticament el `.qgz`. A cada fita es desarà primer la còpia canònica, s'actualitzarà expressament la representació incrustada i es provaran totes dues després de copiar l'arbre del projecte. El **diari d'activitats** documentarà les fonts, les operacions, els paràmetres, les incidències, les decisions, els controls i els resultats. Les captures de pantalla s'hi incorporaran quan ajudin a demostrar una configuració, un error o una comprovació, no per reproduir cada clic.
+`sandbox/` contindrà sempre la instantània activa. De `pr2` a `pr5`, amb QGIS tancat, es copiarà només el GeoPackage lliurat per la pràctica anterior a `sandbox/` i es reanomenarà amb el nom base nou. `pr6` copiarà també, sense reanomenar-los, els deu GeoTIFF externs de `pr5` dels quals depèn; el `.qgz` anterior no es copiarà ni es reanomenarà en cap fase. Les capes i taules locals heretades quedaran físicament dins del GeoPackage nou, les seves fonts es reorientaran al contenidor homònim i s'eliminarà el projecte incrustat predecessor després de desar-hi l'entrada `pr2`, `pr3`, `pr4`, `pr5` o `pr6`, segons la fase. Cada GeoPackage tindrà exactament un projecte incrustat i cada pràctica crearà de nou un `.qgz` homònim amb camins relatius. Després de validar el conjunt i tancar QGIS, els fitxers nous de la pràctica es copiaran al `dist/` pla de la revisió actual sense canviar-ne els noms i es provaran des d'una ubicació neta; les dependències de fases anteriors es verificaran i no se sobreescriuran. Si es detecta un error abans del lliurament, es reconstruirà el candidat complet en un `dist/` net i es regeneraran la fita afectada i les descendents, sense pedaçar sortides. Un paquet ja lliurat serà immutable: qualsevol correcció posterior crearà una revisió completa en una carpeta d'assemblatge separada, amb els mateixos noms contractuals a l'interior, i conservarà intacte el paquet anterior. El projecte incrustat, el `.qgz` i les còpies de distribució són representacions independents; desar-ne una no refresca les altres. El **diari d'activitats** documentarà les fonts, les operacions, els paràmetres, les incidències, les decisions, els controls i els resultats. Les captures de pantalla s'hi incorporaran quan ajudin a demostrar una configuració, un error o una comprovació, no per reproduir cada clic.
 
 ## Com es planteja un dubte
 
@@ -126,17 +126,17 @@ El curs distribueix la informació entre tres espais amb funcions diferents. Con
 
 ## Avaluació i recuperació
 
-L'avaluació combina el treball continuat amb una prova de continguts teòrics i conceptuals i una prova pràctica. Les tres parts valoren dimensions diferents: el seguiment d'un procés acumulatiu, la comprensió dels conceptes i la capacitat de resoldre un problema SIG de manera individual.
+L'avaluació combina el treball continuat amb una prova de continguts teòrics i conceptuals i una prova pràctica. Les tres parts valoren dimensions diferents: el seguiment d'un procés encadenat, la comprensió dels conceptes i la capacitat de resoldre un problema SIG de manera individual.
 
 ::: table "Blocs d'avaluació del curs 2026–27"
 | Bloc | Pes | Evidència principal |
 | --- | --- | --- |
-| Treball continuat | 35% | Micropràctiques acumulatives aplicades al municipi de treball, amb GeoPackage i diari d'activitats |
+| Treball continuat | 35% | Micropràctiques encadenades aplicades al municipi de treball, amb instantànies GeoPackage i diari d'activitats |
 | Continguts teòrics i conceptuals | 30% | Prova sobre els principals blocs conceptuals de l'assignatura |
 | Prova pràctica | 35% | Resolució individual d'un cas amb gestió de dades, operacions vectorials i ràster, simbolització i interpretació |
 :::
 
-El manual organitza el treball continuat en sis micropràctiques que avancen des de la preparació de les fonts fins a la síntesi final del projecte municipal. Per superar l'assignatura, la qualificació final ponderada ha de ser igual o superior a 5 sobre 10 i cal assolir un nivell mínim suficient en els continguts teòrics i pràctics. **No es pot calcular la mitjana si alguna activitat o prova principal té una qualificació inferior a 4 sobre 10.** Moodle identificarà quins lliuraments i proves tenen caràcter principal o obligatori.
+El manual organitza el treball continuat en sis micropràctiques que avancen des de la preparació de les fonts fins a la síntesi final del projecte municipal. Cada una es tanca amb una instantània nova, identificada i comprovable independentment. Per superar l'assignatura, la qualificació final ponderada ha de ser igual o superior a 5 sobre 10 i cal assolir un nivell mínim suficient en els continguts teòrics i pràctics. **No es pot calcular la mitjana si alguna activitat o prova principal té una qualificació inferior a 4 sobre 10.** Moodle identificarà quins lliuraments i proves tenen caràcter principal o obligatori.
 
 Per acollir-se a l'avaluació continuada cal seguir regularment les sessions i lliurar les micropràctiques, evidències o versions intermèdies indicades a Moodle. Cal assistir almenys al 80% de les sessions pràctiques presencials o justificar adequadament les absències. La manca de seguiment pot afectar l'avaluació del treball continuat perquè una part del procés es desenvolupa i es verifica durant les sessions.
 
@@ -144,7 +144,7 @@ La prova de continguts teòrics i conceptuals tractarà els principals blocs del
 
 La prova pràctica plantejarà un problema integrador semblant als treballats durant el curs. Podrà exigir gestionar capes i taules, comprovar sistemes de referència, construir consultes, derivar geometries, combinar criteris vectorials, tractar dades ràster, calcular estadístiques zonals, simbolitzar i interpretar els resultats. Les instruccions de la convocatòria indicaran les condicions concretes de realització i els materials permesos.
 
-En segona convocatòria caldrà recuperar les activitats, proves o blocs no superats d'acord amb les indicacions publicades a Moodle. Les qualificacions de les parts aprovades es conservaran quan permetin verificar adequadament els resultats d'aprenentatge corresponents. Si el treball continuat no s'ha superat, es podrà exigir completar, corregir o tornar a lliurar el GeoPackage, el diari i els resultats derivats que s'indiquin.
+En segona convocatòria caldrà recuperar les activitats, proves o blocs no superats d'acord amb les indicacions publicades a Moodle. Les qualificacions de les parts aprovades es conservaran quan permetin verificar adequadament els resultats d'aprenentatge corresponents. Si el treball continuat no s'ha superat, es podrà exigir completar, corregir o tornar a lliurar el GeoPackage, el diari i els resultats derivats que s'indiquin. Una correcció no s'aplicarà directament a una fita de `dist/`: caldrà regenerar la instantània afectada i totes les descendents i tornar-ne a provar els lliurables.
 
 Els lliuraments han de permetre verificar l'autoria i reconstruir el procés. El professorat podrà demanar una defensa oral presencial o en línia, fitxers intermedis o altres evidències per aclarir el procediment i concretar la qualificació del treball. Quan una activitat admeti l'ús d'eines d'intel·ligència artificial generativa, aquest ús s'haurà de declarar d'acord amb les instruccions de Moodle i no podrà substituir la realització, comprovació i explicació del treball propi.
 

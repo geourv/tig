@@ -2,12 +2,12 @@
   "ok": true,
   "capture_id": "buffer-dialog",
   "provenance": {
-    "recipe_id": "qgis-applied-workflows",
-    "recipe_title": "Fluxos aplicats amb QGIS",
-    "recipe_path": "/workspace/recipes/qgis-applied-workflows.yml",
+    "recipe_id": "qgis-vector-workflows",
+    "recipe_title": "Edici\u00f3 i geoprocessament vectorial amb QGIS",
+    "recipe_path": "/workspace/recipes/qgis-vector-workflows.yml",
     "capture_title": "Par\u00e0metres d'un buffer m\u00e8tric",
-    "source_prompt": "Necessito set captures procedimentals en catal\u00e0 que mostrin com connectar\nun servei WMS/WMTS, triar un SRC projectat, distingir en un MDT les cotes\nv\u00e0lides de les cel\u00b7les NoData, interpretar una taula d'atributs, localitzar\nles eines de digitalitzaci\u00f3, configurar un buffer sense arribar a executar-lo\ni recon\u00e8ixer les regions funcionals del Dissenyador de models.\n",
-    "recipe_source_prompt": "Necessito set captures procedimentals en catal\u00e0 que mostrin com connectar\nun servei WMS/WMTS, triar un SRC projectat, distingir en un MDT les cotes\nv\u00e0lides de les cel\u00b7les NoData, interpretar una taula d'atributs, localitzar\nles eines de digitalitzaci\u00f3, configurar un buffer sense arribar a executar-lo\ni recon\u00e8ixer les regions funcionals del Dissenyador de models.\n",
+    "source_prompt": "Necessito tres captures procedimentals en catal\u00e0 sobre un \u00fanic projecte\nvectorial: interpretar una taula d'atributs, localitzar les eines de\ndigitalitzaci\u00f3 i configurar un buffer m\u00e8tric sense executar-lo.\n",
+    "recipe_source_prompt": "Necessito tres captures procedimentals en catal\u00e0 sobre un \u00fanic projecte\nvectorial: interpretar una taula d'atributs, localitzar les eines de\ndigitalitzaci\u00f3 i configurar un buffer m\u00e8tric sense executar-lo.\n",
     "capture_source_prompt": null
   },
   "image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",

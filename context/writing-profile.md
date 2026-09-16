@@ -55,18 +55,21 @@ No cal forçar tots els moviments en cada paràgraf. La seqüència serveix per 
 - Les dades principals procediran del CNIG. L'ICGC, el Cadastre i altres fonts oficials o obertes s'utilitzaran quan el cas ho requereixi.
 - Cada font s'ha de valorar per autoria, data, escala o resolució, CRS, llicència, unitat d'observació, esquema i limitacions.
 - Les taules d'atributs reals s'han de llegir amb les metadades disponibles i amb raonament explícit sobre el significat, el tipus i el domini de cada camp.
-- El recorregut pràctic ha de començar amb un fons WMS i el límit municipal oficial del CNIG. Vila-seca i l'entorn de la Facultat són el cas de demostració a l'aula; cada estudiant aplica el mateix contracte al municipi assignat.
+- El recorregut pràctic ha de començar amb l'Ortofoto Territorial de 2025 de l'ICGC com a fons WMS i amb dues representacions del municipi assignat: les divisions administratives 1:5.000 accessibles mitjançant Open ICGC i les unitats administratives descarregades del CNIG. Vila-seca i l'entorn de la Facultat són el cas de demostració a l'aula; cada estudiant aplica el mateix contracte al municipi assignat.
 - Els fanals del carrer de Joanot Martorell, els carrils bici, les plaques solars i altres elements recognoscibles són casos adequats quan permeten comprovar el resultat sobre el terreny.
 - Les activitats han d'ajudar a transferir el procediment al municipi assignat. No s'ha de confondre el cas resolt a classe amb la resposta que correspon conservar i, si escau, lliurar.
 - Les distàncies, llindars i criteris d'una anàlisi multicriteri s'han de justificar com a decisions del cas, no presentar-se com a valors universals.
 
-## Projecte acumulatiu i evidències
+## Estructura comuna i evidències
 
-- El curs construeix un únic projecte QGIS acumulatiu, aplicat al municipi assignat i documentat mitjançant un GeoPackage i un diari d'activitats.
-- Cal distingir dades originals, dades preparades, resultats intermedis i resultats finals. Les fonts originals no s'han de sobreescriure.
-- La còpia de treball canònica és el fitxer extern `projecte_tig.qgz`. És la que s'ha d'obrir per continuar el curs i la que s'ha de desar abans de crear qualsevol fita.
-- El GeoPackage també ha de contenir un projecte QGIS incrustat amb el nom `projecte_tig`, actualitzat només en les fites que el manual indiqui explícitament.
-- El projecte extern i l'incrustat són representacions independents del projecte: desar-ne un no actualitza l'altre. Només han de reflectir el mateix estat quan es crea o es renova una fita; cada fita ha d'indicar quin s'ha obert, quin s'ha desat i com s'ha comprovat la coincidència esperada.
+- El curs utilitza una única estructura de carpetes `tig/` i sis instantànies encadenades del projecte. Cada micropràctica ha d'identificar inequívocament els seus fitxers, el municipi assignat i el punt de partida heretat.
+- Cal distingir dades originals, derivats preparats reutilitzables, resultats intermedis i resultats finals. Les fonts originals no s'han de sobreescriure. `data/processed/` es reserva per a preparacions derivades de `data/raw/` que s'han de reutilitzar en diversos exercicis, com un mosaic DEM combinat i retallat a l'àrea de treball.
+- `sandbox/` és sempre l'espai de treball actiu. La primera pràctica crea `pr1-fonts-cognom.gpkg`; les següents copien el GeoPackage lliurat per la predecessora i el reanomenen `pr2-digitalitzacio-cognom.gpkg`, `pr3-consultes-cognom.gpkg`, `pr4-geoprocessament-cognom.gpkg`, `pr5-raster-cognom.gpkg` i `pr6-sintesi-cognom.gpkg`. `pr6` copia també a `sandbox/` els deu GeoTIFF externs heretats de `pr5`. No es copia ni es reanomena el `.qgz` anterior.
+- Cada GeoPackage nou conté físicament les capes i taules locals heretades, no enllaços al contenidor predecessor. Abans de continuar s'han de reorientar les fonts locals al GeoPackage homònim i comprovar que no depenen de `dist/`, d'una altra pràctica ni d'una ruta personal.
+- Cada instantània conté exactament un projecte QGIS incrustat, anomenat `pr1` fins a `pr6`. Després de validar-lo es crea a `sandbox/` un `.qgz` nou amb el mateix nom base que el GeoPackage i camins relatius cap als fitxers que l'acompanyen.
+- Amb QGIS tancat, els fitxers nous de la pràctica es copien al `dist/` pla de la revisió actual sense canviar-ne els noms i es proven des d'una ubicació neta. Les dependències de fases anteriors es verifiquen i no se sobreescriuen. Si es detecta un error abans del lliurament, es reconstrueix el candidat complet en un `dist/` net i es regeneren la fita afectada i les descendents; no es pedaça cap sortida. Un paquet ja lliurat és immutable: qualsevol correcció posterior crea una revisió completa en una carpeta d'assemblatge separada, amb els mateixos noms contractuals a l'interior, i conserva intacte el paquet anterior.
+- A `pr5` i `pr6`, els GeoTIFF analítics es mantenen com a fitxers germans del GeoPackage i del `.qgz`. `pr6` copia sense reanomenar els GeoTIFF lliurats per `pr5` de `dist/` a `sandbox/` i hi apunta localment. En distribuir `pr6`, aquestes còpies es verifiquen byte per byte, no se sobreescriuen a `dist/` i s'incorporen al paquet complet des d'una carpeta d'assemblatge separada.
+- El projecte incrustat, el projecte extern i qualsevol còpia de distribució són representacions independents: desar-ne una no actualitza les altres.
 - Les rutes, els noms de capes, els camps, els CRS i les dependències han de permetre obrir i diagnosticar el projecte en un altre equip.
 - El diari ha d'explicar l'objectiu, les fonts, les operacions, els paràmetres, les incidències, les correccions, els resultats i les limitacions.
 - Les captures han de provar una decisió, una configuració, una incidència o un resultat. No s'ha de convertir el diari en una seqüència de captures de cada clic.
@@ -91,6 +94,7 @@ No cal forçar tots els moviments en cada paràgraf. La seqüència serveix per 
 - Cal distingir topologia d'edició, predicats topològics i geoprocessament; no són sinònims.
 - Els noms de programari, organismes i formats consolidats, com QGIS, CNIG, ICGC i GeoPackage, s'escriuen sense format especial.
 - El codi en línia es reserva per a noms literals de camps, expressions, funcions, extensions com `.gpkg` o `.qgz`, paràmetres i rutes de menú.
+- Els identificadors interns prescrits pel curs utilitzen caràcters ASCII i `snake_case`, però conserven exactament el vocabulari fixat, sigui català (`municipi_treball`, `codi_muni`, `vies_principals`) o anglès (`municipality_icgc_5k`, `municipality_cnig`); no s'han de traduir ni adaptar a cada pràctica.
 - Els anglicismes només s'han d'utilitzar quan no hi hagi una forma catalana prou precisa. La primera aparició pot indicar el terme original entre parèntesis.
 
 ## Figures, taules i diagrames

@@ -5,7 +5,7 @@ description: Llibres, estàndards i documentació tècnica citats al manual de T
 lang: ca
 ref: manual-bibliography
 profiles: [unaltremanual]
-content_status: draft
+content_status: approved
 permalink: /ca/bibliografia/
 weight: 110
 part: Referència
