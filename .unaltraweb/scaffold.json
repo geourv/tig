@@ -1,13 +1,13 @@
 {
   "files": {
-    ".github/CONTRIBUTING.md": "19aacc6113335d016ab7db65c795eae3232d1d206b5568a4c0b97c2f9a9a0c79",
+    ".github/CONTRIBUTING.md": "5ea05a6b8ca999bd19684f4a4686acf41b8aedb5991396fd994841a9dad2b77b",
     ".github/dependabot.yml": "a8220cfb49a6649b7d8d8600e4b6f619fadf05b4da68bea2e3a9cd3fc48eac20",
-    ".github/pull_request_template.md": "a3bd183f02120238f0aa5a188216aaab30a45cf58713d5c5059b7e320b3fef12",
-    ".github/workflows/deploy.yml": "a38fec82d4f582fd0b152a15bd12e814e6a99763a2516f3d662e1544ef8a5af3",
+    ".github/pull_request_template.md": "88086df7e4052936e8dbe6515db3f13fa93c5602e9e3a7beeae8210a6e52a7dc",
+    ".github/workflows/deploy.yml": "05aef881bc7043ae27bf7115e8ac69d3adf345c4d61b2f6713a5469b3875123b",
     ".gitignore": "2a8759432093ddc35526ba104208cdf01e6d259dbdd5b9e26da9d31966057f64",
     ".unaltraweb/docker-mount.sh": "59b042cecc2226036e4d85bd96543182c53b32dbddb437b9c196d78df6d12104",
-    "Gemfile": "aeda8448e87d5aec084919a024804939a90d4b981a09f302cb7e253d4472b99c",
-    "Gemfile.lock": "61639ad4b650faabf0dd5ada1c484baec1ac1cc308ae4a5262b46b035b9100df",
+    "Gemfile": "2059e757cc73ab3c0dd0ca058326d28ff09f695dae63d49165ec5988138c18e3",
+    "Gemfile.lock": "40597d58951e66be2190a0f04875f0c3d52a7cc614a3c49f26125fbebe9be078",
     "Makefile": "918c8c671b5fddd5d0fc6ab378d1661adcbab3ff82457a03eb77ca92c54666d8"
   },
   "schema_version": 1,
