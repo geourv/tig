@@ -1,0 +1,135 @@
+---
+title: "Pendent en graus i en percentatge"
+lang: ca
+ref: slope_degrees_percent
+format:
+  gfm:
+    output-file: slope-degrees-percent.generated.md
+execute:
+  echo: false
+  warning: false
+  message: false
+execute-dir: project
+unaltraweb_compute:
+  engine: python
+  mode: figure
+  outputs:
+    - assets/img/generated/07-model-analisi-raster/slope-degrees-percent.svg
+---
+
+```{python}
+from math import cos, radians, sin, tan
+from pathlib import Path
+
+
+def find_project_root(start):
+    path = Path(start).resolve()
+    for candidate in (path, *path.parents):
+        if (candidate / ".unaltraweb" / "computations.yml").is_file():
+            return candidate
+    raise RuntimeError("Project root not found: missing .unaltraweb/computations.yml")
+
+
+def ca_number(value):
+    return f"{value:.1f}".replace(".", ",")
+
+
+angles = [0, 2, 5, 10, 20, 30, 45]
+slopes = [100 * tan(radians(angle)) for angle in angles]
+assert [ca_number(value) for value in slopes] == [
+    "0,0",
+    "3,5",
+    "8,7",
+    "17,6",
+    "36,4",
+    "57,7",
+    "100,0",
+]
+
+width, height = 1600, 900
+panel_width = 350
+top_x = [40, 430, 820, 1210]
+bottom_x = [235, 625, 1015]
+panels = [(x, 25) for x in top_x] + [(x, 455) for x in bottom_x]
+run = 200
+
+svg = [
+    f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
+    '  <title id="title">Equivalència entre el pendent en graus i en percentatge</title>',
+    '  <desc id="desc">Set facetes mostren línies inclinades de zero, dos, cinc, deu, vint, trenta i quaranta-cinc graus amb un traç uniforme. Cada faceta identifica l’alçada assolida, divideix aquest guany vertical entre cent metres horitzontals i multiplica el quocient per cent.</desc>',
+    '  <defs>',
+    '    <style>',
+    "      text { font-family: Arial, 'Liberation Sans', sans-serif; }",
+    '      .formula { fill: #435861; font-size: 28px; }',
+    '      .percent { fill: #21313c; font-size: 32px; font-weight: 700; }',
+    '      .degree { fill: #9d4f2f; font-size: 30px; font-weight: 700; }',
+    '      .height-label { fill: #9d4f2f; font-size: 28px; font-weight: 600; }',
+    '      .run-label { fill: #586b74; font-size: 28px; }',
+    '      .wedge { fill: #e6f1f4; }',
+    '      .slope-line { fill: none; stroke: #276d88; stroke-width: 5; stroke-linecap: round; vector-effect: non-scaling-stroke; }',
+    '      .baseline { fill: none; stroke: #71838b; stroke-width: 3; stroke-dasharray: 8 7; vector-effect: non-scaling-stroke; }',
+    '      .rise { fill: none; stroke: #b45e37; stroke-width: 3; stroke-dasharray: 7 6; vector-effect: non-scaling-stroke; }',
+    '      .angle { fill: none; stroke: #b45e37; stroke-width: 4; vector-effect: non-scaling-stroke; }',
+    '      .fraction { stroke: #435861; stroke-width: 2; vector-effect: non-scaling-stroke; }',
+    '      .divider { stroke: #d2dadd; stroke-width: 2; }',
+    '    </style>',
+    '  </defs>',
+    f'  <rect width="{width}" height="{height}" fill="#ffffff"/>',
+    '  <line x1="20" y1="435" x2="1580" y2="435" class="divider"/>',
+]
+
+for x in (410, 800, 1190):
+    svg.append(f'  <line x1="{x}" y1="45" x2="{x}" y2="415" class="divider"/>')
+for x in (605, 995):
+    svg.append(f'  <line x1="{x}" y1="475" x2="{x}" y2="845" class="divider"/>')
+
+for (panel_x, panel_y), angle, slope in zip(panels, angles, slopes):
+    origin_x = panel_x + 78
+    baseline_y = panel_y + 315
+    end_x = origin_x + run
+    rise = run * tan(radians(angle))
+    end_y = baseline_y - rise
+    fraction_x = panel_x + 135
+    slope_text = ca_number(slope)
+
+    svg.extend([
+        f'  <text x="{fraction_x}" y="{panel_y + 42}" text-anchor="middle" class="formula">Δz = {slope_text} m</text>',
+        f'  <line x1="{fraction_x - 82}" y1="{panel_y + 53}" x2="{fraction_x + 82}" y2="{panel_y + 53}" class="fraction"/>',
+        f'  <text x="{fraction_x}" y="{panel_y + 84}" text-anchor="middle" class="formula">100 m</text>',
+        f'  <text x="{fraction_x + 98}" y="{panel_y + 65}" class="formula">× 100</text>',
+        f'  <text x="{panel_x + panel_width / 2}" y="{panel_y + 112}" text-anchor="middle" class="percent">= {slope_text} %</text>',
+        f'  <path d="M {origin_x} {baseline_y} L {end_x} {end_y:.2f} L {end_x} {baseline_y} Z" class="wedge"/>',
+        f'  <line x1="{origin_x}" y1="{baseline_y}" x2="{end_x}" y2="{baseline_y}" class="baseline"/>',
+        f'  <line x1="{end_x}" y1="{baseline_y}" x2="{end_x}" y2="{end_y:.2f}" class="rise"/>',
+        f'  <line x1="{origin_x}" y1="{baseline_y}" x2="{end_x}" y2="{end_y:.2f}" class="slope-line"/>',
+        f'  <text x="{origin_x - 14}" y="{baseline_y - 10}" text-anchor="end" class="degree">{angle}°</text>',
+        f'  <text x="{origin_x + run / 2}" y="{baseline_y + 38}" text-anchor="middle" class="run-label">100 m horitzontals</text>',
+    ])
+
+    if angle == 0:
+        svg.append(
+            f'  <text x="{end_x}" y="{baseline_y - 24}" text-anchor="end" class="height-label">Δz: {slope_text} m</text>'
+        )
+    else:
+        height_label_x = end_x + 24
+        height_label_y = (end_y + baseline_y) / 2
+        svg.append(
+            f'  <text x="{height_label_x}" y="{height_label_y:.2f}" text-anchor="middle" class="height-label" '
+            f'transform="rotate(-90 {height_label_x} {height_label_y:.2f})">Δz: {slope_text} m</text>'
+        )
+
+    if angle > 0:
+        radius = 48
+        arc_end_x = origin_x + radius * cos(radians(angle))
+        arc_end_y = baseline_y - radius * sin(radians(angle))
+        svg.append(
+            f'  <path d="M {origin_x + radius} {baseline_y} A {radius} {radius} 0 0 0 {arc_end_x:.2f} {arc_end_y:.2f}" class="angle"/>'
+        )
+
+svg.append('</svg>')
+
+project_root = find_project_root(Path.cwd())
+output = project_root / "assets/img/generated/07-model-analisi-raster/slope-degrees-percent.svg"
+output.parent.mkdir(parents=True, exist_ok=True)
+output.write_text("\n".join(svg) + "\n", encoding="utf-8")
+```

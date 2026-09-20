@@ -96,6 +96,22 @@ MULTIPOLYGON (((0 0, 2 0, 2 2, 0 2, 0 0)),
 
 El primer anell del polígon és exterior i el segon delimita un forat. En el multipolígon, cada nivell addicional de parèntesis separa anells, polígons i el conjunt. L'exemple no declara cap CRS; les primeres coordenades només són plausibles com a UTM i no s'han d'interpretar com a `EPSG:25831` sense metadades. L'ordre de les posicions d'una línia també és significatiu perquè defineix inici, final i sentit, encara que la forma dibuixada sembli la mateixa en invertir-lo.
 
+#### Provar l'intercanvi amb QuickWKT
+
+El complement [QuickWKT](https://plugins.qgis.org/plugins/QuickWKT/) permet comprovar aquest mecanisme sense preparar un fitxer de capa. La versió estable verificada per al manual és la 3.4, compatible des de QGIS 3.0 fins a QGIS 4.99. S'instal·la des de `Complements > Gestiona i instal·la complements`, cercant el nom exacte al repositori oficial. Un cop activat, l'entrada `Complements > QuickWKT > QuickWKT` obre un diàleg on es pot enganxar WKT, EWKT o WKB.
+
+Per provar el WKT simple, primer cal establir el projecte en `EPSG:25831` i enganxar-hi, en una sola línia, una geometria del cas de demostració:
+
+```text
+LINESTRING (344260 4551997.5, 344332.5 4551977.5, 344405 4551975, 344487.5 4551995)
+```
+
+QuickWKT interpreta el tipus i les coordenades i crea una capa temporal de memòria. Com que el text no inclou el CRS, en aquest cas el complement adopta el CRS del llenç; per tant, veure la línia al lloc esperat només és una comprovació vàlida si abans s'ha verificat `EPSG:25831`. La mateixa prova es pot fer amb `SRID=25831;LINESTRING (...)`, que QuickWKT reconeix com a EWKT, però el prefix `SRID` continua sent una extensió i no s'ha de presentar com a part del WKT simple de l'OGC.
+
+Aquest exercici mostra per què WKT és útil com a **representació d'intercanvi**: una geometria es pot copiar com a text des d'una consulta, un missatge o un camp tabular i un altre sistema en pot reconstruir el tipus, l'ordre i les coordenades. L'intercanvi només és fiable si emissor i receptor acorden la variant, el CRS, l'ordre d'eixos, les dimensions i el separador decimal. Una visualització correcta tampoc no transfereix l'identificador, els atributs ni la procedència de l'entitat.
+
+La capa creada per QuickWKT es perd en tancar QGIS. Si el resultat s'ha de conservar, cal exportar-lo deliberadament a GeoPackage, assignar-hi l'esquema i la procedència i tornar-lo a obrir per comprovar-lo. Per a operacions repetibles sense complement, QGIS també ofereix les expressions `geom_to_wkt($geometry)` i `geom_from_wkt('POINT (344469 4551807)')`; per importar moltes files, una taula delimitada amb un camp WKT i un CRS declarat és més adequada que enganxar geometries manualment {% cite qgisUserGuide344 %}.
+
 El WKB codifica la mateixa classe d'estructura en bytes. Inclou informació sobre ordre dels bytes, tipus geomètric, recomptes i coordenades, de manera que és compacte i ràpid d'interpretar per una base de dades, però no és apropiat per editar-lo manualment. Mostrar un WKB com una cadena hexadecimal només és una representació textual dels bytes. Convertir WKT a WKB no millora l'exactitud ni valida la geometria; canvia la codificació.
 
 Les sigles EWKT i EWKB designen variants **ampliades** associades sobretot a PostGIS, l'extensió espacial del sistema gestor de bases de dades PostgreSQL. Poden incorporar un identificador de referència espacial i convencions addicionals de dimensionalitat. Per exemple, és habitual trobar `SRID=25831;POINT(344469 4551807)` com a EWKT. Aquest prefix és útil dins d'un contracte que el reconeix, però no forma part del WKT simple interoperable de l'OGC i un lector genèric el pot rebutjar. De manera semblant, l'EWKB no s'ha de presentar com si qualsevol lector WKB hagués d'interpretar-ne les marques pròpies {% cite postgisManual364 %}.
@@ -217,6 +233,8 @@ Abans d'activar l'edició cal verificar que la capa correcta és editable, que l
 La configuració d'ajust s'ha de provar amb casos deliberats: un vèrtex pròxim però que no s'ha d'utilitzar, un segment al qual sí que cal arribar i dues destinacions dins de la tolerància. Aquesta prova revela si l'ordre o la prioritat de les capes produeix resultats ambigus. La configuració s'ha de registrar amb les unitats, no només com «ajust activat», perquè `10 px` i `10 m` descriuen comportaments molt diferents.
 
 Una sessió curta ha de tenir un àmbit identificable, com un carrer o un conjunt de cobertes. En acabar cada lot es desen les edicions i s'executen controls locals. Desar confirma una transacció o escriu els canvis al proveïdor, però no certifica la qualitat. També cal distingir desar les edicions de desar el projecte: el primer modifica les dades; el segon conserva la configuració, els estils i les referències.
+
+>>>> **Desar les edicions no tanca necessàriament l'escriptura del GeoPackage.** En activar el mode d'edició d'una capa, QGIS pot crear al costat del `.gpkg` un fitxer `-journal` o els fitxers `-wal` i `-shm`. Poden continuar visibles després de prémer **Desa les edicions** perquè la capa, una altra capa del mateix contenidor o una connexió del projecte encara manté oberta la sessió d'escriptura. No s'han d'eliminar ni separar del GeoPackage. Abans de moure, copiar, comprimir o lliurar el treball cal desactivar l'edició de totes les capes, tancar les connexions que hi escriuen i, com a procediment segur, tancar QGIS. Només quan els fitxers laterals han desaparegut i una còpia del `.gpkg` es torna a obrir amb les capes, els recomptes i els canvis esperats es pot considerar que el contenidor és estable. Si els laterals persisteixen després del tancament, cal conservar-los amb el `.gpkg` i investigar l'estat de la base, no esborrar-los manualment.
 
 ### Capturar punts
 
@@ -341,7 +359,23 @@ Amb QGIS tancat, es copia `dist/pr1-fonts-cognom.gpkg` a `sandbox/pr2-digitalitz
 
 Les capes `municipality_icgc_5k` i `municipality_cnig` es conserven sense modificacions com les dues representacions municipals de referència. `municipi_treball` es materialitza dins del GeoPackage `pr2` com una capa derivada de la representació escollida: el diari identifica la font, l'operació, l'identificador oficial i la derivació del camp textual `codi_muni`. La capa nova no substitueix ni reanomena cap de les dues fonts.
 
-El cas combina tres capes creades amb finalitats diferents. Els **fanals** es capturen com a punts a partir d'una observació adequada; els **carrils bici**, com a línies connectades; i les **plaques o conjunts de plaques solars**, com a polígons quan la font permet delimitar-ne la superfície. Les capes comparteixen l'àmbit i el CRS, però no l'esquema ni les regles topològiques.
+La demostració a l'aula se situa a l'entorn de la Facultat de Turisme i Geografia. L'Ortofoto Territorial 2025 de l'ICGC arriba per WMS i serveix de context visual comú. Sobre aquesta vista es preparen tres capes amb finalitats diferents: els **fanals** del carrer de Joanot Martorell com a punts; els **carrils bici** de la Via Màxima com a trams lineals; i els **panells solars** visibles a la coberta de la Facultat com a polígons. Les capes comparteixen l'àmbit i el CRS, però no l'esquema ni les regles topològiques.
+
+::: table "Tres geometries de la demostració de digitalització"
+| Capa | Àmbit de demostració | Geometria | Decisió que es practica |
+| --- | --- | --- | --- |
+| `fanals` | Carrer de Joanot Martorell | Punt | Fixar una convenció per a la posició del suport i completar-ne els atributs |
+| `carrils_bici` | Via Màxima | Línia | Separar trams i usar l'autoensamblat a vèrtexs perquè els extrems que representen continuïtat comparteixin coordenades |
+| `plaques_solars` | Coberta de la Facultat | Polígon | Delimitar superfícies visibles sense convertir ombres, lluernes o parts ocultes en panells |
+:::
+
+El WMS no aporta les geometries editables de cap d'aquestes capes. La captura següent utilitza una resposta `GetMap` fixa de `0,25 m` per píxel i hi superposa geometries docents per fer visibles el tipus de capa i la configuració de captura. Aquestes geometries orienten la demostració, però no constitueixen un inventari validat: els fanals requereixen una observació o font adequada; els trams han de respondre a la continuïtat real; i els contorns dels panells s'han de contrastar amb la data, la resolució i les oclusions de la imatge.
+
+![QGIS amb l'Ortofoto Territorial 2025 de l'ICGC sobre l'entorn de la Facultat i tres capes docents: fanals puntuals al carrer de Joanot Martorell, trams de carril bici connectats a la Via Màxima i polígons de panells solars sobre la coberta]({{ site.baseurl }}/assets/img/qgis/qgis-digitizing-faculty-demo.annotations.svg "La demostració relaciona cada família geomètrica amb un objecte recognoscible i manté visible la barra d'autoensamblat que cal configurar per connectar els trams de carril bici. El WMS és només el context visual; les geometries superposades són fixtures docents pendents d'observació i validació."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
+
+Els fitxers de referència distribuïts amb el manual utilitzen, per a aquestes tres capes, dades de prova sintètiques generades de manera determinista dins de Vila-seca. No provenen d'observacions de camp, inventaris ni interpretació de l'ortofoto i no són aptes per descriure o analitzar el territori; només permeten comprovar els esquemes, els identificadors i les regles topològiques. La micropràctica, en canvi, exigeix fonts o observacions documentades del municipi assignat.
+
+La demostració no fixa els objectes que tot l'alumnat ha de trobar. Cada estudiant aplica el mateix contracte de punt, línia connectada i polígon al municipi assignat, amb fonts pròpies documentades. Quan un dels tres casos no és observable o no existeix, se substitueix per un fenomen equivalent que permeti justificar la mateixa decisió geomètrica i executar els mateixos controls.
 
 La preparació comença amb una taula de fonts i tres frases d'unitat d'observació. Per als fanals, cada fila representa un suport individual i la posició correspon al peu observat o a la coordenada documentada de l'inventari. Per als carrils, cada fila representa un tram homogeni entre canvis de connectivitat o atributs. Per a les plaques, cada fila pot representar una superfície contínua visible; si es vol representar la instal·lació completa, les peces separades s'agrupen només quan una font permet afirmar que hi pertanyen.
 

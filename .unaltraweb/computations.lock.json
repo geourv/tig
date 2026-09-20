@@ -34,6 +34,40 @@
       ],
       "rendered_at": "2026-09-07T19:28:18+00:00"
     },
+    "assets/quarto/03-estructura-formats-referenciacio/geojson-topojson-shared-border.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/03-estructura-formats-referenciacio/geojson-topojson-shared-border.qmd",
+          "sha256": "a61aaf5143eaf2a095ab4638c492cc67a16bdf0b0f4d2afd6f64eec5f50d0098"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "25ca6b39b666f1295cedf6e608754fb391c4ffe358a0a160b63238c577134217",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/03-estructura-formats-referenciacio/geojson-topojson-shared-border.svg",
+          "sha256": "abad220ae8bf527145dd14595fdf94e9fe67f490adb2f3b509bdf742f3eb37db",
+          "size": 5636
+        }
+      ],
+      "rendered_at": "2026-09-19T21:46:45+00:00"
+    },
     "assets/quarto/04-model-vectorial-digitalitzacio/arc-node-spaghetti.qmd": {
       "dependencies": [
         {
@@ -578,6 +612,74 @@
       ],
       "rendered_at": "2026-09-07T23:06:50+00:00"
     },
+    "assets/quarto/07-model-analisi-raster/raster-vector-support-resolution.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/07-model-analisi-raster/raster-vector-support-resolution.qmd",
+          "sha256": "df8f3d5aa3f3475730cee94167d67a159a4c9c18c6de479c64955092f06c8721"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "361d849455a015c8246b93e797f46aa570430ab4ddb0817b3cf746815f409f92",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/07-model-analisi-raster/raster-vector-support-resolution.svg",
+          "sha256": "1795561a74c1c14b9e4eb10d6858e53f0d44a6f91274f4d801477392ae1a09c7",
+          "size": 25020
+        }
+      ],
+      "rendered_at": "2026-09-18T07:54:36+00:00"
+    },
+    "assets/quarto/07-model-analisi-raster/slope-degrees-percent.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/07-model-analisi-raster/slope-degrees-percent.qmd",
+          "sha256": "2c7f05e6568f482185c719367c55c10d538d677b13bd2771b39c59f38274177a"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "9e719f371b37105e42d7a20426c8d49c117286fab9ec57e033f73c8f808811fb",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/07-model-analisi-raster/slope-degrees-percent.svg",
+          "sha256": "246d68ac5636b96c55e3392e3df1b032abbe2b401161c80cd9657c4725cebca1",
+          "size": 8611
+        }
+      ],
+      "rendered_at": "2026-09-19T22:26:27+00:00"
+    },
     "assets/quarto/07-model-analisi-raster/terrain-gradient-slope-aspect.qmd": {
       "dependencies": [
         {
@@ -611,6 +713,40 @@
         }
       ],
       "rendered_at": "2026-09-09T13:13:39+00:00"
+    },
+    "assets/quarto/07-model-analisi-raster/terrain-profile-viewshed.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/07-model-analisi-raster/terrain-profile-viewshed.qmd",
+          "sha256": "95e65427e65699d9b53e898f6429056335894899f19ee80199ef96be66615062"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "d13bdff5accdb1264e82bff1715fe6327b07c9248fc3b117f8f0e1c023f123b9",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/07-model-analisi-raster/terrain-profile-viewshed.svg",
+          "sha256": "09b712ef56f94883c0f13027499d4402b96d0ceabba6538b7a992136ca1147c6",
+          "size": 230194
+        }
+      ],
+      "rendered_at": "2026-09-19T22:44:43+00:00"
     },
     "assets/quarto/07-model-analisi-raster/vector-raster-conversion.qmd": {
       "dependencies": [

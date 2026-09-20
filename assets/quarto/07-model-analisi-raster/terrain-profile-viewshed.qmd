@@ -1,0 +1,478 @@
+---
+title: "Perfil del terreny i conca visual"
+lang: ca
+ref: terrain_profile_viewshed
+format:
+  gfm:
+    output-file: terrain-profile-viewshed.generated.md
+execute:
+  echo: false
+  warning: false
+  message: false
+execute-dir: project
+unaltraweb_compute:
+  engine: python
+  mode: figure
+  outputs:
+    - assets/img/generated/07-model-analisi-raster/terrain-profile-viewshed.svg
+---
+
+```{python}
+from math import exp, hypot
+from pathlib import Path
+
+
+def find_project_root(start):
+    path = Path(start).resolve()
+    for candidate in (path, *path.parents):
+        if (candidate / ".unaltraweb" / "computations.yml").is_file():
+            return candidate
+    raise RuntimeError("Project root not found: missing .unaltraweb/computations.yml")
+
+
+def points_attribute(points):
+    return " ".join(f"{x:.1f},{y:.1f}" for x, y in points)
+
+
+def terrain(x, y):
+    """One synthetic MDE used by every panel."""
+    base = 48 + 6 * x - 3 * y
+    first_peak = 105 * exp(
+        -0.5 * (((x - 0.38) / 0.16) ** 2 + ((y - 0.56) / 0.18) ** 2)
+    )
+    second_peak = 80 * exp(
+        -0.5 * (((x - 0.72) / 0.15) ** 2 + ((y - 0.31) / 0.14) ** 2)
+    )
+    return base + first_peak + second_peak
+
+
+def map_point(x, y, left, top, plot_width, plot_height):
+    return left + x * plot_width, top + y * plot_height
+
+
+def interpolate_edge(point_a, value_a, point_b, value_b, level):
+    if value_a == value_b:
+        fraction = 0.5
+    else:
+        fraction = (level - value_a) / (value_b - value_a)
+    return (
+        point_a[0] + fraction * (point_b[0] - point_a[0]),
+        point_a[1] + fraction * (point_b[1] - point_a[1]),
+    )
+
+
+contour_columns, contour_rows = 80, 40
+contour_grid = [
+    [terrain(column / contour_columns, row / contour_rows) for column in range(contour_columns + 1)]
+    for row in range(contour_rows + 1)
+]
+
+
+def contour_segments(level):
+    # Corner bits are top-left, top-right, bottom-right and bottom-left.
+    regular_cases = {
+        1: [(3, 0)],
+        2: [(0, 1)],
+        3: [(3, 1)],
+        4: [(1, 2)],
+        6: [(0, 2)],
+        7: [(2, 3)],
+        8: [(2, 3)],
+        9: [(0, 2)],
+        11: [(1, 2)],
+        12: [(1, 3)],
+        13: [(0, 1)],
+        14: [(3, 0)],
+    }
+    edge_corners = ((0, 1), (1, 2), (2, 3), (3, 0))
+    segments = []
+
+    for row in range(contour_rows):
+        y0, y1 = row / contour_rows, (row + 1) / contour_rows
+        for column in range(contour_columns):
+            x0, x1 = column / contour_columns, (column + 1) / contour_columns
+            corners = ((x0, y0), (x1, y0), (x1, y1), (x0, y1))
+            values = (
+                contour_grid[row][column],
+                contour_grid[row][column + 1],
+                contour_grid[row + 1][column + 1],
+                contour_grid[row + 1][column],
+            )
+            case = sum((1 << index) for index, value in enumerate(values) if value >= level)
+            if case in (0, 15):
+                continue
+
+            if case in (5, 10):
+                centre_is_high = terrain((x0 + x1) / 2, (y0 + y1) / 2) >= level
+                if case == 5:
+                    pairs = [(0, 1), (2, 3)] if centre_is_high else [(3, 0), (1, 2)]
+                else:
+                    pairs = [(3, 0), (1, 2)] if centre_is_high else [(0, 1), (2, 3)]
+            else:
+                pairs = regular_cases[case]
+
+            crossings = {}
+            for first_edge, second_edge in pairs:
+                for edge in (first_edge, second_edge):
+                    if edge not in crossings:
+                        first_corner, second_corner = edge_corners[edge]
+                        crossings[edge] = interpolate_edge(
+                            corners[first_corner],
+                            values[first_corner],
+                            corners[second_corner],
+                            values[second_corner],
+                            level,
+                        )
+                segments.append((crossings[first_edge], crossings[second_edge]))
+
+    return segments
+
+
+contour_levels = [60, 75, 90, 105, 120, 135, 150]
+contours = {level: contour_segments(level) for level in contour_levels}
+
+
+def append_contours(svg, left, top, plot_width, plot_height):
+    for level in contour_levels:
+        commands = []
+        for start, end in contours[level]:
+            start_x, start_y = map_point(*start, left, top, plot_width, plot_height)
+            end_x, end_y = map_point(*end, left, top, plot_width, plot_height)
+            commands.append(f"M {start_x:.1f} {start_y:.1f} L {end_x:.1f} {end_y:.1f}")
+        css_class = "contour-major" if level in (90, 120, 150) else "contour-minor"
+        svg.append(f'  <path d="{" ".join(commands)}" class="{css_class}"/>')
+
+
+transect_start = (0.07, 0.82)
+transect_end = (0.94, 0.17)
+profile = []
+for index in range(161):
+    fraction = index / 160
+    x = transect_start[0] + fraction * (transect_end[0] - transect_start[0])
+    y = transect_start[1] + fraction * (transect_end[1] - transect_start[1])
+    profile.append((fraction, terrain(x, y)))
+
+profile_minimum = min(value for _, value in profile) - 6
+profile_maximum = max(value for _, value in profile) + 8
+
+
+def profile_point(fraction, elevation, left, top, plot_width, plot_height):
+    return (
+        left + fraction * plot_width,
+        top
+        + plot_height
+        - (elevation - profile_minimum)
+        * plot_height
+        / (profile_maximum - profile_minimum),
+    )
+
+
+def profile_geometry(left, top, plot_width, plot_height):
+    points = [
+        profile_point(fraction, elevation, left, top, plot_width, plot_height)
+        for fraction, elevation in profile
+    ]
+    area = [(left, top + plot_height), *points, (left + plot_width, top + plot_height)]
+    return points, area
+
+
+observer_height = 12
+target_height = 2
+observer_ground = terrain(*transect_start)
+observer_elevation = observer_ground + observer_height
+
+
+def is_visible(target_x, target_y):
+    offset_x = target_x - transect_start[0]
+    offset_y = target_y - transect_start[1]
+    distance = hypot(offset_x, offset_y)
+    if distance < 0.015:
+        return True
+
+    target_elevation = terrain(target_x, target_y) + target_height
+    target_slope = (target_elevation - observer_elevation) / distance
+    sample_count = max(4, int(distance * 180))
+    for index in range(1, sample_count):
+        fraction = index / sample_count
+        sample_x = transect_start[0] + fraction * offset_x
+        sample_y = transect_start[1] + fraction * offset_y
+        sample_slope = (terrain(sample_x, sample_y) - observer_elevation) / (distance * fraction)
+        if sample_slope > target_slope + 1e-9:
+            return False
+    return True
+
+
+assert not is_visible(*transect_end)
+
+profile_visibility = []
+for (start_fraction, _), (end_fraction, _) in zip(profile, profile[1:]):
+    midpoint_fraction = (start_fraction + end_fraction) / 2
+    midpoint_x = transect_start[0] + midpoint_fraction * (
+        transect_end[0] - transect_start[0]
+    )
+    midpoint_y = transect_start[1] + midpoint_fraction * (
+        transect_end[1] - transect_start[1]
+    )
+    profile_visibility.append(is_visible(midpoint_x, midpoint_y))
+
+assert any(profile_visibility)
+assert not all(profile_visibility)
+
+
+def append_person(svg, x, ground_y, eye_y):
+    head_radius = 7
+    neck_y = eye_y + head_radius
+    hip_y = ground_y - 12
+    shoulder_y = neck_y + (hip_y - neck_y) * 0.38
+    svg.extend([
+        f'  <circle cx="{x:.1f}" cy="{eye_y:.1f}" r="{head_radius}" class="person-head"/>',
+        f'  <line x1="{x:.1f}" y1="{neck_y:.1f}" x2="{x:.1f}" y2="{hip_y:.1f}" class="person"/>',
+        f'  <line x1="{x - 13:.1f}" y1="{shoulder_y + 8:.1f}" x2="{x:.1f}" y2="{shoulder_y:.1f}" class="person"/>',
+        f'  <line x1="{x:.1f}" y1="{shoulder_y:.1f}" x2="{x + 13:.1f}" y2="{shoulder_y + 8:.1f}" class="person"/>',
+        f'  <line x1="{x:.1f}" y1="{hip_y:.1f}" x2="{x - 11:.1f}" y2="{ground_y:.1f}" class="person"/>',
+        f'  <line x1="{x:.1f}" y1="{hip_y:.1f}" x2="{x + 11:.1f}" y2="{ground_y:.1f}" class="person"/>',
+    ])
+
+
+width, height = 1600, 960
+map_left, map_width, map_height = 80, 640, 310
+top_map_top = 105
+profile_left, profile_width, profile_height = 880, 610, 285
+top_profile_top = 115
+sight_profile_left, sight_profile_width, sight_profile_height = 80, 640, 285
+sight_profile_top = 585
+viewshed_left, viewshed_width, viewshed_height = 880, 610, 310
+viewshed_top = 570
+top_profile_points, top_profile_area = profile_geometry(
+    profile_left, top_profile_top, profile_width, profile_height
+)
+sight_profile_points, _ = profile_geometry(
+    sight_profile_left,
+    sight_profile_top,
+    sight_profile_width,
+    sight_profile_height,
+)
+
+target_elevation = terrain(*transect_end) + target_height
+first_block_fraction = None
+previous_fraction = 0
+previous_difference = observer_ground - observer_elevation
+for fraction, elevation in profile[1:]:
+    ray_elevation = observer_elevation + fraction * (target_elevation - observer_elevation)
+    difference = elevation - ray_elevation
+    if difference >= 0 and previous_difference < 0:
+        interpolation = -previous_difference / (difference - previous_difference)
+        first_block_fraction = previous_fraction + interpolation * (fraction - previous_fraction)
+        break
+    previous_fraction = fraction
+    previous_difference = difference
+
+assert first_block_fraction is not None
+horizon_fraction, horizon_elevation = max(
+    profile[1:-1],
+    key=lambda item: (item[1] - observer_elevation) / item[0],
+)
+
+svg = [
+    f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
+    '  <title id="title">Perfil del terreny i conca visual derivats del mateix model d’elevacions</title>',
+    '  <desc id="desc">Quatre facetes utilitzen una única superfície de dos cims. La primera mostra un traçat sobre corbes de nivell calculades, la segona en deriva el perfil, la tercera acoloreix les posicions visibles i ocultes al llarg d’aquest perfil i la quarta calcula la conca visual completa amb els mateixos colors.</desc>',
+    '  <defs>',
+    '    <style>',
+    "      text { font-family: Arial, 'Liberation Sans', sans-serif; }",
+    '      .heading { fill: #21313c; font-size: 36px; font-weight: 700; }',
+    '      .label { fill: #435861; font-size: 28px; }',
+    '      .key { fill: #21313c; font-size: 30px; font-weight: 700; }',
+    '      .map { fill: #eef4f5; stroke: #8699a1; stroke-width: 3; }',
+    '      .map-border { fill: none; stroke: #8699a1; stroke-width: 3; }',
+    '      .contour-major { fill: none; stroke: #5e7882; stroke-width: 3; stroke-linecap: round; }',
+    '      .contour-minor { fill: none; stroke: #9aabb1; stroke-width: 2; stroke-linecap: round; }',
+    '      .transect { fill: none; stroke: #b45e37; stroke-width: 7; }',
+    '      .transect-guide { fill: none; stroke: #b45e37; stroke-width: 4; stroke-dasharray: 10 7; }',
+    '      .sample { fill: #ffffff; stroke: #b45e37; stroke-width: 4; }',
+    '      .terrain-fill { fill: #dcebed; }',
+    '      .terrain { fill: none; stroke: #276d88; stroke-width: 6; stroke-linejoin: round; }',
+    '      .axis { fill: none; stroke: #6d7e86; stroke-width: 3; }',
+    '      .grid { fill: none; stroke: #d5dfe2; stroke-width: 2; }',
+    '      .visible-cell { fill: #cfe4d5; }',
+    '      .hidden-cell { fill: #efd6ca; }',
+    '      .ray-visible { fill: none; stroke: #4f8762; stroke-width: 5; }',
+    '      .ray-hidden { fill: none; stroke: #b45e37; stroke-width: 5; stroke-dasharray: 10 8; }',
+    '      .person { fill: none; stroke: #21313c; stroke-width: 4; stroke-linecap: round; }',
+    '      .person-head { fill: #ffffff; stroke: #21313c; stroke-width: 4; }',
+    '      .horizon { fill: #4f8762; stroke: #ffffff; stroke-width: 3; }',
+    '      .target-hidden { fill: #b45e37; stroke: #ffffff; stroke-width: 3; }',
+    '      .divider { stroke: #cfd9dc; stroke-width: 2; }',
+    '    </style>',
+    '  </defs>',
+    f'  <rect width="{width}" height="{height}" fill="#ffffff"/>',
+    '  <line x1="800" y1="20" x2="800" y2="940" class="divider"/>',
+    '  <line x1="20" y1="480" x2="1580" y2="480" class="divider"/>',
+]
+
+# A transect and calculated contours over the shared MDE.
+svg.extend([
+    '  <text x="400" y="65" text-anchor="middle" class="heading">a) Traçat sobre el MDE</text>',
+    f'  <rect x="{map_left}" y="{top_map_top}" width="{map_width}" height="{map_height}" class="map"/>',
+])
+append_contours(svg, map_left, top_map_top, map_width, map_height)
+start_x, start_y = map_point(*transect_start, map_left, top_map_top, map_width, map_height)
+end_x, end_y = map_point(*transect_end, map_left, top_map_top, map_width, map_height)
+svg.append(f'  <line x1="{start_x:.1f}" y1="{start_y:.1f}" x2="{end_x:.1f}" y2="{end_y:.1f}" class="transect"/>')
+for fraction in (0, 0.25, 0.5, 0.75, 1):
+    sample_x = start_x + fraction * (end_x - start_x)
+    sample_y = start_y + fraction * (end_y - start_y)
+    radius = 12 if fraction in (0, 1) else 8
+    svg.append(f'  <circle cx="{sample_x:.1f}" cy="{sample_y:.1f}" r="{radius}" class="sample"/>')
+svg.extend([
+    f'  <text x="{start_x - 18:.1f}" y="{start_y + 30:.1f}" text-anchor="end" class="key">A</text>',
+    f'  <text x="{end_x + 18:.1f}" y="{end_y - 10:.1f}" class="key">B</text>',
+    '  <text x="400" y="452" text-anchor="middle" class="label">mostres ordenades al llarg d’A–B</text>',
+])
+
+# The profile is sampled from exactly the same transect.
+svg.extend([
+    '  <text x="1200" y="65" text-anchor="middle" class="heading">b) Perfil del mateix traçat</text>',
+    f'  <line x1="{profile_left}" y1="{top_profile_top}" x2="{profile_left}" y2="{top_profile_top + profile_height}" class="axis"/>',
+    f'  <line x1="{profile_left}" y1="{top_profile_top + profile_height}" x2="{profile_left + profile_width}" y2="{top_profile_top + profile_height}" class="axis"/>',
+])
+for level in (60, 90, 120, 150):
+    if profile_minimum < level < profile_maximum:
+        _, grid_y = profile_point(0, level, profile_left, top_profile_top, profile_width, profile_height)
+        svg.append(f'  <line x1="{profile_left}" y1="{grid_y:.1f}" x2="{profile_left + profile_width}" y2="{grid_y:.1f}" class="grid"/>')
+svg.extend([
+    f'  <polygon points="{points_attribute(top_profile_area)}" class="terrain-fill"/>',
+    f'  <polyline points="{points_attribute(top_profile_points)}" class="terrain"/>',
+    '  <text x="850" y="145" text-anchor="end" class="label">elevació</text>',
+    '  <text x="1185" y="450" text-anchor="middle" class="label">distància al llarg d’A–B</text>',
+    f'  <text x="{profile_left}" y="435" text-anchor="middle" class="key">A</text>',
+    f'  <text x="{profile_left + profile_width}" y="435" text-anchor="middle" class="key">B</text>',
+])
+
+# Visibility along A-B uses the same visible and hidden colours as the viewshed.
+svg.extend([
+    '  <text x="400" y="535" text-anchor="middle" class="heading">c) Visió al llarg d’A–B</text>',
+    f'  <line x1="{sight_profile_left}" y1="{sight_profile_top + sight_profile_height}" x2="{sight_profile_left + sight_profile_width}" y2="{sight_profile_top + sight_profile_height}" class="axis"/>',
+])
+profile_baseline_y = sight_profile_top + sight_profile_height
+for index, visible in enumerate(profile_visibility):
+    start_point = sight_profile_points[index]
+    end_point = sight_profile_points[index + 1]
+    area = [
+        (start_point[0], profile_baseline_y),
+        start_point,
+        end_point,
+        (end_point[0], profile_baseline_y),
+    ]
+    css_class = "visible-cell" if visible else "hidden-cell"
+    svg.append(f'  <polygon points="{points_attribute(area)}" class="{css_class}"/>')
+svg.append(f'  <polyline points="{points_attribute(sight_profile_points)}" class="terrain"/>')
+observer_x, observer_ground_y = profile_point(
+    0,
+    observer_ground,
+    sight_profile_left,
+    sight_profile_top,
+    sight_profile_width,
+    sight_profile_height,
+)
+_, observer_eye_y = profile_point(
+    0,
+    observer_elevation,
+    sight_profile_left,
+    sight_profile_top,
+    sight_profile_width,
+    sight_profile_height,
+)
+target_x, target_y = profile_point(
+    1,
+    target_elevation,
+    sight_profile_left,
+    sight_profile_top,
+    sight_profile_width,
+    sight_profile_height,
+)
+block_elevation = observer_elevation + first_block_fraction * (target_elevation - observer_elevation)
+block_x, block_y = profile_point(
+    first_block_fraction,
+    block_elevation,
+    sight_profile_left,
+    sight_profile_top,
+    sight_profile_width,
+    sight_profile_height,
+)
+horizon_x, horizon_y = profile_point(
+    horizon_fraction,
+    horizon_elevation,
+    sight_profile_left,
+    sight_profile_top,
+    sight_profile_width,
+    sight_profile_height,
+)
+svg.extend([
+    f'  <line x1="{observer_x:.1f}" y1="{observer_eye_y:.1f}" x2="{block_x:.1f}" y2="{block_y:.1f}" class="ray-visible"/>',
+    f'  <line x1="{block_x:.1f}" y1="{block_y:.1f}" x2="{target_x:.1f}" y2="{target_y:.1f}" class="ray-hidden"/>',
+    f'  <circle cx="{horizon_x:.1f}" cy="{horizon_y:.1f}" r="11" class="horizon"/>',
+    f'  <circle cx="{target_x:.1f}" cy="{target_y:.1f}" r="12" class="target-hidden"/>',
+    f'  <text x="{observer_x + 28:.1f}" y="{observer_eye_y - 18:.1f}" class="key">observador A</text>',
+    f'  <text x="{horizon_x + 10:.1f}" y="{horizon_y - 24:.1f}" text-anchor="end" class="label">carena que bloqueja</text>',
+    f'  <text x="{target_x - 18:.1f}" y="{target_y - 18:.1f}" text-anchor="end" class="key">B · ocult</text>',
+    '  <rect x="205" y="900" width="25" height="25" class="visible-cell"/>',
+    '  <text x="245" y="923" class="label">visible</text>',
+    '  <rect x="430" y="900" width="25" height="25" class="hidden-cell"/>',
+    '  <text x="470" y="923" class="label">ocult</text>',
+])
+append_person(svg, observer_x, observer_ground_y, observer_eye_y)
+
+# The full raster viewshed extends the same visibility test beyond A-B.
+svg.append('  <text x="1200" y="535" text-anchor="middle" class="heading">d) Conca visual, mateix MDE</text>')
+viewshed_columns, viewshed_rows = 61, 31
+cell_width = viewshed_width / viewshed_columns
+cell_height = viewshed_height / viewshed_rows
+for row in range(viewshed_rows):
+    for column in range(viewshed_columns):
+        centre_x = (column + 0.5) / viewshed_columns
+        centre_y = (row + 0.5) / viewshed_rows
+        css_class = "visible-cell" if is_visible(centre_x, centre_y) else "hidden-cell"
+        cell_x = viewshed_left + column * cell_width
+        cell_y = viewshed_top + row * cell_height
+        svg.append(
+            f'  <rect x="{cell_x:.1f}" y="{cell_y:.1f}" width="{cell_width + 0.1:.1f}" height="{cell_height + 0.1:.1f}" class="{css_class}"/>'
+        )
+append_contours(svg, viewshed_left, viewshed_top, viewshed_width, viewshed_height)
+svg.append(
+    f'  <rect x="{viewshed_left}" y="{viewshed_top}" width="{viewshed_width}" height="{viewshed_height}" class="map-border"/>'
+)
+observer_map_x, observer_map_ground_y = map_point(
+    *transect_start,
+    viewshed_left,
+    viewshed_top,
+    viewshed_width,
+    viewshed_height,
+)
+target_map_x, target_map_y = map_point(
+    *transect_end,
+    viewshed_left,
+    viewshed_top,
+    viewshed_width,
+    viewshed_height,
+)
+svg.append(
+    f'  <line x1="{observer_map_x:.1f}" y1="{observer_map_ground_y:.1f}" x2="{target_map_x:.1f}" y2="{target_map_y:.1f}" class="transect-guide"/>'
+)
+append_person(svg, observer_map_x, observer_map_ground_y, observer_map_ground_y - 38)
+svg.extend([
+    f'  <circle cx="{target_map_x:.1f}" cy="{target_map_y:.1f}" r="12" class="target-hidden"/>',
+    f'  <text x="{observer_map_x + 28:.1f}" y="{observer_map_ground_y - 44:.1f}" class="key">A</text>',
+    f'  <text x="{target_map_x - 18:.1f}" y="{target_map_y - 16:.1f}" text-anchor="end" class="key">B</text>',
+    '  <rect x="1005" y="900" width="25" height="25" class="visible-cell"/>',
+    '  <text x="1045" y="923" class="label">visible</text>',
+    '  <rect x="1230" y="900" width="25" height="25" class="hidden-cell"/>',
+    '  <text x="1270" y="923" class="label">ocult</text>',
+])
+svg.append('</svg>')
+
+project_root = find_project_root(Path.cwd())
+output = project_root / "assets/img/generated/07-model-analisi-raster/terrain-profile-viewshed.svg"
+output.parent.mkdir(parents=True, exist_ok=True)
+output.write_text("\n".join(svg) + "\n", encoding="utf-8")
+```
