@@ -3,12 +3,12 @@
     ".github/CONTRIBUTING.md": "5ea05a6b8ca999bd19684f4a4686acf41b8aedb5991396fd994841a9dad2b77b",
     ".github/dependabot.yml": "a8220cfb49a6649b7d8d8600e4b6f619fadf05b4da68bea2e3a9cd3fc48eac20",
     ".github/pull_request_template.md": "88086df7e4052936e8dbe6515db3f13fa93c5602e9e3a7beeae8210a6e52a7dc",
-    ".github/workflows/deploy.yml": "05aef881bc7043ae27bf7115e8ac69d3adf345c4d61b2f6713a5469b3875123b",
+    ".github/workflows/deploy.yml": "ef60d04b053d505ad4b6bf655e859bb7a95d2ab44bd11dee53bc6c52ffbedcff",
     ".gitignore": "2a8759432093ddc35526ba104208cdf01e6d259dbdd5b9e26da9d31966057f64",
     ".unaltraweb/docker-mount.sh": "59b042cecc2226036e4d85bd96543182c53b32dbddb437b9c196d78df6d12104",
-    "Gemfile": "2059e757cc73ab3c0dd0ca058326d28ff09f695dae63d49165ec5988138c18e3",
-    "Gemfile.lock": "40597d58951e66be2190a0f04875f0c3d52a7cc614a3c49f26125fbebe9be078",
-    "Makefile": "918c8c671b5fddd5d0fc6ab378d1661adcbab3ff82457a03eb77ca92c54666d8"
+    "Gemfile": "4a86135acae28f4cf668ed8f64575f71be01d9b5d09b5cc370265edcb31bd3ee",
+    "Gemfile.lock": "8febc3c74824d89aa6e964819bc11ef3e9a5f451074aa6a76caf91d3f3ede499",
+    "Makefile": "dd8e215ce0ceb408055cda8326ff51fdd22877ce2fecac1dd2c8d78e2eb0ef88"
   },
   "schema_version": 1,
   "source": "unaltraweb_mcp package"
