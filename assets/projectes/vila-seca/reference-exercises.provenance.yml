@@ -1,0 +1,98 @@
+schema_version: 1
+generated_by: assets/projectes/vila-seca/build_reference_exercises.py
+fixed_at: '2026-09-18T00:00:00Z'
+crs: EPSG:25831
+
+sources:
+  icgc_municipalities_5000:
+    producer: Institut Cartogràfic i Geològic de Catalunya
+    product: Divisions administratives 1:5.000, municipis
+    edition: '20260120'
+    format: FlatGeobuf
+    url: https://datacloud.icgc.cat/datacloud/divisions-administratives/fgb_unzip_EPSG25831/divisions-administratives-v2r2-municipis-5000-20260120.fgb
+    product_url: https://www.icgc.cat/ca/Geoinformacio-i-mapes/Dades-i-productes/Geoinformacio-cartografica/Divisions-administratives
+    licence: CC BY 4.0
+    licence_url: https://www.icgc.cat/ca/LICGC/Informacio-publica/Transparencia/Reutilitzacio-de-la-informacio
+    attribution: Institut Cartogràfic i Geològic de Catalunya (ICGC), CC BY 4.0.
+    sha256: 069f755f253f7af969e80403f6e81fa2cadefbd4c40ffd2f825f30e167bf2b2d
+    feature_count: 947
+    source_crs: EPSG:25831
+    access_date: '2026-09-18'
+    use:
+      - Filtre CODIMUNI = '431711' per a Vila-seca a PR1 i PR2.
+      - Base completa i seleccions jeràrquiques a ex05.
+  cnig_administrative_units:
+    producer: Instituto Geográfico Nacional / Centro Nacional de Información Geográfica
+    product: Líneas límite; unidades administrativas INSPIRE
+    edition: '2026-08-10'
+    archive: LINEAS_LIMITE_GML.ZIP
+    archive_member: au_AdministrativeUnit_4thOrder0.gml
+    format: GML
+    download:
+      method: POST
+      url: https://centrodedescargas.cnig.es/CentroDescargas/descargaDir
+      form: secDescDirLA=12408588&secuencial=12408588&codSerie=LILIM
+    sha256: 5bd73c530af995c05da8d9ff4e3d293f62d0dc91c5e48ee773fe881716c108a6
+    feature_count: 8220
+    source_crs: EPSG:4258
+    filter: nationalCode = 34094343171
+    target_crs: EPSG:25831
+    access_date: '2026-09-18'
+    licence_url: https://www.ign.es/resources/licencia/Condiciones_licenciaUso_IGN.pdf
+  icgc_orthophoto_wms:
+    producer: Institut Cartogràfic i Geològic de Catalunya
+    product: Ortofoto Territorial
+    service: WMS
+    base_url: https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms
+    layer: ortofoto_25cm_color_2025
+    role: Context visual remot; no és una entrada analítica.
+    licence: CC BY 4.0
+    licence_url: https://www.icgc.cat/ca/LICGC/Informacio-publica/Transparencia/Reutilitzacio-de-la-informacio
+    attribution: Institut Cartogràfic i Geològic de Catalunya (ICGC), CC BY 4.0.
+    access_date: '2026-09-18'
+
+derivations:
+  pr1-fonts-vila-seca:
+    embedded_project: pr1
+    layers:
+      municipality_icgc_5k: Extracció d'una entitat amb CODIMUNI = '431711'.
+      municipality_cnig: Extracció d'una entitat amb nationalCode = 34094343171 i transformació a EPSG:25831.
+  pr2-digitalitzacio-vila-seca:
+    embedded_project: pr2
+    inherited_layers:
+      - municipality_icgc_5k
+      - municipality_cnig
+    derived_layers:
+      municipi_treball: Còpia traçable de municipality_icgc_5k.
+    synthetic_layers:
+      - fanals
+      - carrils_bici
+      - plaques_solars
+    fixture_notice: >-
+      Geometries inventades determinísticament dins de Vila-seca per provar
+      esquemes, identificadors i topologia. No provenen d'observacions, inventaris
+      ni interpretació d'imatges i no són aptes per a cap anàlisi territorial.
+  ex05-seleccions-jerarquiques-vila-seca:
+    embedded_project: ex05
+    scope_notice: Exercici acotat de selecció; no substitueix la micropràctica 3.
+    attribute_filters:
+      tarragona_atribut: CODIPROV = '43'
+      camp_tarragona_atribut: CODIVEGUE = '04'
+      tarragones_atribut: CODICOMAR = '36'
+      vila_seca_atribut: CODIMUNI = '431711'
+    spatial_operations:
+      ambit_tarragona: Dissolució de tarragona_atribut.
+      tarragona_espacial: Municipis amb el punt interior dins de ambit_tarragona.
+      veins_vila_seca_espacial: Municipis que toquen vila_seca_atribut.
+
+published_outputs:
+  - dades_preparades/pr1-fonts-vila-seca.gpkg
+  - pr1-fonts-vila-seca.qgz
+  - dades_preparades/pr2-digitalitzacio-vila-seca.gpkg
+  - pr2-digitalitzacio-vila-seca.qgz
+  - dades_preparades/ex05-seleccions-jerarquiques-vila-seca.gpkg
+  - ex05-seleccions-jerarquiques-vila-seca.qgz
+  - informes/pr1-fonts-vila-seca.md
+  - informes/pr2-digitalitzacio-vila-seca.md
+  - informes/ex05-seleccions-jerarquiques-vila-seca.md
+  - SHA256SUMS-reference-exercises

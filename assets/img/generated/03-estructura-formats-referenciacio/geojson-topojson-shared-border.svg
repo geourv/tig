@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="780" viewBox="0 0 1600 780" role="img" aria-labelledby="title desc">
+  <title id="title">Frontera repetida en GeoJSON i arc compartit en TopoJSON</title>
+  <desc id="desc">Dos polígons adjacents repeteixen sis posicions de la frontera en GeoJSON. TopoJSON desa la frontera una vegada com a arc i cada polígon la recorre en un sentit. En aquest exemple, les posicions baixen de 18 a 14 i el JSON minificat sense compressió baixa de 367 a 328 bytes, un 10,6 per cent.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, 'Liberation Sans', sans-serif; }
+      .panel-letter { fill: #21313c; font-size: 34px; font-weight: 700; }
+      .panel-title { fill: #21313c; font-size: 31px; font-weight: 700; }
+      .region { fill: #21313c; font-size: 38px; font-weight: 700; }
+      .label { fill: #435861; font-size: 30px; }
+      .metric { fill: #21313c; font-size: 32px; font-weight: 700; }
+      .bar-metric { fill: #ffffff; font-size: 32px; font-weight: 700; }
+      .saving { fill: #397253; font-size: 35px; font-weight: 700; }
+      .note { fill: #5f7079; font-size: 29px; }
+      .area-a { fill: #dceef4; stroke: #276d88; stroke-width: 4; }
+      .area-b { fill: #f6e7dc; stroke: #a85532; stroke-width: 4; }
+      .copy-a { fill: none; stroke: #276d88; stroke-width: 7; }
+      .copy-b { fill: none; stroke: #a85532; stroke-width: 7; }
+      .shared { fill: none; stroke: #397253; stroke-width: 9; }
+      .point-a { fill: #276d88; stroke: #ffffff; stroke-width: 2; }
+      .point-b { fill: #a85532; stroke: #ffffff; stroke-width: 2; }
+      .point-shared { fill: #397253; stroke: #ffffff; stroke-width: 2; }
+      .divider { stroke: #d2dadd; stroke-width: 2; }
+      .bar-geo { fill: #276d88; }
+      .bar-topo { fill: #397253; }
+      .guide { stroke: #aebbc1; stroke-width: 2; }
+    </style>
+  </defs>
+  <rect width="1600" height="780" fill="#ffffff"/>
+  <line x1="545" y1="35" x2="545" y2="735" class="divider"/>
+  <line x1="1090" y1="35" x2="1090" y2="735" class="divider"/>
+  <text x="55" y="70" class="panel-letter">a</text>
+  <text x="95" y="70" class="panel-title">GeoJSON: dues geometries</text>
+  <rect x="95" y="150" width="205" height="360" class="area-a"/>
+  <rect x="300" y="150" width="205" height="360" class="area-b"/>
+  <text x="195" y="350" text-anchor="middle" class="region">A</text>
+  <text x="405" y="350" text-anchor="middle" class="region">B</text>
+  <line x1="294" y1="150" x2="294" y2="510" class="copy-a"/>
+  <line x1="306" y1="150" x2="306" y2="510" class="copy-b"/>
+  <circle cx="294" cy="510" r="7" class="point-a"/>
+  <circle cx="306" cy="510" r="7" class="point-b"/>
+  <circle cx="294" cy="438" r="7" class="point-a"/>
+  <circle cx="306" cy="438" r="7" class="point-b"/>
+  <circle cx="294" cy="366" r="7" class="point-a"/>
+  <circle cx="306" cy="366" r="7" class="point-b"/>
+  <circle cx="294" cy="294" r="7" class="point-a"/>
+  <circle cx="306" cy="294" r="7" class="point-b"/>
+  <circle cx="294" cy="222" r="7" class="point-a"/>
+  <circle cx="306" cy="222" r="7" class="point-b"/>
+  <circle cx="294" cy="150" r="7" class="point-a"/>
+  <circle cx="306" cy="150" r="7" class="point-b"/>
+  <text x="300" y="565" text-anchor="middle" class="label">la mateixa frontera × 2</text>
+  <text x="300" y="615" text-anchor="middle" class="metric">18 posicions</text>
+  <text x="300" y="653" text-anchor="middle" class="note">un anell complet per polígon</text>
+  <text x="600" y="70" class="panel-letter">b</text>
+  <text x="640" y="70" class="panel-title">TopoJSON: tres arcs</text>
+  <rect x="640" y="150" width="205" height="360" class="area-a"/>
+  <rect x="845" y="150" width="205" height="360" class="area-b"/>
+  <text x="740" y="350" text-anchor="middle" class="region">A</text>
+  <text x="950" y="350" text-anchor="middle" class="region">B</text>
+  <line x1="845" y1="150" x2="845" y2="510" class="shared"/>
+  <circle cx="845" cy="510" r="8" class="point-shared"/>
+  <circle cx="845" cy="438" r="8" class="point-shared"/>
+  <circle cx="845" cy="366" r="8" class="point-shared"/>
+  <circle cx="845" cy="294" r="8" class="point-shared"/>
+  <circle cx="845" cy="222" r="8" class="point-shared"/>
+  <circle cx="845" cy="150" r="8" class="point-shared"/>
+  <text x="745" y="565" text-anchor="middle" class="label">A → arc 1 ↑</text>
+  <text x="945" y="565" text-anchor="middle" class="label">B → arc −2 ↓</text>
+  <text x="845" y="615" text-anchor="middle" class="metric">14 posicions</text>
+  <text x="845" y="653" text-anchor="middle" class="note">una sola còpia de la frontera</text>
+  <text x="1145" y="70" class="panel-letter">c</text>
+  <text x="1185" y="70" class="panel-title">Mida serialitzada</text>
+  <line x1="1180" y1="475" x2="1535" y2="475" class="guide"/>
+  <text x="1180" y="175" class="label">GeoJSON</text>
+  <rect x="1180" y="195" width="320" height="82" class="bar-geo"/>
+  <text x="1490" y="247" text-anchor="end" class="bar-metric">367 bytes</text>
+  <text x="1180" y="335" class="label">TopoJSON</text>
+  <rect x="1180" y="355" width="286.0" height="82" class="bar-topo"/>
+  <text x="1456.0" y="407" text-anchor="end" class="bar-metric">328 bytes</text>
+  <text x="1350" y="540" text-anchor="middle" class="saving">−39 bytes · −10,6%</text>
+  <text x="1350" y="595" text-anchor="middle" class="metric">18 → 14 posicions</text>
+  <text x="1350" y="633" text-anchor="middle" class="note">−22,2% de posicions</text>
+  <text x="1350" y="682" text-anchor="middle" class="note">JSON minificat · UTF-8</text>
+  <text x="1350" y="720" text-anchor="middle" class="note">sense compressió</text>
+</svg>

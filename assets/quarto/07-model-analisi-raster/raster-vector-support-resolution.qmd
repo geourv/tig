@@ -1,0 +1,149 @@
+---
+title: "Suport espacial i resolució en vector i ràster"
+lang: ca
+ref: raster_vector_support_resolution
+format:
+  gfm:
+    output-file: raster-vector-support-resolution.generated.md
+execute:
+  echo: false
+  warning: false
+  message: false
+execute-dir: project
+unaltraweb_compute:
+  engine: python
+  mode: figure
+  outputs:
+    - assets/img/generated/07-model-analisi-raster/raster-vector-support-resolution.svg
+---
+
+```{python}
+from pathlib import Path
+from math import sin
+
+
+def find_project_root(start):
+    path = Path(start).resolve()
+    for candidate in (path, *path.parents):
+        if (candidate / ".unaltraweb" / "computations.yml").is_file():
+            return candidate
+    raise RuntimeError("Project root not found: missing .unaltraweb/computations.yml")
+
+
+def raster_colour(row, col, size):
+    palette = ["#176486", "#3785a0", "#75a98c", "#c9bf7d", "#e3a574"]
+    value = (0.55 * col + 0.45 * (size - 1 - row)) / (size - 1)
+    value += 0.12 * sin((row + col) * 0.8)
+    index = max(0, min(len(palette) - 1, round(value * (len(palette) - 1))))
+    return palette[index]
+
+
+width, height = 1600, 760
+panel_x = (20, 545, 1070)
+plot_y = 130
+plot_size = 400
+svg = [
+    f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title desc">',
+    '  <title id="title">Suport espacial i resolució en dades vectorials i ràster</title>',
+    '  <desc id="desc">El mateix àmbit es representa amb objectes i mostres vectorials, una graella fina de 25 metres i una graella grossa de 200 metres. Una cel·la grossa resumeix seixanta-quatre cel·les fines, però cap canvi de graella crea observacions noves.</desc>',
+    '  <defs>',
+    '    <linearGradient id="field" x1="0" y1="1" x2="1" y2="0">',
+    '      <stop offset="0%" stop-color="#176486"/>',
+    '      <stop offset="48%" stop-color="#75a98c"/>',
+    '      <stop offset="100%" stop-color="#e3a574"/>',
+    '    </linearGradient>',
+    '    <style>',
+    "      text { font-family: Arial, 'Liberation Sans', sans-serif; }",
+    '      .panel { fill: #ffffff; stroke: #c5d0d5; stroke-width: 2; }',
+    '      .heading { fill: #21313c; font-size: 36px; font-weight: 700; }',
+    '      .label { fill: #21313c; font-size: 29px; font-weight: 700; }',
+    '      .note { fill: #4f626b; font-size: 29px; }',
+    '      .footer { fill: #21313c; font-size: 30px; font-weight: 700; }',
+    '      .grid { stroke: #ffffff; stroke-width: 2; }',
+    '      .subgrid { stroke: #ffffff; stroke-width: 2; stroke-dasharray: 7 6; opacity: .9; }',
+    '      .object { fill: #7cb3c8; fill-opacity: .58; stroke: #176486; stroke-width: 6; }',
+    '      .line { fill: none; stroke: #21313c; stroke-width: 9; stroke-linecap: round; }',
+    '      .sample { fill: #ffffff; stroke: #21313c; stroke-width: 5; }',
+    '      .support { fill: none; stroke: #b84200; stroke-width: 7; }',
+    '      .leader { fill: none; stroke: #b84200; stroke-width: 4; }',
+    '      .support-label { fill: #b84200; font-size: 29px; font-weight: 700; }',
+    '    </style>',
+    '  </defs>',
+    '  <rect width="1600" height="760" fill="#f7f9fa"/>',
+]
+
+for x in panel_x:
+    svg.append(f'  <rect x="{x}" y="25" width="510" height="710" class="panel"/>')
+
+# Vector objects and point observations can refer to different kinds of support.
+x = panel_x[0]
+svg.extend([
+    f'  <text x="{x + 255}" y="80" text-anchor="middle" class="heading">Fenomen i vector</text>',
+    f'  <rect x="{x + 55}" y="{plot_y}" width="{plot_size}" height="{plot_size}" fill="url(#field)"/>',
+    f'  <path d="M {x + 95},360 C {x + 115},245 {x + 225},210 {x + 300},260 C {x + 370},305 {x + 405},390 {x + 330},455 C {x + 245},515 {x + 130},475 {x + 95},360 Z" class="object"/>',
+    f'  <path d="M {x + 70},455 C {x + 145},390 {x + 210},420 {x + 270},340 C {x + 320},275 {x + 375},245 {x + 445},200" class="line"/>',
+    f'  <text x="{x + 235}" y="330" text-anchor="middle" class="label">objecte discret</text>',
+])
+for px, py in ((95, 180), (175, 245), (245, 175), (330, 220), (395, 165), (415, 330), (350, 450)):
+    svg.append(f'  <circle cx="{x + px}" cy="{py}" r="10" class="sample"/>')
+svg.extend([
+    f'  <text x="{x + 255}" y="575" text-anchor="middle" class="note">identitats, línies o mostres</text>',
+    f'  <text x="{x + 255}" y="610" text-anchor="middle" class="note">d’un camp continu</text>',
+])
+
+# Fine grid over the same 400 m by 400 m extent.
+x = panel_x[1]
+cell = 25
+svg.append(f'  <text x="{x + 255}" y="80" text-anchor="middle" class="heading">Graella fina · 25 m</text>')
+for row in range(16):
+    for col in range(16):
+        cx = x + 55 + col * cell
+        cy = plot_y + row * cell
+        svg.append(
+            f'  <rect x="{cx}" y="{cy}" width="{cell}" height="{cell}" '
+            f'fill="{raster_colour(row, col, 16)}" class="grid"/>'
+        )
+highlight_x = x + 55 + 11 * cell
+highlight_y = plot_y + 9 * cell
+svg.extend([
+    f'  <rect x="{highlight_x}" y="{highlight_y}" width="{cell}" height="{cell}" class="support"/>',
+    f'  <path d="M {highlight_x + cell},{highlight_y + cell / 2} L {x + 440},{highlight_y + cell / 2}" class="leader"/>',
+    f'  <text x="{x + 435}" y="{highlight_y - 12}" text-anchor="end" class="support-label">suport 25 × 25 m</text>',
+    f'  <text x="{x + 255}" y="575" text-anchor="middle" class="note">16 × 16 = 256 cel·les</text>',
+    f'  <text x="{x + 255}" y="610" text-anchor="middle" class="note">mateix àmbit de 400 × 400 m</text>',
+])
+
+# Coarse grid: each 200 m cell covers 8 by 8 fine-grid supports.
+x = panel_x[2]
+coarse = 200
+coarse_colours = (("#75a98c", "#e3a574"), ("#176486", "#75a98c"))
+svg.append(f'  <text x="{x + 255}" y="80" text-anchor="middle" class="heading">Graella grossa · 200 m</text>')
+for row in range(2):
+    for col in range(2):
+        cx = x + 55 + col * coarse
+        cy = plot_y + row * coarse
+        svg.append(
+            f'  <rect x="{cx}" y="{cy}" width="{coarse}" height="{coarse}" '
+            f'fill="{coarse_colours[row][col]}" class="grid"/>'
+        )
+highlight_x = x + 55 + coarse
+highlight_y = plot_y
+for index in range(1, 8):
+    offset = index * cell
+    svg.append(f'  <line x1="{highlight_x + offset}" y1="{highlight_y}" x2="{highlight_x + offset}" y2="{highlight_y + coarse}" class="subgrid"/>')
+    svg.append(f'  <line x1="{highlight_x}" y1="{highlight_y + offset}" x2="{highlight_x + coarse}" y2="{highlight_y + offset}" class="subgrid"/>')
+svg.extend([
+    f'  <rect x="{highlight_x}" y="{highlight_y}" width="{coarse}" height="{coarse}" class="support"/>',
+    f'  <text x="{highlight_x + coarse / 2}" y="{highlight_y + 92}" text-anchor="middle" class="label">8 × 8</text>',
+    f'  <text x="{highlight_x + coarse / 2}" y="{highlight_y + 128}" text-anchor="middle" class="label">= 64 suports fins</text>',
+    f'  <text x="{x + 255}" y="575" text-anchor="middle" class="note">2 × 2 = 4 cel·les</text>',
+    f'  <text x="{x + 255}" y="610" text-anchor="middle" class="note">mateix àmbit de 400 × 400 m</text>',
+    '  <text x="800" y="690" text-anchor="middle" class="footer">Suport, mida de cel·la, resolució efectiva i exactitud són propietats diferents.</text>',
+    '</svg>',
+])
+
+project_root = find_project_root(Path.cwd())
+output = project_root / "assets/img/generated/07-model-analisi-raster/raster-vector-support-resolution.svg"
+output.parent.mkdir(parents=True, exist_ok=True)
+output.write_text("\n".join(svg) + "\n", encoding="utf-8")
+```

@@ -11,6 +11,7 @@ paths:
     - recipes/qgis-applied-workflows.yml
     - recipes/qgis-vector-workflows.yml
     - recipes/qgis-raster-workflows.yml
+    - recipes/qgis-terrain-analysis.yml
     - recipes/qgis-source-discovery.yml
   data_root: tmp/unaltracaptura-qgis/data
   output_root: assets/img/qgis
@@ -21,10 +22,82 @@ data:
   - id: cnig-vila-seca-administrative-unit
     type: vector
     path: prepared/cnig/administrative-units/vila-seca-cnig.raw.json
+  - id: cnig-tarragona-administrative-unit
+    type: vector
+    path: prepared/cnig/administrative-units/tarragona-cnig.geojson
+    sha256: eda078ca366dc266a9f502adf1cefeb5b91f91f22b463d34f0d2bc7556c912b2
   - id: cnig-mdt05-0473
     type: raster
     path: prepared/cnig/mdt05/source/pnoa_mdt05_etrs89_hu31_0473_lid.tif
     sha256: 27f9112c036be5923d458a1b5fb4da646aba091a325d262dd03ed13eb0ce1c3d
+  - id: cnig-mdt25-0472
+    type: raster
+    path: prepared/cnig/mdt25/source/pnoa_mdt25_etrs89_hu31_0472_lid.tif
+    sha256: 325b8028bc99d4726cfdd9cb777de0ac06ed815a62da2b0e313c0c17daf4bb7c
+  - id: cnig-mdt25-0473
+    type: raster
+    path: prepared/cnig/mdt25/source/pnoa_mdt25_etrs89_hu31_0473_lid.tif
+    sha256: 827b2a41b61a9636178847137647fb46f07d4f227165279d1487e757921f22bf
+  - id: cnig-mdt200-tarragona
+    type: raster
+    path: prepared/cnig/mdt200/source/pnoa_mdt200_etrs89_hu31_tarragona.tif
+    sha256: 1827b96fd3c2d1f7cc6cb41b169fecd98ecade31581debc5264158aa3b65b118
+  - id: icgc-ortofoto-territorial-2025-vila-seca
+    type: raster
+    path: prepared/icgc/orthophoto/source/ortofoto_territorial_2025_vila_seca.jpg
+    sha256: fa264bc73ea837dd5c44c08f3e9836330961a9670fa4ee265034900810f290d8
+  - id: icgc-ortofoto-territorial-2025-facultat
+    type: raster
+    path: prepared/terrain/vila-seca/ortofoto_territorial_2025_facultat.tif
+    sha256: d890c966db18f4a3ee4b260981b4446d2c6fb470fa78a7025cb75647120cf7d7
+  - id: vila-seca-mdt25-mosaic
+    type: raster
+    path: prepared/terrain/vila-seca/mdt25_0472_0473_mosaic.tif
+    sha256: 7e00f20a23611ba192cc7723cddafc72191af2b6888a76a7d00abe6f3306cb6d
+  - id: vila-seca-mdt25-clip
+    type: raster
+    path: prepared/terrain/vila-seca/mdt25_vila_seca.tif
+    sha256: f3f4da904ae1c1fa0c23eb47a5f2c2a2b7f478883efbe930c70ec947098b47b9
+  - id: vila-seca-mdt200-clip
+    type: raster
+    path: prepared/terrain/vila-seca/mdt200_vila_seca.tif
+    sha256: bcc83b4f63ec81cc4144ff005732c25db309c6cf46e9770dbbc841277399fee2
+  - id: vila-seca-orthophoto-2025
+    type: raster
+    path: prepared/terrain/vila-seca/ortofoto_territorial_2025_vila_seca.tif
+    sha256: 8cfdb39b6fce124844644087bc39a365da9bcef6401286644590b60c4fd07ad0
+  - id: vila-seca-slope-degrees
+    type: raster
+    path: prepared/terrain/vila-seca/pendent_25m_graus_vila_seca.tif
+    sha256: 39b479da22f1c27048d38bed340d9ebcbd0f2afd695cf2aa632462d839aebd06
+  - id: vila-seca-slope-percent
+    type: raster
+    path: prepared/terrain/vila-seca/pendent_25m_percent_vila_seca.tif
+    sha256: 9da6a4daf8b38f2b10c254d0cd075d34112e4c156405bd4a166ffc1ece287c46
+  - id: vila-seca-aspect-degrees
+    type: raster
+    path: prepared/terrain/vila-seca/orientacio_25m_graus_vila_seca.tif
+    sha256: a37d92ee064e90539111c0aa38b7a92e492b5eecb18541579f9a113d64d9aa5c
+  - id: vila-seca-aspect-sectors
+    type: raster
+    path: prepared/terrain/vila-seca/orientacio_sectors_25m_vila_seca.tif
+    sha256: e6944c2e17ac1d69ecd5a2ca4d5b32907bf1dc127ef1e5390c3cd335345062d1
+  - id: vila-seca-elevation-classes
+    type: raster
+    path: prepared/terrain/vila-seca/elevacio_classes_25m_vila_seca.tif
+    sha256: 8b3f58ef4c9f76d32f1aefd191376c045fd1b647f1310f6b0221ffe023c78b6d
+  - id: vila-seca-low-elevation-distance
+    type: raster
+    path: prepared/terrain/vila-seca/distancia_zones_baixes_25m_vila_seca.tif
+    sha256: c2f4fb70dce25bb358c704bf73034898fba3086738eec7673ebee5feb26f28db
+  - id: vila-seca-low-elevation-polygons
+    type: vector
+    path: prepared/terrain/vila-seca/zones_baixes_2m_vila_seca.gpkg
+    sha256: b1a7cf497806b1528fa6ef7290dbe3a48f4ec05af5a209f5e452b446bc1ac4dc
+  - id: vila-seca-south-facing
+    type: raster
+    path: prepared/terrain/vila-seca/orientacio_sud_25m_vila_seca.tif
+    sha256: 4370d6fd4e0fc00356177f75742ea5fa552cacbe970b9ae8fe30ac1b425c6e0e
 
 teaching_resources:
   - id: cnig-vila-seca-administrative-unit
@@ -60,6 +133,40 @@ teaching_resources:
           - Canonicalitzar la serialització JSON sense modificar-ne el contingut geogràfic.
           - Verificar el SHA-256 canònic abans de crear la còpia preparada.
         notes: L'API alterna serialitzacions equivalents; no es fixa el hash de la resposta bruta i build_project.py valida el SHA-256 de la representació JSON canònica.
+
+  - id: cnig-tarragona-administrative-unit
+    kind: downloadable
+    provider: cnig
+    type: vector
+    title: Unitat administrativa de Tarragona
+    description: Extracció provincial de l'API OGC Features oficial de l'IGN/CNIG per contextualitzar el MDT200.
+    url: https://api-features.ign.es/collections/administrativeunit
+    licence: CC BY 4.0 ign.es
+    size: small
+    formats: [geojson]
+    tags: [tarragona, province, administrative_boundaries, cnig, geojson]
+    teaching_use:
+      - Situar la cobertura del MDT200 dins del límit provincial i reconèixer la costa i el delta de l'Ebre.
+    preparation:
+      - id: download_tarragona_administrative_unit
+        operation: download
+        description: Descarrega exactament la unitat provincial de Tarragona en GeoJSON.
+        area: tarragona
+        downloads:
+          - id: tarragona_administrative_unit
+            description: Unitat de nivell Provincia amb nom Tarragona.
+            url: https://api-features.ign.es/collections/administrativeunit/items/1174500?f=json
+            output: prepared/cnig/administrative-units/tarragona-cnig.raw.json
+            max_bytes: 4000000
+        outputs:
+          - prepared/cnig/administrative-units/tarragona-cnig.raw.json
+        tools: [ign:ogc-api-features]
+        steps:
+          - Descarregar només la consulta declarada a l'API oficial.
+          - Comprovar l'identificador, el nom, el nivell i el codi oficial de la unitat.
+          - Canonicalitzar la serialització JSON sense modificar-ne el contingut geogràfic.
+          - Verificar el SHA-256 canònic abans de crear la còpia preparada.
+        notes: L'API alterna serialitzacions equivalents; no es fixa el hash de la resposta bruta i build_raster_workflows.py valida el SHA-256 de la representació JSON canònica.
 
   - id: cnig-mdt05-0473
     kind: downloadable
@@ -104,3 +211,221 @@ teaching_resources:
           - Utilitzar exclusivament el recurs 9072569 del centre de descàrregues oficial.
           - Verificar la mida i el SHA-256 abans d'utilitzar el COG.
           - Conservar la descàrrega a la memòria cau, fora dels fitxers versionats.
+
+  - id: cnig-mdt25-vila-seca-first-coverage
+    kind: downloadable
+    provider: cnig
+    type: raster
+    title: MDT25 de primera cobertura, fulls 0472 i 0473
+    description: COG oficials de 25 metres de l'IGN/CNIG que cobreixen Vila-seca en el fus UTM nadiu 31N.
+    url: https://centrodedescargas.cnig.es/CentroDescargas/modelo-digital-terreno-mdt25-primera-cobertura
+    licence: CC BY 4.0 ign.es
+    size: medium
+    formats: [cog, geotiff]
+    tags: [vilaseca, dem, mdt, elevation, mosaic, raster, cnig, first_coverage]
+    teaching_use:
+      - Comprovar la continuïtat entre dos fulls abans de crear un mosaic.
+      - Preparar el model de 25 metres per als derivats del terreny de Vila-seca.
+    layers:
+      - name: mdt25_0472
+        title: MDT25 0472
+        geometry: raster
+        crs: EPSG:25831
+      - name: mdt25_0473
+        title: MDT25 0473
+        geometry: raster
+        crs: EPSG:25831
+    preparation:
+      - id: download_cnig_mdt25_vila_seca
+        operation: download
+        description: Descarrega els dos COG oficials MDT25 de primera cobertura necessaris per a Vila-seca.
+        area: vila_seca
+        downloads:
+          - id: pnoa_mdt25_etrs89_hu31_0472_lid
+            description: MDT25 de primera cobertura, full MTN50 0472, ETRS89 UTM 31N i altures ortomètriques.
+            url: https://centrodedescargas.cnig.es/CentroDescargas/descargaDir
+            method: POST
+            form:
+              secDescDirLA: "9074092"
+            output: prepared/cnig/mdt25/source/pnoa_mdt25_etrs89_hu31_0472_lid.tif
+            sha256: 325b8028bc99d4726cfdd9cb777de0ac06ed815a62da2b0e313c0c17daf4bb7c
+            max_bytes: 5000000
+          - id: pnoa_mdt25_etrs89_hu31_0473_lid
+            description: MDT25 de primera cobertura, full MTN50 0473, ETRS89 UTM 31N i altures ortomètriques.
+            url: https://centrodedescargas.cnig.es/CentroDescargas/descargaDir
+            method: POST
+            form:
+              secDescDirLA: "9074093"
+            output: prepared/cnig/mdt25/source/pnoa_mdt25_etrs89_hu31_0473_lid.tif
+            sha256: 827b2a41b61a9636178847137647fb46f07d4f227165279d1487e757921f22bf
+            max_bytes: 5000000
+        outputs:
+          - prepared/cnig/mdt25/source/pnoa_mdt25_etrs89_hu31_0472_lid.tif
+          - prepared/cnig/mdt25/source/pnoa_mdt25_etrs89_hu31_0473_lid.tif
+        tools: [cnig:download-centre]
+        steps:
+          - Utilitzar només els recursos 9074092 i 9074093 del centre de descàrregues oficial.
+          - Verificar la mida i el SHA-256 de cada COG.
+          - Conservar les fonts sense modificar a la memòria cau.
+
+  - id: cnig-mdt200-tarragona-first-coverage
+    kind: downloadable
+    provider: cnig
+    type: raster
+    title: MDT200 de primera cobertura, Tarragona
+    description: COG provincial oficial de 200 metres de l'IGN/CNIG en el fus UTM nadiu 31N.
+    url: https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=9074255
+    licence: CC BY 4.0 ign.es
+    size: small
+    formats: [cog, geotiff]
+    tags: [tarragona, vilaseca, dem, mdt, elevation, raster, cnig, first_coverage]
+    teaching_use:
+      - Reconèixer el relleu provincial abans de canviar d'escala.
+      - Contrastar el suport espacial de 200 metres amb el MDT25 de la mateixa cobertura LiDAR.
+    layers:
+      - name: mdt200_tarragona
+        title: MDT200 Tarragona
+        geometry: raster
+        crs: EPSG:25831
+    preparation:
+      - id: download_cnig_mdt200_tarragona
+        operation: download
+        description: Descarrega el COG oficial MDT200 de primera cobertura de Tarragona.
+        area: tarragona
+        downloads:
+          - id: pnoa_mdt200_etrs89_hu31_tarragona
+            description: MDT200 de primera cobertura, província de Tarragona, ETRS89 UTM 31N i altures ortomètriques.
+            url: https://centrodedescargas.cnig.es/CentroDescargas/descargaDir
+            method: POST
+            form:
+              secDescDirLA: "9074255"
+            output: prepared/cnig/mdt200/source/pnoa_mdt200_etrs89_hu31_tarragona.tif
+            sha256: 1827b96fd3c2d1f7cc6cb41b169fecd98ecade31581debc5264158aa3b65b118
+            max_bytes: 4000000
+        outputs:
+          - prepared/cnig/mdt200/source/pnoa_mdt200_etrs89_hu31_tarragona.tif
+        tools: [cnig:download-centre]
+        steps:
+          - Utilitzar només el recurs 9074255 del centre de descàrregues oficial.
+          - Verificar la mida i el SHA-256 abans d'utilitzar el COG.
+          - Conservar la font sense modificar a la memòria cau.
+
+  - id: icgc-ortofoto-territorial-2025-vila-seca
+    kind: downloadable
+    provider: icgc
+    type: raster
+    title: Ortofoto Territorial 2025 de Vila-seca
+    description: Resposta fixa GetMap del WMS oficial de l'ICGC per contextualitzar el MDT200 sobre tot el municipi.
+    url: https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms
+    licence: CC BY 4.0 icgc.cat
+    size: small
+    formats: [jpeg]
+    tags: [vilaseca, orthophoto, wms, icgc, context, "2025"]
+    teaching_use:
+      - Mostrar la mida de cel·la del MDT200 sobre una imatge territorial recognoscible.
+    preparation:
+      - id: download_icgc_orthophoto_2025_vila_seca
+        operation: download
+        description: Descarrega una resposta GetMap reproduïble de la capa ortofoto_25cm_color_2025.
+        area: vila_seca
+        downloads:
+          - id: ortofoto_territorial_2025_vila_seca
+            description: Vista 1600 per 1200 píxels de tot Vila-seca, a 6,5 metres per píxel de petició.
+            url: https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&LAYERS=ortofoto_25cm_color_2025&STYLES=&CRS=EPSG:25831&BBOX=339500,4547500,349900,4555300&WIDTH=1600&HEIGHT=1200&FORMAT=image/jpeg
+            output: prepared/icgc/orthophoto/source/ortofoto_territorial_2025_vila_seca.jpg
+            sha256: fa264bc73ea837dd5c44c08f3e9836330961a9670fa4ee265034900810f290d8
+            max_bytes: 5000000
+        outputs:
+          - prepared/icgc/orthophoto/source/ortofoto_territorial_2025_vila_seca.jpg
+        tools: [icgc:wms-getmap]
+        steps:
+          - Fixar capa, any, CRS, extensió i dimensions de la petició GetMap.
+          - Verificar el SHA-256 de la resposta abans de georeferenciar-la.
+          - Utilitzar-la només com a context visual, no com a entrada analítica.
+
+  - id: icgc-ortofoto-territorial-2025-facultat
+    kind: downloadable
+    provider: icgc
+    type: raster
+    title: Ortofoto Territorial 2025 de l'entorn de la Facultat
+    description: Resposta fixa GetMap del WMS oficial de l'ICGC per preparar la demostració de digitalització vectorial.
+    url: https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms
+    licence: CC BY 4.0 icgc.cat
+    size: small
+    formats: [jpeg]
+    tags: [vilaseca, faculty, orthophoto, wms, icgc, digitizing, context, "2025"]
+    teaching_use:
+      - Situar la demostració de punts, línies connectades i polígons a l'entorn de la Facultat de Turisme i Geografia.
+    preparation:
+      - id: download_icgc_orthophoto_2025_facultat
+        operation: download
+        description: Descarrega una resposta GetMap de detall de la capa ortofoto_25cm_color_2025.
+        area: facultat_turisme_geografia
+        downloads:
+          - id: ortofoto_territorial_2025_facultat
+            description: Vista de 1800 per 1800 píxels de l'entorn de la Facultat, a 0,25 metres per píxel de petició.
+            url: https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&LAYERS=ortofoto_25cm_color_2025&STYLES=&CRS=EPSG:25831&BBOX=344250,4551600,344700,4552050&WIDTH=1800&HEIGHT=1800&FORMAT=image/jpeg
+            output: prepared/icgc/orthophoto/source/ortofoto_territorial_2025_facultat.jpg
+            sha256: 61a8235709f0770228018b5bcaae308c0abf52c91505b02a77cb689525fb00b7
+            max_bytes: 5000000
+        outputs:
+          - prepared/icgc/orthophoto/source/ortofoto_territorial_2025_facultat.jpg
+        tools: [icgc:wms-getmap]
+        steps:
+          - Fixar capa, any, CRS, extensió i dimensions de la petició GetMap.
+          - Verificar el SHA-256 abans de georeferenciar la resposta.
+          - Utilitzar-la només com a context visual per a la demostració de digitalització.
+
+  - id: vila-seca-terrain-derivatives
+    kind: bundled
+    provider: derived
+    type: raster
+    path: assets/projectes/vila-seca/build_raster_workflows.py
+    title: Derivats del terreny de Vila-seca
+    description: Mosaic, retalls i derivats deterministes generats amb GDAL 3.10.3 a partir de les fonts oficials declarades.
+    licence: Derived from CC BY 4.0 ign.es and icgc.cat sources
+    size: medium
+    formats: [geotiff, geopackage]
+    tags: [vilaseca, terrain, derived, raster, vector, deterministic]
+    teaching_use:
+      - Regenerar totes les entrades locals de la recepta qgis-terrain-analysis després de preparar les fonts.
+    preparation:
+      - id: build_vila_seca_terrain_derivatives
+        operation: derive
+        description: Executa el constructor versionat amb la imatge QGIS fixada i sense xarxa.
+        area: vila_seca
+        inputs:
+          - prepared/cnig/administrative-units/tarragona-cnig.raw.json
+          - prepared/cnig/mdt25/source/pnoa_mdt25_etrs89_hu31_0472_lid.tif
+          - prepared/cnig/mdt25/source/pnoa_mdt25_etrs89_hu31_0473_lid.tif
+          - prepared/cnig/mdt200/source/pnoa_mdt200_etrs89_hu31_tarragona.tif
+          - prepared/icgc/orthophoto/source/ortofoto_territorial_2025_vila_seca.jpg
+          - prepared/icgc/orthophoto/source/ortofoto_territorial_2025_facultat.jpg
+          - assets/projectes/vila-seca/dades_originals/vila-seca-cnig.geojson
+        outputs:
+          - prepared/cnig/administrative-units/tarragona-cnig.geojson
+          - prepared/terrain/vila-seca/mdt25_0472_0473_mosaic.tif
+          - prepared/terrain/vila-seca/mdt25_vila_seca.tif
+          - prepared/terrain/vila-seca/mdt200_vila_seca.tif
+          - prepared/terrain/vila-seca/ortofoto_territorial_2025_vila_seca.tif
+          - prepared/terrain/vila-seca/ortofoto_territorial_2025_facultat.tif
+          - prepared/terrain/vila-seca/pendent_25m_graus_vila_seca.tif
+          - prepared/terrain/vila-seca/pendent_25m_percent_vila_seca.tif
+          - prepared/terrain/vila-seca/orientacio_25m_graus_vila_seca.tif
+          - prepared/terrain/vila-seca/orientacio_sectors_25m_vila_seca.tif
+          - prepared/terrain/vila-seca/elevacio_classes_25m_vila_seca.tif
+          - prepared/terrain/vila-seca/distancia_zones_baixes_25m_vila_seca.tif
+          - prepared/terrain/vila-seca/orientacio_sud_25m_vila_seca.tif
+          - prepared/terrain/vila-seca/zones_baixes_2m_vila_seca.gpkg
+        tools: [gdal:3.10.3, python:numpy]
+        steps:
+          - Preparar les cinc fonts descarregables declarades i conservar els SHA-256 estables o canònics.
+          - Validar i canonicalitzar el límit provincial abans d'utilitzar-lo com a context visual.
+          - Utilitzar el límit municipal versionat com a línia de tall.
+          - Executar build_raster_workflows.py dins de la imatge QGIS fixada i amb la xarxa desactivada.
+          - Verificar geometria, recomptes i SHA-256 de totes les sortides abans de renderitzar captures.
+        notes: >-
+          Ordre reproduïble: docker run --rm --network none --user "$(id -u):$(id -g)"
+          --mount "type=bind,src=$PWD,dst=/workspace" -w /workspace --entrypoint python3
+          qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc
+          assets/projectes/vila-seca/build_raster_workflows.py

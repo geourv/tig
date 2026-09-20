@@ -34,6 +34,19 @@ La cadena es pot llegir en cinc passos: **lloc sobre la Terra**, **marc i superf
 
 >>>> **Una parella de nombres no identifica una posició per si sola.** Cal conservar com a mínim el CRS, l'ordre dels eixos i les unitats; quan l'exactitud ho exigeixi, també l'operació i l'època de les coordenades.
 
+### Geoposicionar, geocodificar i georeferenciar {#geoposicionar-geocodificar-georeferenciar}
+
+Geoposicionar
+: Determinar o registrar la posició geogràfica d'un objecte o una observació, per exemple a partir d'un receptor GNSS o d'un sensor que ja produeix coordenades.
+
+Geocodificar
+: Convertir un descriptor textual, com una adreça o un topònim, en una posició amb coordenades. La geocodificació inversa parteix de les coordenades i retorna un descriptor territorial probable.
+
+Georeferenciar
+: Establir la correspondència entre les posicions internes d'un conjunt de dades i posicions expressades en un CRS declarat. En una imatge sense referència, sol requerir punts de control i una transformació; en altres formats, la transformació ja pot estar integrada o conservar-se en un fitxer lateral.
+
+Les tres operacions es poden encadenar, però no són sinònimes. Un receptor GNSS geoposiciona una observació sense geocodificar cap adreça; un servei pot geocodificar `carrer de Joanot Martorell, Vila-seca` i retornar un punt; i uns punts de control poden georeferenciar un plànol escanejat. Declarar el CRS que correspon a unes coordenades conegudes completa la seva interpretació sense moure-les, mentre que transformar-les a un altre CRS canvia els nombres per conservar la mateixa posició. Un *world file* aporta una transformació afí per georeferenciar una imatge, però no identifica tot sol el CRS.
+
 ### Latitud i longitud
 
 La **latitud** mesura la separació angular respecte de l'equador. El rang vàlid és de `-90°` a `+90°`: el nord és positiu i el sud, negatiu. La **longitud** mesura la separació angular respecte del meridià d'origen. Habitualment s'expressa de `-180°` a `+180°`: l'est és positiu i l'oest, negatiu. Els meridians `180° E` i `180° O` coincideixen; als pols, una longitud concreta no diferencia la posició. Alguns sistemes utilitzen longituds de `0°` a `360°`, de manera que cal conèixer la convenció abans de comparar valors.
@@ -194,7 +207,9 @@ GeoPackage és un estàndard d'implementació de l'OGC basat en SQLite. Defineix
 
 La taula `gpkg_extensions` declara funcionalitats addicionals, que poden ser compartides o pròpies d'un productor. `layer_styles` pot contenir estils de QGIS i `qgis_projects`, projectes; un altre client pot llegir les entitats i ignorar aquesta configuració. A `sandbox/pr1-fonts-cognom.gpkg`, l'entrada incrustada `pr1` és la còpia de treball de la primera micropràctica. La representació externa només es prepara després dels controls.
 
-Durant una escriptura SQLite poden aparèixer fitxers `-journal`, `-wal` o `-shm`, que no s'han de separar ni eliminar. Abans de copiar el contenidor cal tancar les connexions i provar la còpia. Un GeoPackage en una carpeta sincronitzada no és una base multiusuari i pot patir conflictes si s'edita simultàniament.
+>>>> **Els fitxers `-journal`, `-wal` i `-shm` no són residus que es puguin esborrar.** Durant una escriptura SQLite, al costat de `projecte.gpkg` pot aparèixer `projecte.gpkg-journal` o la parella `projecte.gpkg-wal` i `projecte.gpkg-shm`. Aquestes peces registren o coordinen la transacció activa. Desar els canvis no obliga el programa a tancar-ne la connexió, i els fitxers laterals poden continuar presents fins que la sessió d'escriptura queda completament tancada, per exemple en tancar QGIS. Mentre hi siguin, no s'han d'eliminar, reanomenar, moure ni separar del `.gpkg`. Abans de copiar, comprimir, sincronitzar o lliurar el contenidor cal tancar totes les connexions, comprovar que els fitxers laterals han desaparegut i reobrir una còpia per verificar que les capes i taules esperades es llegeixen correctament. Si continuen presents després del tancament, s'ha de conservar el conjunt i diagnosticar-lo; eliminar-los a mà pot perdre canvis o malmetre la base.
+
+Un GeoPackage en una carpeta sincronitzada no és una base multiusuari i pot patir conflictes si s'edita simultàniament.
 
 ### GeoJSON i TopoJSON per a intercanvi web
 
@@ -202,7 +217,82 @@ GeoJSON és un format textual basat en JSON, adequat per a respostes web i conju
 
 RFC 7946 fixa les posicions en longitud i latitud, en aquest ordre, dins de WGS 84 segons `OGC:CRS84`. El membre `crs` antic ja no forma part d'aquest contracte. Una capa UTM destinada a GeoJSON s'ha de transformar en una sortida d'intercanvi i reobrir per comprovar geometries, atributs, extensió i ordre dels eixos. El nombre de decimals no certifica l'exactitud.
 
-TopoJSON és una especificació comunitària que permet que línies i polígons facin referència a **arcs compartits** en lloc de repetir una frontera. Pot reduir la mida de cobertures administratives i mantenir la coincidència dels límits compartits, però té menys suport directe i no és un estàndard OGC o IETF {% cite bostockTopoJSON2013 %}.
+El GeoJSON següent descriu dos polígons adjacents, `A` i `B`. Cada `Feature` és completa i independent: les sis posicions de la frontera situada a la longitud 2 apareixen primer de sud a nord dins de `A` i després de nord a sud dins de `B`.
+
+::: listing "Dos polígons adjacents en GeoJSON: cada geometria repeteix la frontera comuna"
+```json
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"nom": "A"},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [2, 41], [2, 41.2], [2, 41.4],
+          [2, 41.6], [2, 41.8], [2, 42],
+          [1, 42], [1, 41], [2, 41]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {"nom": "B"},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [2, 41], [3, 41], [3, 42],
+          [2, 42], [2, 41.8], [2, 41.6],
+          [2, 41.4], [2, 41.2], [2, 41]
+        ]]
+      }
+    }
+  ]
+}
+```
+:::
+
+TopoJSON és una especificació comunitària que separa els objectes geomètrics dels **arcs compartits**. En l'exemple equivalent, `arcs[1]` conté una sola vegada les sis posicions de la frontera. El polígon `A` la recorre com a arc `1`; el valor `-2` de `B` significa «arc 1 en sentit invers», perquè TopoJSON codifica la inversió de l'índex 1 com `~1 = -2`. Els arcs `0` i `2` completen els perímetres exteriors. Aquest exemple no aplica cap `transform`: manté coordenades absolutes perquè l'estructura sigui visible {% cite bostockTopoJSON2013 %}.
+
+::: listing "Els mateixos polígons en TopoJSON: la frontera comuna es desa com un sol arc"
+```json
+{
+  "type": "Topology",
+  "objects": {
+    "municipis": {
+      "type": "GeometryCollection",
+      "geometries": [
+        {
+          "type": "Polygon",
+          "arcs": [[1, 0]],
+          "properties": {"nom": "A"}
+        },
+        {
+          "type": "Polygon",
+          "arcs": [[2, -2]],
+          "properties": {"nom": "B"}
+        }
+      ]
+    }
+  },
+  "arcs": [
+    [[2, 42], [1, 42], [1, 41], [2, 41]],
+    [
+      [2, 41], [2, 41.2], [2, 41.4],
+      [2, 41.6], [2, 41.8], [2, 42]
+    ],
+    [[2, 41], [3, 41], [3, 42], [2, 42]]
+  ]
+}
+```
+:::
+
+![Comparació de dos polígons que repeteixen la frontera en GeoJSON amb els mateixos polígons construïts a partir d'un únic arc compartit en TopoJSON, juntament amb la mida serialitzada dels dos exemples]({{ site.baseurl }}/assets/quarto/03-estructura-formats-referenciacio/geojson-topojson-shared-border.qmd "En el cas didàctic, GeoJSON desa 18 posicions i repeteix la frontera; TopoJSON en desa 14 i permet que els dos polígons recorrin el mateix arc en sentits oposats. El JSON minificat i sense compressió passa de 367 a 328 bytes, un 10,6% menys."){: data-figure-width-web="54rem" data-figure-width-pdf="100%"}
+
+La xifra és una mesura reproduïble d'aquests dos objectes serialitzats en UTF-8, sense espais ni compressió: s'estalvien 39 bytes, o un 10,6%. No és un percentatge universal ni una garantia d'estalvi de memòria RAM. El guany sol créixer quan moltes entitats comparteixen fronteres llargues, però depèn de la complexitat dels arcs, els atributs, la quantificació i la compressió del transport; un lector també pot expandir els arcs a geometries independents en carregar-los. Per tant, el volum s'ha de mesurar sobre el conjunt i la compressió que realment es distribuiran.
+
+TopoJSON pot reduir la mida de cobertures administratives i mantenir la coincidència dels límits compartits, però té menys suport directe i no és un estàndard OGC o IETF {% cite bostockTopoJSON2013 %}.
 
 La quantificació de TopoJSON ajusta coordenades a una graella i pot simplificar o col·lapsar detalls. Per això és una transformació amb pèrdua que exigeix conservar els paràmetres i validar recompte, propietats, extensió i geometries. Al projecte del curs, GeoPackage continua sent el format de treball; GeoJSON o TopoJSON només són sortides d'intercanvi quan el destinatari les necessita.
 
@@ -218,7 +308,7 @@ Un **Cloud Optimized GeoTIFF** (COG) és un GeoTIFF organitzat internament amb b
 
 COG millora l'accés, no la qualitat intrínseca. Un COG pot conservar un CRS equivocat, un `NoData` mal definit, valors amb una compressió inadequada o una resolució que no respon a la pregunta. Tampoc no assegura rapidesa si el servidor no accepta rangs, si els blocs són inadequats o si l'operació necessita gairebé totes les cel·les. Per al curs, la distinció inicial és suficient: GeoTIFF descriu la graella georeferenciada; COG n'afegeix una organització pensada per a lectura parcial remota.
 
-### ASCII Grid i georeferenciació lateral
+### ASCII Grid i georeferenciació lateral {#ascii-grid-georeferenciacio-lateral}
 
 L'**ASCII Grid** d'Esri, identificat sovint com AAIGrid pels controladors GDAL, representa una banda com una capçalera de text seguida de files de valors. La capçalera habitual declara `ncols`, `nrows`, la coordenada inferior esquerra amb `xllcorner` i `yllcorner` o amb les variants de centre, `cellsize` i, opcionalment, `NODATA_value`. La primera fila de valors correspon habitualment a la part superior de la graella, encara que l'origen declarat sigui inferior {% cite rouaultGDAL2026 %}.
 
@@ -410,7 +500,7 @@ L'acció **Estableix el CRS de la capa** o una opció equivalent canvia la inter
 ## Resolució, precisió i exactitud
 
 Resolució espacial
-: Mida de la cel·la o unitat mínima de mostreig d'un ràster; no expressa l'error de l'observació.
+: Detall espacial que una font pot distingir de manera fiable. En un ràster, la mida de cel·la descriu la geometria de la graella, però no garanteix per si sola la resolució efectiva, que també depèn de la font, el mostreig, el processament i l'exactitud.
 
 Precisió
 : Grau de detall numèric o de repetibilitat d'una mesura.

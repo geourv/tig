@@ -19,6 +19,13 @@ data:
   - id: municipi-treball
     type: gpkg
     path: assets/projectes/vila-seca/dades_preparades/projecte_tig.gpkg
+  - id: ortofoto-facultat
+    type: raster
+    path: prepared/terrain/vila-seca/ortofoto_territorial_2025_facultat.tif
+    sha256: d890c966db18f4a3ee4b260981b4446d2c6fb470fa78a7025cb75647120cf7d7
+  - id: pr2-demostracio
+    type: gpkg
+    path: assets/projectes/vila-seca/dades_preparades/pr2-digitalitzacio-vila-seca.gpkg
 
 setup:
   - action: trigger_action
@@ -92,6 +99,132 @@ captures:
       annotations_svg: assets/img/qgis/qgis-attribute-table.annotations.svg
       manifest: assets/img/qgis/qgis-attribute-table.manifest.yml
 
+  - id: digitizing-faculty-demo
+    title: Demostració de punts, línies i polígons a l'entorn de la Facultat
+    source_prompt: |
+      Presenta una demostració de punts, línies i polígons sobre l'ortofoto
+      de la Facultat i mostra l'autoensamblat necessari per connectar trams.
+    mode: window
+    layout_policy:
+      reading_direction: left_to_right
+      prefer_local_empty_space: true
+      prefer_leaderless_labels: false
+      avoid_diagonal_leaders: true
+      allow_diagonal_leaders: when_no_clear_local_candidate
+      protect_text: true
+      protect_controls: true
+    steps:
+      - action: close_transients
+      - action: clear_message_bar
+      - action: set_layer_visible
+        layer: Municipi de treball
+        visible: false
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/terrain/vila-seca/ortofoto_territorial_2025_facultat.tif
+        name: Ortofoto ICGC 2025 · WMS GetMap
+      - action: load_vector
+        path: assets/projectes/vila-seca/dades_preparades/pr2-digitalitzacio-vila-seca.gpkg|layername=fanals
+        name: Fanals · demostració
+      - action: load_vector
+        path: assets/projectes/vila-seca/dades_preparades/pr2-digitalitzacio-vila-seca.gpkg|layername=carrils_bici
+        name: Carrils bici · demostració
+      - action: load_vector
+        path: assets/projectes/vila-seca/dades_preparades/pr2-digitalitzacio-vila-seca.gpkg|layername=plaques_solars
+        name: Panells solars · demostració
+      - action: style_layer
+        layer: Panells solars · demostració
+        color: "#a63d40"
+        fill_color: "#d96c62"
+        fill_opacity: 48
+        outline_width: 1.2
+      - action: hide_panel
+        title: Browser
+      - action: show_panel
+        title: Layers
+      - action: show_toolbar
+        name: mSnappingToolBar
+      - action: zoom_to_layer
+        layer: Ortofoto ICGC 2025 · WMS GetMap
+        scale: 1.0
+      - action: select_layer
+        layer: Carrils bici · demostració
+      - action: wait
+        ms: 800
+    target:
+      class_name: QgisApp
+      fallback:
+        - class_name: QMainWindow
+    drawings:
+      - type: callout
+        text: Fanals · punts al carrer de Joanot Martorell
+        colour: auto
+        number: 1
+        number_style: label
+        target_marker: box
+        label_topology: outside
+        placement: left
+        leader: true
+        target:
+          layer_name: Fanals · demostració
+
+      - type: callout
+        text: Carrils bici · trams connectats a la Via Màxima
+        colour: auto
+        number: 2
+        number_style: label
+        target_marker: box
+        label_topology: outside
+        placement: below
+        leader: true
+        target:
+          layer_name: Carrils bici · demostració
+
+      - type: callout
+        text: Panells solars · polígons sobre la coberta
+        colour: auto
+        number: 3
+        number_style: label
+        target_marker: box
+        label_topology: outside
+        placement: right
+        leader: true
+        target:
+          layer_name: Panells solars · demostració
+
+      - type: callout
+        text: "Configura l'autoensamblat · tipus Vèrtex"
+        colour: auto
+        number: 4
+        number_style: label
+        target_marker: point
+        label_topology: outside
+        placement: above
+        target_anchor_position: top
+        label_anchor_position: bottom
+        gap: 18
+        leader: true
+        anchor:
+          x: 0.02
+          y: 0.13
+          unit: relative
+          relative_to: capture
+
+      - type: callout
+        text: WMS de l'ICGC · context visual, no geometria editable
+        colour: auto
+        number: "none"
+        target_marker: box
+        label_topology: outside
+        placement: right
+        leader: true
+        target:
+          item_text: Ortofoto ICGC 2025 · WMS GetMap
+
+    output:
+      path: assets/img/qgis/qgis-digitizing-faculty-demo.png
+      annotations_svg: assets/img/qgis/qgis-digitizing-faculty-demo.annotations.svg
+      manifest: assets/img/qgis/qgis-digitizing-faculty-demo.manifest.yml
+
   - id: digitizing-tools
     title: Eines de captura i edició vectorial
     mode: window
@@ -106,6 +239,18 @@ captures:
     steps:
       - action: close_transients
       - action: clear_message_bar
+      - action: set_layer_visible
+        layer: Ortofoto ICGC 2025 · WMS GetMap
+        visible: false
+      - action: set_layer_visible
+        layer: Fanals · demostració
+        visible: false
+      - action: set_layer_visible
+        layer: Carrils bici · demostració
+        visible: false
+      - action: set_layer_visible
+        layer: Panells solars · demostració
+        visible: false
       - action: style_layer
         layer: Municipi de treball
         color: "#8f2d56"

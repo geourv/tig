@@ -1,0 +1,1144 @@
+id: qgis-terrain-analysis
+title: Relleu i derivats ràster de Vila-seca
+source_prompt: |
+  Necessito vint-i-una captures de QGIS en català. Els mapes han de mostrar el
+  canvi de suport entre els MDT25 i MDT200 oficials i els resultats de pendent,
+  orientació i llindars topogràfics sobre Vila-seca. Les captures didàctiques
+  han de conservar el context de la interfície, separar les rutes de menú dels
+  diàlegs i explicar Combinar, Retallar per capa de màscara, les dues
+  calculadores ràster, la vectorització de les zones situades per sota de 2 m,
+  la proximitat, la comparació amb un buffer i les estadístiques zonals.
+
+runtime:
+  image: qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc
+  locale: ca_ES
+
+compat:
+  qgis: "==3.44.11"
+
+plugins:
+  - processing
+
+data:
+  - id: cnig-tarragona-administrative-unit
+    type: vector
+    path: prepared/cnig/administrative-units/tarragona-cnig.geojson
+    sha256: eda078ca366dc266a9f502adf1cefeb5b91f91f22b463d34f0d2bc7556c912b2
+  - id: cnig-mdt25-0472
+    type: raster
+    path: prepared/cnig/mdt25/source/pnoa_mdt25_etrs89_hu31_0472_lid.tif
+    sha256: 325b8028bc99d4726cfdd9cb777de0ac06ed815a62da2b0e313c0c17daf4bb7c
+  - id: cnig-mdt25-0473
+    type: raster
+    path: prepared/cnig/mdt25/source/pnoa_mdt25_etrs89_hu31_0473_lid.tif
+    sha256: 827b2a41b61a9636178847137647fb46f07d4f227165279d1487e757921f22bf
+  - id: cnig-mdt200-tarragona
+    type: raster
+    path: prepared/cnig/mdt200/source/pnoa_mdt200_etrs89_hu31_tarragona.tif
+    sha256: 1827b96fd3c2d1f7cc6cb41b169fecd98ecade31581debc5264158aa3b65b118
+  - id: vila-seca-mdt25-clip
+    type: raster
+    path: prepared/terrain/vila-seca/mdt25_vila_seca.tif
+    sha256: f3f4da904ae1c1fa0c23eb47a5f2c2a2b7f478883efbe930c70ec947098b47b9
+  - id: vila-seca-mdt25-mosaic
+    type: raster
+    path: prepared/terrain/vila-seca/mdt25_0472_0473_mosaic.tif
+    sha256: 7e00f20a23611ba192cc7723cddafc72191af2b6888a76a7d00abe6f3306cb6d
+  - id: vila-seca-mdt200-clip
+    type: raster
+    path: prepared/terrain/vila-seca/mdt200_vila_seca.tif
+    sha256: bcc83b4f63ec81cc4144ff005732c25db309c6cf46e9770dbbc841277399fee2
+  - id: vila-seca-orthophoto-2025
+    type: raster
+    path: prepared/terrain/vila-seca/ortofoto_territorial_2025_vila_seca.tif
+    sha256: 8cfdb39b6fce124844644087bc39a365da9bcef6401286644590b60c4fd07ad0
+  - id: vila-seca-slope-degrees
+    type: raster
+    path: prepared/terrain/vila-seca/pendent_25m_graus_vila_seca.tif
+    sha256: 39b479da22f1c27048d38bed340d9ebcbd0f2afd695cf2aa632462d839aebd06
+  - id: vila-seca-slope-percent
+    type: raster
+    path: prepared/terrain/vila-seca/pendent_25m_percent_vila_seca.tif
+    sha256: 9da6a4daf8b38f2b10c254d0cd075d34112e4c156405bd4a166ffc1ece287c46
+  - id: vila-seca-aspect-sectors
+    type: raster
+    path: prepared/terrain/vila-seca/orientacio_sectors_25m_vila_seca.tif
+    sha256: e6944c2e17ac1d69ecd5a2ca4d5b32907bf1dc127ef1e5390c3cd335345062d1
+  - id: vila-seca-elevation-classes
+    type: raster
+    path: prepared/terrain/vila-seca/elevacio_classes_25m_vila_seca.tif
+    sha256: 8b3f58ef4c9f76d32f1aefd191376c045fd1b647f1310f6b0221ffe023c78b6d
+  - id: vila-seca-low-elevation-distance
+    type: raster
+    path: prepared/terrain/vila-seca/distancia_zones_baixes_25m_vila_seca.tif
+    sha256: c2f4fb70dce25bb358c704bf73034898fba3086738eec7673ebee5feb26f28db
+  - id: vila-seca-low-elevation-polygons
+    type: vector
+    path: prepared/terrain/vila-seca/zones_baixes_2m_vila_seca.gpkg
+    sha256: b1a7cf497806b1528fa6ef7290dbe3a48f4ec05af5a209f5e452b446bc1ac4dc
+  - id: vila-seca-south-facing
+    type: raster
+    path: prepared/terrain/vila-seca/orientacio_sud_25m_vila_seca.tif
+    sha256: 4370d6fd4e0fc00356177f75742ea5fa552cacbe970b9ae8fe30ac1b425c6e0e
+  - id: municipi-treball
+    type: gpkg
+    path: assets/projectes/vila-seca/dades_preparades/projecte_tig.gpkg
+
+setup:
+  - action: trigger_action
+    name: mActionNewProject
+  - action: close_transients
+  - action: clear_message_bar
+  - action: set_project_crs
+    auth_id: EPSG:25831
+  - action: show_panel
+    title: Layers
+  - action: hide_panel
+    title: Browser
+
+captures:
+  - id: mdt200-orthophoto
+    title: El MDT200 sobre l'ortofoto de Vila-seca
+    mode: window
+    layout_policy: &layout_policy
+      reading_direction: left_to_right
+      prefer_local_empty_space: true
+      prefer_leaderless_labels: true
+      avoid_diagonal_leaders: true
+      allow_diagonal_leaders: when_no_clear_local_candidate
+      protect_text: true
+      protect_controls: true
+    steps:
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/terrain/vila-seca/ortofoto_territorial_2025_vila_seca.tif
+        name: Ortofoto Territorial ICGC 2025
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/terrain/vila-seca/mdt200_vila_seca.tif
+        name: MDT200 Vila-seca · 200 m
+      - action: style_raster
+        layer: MDT200 Vila-seca · 200 m
+        nodata: -32767
+        minimum: 0
+        maximum: 80
+        palette: terrain
+        opacity: 0.55
+        unit: m
+      - action: load_vector
+        path: assets/projectes/vila-seca/dades_preparades/projecte_tig.gpkg|layername=municipi_treball
+        name: Límit de Vila-seca
+      - action: style_layer
+        layer: Límit de Vila-seca
+        color: "#8f2d56"
+        fill_color: "#ffffff"
+        fill_opacity: 0
+        outline_width: 1.2
+      - action: zoom_to_layer
+        layer: Límit de Vila-seca
+        scale: 1.0
+      - action: wait
+        ms: 200
+      - action: set_canvas_scale
+        scale: 40000
+      - action: expand_tree_item
+        item_text: MDT200 Vila-seca · 200 m
+      - action: select_layer
+        layer: MDT200 Vila-seca · 200 m
+      - action: wait
+        ms: 800
+    target: &main_window
+      class_name: QgisApp
+      fallback:
+        - class_name: QMainWindow
+    drawings: []
+    output:
+      path: assets/img/qgis/qgis-raster-mdt200-orthophoto.png
+      annotations_svg: assets/img/qgis/qgis-raster-mdt200-orthophoto.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-mdt200-orthophoto.manifest.yml
+
+  - id: merge-menu
+    title: Ruta de menú per combinar els MDT25
+    mode: window
+    layout_policy: *layout_policy
+    steps:
+      - action: close_transients
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/cnig/mdt25/source/pnoa_mdt25_etrs89_hu31_0473_lid.tif
+        name: MDT25 full 0473
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/cnig/mdt25/source/pnoa_mdt25_etrs89_hu31_0472_lid.tif
+        name: MDT25 full 0472
+      - action: show_panel
+        title: Layers
+      - action: open_menu_path
+        path:
+          - Ràster
+          - Miscellaneous
+          - Combina…
+      - action: wait
+        ms: 500
+    target: *main_window
+    drawings:
+      - type: callout
+        text: Acció Combina
+        colour: auto
+        number: none
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: true
+        target:
+          class_name: QAction
+          text: Combina
+    output:
+      path: assets/img/qgis/qgis-raster-merge-menu.png
+      annotations_svg: assets/img/qgis/qgis-raster-merge-menu.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-merge-menu.manifest.yml
+
+  - id: merge-dialog
+    title: Combinar dues tessel·les MDT25
+    mode: screen
+    layout_policy: *layout_policy
+    steps:
+      - action: close_transients
+      - action: open_processing_algorithm_dialog
+        algorithm: gdal:merge
+        parameters:
+          INPUT:
+            - MDT25 full 0472
+            - MDT25 full 0473
+          PCT: false
+          SEPARATE: false
+          NODATA_INPUT: -32767
+          NODATA_OUTPUT: -32767
+      - action: wait
+        ms: 600
+    target:
+      object_name: "unaltracapturaProcessingDialog:gdal:merge"
+      fallback:
+        - class_name: AlgorithmDialog
+    drawings:
+      - type: callout
+        text: MDT25 0472 + MDT25 0473
+        colour: auto
+        number: 1
+        number_style: label
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: false
+        target:
+          object_name: "unaltracapturaProcessingParameter:INPUT"
+      - type: callout
+        text: Desplega per comprovar el NoData
+        colour: auto
+        number: 2
+        number_style: label
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: true
+        target:
+          object_name: grpAdvanced
+    output:
+      path: assets/img/qgis/qgis-raster-merge-dialog.png
+      annotations_svg: assets/img/qgis/qgis-raster-merge-dialog.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-merge-dialog.manifest.yml
+
+  - id: clip-menu
+    title: Ruta de menú per retallar amb una màscara
+    mode: window
+    layout_policy: *layout_policy
+    steps:
+      - action: close_transients
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/terrain/vila-seca/mdt25_0472_0473_mosaic.tif
+        name: Mosaic MDT25 · 25 m
+      - action: show_panel
+        title: Layers
+      - action: open_menu_path
+        path:
+          - Ràster
+          - Extraction
+          - Retalla ràster per capa màscara...
+      - action: wait
+        ms: 500
+    target: *main_window
+    drawings:
+      - type: callout
+        text: Retalla per màscara
+        colour: auto
+        number: none
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: true
+        target:
+          class_name: QAction
+          text: Retalla ràster per capa màscara
+    output:
+      path: assets/img/qgis/qgis-raster-clip-menu.png
+      annotations_svg: assets/img/qgis/qgis-raster-clip-menu.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-clip-menu.manifest.yml
+
+  - id: clip-dialog
+    title: Retallar el mosaic pel límit municipal
+    mode: screen
+    layout_policy: *layout_policy
+    steps:
+      - action: close_transients
+      - action: open_processing_algorithm_dialog
+        algorithm: gdal:cliprasterbymasklayer
+        parameters:
+          INPUT: Mosaic MDT25 · 25 m
+          MASK: Límit de Vila-seca
+          NODATA: -32767
+          CROP_TO_CUTLINE: true
+          KEEP_RESOLUTION: true
+      - action: wait
+        ms: 600
+    target:
+      object_name: "unaltracapturaProcessingDialog:gdal:cliprasterbymasklayer"
+      fallback:
+        - class_name: AlgorithmDialog
+    drawings:
+      - type: callout
+        text: Mosaic d'entrada
+        colour: auto
+        number: 1
+        number_style: label
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: false
+        target:
+          object_name: "unaltracapturaProcessingParameter:INPUT"
+      - type: callout
+        text: "NoData de sortida: -32767"
+        colour: auto
+        number: 2
+        number_style: label
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: false
+        target:
+          object_name: "unaltracapturaProcessingParameter:NODATA"
+    output:
+      path: assets/img/qgis/qgis-raster-clip-dialog.png
+      annotations_svg: assets/img/qgis/qgis-raster-clip-dialog.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-clip-dialog.manifest.yml
+
+  - id: mdt25-vila-seca
+    title: Vila-seca al MDT25
+    mode: window
+    layout_policy: *layout_policy
+    steps:
+      - action: close_transients
+      - action: show_panel
+        title: Layers
+      - action: set_layer_visible
+        layer: MDT25 full 0472
+        visible: false
+      - action: set_layer_visible
+        layer: MDT25 full 0473
+        visible: false
+      - action: set_layer_visible
+        layer: Mosaic MDT25 · 25 m
+        visible: false
+      - action: set_layer_visible
+        layer: Ortofoto Territorial ICGC 2025
+        visible: false
+      - action: set_layer_visible
+        layer: MDT200 Vila-seca · 200 m
+        visible: false
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/terrain/vila-seca/mdt25_vila_seca.tif
+        name: MDT25 Vila-seca · 25 m
+      - action: style_raster
+        layer: MDT25 Vila-seca · 25 m
+        nodata: -32767
+        minimum: 0
+        maximum: 80
+        palette: terrain
+        opacity: 1.0
+        unit: m
+      - action: zoom_to_layer
+        layer: Límit de Vila-seca
+        scale: 1.0
+      - action: wait
+        ms: 200
+      - action: set_canvas_scale
+        scale: 40000
+      - action: expand_tree_item
+        item_text: MDT25 Vila-seca · 25 m
+      - action: select_layer
+        layer: MDT25 Vila-seca · 25 m
+      - action: wait
+        ms: 600
+    target: *main_window
+    drawings: []
+    output:
+      path: assets/img/qgis/qgis-raster-mdt25-vila-seca.png
+      annotations_svg: assets/img/qgis/qgis-raster-mdt25-vila-seca.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-mdt25-vila-seca.manifest.yml
+
+  - id: mdt200-vila-seca
+    title: Vila-seca al MDT200
+    mode: window
+    layout_policy: *layout_policy
+    steps:
+      - action: show_panel
+        title: Layers
+      - action: set_layer_visible
+        layer: MDT25 Vila-seca · 25 m
+        visible: false
+      - action: select_layer
+        layer: Límit de Vila-seca
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/terrain/vila-seca/mdt200_vila_seca.tif
+        name: MDT200 Vila-seca · 200 m
+      - action: set_layer_visible
+        layer: MDT200 Vila-seca · 200 m
+        visible: true
+      - action: style_raster
+        layer: MDT200 Vila-seca · 200 m
+        nodata: -32767
+        minimum: 0
+        maximum: 80
+        palette: terrain
+        opacity: 1.0
+        unit: m
+      - action: zoom_to_layer
+        layer: Límit de Vila-seca
+        scale: 1.0
+      - action: wait
+        ms: 200
+      - action: set_canvas_scale
+        scale: 40000
+      - action: expand_tree_item
+        item_text: MDT200 Vila-seca · 200 m
+      - action: select_layer
+        layer: MDT200 Vila-seca · 200 m
+      - action: wait
+        ms: 600
+    target: *main_window
+    drawings: []
+    output:
+      path: assets/img/qgis/qgis-raster-mdt200-vila-seca.png
+      annotations_svg: assets/img/qgis/qgis-raster-mdt200-vila-seca.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-mdt200-vila-seca.manifest.yml
+
+  - id: slope-menu
+    title: Eina de pendent al menú Ràster
+    mode: window
+    layout_policy: *layout_policy
+    steps:
+      - action: set_layer_visible
+        layer: MDT200 Vila-seca · 200 m
+        visible: false
+      - action: set_layer_visible
+        layer: MDT25 Vila-seca · 25 m
+        visible: true
+      - action: select_layer
+        layer: MDT25 Vila-seca · 25 m
+      - action: show_panel
+        title: Layers
+      - action: open_menu_path
+        path:
+          - Ràster
+          - Analysis
+          - Pendent…
+      - action: wait
+        ms: 500
+    target: *main_window
+    drawings:
+      - type: callout
+        text: Eina Pendent
+        colour: auto
+        number: none
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: true
+        target:
+          class_name: QAction
+          text: Pendent
+    output:
+      path: assets/img/qgis/qgis-raster-slope-menu.png
+      annotations_svg: assets/img/qgis/qgis-raster-slope-menu.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-slope-menu.manifest.yml
+
+  - id: slope-degrees
+    title: Pendent del MDT25 en graus
+    mode: window
+    layout_policy: *layout_policy
+    steps:
+      - action: close_transients
+      - action: show_panel
+        title: Layers
+      - action: set_layer_visible
+        layer: MDT25 Vila-seca · 25 m
+        visible: false
+      - action: select_layer
+        layer: Límit de Vila-seca
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/terrain/vila-seca/pendent_25m_graus_vila_seca.tif
+        name: Pendent MDT25 · graus
+      - action: style_raster
+        layer: Pendent MDT25 · graus
+        nodata: -32767
+        minimum: 0
+        maximum: 15
+        palette: viridis
+        opacity: 1.0
+        unit: °
+      - action: zoom_to_layer
+        layer: Límit de Vila-seca
+        scale: 1.0
+      - action: wait
+        ms: 200
+      - action: set_canvas_scale
+        scale: 40000
+      - action: select_layer
+        layer: Pendent MDT25 · graus
+      - action: wait
+        ms: 600
+    target: *main_window
+    drawings: []
+    output:
+      path: assets/img/qgis/qgis-raster-slope-degrees.png
+      annotations_svg: assets/img/qgis/qgis-raster-slope-degrees.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-slope-degrees.manifest.yml
+
+  - id: slope-percent
+    title: Pendent del MDT25 en percentatge
+    mode: window
+    layout_policy: *layout_policy
+    steps:
+      - action: show_panel
+        title: Layers
+      - action: set_layer_visible
+        layer: Pendent MDT25 · graus
+        visible: false
+      - action: select_layer
+        layer: Límit de Vila-seca
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/terrain/vila-seca/pendent_25m_percent_vila_seca.tif
+        name: Pendent MDT25 · percentatge
+      - action: style_raster
+        layer: Pendent MDT25 · percentatge
+        nodata: -32767
+        minimum: 0
+        maximum: 26
+        palette: viridis
+        opacity: 1.0
+        unit: "%"
+      - action: zoom_to_layer
+        layer: Límit de Vila-seca
+        scale: 1.0
+      - action: wait
+        ms: 200
+      - action: set_canvas_scale
+        scale: 40000
+      - action: select_layer
+        layer: Pendent MDT25 · percentatge
+      - action: wait
+        ms: 600
+    target: *main_window
+    drawings: []
+    output:
+      path: assets/img/qgis/qgis-raster-slope-percent.png
+      annotations_svg: assets/img/qgis/qgis-raster-slope-percent.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-slope-percent.manifest.yml
+
+  - id: calculator-menu
+    title: Calculadora ràster del menú Ràster
+    mode: window
+    layout_policy: *layout_policy
+    steps:
+      - action: close_transients
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/terrain/vila-seca/mdt25_vila_seca.tif
+        name: elevacio
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/terrain/vila-seca/pendent_25m_graus_vila_seca.tif
+        name: pendent_graus
+      - action: show_panel
+        title: Layers
+      - action: open_menu_path
+        path:
+          - Ràster
+          - Calculadora ràster…
+      - action: wait
+        ms: 500
+    target: *main_window
+    drawings:
+      - type: callout
+        text: Calculadora ràster
+        colour: auto
+        number: none
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: true
+        target:
+          class_name: QAction
+          text: Calculadora ràster
+    output:
+      path: assets/img/qgis/qgis-raster-calculator-menu.png
+      annotations_svg: assets/img/qgis/qgis-raster-calculator-menu.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-calculator-menu.manifest.yml
+
+  - id: calculator-boolean
+    title: Expressió booleana a la Calculadora ràster de Processament
+    mode: screen
+    layout_policy: *layout_policy
+    steps:
+      - action: close_transients
+      - action: open_processing_algorithm_dialog
+        algorithm: native:rastercalc
+        parameters:
+          LAYERS:
+            - elevacio
+            - pendent_graus
+          EXPRESSION: '("elevacio@1" < 20) AND ("pendent_graus@1" < 2)'
+          EXTENT: elevacio
+          CELL_SIZE: 25
+          CRS: EPSG:25831
+      - action: wait
+        ms: 600
+    target:
+      object_name: "unaltracapturaProcessingDialog:native:rastercalc"
+      fallback:
+        - class_name: AlgorithmDialog
+    drawings:
+      - type: callout
+        text: "Capes: elevacio + pendent_graus"
+        colour: auto
+        number: 1
+        number_style: label
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: true
+        target:
+          object_name: "unaltracapturaProcessingParameter:LAYERS"
+      - type: callout
+        text: Predicats amb AND
+        colour: auto
+        number: 2
+        number_style: label
+        target_marker: box
+        label_topology: outside
+        placement: above
+        leader: true
+        target:
+          object_name: "unaltracapturaProcessingParameter:EXPRESSION"
+      - type: callout
+        text: "Graella: elevacio · 25 m · EPSG:25831"
+        colour: auto
+        number: 3
+        number_style: label
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: true
+        target:
+          object_name: "unaltracapturaProcessingParameter:EXTENT"
+    output:
+      path: assets/img/qgis/qgis-raster-calculator-boolean.png
+      annotations_svg: assets/img/qgis/qgis-raster-calculator-boolean.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-calculator-boolean.manifest.yml
+
+  - id: aspect-sectors
+    title: Sectors d'orientació del MDT25
+    mode: window
+    layout_policy: *layout_policy
+    steps:
+      - action: close_transients
+      - action: show_panel
+        title: Layers
+      - action: set_layer_visible
+        layer: Pendent MDT25 · percentatge
+        visible: false
+      - action: set_layer_visible
+        layer: Pendent MDT25 · graus
+        visible: false
+      - action: set_layer_visible
+        layer: MDT25 Vila-seca · 25 m
+        visible: false
+      - action: set_layer_visible
+        layer: MDT200 Vila-seca · 200 m
+        visible: false
+      - action: set_layer_visible
+        layer: elevacio
+        visible: false
+      - action: set_layer_visible
+        layer: pendent_graus
+        visible: false
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/terrain/vila-seca/orientacio_sectors_25m_vila_seca.tif
+        name: Orientació MDT25 · sectors
+      - action: zoom_to_layer
+        layer: Límit de Vila-seca
+        scale: 1.0
+      - action: wait
+        ms: 200
+      - action: set_canvas_scale
+        scale: 40000
+      - action: select_layer
+        layer: Orientació MDT25 · sectors
+      - action: wait
+        ms: 600
+    target: *main_window
+    drawings: []
+    output:
+      path: assets/img/qgis/qgis-raster-aspect-sectors.png
+      annotations_svg: assets/img/qgis/qgis-raster-aspect-sectors.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-aspect-sectors.manifest.yml
+
+  - id: elevation-classes
+    title: Classes d'elevació del MDT25
+    mode: window
+    layout_policy: *layout_policy
+    steps:
+      - action: show_panel
+        title: Layers
+      - action: set_layer_visible
+        layer: Orientació MDT25 · sectors
+        visible: false
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/terrain/vila-seca/elevacio_classes_25m_vila_seca.tif
+        name: Elevació MDT25 · llindar 2 m
+      - action: zoom_to_layer
+        layer: Límit de Vila-seca
+        scale: 1.0
+      - action: wait
+        ms: 200
+      - action: set_canvas_scale
+        scale: 40000
+      - action: select_layer
+        layer: Elevació MDT25 · llindar 2 m
+      - action: wait
+        ms: 600
+    target: *main_window
+    drawings: []
+    output:
+      path: assets/img/qgis/qgis-raster-elevation-classes.png
+      annotations_svg: assets/img/qgis/qgis-raster-elevation-classes.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-elevation-classes.manifest.yml
+
+  - id: polygonize-dialog
+    title: Vectoritzar les dues classes d'elevació
+    mode: screen
+    layout_policy: *layout_policy
+    steps:
+      - action: close_transients
+      - action: show_panel
+        title: Layers
+      - action: open_processing_algorithm_dialog
+        algorithm: gdal:polygonize
+        parameters:
+          INPUT: Elevació MDT25 · llindar 2 m
+          BAND: 1
+          FIELD: classe
+          EIGHT_CONNECTEDNESS: false
+      - action: wait
+        ms: 600
+    target:
+      object_name: "unaltracapturaProcessingDialog:gdal:polygonize"
+      fallback:
+        - class_name: AlgorithmDialog
+    drawings:
+      - type: callout
+        text: Ràster classificat, banda 1
+        colour: auto
+        number: 1
+        number_style: label
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: false
+        target:
+          object_name: "unaltracapturaProcessingParameter:INPUT"
+      - type: callout
+        text: Camp de sortida classe
+        colour: auto
+        number: 2
+        number_style: label
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: false
+        target:
+          object_name: "unaltracapturaProcessingParameter:FIELD"
+      - type: callout
+        text: Connectivitat de quatre veïns
+        colour: auto
+        number: 3
+        number_style: label
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: false
+        target:
+          class_name: QCheckBox
+          text: Use 8-connectedness
+    output:
+      path: assets/img/qgis/qgis-raster-polygonize-dialog.png
+      annotations_svg: assets/img/qgis/qgis-raster-polygonize-dialog.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-polygonize-dialog.manifest.yml
+
+  - id: low-elevation-polygons
+    title: Zones inferiors a 2 m vectoritzades sobre l'ortofoto
+    mode: window
+    layout_policy: *layout_policy
+    steps:
+      - action: close_transients
+      - action: show_panel
+        title: Layers
+      - action: set_layer_visible
+        layer: Elevació MDT25 · llindar 2 m
+        visible: false
+      - action: set_layer_visible
+        layer: Ortofoto Territorial ICGC 2025
+        visible: true
+      - action: select_layer
+        layer: Límit de Vila-seca
+      - action: load_vector
+        path: tmp/unaltracaptura-qgis/cache/prepared/terrain/vila-seca/zones_baixes_2m_vila_seca.gpkg|layername=zones_baixes_2m
+        name: Zones per sota de 2 m · vector
+      - action: style_layer
+        layer: Zones per sota de 2 m · vector
+        color: "#1261a0"
+        fill_color: "#2b8cbe"
+        fill_opacity: 96
+        outline_width: 0.8
+      - action: zoom_to_layer
+        layer: Límit de Vila-seca
+        scale: 1.0
+      - action: wait
+        ms: 200
+      - action: set_canvas_scale
+        scale: 40000
+      - action: select_layer
+        layer: Zones per sota de 2 m · vector
+      - action: wait
+        ms: 600
+    target: *main_window
+    drawings: []
+    output:
+      path: assets/img/qgis/qgis-raster-low-elevation-polygons.png
+      annotations_svg: assets/img/qgis/qgis-raster-low-elevation-polygons.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-low-elevation-polygons.manifest.yml
+
+  - id: south-facing
+    title: Vessants amb orientació sud
+    mode: window
+    layout_policy: *layout_policy
+    steps:
+      - action: set_layer_visible
+        layer: Zones per sota de 2 m · vector
+        visible: false
+      - action: show_panel
+        title: Layers
+      - action: set_layer_visible
+        layer: Ortofoto Territorial ICGC 2025
+        visible: false
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/terrain/vila-seca/orientacio_sud_25m_vila_seca.tif
+        name: Orientació sud · pendent mínim 2°
+      - action: zoom_to_layer
+        layer: Límit de Vila-seca
+        scale: 1.0
+      - action: wait
+        ms: 200
+      - action: set_canvas_scale
+        scale: 40000
+      - action: select_layer
+        layer: Orientació sud · pendent mínim 2°
+      - action: wait
+        ms: 600
+    target: *main_window
+    drawings: []
+    output:
+      path: assets/img/qgis/qgis-raster-south-facing.png
+      annotations_svg: assets/img/qgis/qgis-raster-south-facing.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-south-facing.manifest.yml
+
+  - id: proximity-dialog
+    title: Distància a les cel·les inferiors a 2 m
+    mode: screen
+    layout_policy: *layout_policy
+    steps:
+      - action: close_transients
+      - action: show_panel
+        title: Layers
+      - action: open_processing_algorithm_dialog
+        algorithm: gdal:proximity
+        parameters:
+          INPUT: Elevació MDT25 · llindar 2 m
+          BAND: 1
+          VALUES: "1"
+          UNITS: 0
+          MAX_DISTANCE: 0
+          REPLACE: 0
+          NODATA: -32767
+          DATA_TYPE: 5
+          EXTRA: "-use_input_nodata YES"
+      - action: wait
+        ms: 600
+    target:
+      object_name: "unaltracapturaProcessingDialog:gdal:proximity"
+      fallback:
+        - class_name: AlgorithmDialog
+    drawings:
+      - type: callout
+        text: Classes d'elevació
+        colour: auto
+        number: 1
+        number_style: label
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: false
+        target:
+          object_name: "unaltracapturaProcessingParameter:INPUT"
+      - type: callout
+        text: Només la classe font 1
+        colour: auto
+        number: 2
+        number_style: label
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: false
+        target:
+          object_name: "unaltracapturaProcessingParameter:VALUES"
+      - type: callout
+        text: Coordenades georeferenciades en metres
+        colour: auto
+        number: 3
+        number_style: label
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: false
+        target:
+          object_name: "unaltracapturaProcessingParameter:UNITS"
+    output:
+      path: assets/img/qgis/qgis-raster-proximity-dialog.png
+      annotations_svg: assets/img/qgis/qgis-raster-proximity-dialog.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-proximity-dialog.manifest.yml
+
+  - id: distance-buffer-comparison
+    title: Distància ràster i buffer vectorial de 250 metres
+    mode: window
+    layout_policy: *layout_policy
+    steps:
+      - action: close_transients
+      - action: show_panel
+        title: Layers
+      - action: set_layer_visible
+        layer: Orientació sud · pendent mínim 2°
+        visible: false
+      - action: set_layer_visible
+        layer: Ortofoto Territorial ICGC 2025
+        visible: true
+      - action: set_layer_visible
+        layer: Límit de Vila-seca
+        visible: true
+      - action: set_layer_visible
+        layer: Zones per sota de 2 m · vector
+        visible: true
+      - action: select_layer
+        layer: Zones per sota de 2 m · vector
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/terrain/vila-seca/distancia_zones_baixes_25m_vila_seca.tif
+        name: Distància a zones baixes · 25 m
+      - action: style_raster
+        layer: Distància a zones baixes · 25 m
+        nodata: -32767
+        minimum: 0
+        maximum: 500
+        palette: viridis
+        opacity: 0.68
+        unit: m
+      - action: run_buffer_algorithm
+        input_layer: Zones per sota de 2 m · vector
+        output_layer: Buffer vectorial · 250 m
+        distance: 250
+        segments: 5
+        dissolve: true
+        wait_ms: 1200
+      - action: style_layer
+        layer: Buffer vectorial · 250 m
+        color: "#d95f02"
+        fill_color: "#fdae6b"
+        fill_opacity: 64
+        outline_width: 1.0
+      - action: zoom_to_layer
+        layer: Límit de Vila-seca
+        scale: 1.0
+      - action: wait
+        ms: 200
+      - action: set_canvas_scale
+        scale: 40000
+      - action: select_layer
+        layer: Buffer vectorial · 250 m
+      - action: wait
+        ms: 800
+    target: *main_window
+    drawings:
+      - type: callout
+        text: Buffer des de les vores dels polígons
+        colour: auto
+        number: none
+        target_marker: box
+        label_topology: edge
+        placement: right
+        leader: true
+        target:
+          item_text: Buffer vectorial · 250 m
+      - type: callout
+        text: Distància entre centres de cel·la
+        colour: auto
+        number: none
+        target_marker: box
+        label_topology: edge
+        placement: right
+        leader: true
+        target:
+          item_text: Distància a zones baixes · 25 m
+    output:
+      path: assets/img/qgis/qgis-raster-distance-buffer-comparison.png
+      annotations_svg: assets/img/qgis/qgis-raster-distance-buffer-comparison.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-distance-buffer-comparison.manifest.yml
+
+  - id: zonal-statistics-dialog
+    title: Estadístiques de distància dins de Vila-seca
+    mode: screen
+    layout_policy: *layout_policy
+    steps:
+      - action: close_transients
+      - action: show_panel
+        title: Layers
+      - action: open_processing_algorithm_dialog
+        algorithm: native:zonalstatisticsfb
+        parameters:
+          INPUT: Límit de Vila-seca
+          INPUT_RASTER: Distància a zones baixes · 25 m
+          RASTER_BAND: 1
+          COLUMN_PREFIX: z25_dist_
+          STATISTICS: [0, 2, 5, 6]
+      - action: wait
+        ms: 600
+    target:
+      object_name: "unaltracapturaProcessingDialog:native:zonalstatisticsfb"
+      fallback:
+        - class_name: AlgorithmDialog
+    drawings:
+      - type: callout
+        text: Zona municipal
+        colour: auto
+        number: 1
+        number_style: label
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: false
+        target:
+          object_name: "unaltracapturaProcessingParameter:INPUT"
+      - type: callout
+        text: Superfície de distància, banda 1
+        colour: auto
+        number: 2
+        number_style: label
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: false
+        target:
+          object_name: "unaltracapturaProcessingParameter:INPUT_RASTER"
+      - type: callout
+        text: Recompte, mitjana, mínim i màxim
+        colour: auto
+        number: 3
+        number_style: label
+        target_marker: box
+        label_topology: edge
+        placement: bottom_right
+        leader: false
+        target:
+          object_name: "unaltracapturaProcessingParameter:STATISTICS"
+    output:
+      path: assets/img/qgis/qgis-raster-zonal-statistics-dialog.png
+      annotations_svg: assets/img/qgis/qgis-raster-zonal-statistics-dialog.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-zonal-statistics-dialog.manifest.yml
+
+  - id: mdt200-tarragona
+    title: El relleu de Tarragona a 200 metres
+    mode: window
+    layout_policy: *layout_policy
+    steps:
+      - action: close_transients
+      - action: set_layer_visible
+        layer: Orientació sud · pendent mínim 2°
+        visible: false
+      - action: set_layer_visible
+        layer: Ortofoto Territorial ICGC 2025
+        visible: false
+      - action: set_layer_visible
+        layer: Límit de Vila-seca
+        visible: false
+      - action: set_layer_visible
+        layer: Buffer vectorial · 250 m
+        visible: false
+      - action: set_layer_visible
+        layer: Distància a zones baixes · 25 m
+        visible: false
+      - action: set_layer_visible
+        layer: Zones per sota de 2 m · vector
+        visible: false
+      - action: show_panel
+        title: Layers
+      - action: select_layer
+        layer: Límit de Vila-seca
+      - action: load_raster
+        path: tmp/unaltracaptura-qgis/cache/prepared/cnig/mdt200/source/pnoa_mdt200_etrs89_hu31_tarragona.tif
+        name: MDT200 Tarragona · 200 m
+      - action: style_raster
+        layer: MDT200 Tarragona · 200 m
+        nodata: -32767
+        minimum: 0
+        maximum: 1415
+        palette: terrain
+        opacity: 1.0
+        unit: m
+      - action: select_layer
+        layer: MDT200 Tarragona · 200 m
+      - action: load_vector
+        path: tmp/unaltracaptura-qgis/cache/prepared/cnig/administrative-units/tarragona-cnig.geojson
+        name: Límit provincial de Tarragona
+      - action: style_layer
+        layer: Límit provincial de Tarragona
+        color: "#30343b"
+        fill_color: "#ffffff"
+        fill_opacity: 0
+        outline_width: 1.2
+      - action: zoom_to_layer
+        layer: MDT200 Tarragona · 200 m
+        scale: 1.1
+      - action: wait
+        ms: 200
+      - action: clear_message_bar
+      - action: select_layer
+        layer: MDT200 Tarragona · 200 m
+      - action: wait
+        ms: 800
+    target: *main_window
+    drawings: []
+    output:
+      path: assets/img/qgis/qgis-raster-mdt200-tarragona.png
+      annotations_svg: assets/img/qgis/qgis-raster-mdt200-tarragona.annotations.svg
+      manifest: assets/img/qgis/qgis-raster-mdt200-tarragona.manifest.yml
