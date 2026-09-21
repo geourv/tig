@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/dosquartsdedocs/unaltraweb.git
-  revision: 2954e75f75edb7bd6ea41dd49cb0b9f90bf3c1a5
-  ref: 2954e75f75edb7bd6ea41dd49cb0b9f90bf3c1a5
+  revision: f7ac29070167917dec6b314ba0a1ba9db089e7ec
+  ref: f7ac29070167917dec6b314ba0a1ba9db089e7ec
   specs:
-    unaltraweb (0.3.0)
+    unaltraweb (0.4.0)
       classifier-reborn
       css_parser
       feedjira
@@ -256,7 +256,7 @@ PLATFORMS
   x86_64-linux-gnu
 
 DEPENDENCIES
-  unaltraweb (= 0.3.0)!
+  unaltraweb (= 0.4.0)!
 
 CHECKSUMS
   activesupport (8.1.2) sha256=88842578ccd0d40f658289b0e8c842acfe9af751afee2e0744a7873f50b6fdae
@@ -355,7 +355,7 @@ CHECKSUMS
   terser (1.2.6) sha256=6ddf00b93df7015b07e2b9b149e74cd70fa7aa4f0f89a15d9922a6ebd13f37ab
   time (0.4.2) sha256=f324e498c3bde9471d45a7d18f874c27980e9867aa5cfca61bebf52262bc3dab
   tzinfo (2.0.6) sha256=8daf828cc77bcf7d63b0e3bdb6caa47e2272dcfaf4fbfe46f8c3a9df087a829b
-  unaltraweb (0.3.0)
+  unaltraweb (0.4.0)
   unicode-display_width (2.6.0) sha256=12279874bba6d5e4d2728cef814b19197dbb10d7a7837a869bab65da943b7f5a
   uri (1.1.1) sha256=379fa58d27ffb1387eaada68c749d1426738bd0f654d812fcc07e7568f5c57c6
   webrick (1.9.2) sha256=beb4a15fc474defed24a3bda4ffd88a490d517c9e4e6118c3edce59e45864131
