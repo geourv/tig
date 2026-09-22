@@ -20,3 +20,7 @@ __pycache__/
 # Generated unaltremanual publication outputs are never versioned.
 /assets/img/manual-cover-ca.png
 /assets/pdf/manual-ca.pdf
+
+# QGIS MCP runtime and render coordination.
+/.unaltracaptura-qgis/runtime/
+/.unaltracaptura-qgis/render-locks/
