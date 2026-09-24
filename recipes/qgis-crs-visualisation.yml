@@ -1,0 +1,198 @@
+id: qgis-crs-visualisation
+title: CRS del projecte i visualització al vol
+source_prompt: |
+  Vegeu play_prompts/qgis-crs-visualisation.md. Cal mostrar la finestra real
+  de QGIS amb l'Ortofoto Territorial 2025 de l'ICGC i el CRS del projecte
+  identificat com a reprojecció al vol, i comparar una vista mundial
+  d'OpenStreetMap en EPSG:4326 i EPSG:25831, advertint el caràcter regional
+  de la zona UTM 31N.
+
+runtime:
+  image: qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc
+  locale: ca_ES
+
+compat:
+  qgis: "==3.44.11"
+
+setup:
+  - action: trigger_action
+    name: mActionNewProject
+  - action: close_transients
+  - action: clear_message_bar
+  - action: hide_panel
+    title: Browser
+  - action: show_panel
+    title: Layers
+  - action: set_project_crs
+    auth_id: EPSG:4326
+  - action: load_vector
+    path: assets/projectes/crs-visualisation/world-extent.geojson
+    name: Enquadrament mundial
+  - action: zoom_to_layer
+    layer: Enquadrament mundial
+    scale: 1.0
+  - action: set_layer_visible
+    layer: Enquadrament mundial
+    visible: false
+  - action: load_vector
+    path: assets/projectes/crs-visualisation/world-view-25831.vrt
+    name: Marc mundial · UTM 31N
+  - action: set_layer_visible
+    layer: Marc mundial · UTM 31N
+    visible: false
+  - action: load_raster
+    path: assets/projectes/crs-visualisation/icgc-orthophoto-2025.xml
+    name: Ortofoto 2025 · ICGC WMS
+  - action: set_layer_visible
+    layer: Ortofoto 2025 · ICGC WMS
+    visible: false
+  - action: load_raster
+    path: assets/projectes/crs-visualisation/openstreetmap.xml
+    name: OpenStreetMap © contributors
+  - action: set_layer_visible
+    layer: OpenStreetMap © contributors
+    visible: false
+
+captures:
+  - id: project-crs-icgc-2025
+    title: Ortofoto Territorial 2025 i CRS del projecte
+    mode: window
+    steps:
+      - action: set_project_crs
+        auth_id: EPSG:25831
+      - action: set_layer_visible
+        layer: Ortofoto 2025 · ICGC WMS
+        visible: true
+      - action: set_layer_visible
+        layer: OpenStreetMap © contributors
+        visible: false
+      - action: zoom_to_layer
+        layer: Ortofoto 2025 · ICGC WMS
+        scale: 1.0
+      - action: select_layer
+        layer: Ortofoto 2025 · ICGC WMS
+      - action: wait
+        ms: 5000
+      - action: clear_message_bar
+    target:
+      class_name: QgisApp
+    drawings:
+      - type: callout
+        text: "Reprojecció al vol\nEPSG:25831 · UTM 31N"
+        colour: ember
+        number: "none"
+        target_marker: box
+        label_topology: outside
+        placement: above
+        target_anchor_position: top
+        label_anchor_position: bottom_right
+        gap: 28
+        leader: true
+        target:
+          object_name: mOntheFlyProjectionStatusButton
+    output:
+      path: assets/img/qgis/qgis-project-crs-icgc-2025.png
+      annotations_svg: assets/img/qgis/qgis-project-crs-icgc-2025.annotations.svg
+      manifest: assets/img/qgis/qgis-project-crs-icgc-2025.manifest.yml
+
+  - id: osm-crs-4326
+    title: Vista mundial d'OpenStreetMap amb el projecte en EPSG:4326
+    mode: window
+    steps:
+      - action: set_project_crs
+        auth_id: EPSG:4326
+      - action: set_layer_visible
+        layer: Ortofoto 2025 · ICGC WMS
+        visible: false
+      - action: set_layer_visible
+        layer: OpenStreetMap © contributors
+        visible: true
+      - action: zoom_to_layer
+        layer: Enquadrament mundial
+        scale: 1.0
+      - action: select_layer
+        layer: OpenStreetMap © contributors
+      - action: wait
+        ms: 5000
+      - action: clear_message_bar
+    target:
+      class_name: QgisApp
+    drawings:
+      - type: callout
+        text: "Reprojecció al vol\nEPSG:4326 · WGS 84"
+        colour: ember
+        number: "none"
+        target_marker: box
+        label_topology: outside
+        placement: above
+        target_anchor_position: top
+        label_anchor_position: bottom_right
+        gap: 28
+        leader: true
+        target:
+          object_name: mOntheFlyProjectionStatusButton
+      - type: callout
+        text: © OpenStreetMap contributors
+        colour: neutral
+        number: "none"
+        target_marker: none
+        label_topology: inside
+        placement: bottom_edge
+        leader: false
+        target:
+          object_name: theMapCanvas
+    output:
+      path: assets/img/qgis/qgis-osm-crs-4326.png
+      annotations_svg: assets/img/qgis/qgis-osm-crs-4326.annotations.svg
+      manifest: assets/img/qgis/qgis-osm-crs-4326.manifest.yml
+
+  - id: osm-crs-25831
+    title: Vista mundial d'OpenStreetMap amb EPSG:25831 fora de la seva àrea d'ús
+    mode: window
+    steps:
+      - action: set_project_crs
+        auth_id: EPSG:25831
+      - action: set_layer_visible
+        layer: Ortofoto 2025 · ICGC WMS
+        visible: false
+      - action: set_layer_visible
+        layer: OpenStreetMap © contributors
+        visible: true
+      - action: zoom_to_layer
+        layer: Marc mundial · UTM 31N
+        scale: 1.0
+      - action: select_layer
+        layer: OpenStreetMap © contributors
+      - action: wait
+        ms: 5000
+      - action: clear_message_bar
+    target:
+      class_name: QgisApp
+    drawings:
+      - type: callout
+        text: "Reprojecció al vol\nEPSG:25831 · UTM 31N"
+        colour: ember
+        number: "none"
+        target_marker: box
+        label_topology: outside
+        placement: above
+        target_anchor_position: top
+        label_anchor_position: bottom_right
+        gap: 28
+        leader: true
+        target:
+          object_name: mOntheFlyProjectionStatusButton
+      - type: callout
+        text: © OpenStreetMap contributors
+        colour: neutral
+        number: "none"
+        target_marker: none
+        label_topology: inside
+        placement: bottom_edge
+        leader: false
+        target:
+          object_name: theMapCanvas
+    output:
+      path: assets/img/qgis/qgis-osm-crs-25831.png
+      annotations_svg: assets/img/qgis/qgis-osm-crs-25831.annotations.svg
+      manifest: assets/img/qgis/qgis-osm-crs-25831.manifest.yml

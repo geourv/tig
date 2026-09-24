@@ -292,6 +292,10 @@ TopoJSON és una especificació comunitària que separa els objectes geomètrics
 
 La xifra és una mesura reproduïble d'aquests dos objectes serialitzats en UTF-8, sense espais ni compressió: s'estalvien 39 bytes, o un 10,6%. No és un percentatge universal ni una garantia d'estalvi de memòria RAM. El guany sol créixer quan moltes entitats comparteixen fronteres llargues, però depèn de la complexitat dels arcs, els atributs, la quantificació i la compressió del transport; un lector també pot expandir els arcs a geometries independents en carregar-los. Per tant, el volum s'ha de mesurar sobre el conjunt i la compressió que realment es distribuiran.
 
+Els blocs anteriors es poden desar directament com a fitxers: cal copiar el JSON complet de cada exemple en un editor de text pla, desar-lo amb codificació UTF-8 i utilitzar, respectivament, noms com `poligons_adjacents.geojson` i `poligons_adjacents.topojson`. S'ha de copiar només el contingut JSON i comprovar que l'editor no hi afegeixi una extensió `.txt`, com en `poligons_adjacents.geojson.txt`. L'extensió identifica el format, però canviar-la no transforma l'estructura GeoJSON en TopoJSON.
+
+Per visualitzar la capa al navegador, [geojson.io](https://geojson.io/) permet obrir el fitxer GeoJSON i consultar-ne geometries i atributs. [Mapshaper](https://mapshaper.org/) admet tant GeoJSON com TopoJSON: s'hi pot arrossegar cadascun dels fitxers i contrastar el resultat. En tots dos casos s'han de reconèixer els dos polígons adjacents `A` i `B` i l'atribut `nom`. La coincidència del mapa ajuda a comprovar la geometria; la diferència en l'emmagatzematge de la frontera compartida s'observa en el text dels fitxers.
+
 TopoJSON pot reduir la mida de cobertures administratives i mantenir la coincidència dels límits compartits, però té menys suport directe i no és un estàndard OGC o IETF {% cite bostockTopoJSON2013 %}.
 
 La quantificació de TopoJSON ajusta coordenades a una graella i pot simplificar o col·lapsar detalls. Per això és una transformació amb pèrdua que exigeix conservar els paràmetres i validar recompte, propietats, extensió i geometries. Al projecte del curs, GeoPackage continua sent el format de treball; GeoJSON o TopoJSON només són sortides d'intercanvi quan el destinatari les necessita.
@@ -444,9 +448,14 @@ Un codi tampoc no prova que les dades el compleixin. És possible etiquetar coor
 
 El selector de CRS de QGIS permet cercar l'identificador d'autoritat i consultar-ne el nom, l'àrea d'ús i la definició. Aquesta informació serveix per verificar la tria; la presència d'un codi a la llista no demostra que coincideixi amb les coordenades de la capa.
 
-En QGIS, el mateix selector pot aparèixer en configurar el projecte, declarar la referència d'una font o definir la sortida d'un algorisme. La captura només verifica quina definició s'ha triat; l'eina des d'on s'ha obert determina si s'està canviant la vista, assignant significat a unes coordenades existents o preparant una transformació.
+El codi de la cantonada inferior dreta de QGIS identifica el CRS del projecte i governa la visualització o **reprojecció al vol** del llenç. La crida de la figura assenyala aquest control i indica el CRS en què es mostra el mapa, no necessàriament el de les fonts. El selector de CRS pot aparèixer en configurar el projecte, declarar la referència d'una font o definir la sortida d'un algorisme. Cal identificar el context de l'eina per distingir si s'està canviant la vista, assignant significat a unes coordenades existents o preparant una transformació.
 
-![Selector de CRS de QGIS amb la cerca del codi 25831, ETRS89 UTM zona 31N seleccionat i la seva àrea d'ús visible]({{ site.baseurl }}/assets/img/qgis/qgis-crs-selection.png "Cercar per codi redueix l'ambigüitat, però abans d'acceptar cal comprovar el nom complet, les unitats i l'àrea d'ús. El selector identifica una definició; no indica per si sol si QGIS l'aplicarà al projecte, a la font o a una sortida transformada."){: data-figure-width-web="38rem" data-figure-width-pdf="78%"}
+::: subfigures a+b "Control de la reprojecció al vol i selecció del CRS a QGIS 3.44.11. La crida identifica EPSG:25831 com a CRS del llenç; el selector en detalla la definició i l'àrea d'ús."
+![Finestra de QGIS amb l'ortofoto de Vila-seca i una crida de reprojecció al vol cap al control EPSG 25831]({{ site.baseurl }}/assets/img/qgis/qgis-project-crs-icgc-2025.png "Reprojecció al vol: el llenç es mostra en EPSG:25831, ETRS89 / UTM zona 31N, sobre l'ortofoto ICGC 2025."){: data-figure-width-web="100%" data-figure-width-pdf="100%"}
+![Selector de CRS de QGIS amb el codi 25831, ETRS89 UTM zona 31N seleccionat i la seva àrea d'ús visible]({{ site.baseurl }}/assets/img/qgis/qgis-crs-selection.png "Definició d'EPSG:25831: nom, unitats en metres i àrea d'ús del fus 31N."){: data-figure-width-web="100%" data-figure-width-pdf="100%"}
+:::
+
+Font de l'ortofoto: [ICGC, Ortofoto Territorial 2025, servei WMS](https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms), llicència [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ### Assignar, transformar i visualitzar
 
@@ -462,6 +471,17 @@ Visualitzar al vol
 Confondre assignació i transformació pot desplaçar una capa milers de quilòmetres o ocultar visualment un error. Abans de calcular distàncies, àrees o resolucions cal inspeccionar el CRS de cada entrada, el CRS de sortida i l'operació aplicada.
 
 >>>> **El CRS que apareix a la barra del projecte no identifica necessàriament el CRS de la capa activa.** La comprovació s'ha de fer a la informació de cada font. Canviar el CRS del projecte pot modificar la visualització sense corregir una capa mal declarada.
+
+La comparació següent amplia la vista a la cobertura mundial d'OpenStreetMap per fer més visibles les deformacions. Les tessel·les de la font es mantenen en `EPSG:3857`; QGIS les reprojecta al vol al CRS del projecte que identifica cada crida. En `EPSG:4326`, el llenç utilitza coordenades angulars en graus: representar longitud i latitud sobre una graella plana no conserva uniformement distàncies, formes ni àrees.
+
+`EPSG:25831`, en canvi, és un CRS regional basat en UTM zona 31N, adequat per al seu àmbit europeu. Aplicar-lo a una vista mundial és una prova deliberada fora de l'àrea d'ús: s'hi observen deformacions extremes i discontinuïtats, no una alternativa vàlida per construir un planisferi. Els buits als pols tenen una causa diferent: la font de tessel·les Web Mercator només arriba aproximadament als 85° nord i sud. Les dues vistes canvien la representació del mapa, però no modifiquen les dades originals {% cite projContributorsPROJ2026 qgisUserGuide344 %}.
+
+::: subfigures a+b "Reprojecció al vol d'OpenStreetMap a escala mundial a QGIS 3.44.11. Les crides identifiquen el CRS de cada llenç; la vista UTM posa en evidència els límits d'aplicar un CRS regional fora de la seva àrea d'ús."
+![Finestra de QGIS amb la cobertura mundial d'OpenStreetMap i una crida de reprojecció al vol en EPSG 4326]({{ site.baseurl }}/assets/img/qgis/qgis-osm-crs-4326.png "Reprojecció al vol a EPSG:4326, WGS 84: vista mundial amb coordenades en graus."){: data-figure-width-web="100%" data-figure-width-pdf="100%"}
+![Finestra de QGIS amb el mapa mundial d'OpenStreetMap fortament deformat i una crida de reprojecció al vol en EPSG 25831]({{ site.baseurl }}/assets/img/qgis/qgis-osm-crs-25831.png "Reprojecció al vol a EPSG:25831, ETRS89 / UTM zona 31N: ús fora de l'àrea regional, amb deformacions i talls."){: data-figure-width-web="100%" data-figure-width-pdf="100%"}
+:::
+
+Mapa base: [© OpenStreetMap contributors](https://www.openstreetmap.org/copyright).
 
 Una **conversió de coordenades** canvia el sistema de coordenades sense canviar el dàtum, com el pas d'ETRS89 geogràfic a ETRS89 / UTM zona 31N. Una **transformació de coordenades** relaciona marcs o datums diferents, com ED50 i ETRS89. Una operació real pot concatenar diversos passos: desprojectar, transformar el marc amb una graella i projectar al destí. En l'ús general de QGIS, «reprojectar» s'empra sovint per a tota la cadena; documentar origen, destinació i operació evita que aquesta simplificació amagui què s'ha calculat.
 

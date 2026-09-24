@@ -1,0 +1,9 @@
+<OGRVRTDataSource>
+  <OGRVRTLayer name="world_view_25831">
+    <SrcDataSource relativeToVRT="1">world-view-25831.csv</SrcDataSource>
+    <SrcLayer>world-view-25831</SrcLayer>
+    <GeometryType>wkbPolygon</GeometryType>
+    <LayerSRS>EPSG:25831</LayerSRS>
+    <GeometryField encoding="WKT" field="geometry" reportSrcColumn="false"/>
+  </OGRVRTLayer>
+</OGRVRTDataSource>

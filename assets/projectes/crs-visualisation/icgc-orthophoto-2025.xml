@@ -1,0 +1,28 @@
+<GDAL_WMS>
+  <Service name="WMS">
+    <Version>1.3.0</Version>
+    <ServerUrl>https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms?</ServerUrl>
+    <CRS>EPSG:25831</CRS>
+    <ImageFormat>image/jpeg</ImageFormat>
+    <Layers>ortofoto_25cm_color_2025</Layers>
+    <Styles></Styles>
+    <BBoxOrder>xyXY</BBoxOrder>
+  </Service>
+  <DataWindow>
+    <UpperLeftX>339500</UpperLeftX>
+    <UpperLeftY>4555300</UpperLeftY>
+    <LowerRightX>349900</LowerRightX>
+    <LowerRightY>4547500</LowerRightY>
+    <SizeX>1600</SizeX>
+    <SizeY>1200</SizeY>
+  </DataWindow>
+  <Projection>EPSG:25831</Projection>
+  <BandsCount>3</BandsCount>
+  <OverviewCount>0</OverviewCount>
+  <Cache>
+    <Path>./tmp/unaltracaptura-qgis/crs-cache/gdal-wms</Path>
+  </Cache>
+  <MaxConnections>2</MaxConnections>
+  <Timeout>30</Timeout>
+  <UserAgent>TIG-manual-captures/1.0 (+https://github.com/geourv/tig)</UserAgent>
+</GDAL_WMS>
