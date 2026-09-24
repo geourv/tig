@@ -1,0 +1,16 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "capture_extent",
+        "description": "Enquadrament mundial de la cobertura XYZ d'OpenStreetMap; no inclou els pols."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-180, -85.0511287798066], [180, -85.0511287798066], [180, 85.0511287798066], [-180, 85.0511287798066], [-180, -85.0511287798066]]]
+      }
+    }
+  ]
+}
