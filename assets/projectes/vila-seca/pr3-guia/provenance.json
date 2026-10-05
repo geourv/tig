@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "runtime_image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "annotation_provider": {
+    "name": "unaltracaptura-qgis",
+    "version": "0.3.0",
+    "release": "https://github.com/dosquartsdedocs/unaltracaptura-qgis/releases/tag/v0.3.0",
+    "wheel": "unaltracaptura_qgis-0.3.0-py3-none-any.whl",
+    "sha256": "5eb4cfdc7bed686f79c3e7cca85136c818dcbaadfa6b67ecb62d4efeab776f1e",
+    "mcp_image": "sha256:f8b76b047194f4a5441c06298f6c4e504027a36d615b80247f574aa5779cab3b"
+  },
+  "cache": "tmp/pr3-guided/browser",
+  "download_protocol": "official_browser_download_button",
+  "licence": "IGN/CNIG, CC BY 4.0, amb les fonts específiques de CartoCiudad identificades al producte",
+  "sources": {
+    "limits": {
+      "resource_id": "9000029",
+      "detail_url": "https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=9000029",
+      "edition": "2026-07-28",
+      "archive": "LINEAS_LIMITE.ZIP",
+      "suggested_filename": "lineas_limite.zip",
+      "sha256": "d752b1b943e6c60f46a23119d6c3d4ad0b198461c502f0a5433197d7a5e34c83",
+      "max_bytes": 190000000
+    },
+    "cartociudad": {
+      "resource_id": "9092",
+      "detail_url": "https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=9092",
+      "edition": "2026-04",
+      "archive": "CARTOCIUDAD_CALLEJERO_TARRAGONA.ZIP",
+      "suggested_filename": "CARTOCIUDAD_CALLEJERO_TARRAGONA.zip",
+      "sha256": "7aa8f388d52d4b4c56a4bf25a8601502346c5dccd06405d556895c11d400f919",
+      "max_bytes": 65000000
+    },
+    "transport": {
+      "resource_id": "11655613",
+      "detail_url": "https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=11655613",
+      "edition": "2026-07",
+      "archive": "RT_TARRAGONA_GPKG.ZIP",
+      "suggested_filename": "RT_TARRAGONA_gpkg.zip",
+      "sha256": "26e02dee7bef2ab40b46f60d7f97274cab9f47b3b7a418db09b8c43b85303d72",
+      "max_bytes": 190000000
+    }
+  },
+  "inherited_boundary": {
+    "path": "assets/projectes/vila-seca/pr1-guia/pr1-project-setup-exemple.gpkg",
+    "sha256": "f8b200b81c2922776a70486fb7310da479c5cd6807d9a16cdb34963e2474a650",
+    "table": "municipi_vilaseca",
+    "CODIMUNI": "431711",
+    "codi_muni": "43171",
+    "key_concordance": "Explicit mapping for Vila-seca, not a generic string truncation rule"
+  },
+  "authoritative_sources": {
+    "context/practiques/pr3-sources.yml": "cbe6dd2f8a1e0be346e86a9ca092a11407a6dbfcb37653d37c52767be71705df",
+    "context/practiques/prepare_pr3_guided.py": "78004113621dd4bf88daab5022ac490d97cb946d6f2836ca0010d44b40a5fa6b",
+    "context/practiques/capture_pr3_guided.py": "dd72a102f60ee001a790380978e869cb74cf8ce164b124f8f09c4a675da5a8d9",
+    "context/practiques/pr3-captures.yml": "94684b0a92d124e12b059d3a56058f5e15726220507f6060a9c0b8cce698e4af"
+  }
+}

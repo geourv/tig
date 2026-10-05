@@ -1,0 +1,156 @@
+---
+title: "Territori, entitats vectorials i classes ràster"
+lang: ca
+ref: real_world_vector_raster
+format:
+  gfm:
+    output-file: real-world-vector-raster.generated.md
+execute:
+  echo: false
+  warning: false
+  message: false
+execute-dir: project
+unaltraweb_compute:
+  engine: python
+  mode: figure
+  outputs:
+    - assets/img/generated/03-estructura-formats-referenciacio/real-world-vector-raster.svg
+---
+
+```{python}
+from pathlib import Path
+from html import escape
+
+# Every view is derived from this one synthetic landscape in a 10 x 8 domain.
+W, H = 1200, 940
+extent = [(0,0),(10,0),(10,8),(0,8)]
+forest = [(1,1),(4,1),(4,3.5),(1,3.5)]
+building = [(6,1),(8.5,1),(8.5,3),(6,3)]
+road = [(0,4.6),(10,3.8),(10,5),(0,5.8)]
+towers = [(2.5,6.5),(5.5,6.5),(8.5,6.5)]
+palette = {"open":"#f1eddc", "forest":"#cfe1cd", "building":"#d49d70",
+           "road":"#9fa8ad", "tower":"#e7b65b", "cable":"#176486"}
+svg = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" role="img" aria-labelledby="title desc">',
+       '<title id="title">Tres representacions del mateix territori</title>',
+       '<desc id="desc">Un mateix paisatge es representa en perspectiva, en vector i en una graella de cel·les quadrades. El bosc, l edifici, la carretera que travessa tot l àmbit i les tres torres amb el cable conserven posicions i colors corresponents.</desc>',
+       f'<rect width="{W}" height="{H}" fill="#ffffff"/>',
+       '<g font-family="Arial, Liberation Sans, sans-serif" font-size="28" fill="#21313c">']
+
+def text(x, y, value, anchor="start", weight="normal"):
+    svg.append(f'<text x="{x}" y="{y}" text-anchor="{anchor}" font-weight="{weight}">{escape(value)}</text>')
+
+def polygon(points, fill, stroke="#51616b", sw=2):
+    coords = " ".join(f"{x:.1f},{y:.1f}" for x, y in points)
+    svg.append(f'<polygon points="{coords}" fill="{fill}" stroke="{stroke}" stroke-width="{sw}"/>')
+
+def line(points, color, sw=3):
+    coords = " ".join(f"{x:.1f},{y:.1f}" for x, y in points)
+    svg.append(f'<polyline points="{coords}" fill="none" stroke="{color}" stroke-width="{sw}"/>')
+
+def project(x, y, z=0):
+    return 600 + 36*x - 29*y, 80 + 12*x + 15*y - 27*z
+
+def scene_poly(points, fill):
+    polygon([project(*p) for p in points], fill)
+
+text(32, 38, "a · Paisatge de referència", weight="bold")
+scene_poly(extent, palette["open"])
+scene_poly(road, palette["road"])
+scene_poly(forest, palette["forest"])
+# House: three surfaces and roof; its footprint is reused below.
+scene_poly([(8.5,1,0),(8.5,3,0),(8.5,3,1.5),(8.5,1,1.5)], "#d49d70")
+scene_poly([(6,3,0),(8.5,3,0),(8.5,3,1.5),(6,3,1.5)], "#e4c49e")
+scene_poly([(x,y,1.5) for x,y in building], palette["building"])
+for x, y in [(1.4,1.6),(2.3,2.5),(3.3,1.7)]:
+    line([project(x,y), project(x,y,1)], "#876441", 5)
+    a,b=project(x,y,1.25)
+    svg.append(f'<circle cx="{a}" cy="{b}" r="19" fill="#548469" stroke="#365d49" stroke-width="2"/>')
+line([project(x,y,1.9) for x,y in towers], palette["cable"], 3)
+for x,y in towers:
+    base=project(x,y)
+    top=project(x,y,1.9)
+    line([(base[0]-9,base[1]),top,(base[0]+9,base[1])], "#936d27", 4)
+    line([(top[0]-12,top[1]+12),(top[0]+12,top[1]+12)], "#936d27", 4)
+    svg.append(f'<circle cx="{base[0]}" cy="{base[1]}" r="5" fill="{palette["tower"]}"/>')
+text(400, 106, "bosc")
+line([(467,102),project(1.6,2.6)], "#71828b", 2)
+text(886, 140, "edifici")
+text(854, 303, "torres i cable")
+svg.append('<path d="M470,319 L345,365 M740,319 L870,365" stroke="#71828b" fill="none" stroke-width="3"/>')
+
+text(35, 398, "b · Vector", weight="bold")
+text(645, 398, "c · Ràster", weight="bold")
+
+CELL = 44
+def plan(x,y,ox):
+    return ox + CELL*x, 435 + CELL*y
+
+polygon([plan(x,y,45) for x,y in extent], palette["open"], "#9ca9af")
+polygon([plan(x,y,45) for x,y in forest], palette["forest"], "#548469")
+polygon([plan(x,y,45) for x,y in building], palette["building"], "#875333")
+polygon([plan(x,y,45) for x,y in road], palette["road"], "#606f79")
+line([plan(x,y,45) for x,y in towers], palette["cable"], 5)
+for i,(x,y) in enumerate(towers,1):
+    px,py=plan(x,y,45)
+    svg.append(f'<circle cx="{px}" cy="{py}" r="9" fill="{palette["tower"]}" stroke="#6c501d" stroke-width="2"/>')
+    text(px,py+34,f"T{i}","middle")
+text(*plan(2.5,2.3,45),"B1","middle")
+text(*plan(7.25,2.25,45),"E1","middle")
+
+# Cell-centre sampling of the polygons; points and lines burn their containing cells.
+# Towers take precedence over cable. All objects are defined in the same coordinates.
+def inside(x, y, vertices):
+    hit = False
+    for (ax, ay), (bx, by) in zip(vertices, vertices[1:] + vertices[:1]):
+        if (ay > y) != (by > y) and x < (bx-ax)*(y-ay)/(by-ay)+ax:
+            hit = not hit
+    return hit
+
+tower_cells = {(int(x),int(y)) for x,y in towers}
+cable_cells = set()
+for (ax,ay),(bx,by) in zip(towers,towers[1:]):
+    assert ay==by  # The example has horizontal spans through cell centres.
+    cable_cells.update((col,int(ay)) for col in range(int(min(ax,bx)),int(max(ax,bx))+1))
+classes=[]
+for row in range(8):
+    row_values=[]
+    for col in range(10):
+        x,y=col+.5,row+.5
+        cls="open"
+        for label, geometry in [("forest",forest),("building",building),("road",road)]:
+            if inside(x,y,geometry): cls=label
+        if (col,row) in cable_cells: cls="cable"
+        if (col,row) in tower_cells: cls="tower"
+        row_values.append(cls)
+        px,py=plan(col,row,655)
+        svg.append(f'<rect x="{px}" y="{py}" width="{CELL}" height="{CELL}" fill="{palette[cls]}" stroke="#ffffff" stroke-width="1.5"/>')
+    classes.append(row_values)
+polygon([plan(x,y,655) for x,y in extent], "none", "#9ca9af")
+
+# The road crosses all columns as one edge-connected region, not disconnected pixels.
+road_cells={(c,r) for r in range(8) for c in range(10) if classes[r][c]=="road"}
+assert {c for c,r in road_cells} == set(range(10))
+visited=set()
+todo=[next(iter(road_cells))]
+while todo:
+    cell=todo.pop()
+    if cell in visited: continue
+    visited.add(cell)
+    c,r=cell
+    todo.extend(n for n in [(c-1,r),(c+1,r),(c,r-1),(c,r+1)] if n in road_cells-visited)
+assert visited==road_cells
+assert sum(row.count("tower") for row in classes)==len(towers)
+assert {v for row in classes for v in row}==set(palette)
+assert plan(1,0,0)[0]-plan(0,0,0)[0] == plan(0,1,0)[1]-plan(0,0,0)[1]
+
+for x,y,label,cls in [(70,832,"sòl obert","open"),(460,832,"bosc","forest"),
+                      (850,832,"edificació","building"),(70,891,"carretera","road"),
+                      (460,891,"torre","tower"),(850,891,"tram de cable","cable")]:
+    svg.append(f'<rect x="{x}" y="{y}" width="25" height="25" fill="{palette[cls]}" stroke="#51616b"/>')
+    text(x+36,y+23,label)
+svg.extend(['</g>','</svg>'])
+root=next(p for p in (Path.cwd(),*Path.cwd().parents) if (p/".unaltraweb/computations.yml").is_file())
+out=root/"assets/img/generated/03-estructura-formats-referenciacio/real-world-vector-raster.svg"
+out.parent.mkdir(parents=True,exist_ok=True)
+out.write_text("\n".join(svg)+"\n",encoding="utf-8")
+```

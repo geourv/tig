@@ -7,10 +7,11 @@
 /tig/data/processed/dem-area-merged.tif
 /tig/data/interim/
 /tig/sandbox/
-/tig/sandbox/pr1-fonts-cognom.gpkg
-/tig/sandbox/pr1-fonts-cognom.qgz
+/tig/sandbox/pr1-project-setup-cognom.gpkg
+/tig/sandbox/pr1-project-setup-cognom.qgz
 /tig/dist/
-/tig/dist/pr1-fonts-cognom.gpkg
-/tig/dist/pr1-fonts-cognom.qgz
+/tig/dist/pr1-project-setup-cognom.gpkg
+/tig/dist/pr1-project-setup-cognom.qgz
+/tig/dist/pr1-project-setup-cognom.pdf
 /tig/diari.pdf
 @endfiles

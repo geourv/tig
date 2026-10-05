@@ -1,0 +1,27 @@
+{
+  "capture": "wms-result",
+  "producer": "TIG case-specific PyQGIS/Qt actor",
+  "transport": "native-qgis-gui",
+  "image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "qgis": "3.44.11-Solothurn",
+  "locale": "ca_ES",
+  "camera": {
+    "kind": "native-screen",
+    "x": 0,
+    "y": 0,
+    "width": 1124,
+    "height": 730,
+    "device_pixel_ratio": 1.0
+  },
+  "png_sha256": "1b576a1f06fd88217506044f66f01c95bd594f174bb8a41f904feb0774646b71",
+  "evidence": {
+    "local_source": "/home/docent/tig/sandbox/pr1-project-setup-exemple.gpkg|layername=municipi_vilaseca",
+    "count": 1,
+    "wms": "crs=EPSG:25831&format=image/jpeg&layers=ortofoto_25cm_color_2025&styles=&url=https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms",
+    "crs": "EPSG:25831",
+    "canvas_extent": "339009.9767097686999477,4547363.8962920000776649 : 350252.7114902312750928,4555264.1964080007746816"
+  },
+  "source": "context/practiques/capture_pr1_guided.py",
+  "native_ui": true,
+  "source_geometry": "municipis_entorn.gpkg, fixed ICGC edition 20260120"
+}

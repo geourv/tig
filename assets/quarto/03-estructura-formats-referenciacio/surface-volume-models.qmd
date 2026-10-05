@@ -1,0 +1,112 @@
+---
+title: "Superfície 2,5D, geometria 3D i voxels"
+lang: ca
+ref: surface_volume_models
+format:
+  gfm:
+    output-file: surface-volume-models.generated.md
+execute:
+  echo: false
+  warning: false
+  message: false
+execute-dir: project
+unaltraweb_compute:
+  engine: python
+  mode: figure
+  outputs:
+    - assets/img/generated/03-estructura-formats-referenciacio/surface-volume-models.svg
+---
+
+```{python}
+from pathlib import Path
+from html import escape
+
+svg=['<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" viewBox="0 0 1200 600" role="img" aria-labelledby="title desc">',
+     '<title id="title">Una altura, diverses superfícies o cel·les de volum</title>',
+     '<desc id="desc">El mateix sòl i el mateix pont en tres models. La superfície 2,5D conserva només la cota del sòl; la geometria 3D inclou piles i tauler; els voxels verds i blaus discretitzen el sòl i el pont i deixen buit el pas d aire inferior.</desc>',
+     '<rect width="1200" height="600" fill="#ffffff"/>',
+     '<g font-family="Arial, Liberation Sans, sans-serif" font-size="28" fill="#21313c">']
+def text(x,y,s,bold=False,anchor="start"):
+    svg.append(f'<text x="{x}" y="{y}" text-anchor="{anchor}" font-weight="{700 if bold else 400}">{escape(s)}</text>')
+def p(x,y,z,ox): return ox+46*x-27*y,245+17*x+20*y-46*z
+def poly(points,fill,stroke="#536e77",sw=1.6):
+    coords=" ".join(f"{a:.1f},{b:.1f}" for a,b in points)
+    svg.append(f'<polygon points="{coords}" fill="{fill}" stroke="{stroke}" stroke-width="{sw}"/>')
+def face(points,ox,fill): poly([p(*pt,ox) for pt in points],fill)
+def z(x,y): return .35+.13*x+.13*y
+SOIL = ["#c7d8bf", "#a4b794", "#b5c8a8"]
+BRIDGE = ["#b5cddd", "#648ea5", "#91b0c2"]
+deck = (0,4,.75,1.75,2.5,2.75)
+piers = [(.5,1,1,1.5),(3,3.5,1,1.5)]
+
+def box(x0,x1,y0,y1,z0,z1,ox,colors):
+    face([(x1,y0,z0),(x1,y1,z0),(x1,y1,z1),(x1,y0,z1)],ox,colors[1])
+    face([(x0,y1,z0),(x1,y1,z0),(x1,y1,z1),(x0,y1,z1)],ox,colors[2])
+    face([(x0,y0,z1),(x1,y0,z1),(x1,y1,z1),(x0,y1,z1)],ox,colors[0])
+
+text(25,46,"a · Superfície 2,5D",True)
+text(425,46,"b · Geometria 3D",True)
+text(825,46,"c · Model de voxels",True)
+for ox in (140,540):
+    for j in range(3):
+        for i in range(4):
+            face([(i,j,z(i,j)),(i+1,j,z(i+1,j)),(i+1,j+1,z(i+1,j+1)),(i,j+1,z(i,j+1))],ox,SOIL[0])
+# Vertical sample on the terrain.
+a,b=p(2,1.25,z(2,1.25),140)
+svg.append(f'<line x1="{a}" y1="{b-100}" x2="{a}" y2="{b+85}" stroke="#b44c3b" stroke-dasharray="6 5" stroke-width="2"/>')
+svg.append(f'<circle cx="{a}" cy="{b}" r="6" fill="#b44c3b"/>')
+# Bridge deck and piers; the vertical probe intersects the ground and the deck.
+for x0,x1,y0,y1 in piers:
+    box(x0,x1,y0,y1,min(z(x,y) for x in (x0,x1) for y in (y0,y1)),deck[4],540,BRIDGE)
+box(*deck,540,BRIDGE)
+a,b1=p(2,1.25,z(2,1.25),540)
+_,b2=p(2,1.25,deck[5],540)
+svg.append(f'<line x1="{a}" y1="{b2-25}" x2="{a}" y2="{b1+35}" stroke="#b44c3b" stroke-dasharray="6 5" stroke-width="2"/>')
+for b in (b1,b2): svg.append(f'<circle cx="{a}" cy="{b}" r="6" fill="#b44c3b"/>')
+
+# Voxelise precisely the same ground function, deck and piers by centre sampling.
+# Air is a valid class in the full grid; it is hidden to expose the underpass.
+STEP=.25
+def material(x,y,zz):
+    if zz <= z(x,y): return "soil"
+    if deck[0] <= x < deck[1] and deck[2] <= y < deck[3] and deck[4] <= zz < deck[5]:
+        return "bridge"
+    if zz < deck[4] and any(x0 <= x < x1 and y0 <= y < y1 for x0,x1,y0,y1 in piers):
+        return "bridge"
+    return "air"
+
+grid={(i,j,k):material((i+.5)*STEP,(j+.5)*STEP,(k+.5)*STEP)
+      for i in range(16) for j in range(12) for k in range(11)}
+cells={cell:cls for cell,cls in grid.items() if cls!="air"}
+assert {grid[(8,4,k)] for k in range(11)} == {"soil","bridge","air"}
+assert grid[(8,4,6)]=="air" and grid[(8,4,10)]=="bridge"
+assert grid[(2,4,6)]=="bridge"  # A pier, not an invented filled volume.
+surfaces=[]
+for (i,j,k),cls in cells.items():
+    x,y,zz=i*STEP,j*STEP,k*STEP
+    s=STEP
+    colors=SOIL if cls=="soil" else BRIDGE
+    candidates=[((i+1,j,k),[(x+s,y,zz),(x+s,y+s,zz),(x+s,y+s,zz+s),(x+s,y,zz+s)],colors[1]),
+                ((i,j+1,k),[(x,y+s,zz),(x+s,y+s,zz),(x+s,y+s,zz+s),(x,y+s,zz+s)],colors[2]),
+                ((i,j,k+1),[(x,y,zz+s),(x+s,y,zz+s),(x+s,y+s,zz+s),(x,y+s,zz+s)],colors[0])]
+    for neighbour,points,color in candidates:
+        if neighbour not in cells:
+            depth=sum(1242*a+2116*b+1379*c for a,b,c in points)/4
+            surfaces.append((depth,points,color))
+for depth,points,color in sorted(surfaces):
+    poly([p(*pt,940) for pt in points],color,sw=.8)
+text(200,428,"una cota de sòl per XY",anchor="middle")
+text(600,428,"sòl, piles i tauler",anchor="middle")
+text(1000,428,"sòl i pont discretitzats",anchor="middle")
+text(200,484,"z = f(x, y)",anchor="middle")
+text(600,484,"diverses Z al mateix XY",anchor="middle")
+text(1000,484,"classe de cada cel·la 3D",anchor="middle")
+for x,label,color in [(220,"sòl",SOIL[0]),(480,"pont",BRIDGE[0]),(720,"aire no dibuixat","#ffffff")]:
+    svg.append(f'<rect x="{x}" y="553" width="25" height="25" fill="{color}" stroke="#536e77"/>')
+    text(x+37,576,label)
+svg.extend(['</g>','</svg>'])
+root=next(p for p in (Path.cwd(),*Path.cwd().parents) if (p/".unaltraweb/computations.yml").is_file())
+out=root/"assets/img/generated/03-estructura-formats-referenciacio/surface-volume-models.svg"
+out.parent.mkdir(parents=True,exist_ok=True)
+out.write_text("\n".join(svg)+"\n",encoding="utf-8")
+```

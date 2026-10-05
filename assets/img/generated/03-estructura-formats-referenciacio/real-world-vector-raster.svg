@@ -1,0 +1,143 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="940" viewBox="0 0 1200 940" role="img" aria-labelledby="title desc">
+<title id="title">Tres representacions del mateix territori</title>
+<desc id="desc">Un mateix paisatge es representa en perspectiva, en vector i en una graella de cel·les quadrades. El bosc, l edifici, la carretera que travessa tot l àmbit i les tres torres amb el cable conserven posicions i colors corresponents.</desc>
+<rect width="1200" height="940" fill="#ffffff"/>
+<g font-family="Arial, Liberation Sans, sans-serif" font-size="28" fill="#21313c">
+<text x="32" y="38" text-anchor="start" font-weight="bold">a · Paisatge de referència</text>
+<polygon points="600.0,80.0 960.0,200.0 728.0,320.0 368.0,200.0" fill="#f1eddc" stroke="#51616b" stroke-width="2"/>
+<polygon points="466.6,149.0 849.8,257.0 815.0,275.0 431.8,167.0" fill="#9fa8ad" stroke="#51616b" stroke-width="2"/>
+<polygon points="607.0,107.0 715.0,143.0 642.5,180.5 534.5,144.5" fill="#cfe1cd" stroke="#51616b" stroke-width="2"/>
+<polygon points="877.0,197.0 819.0,227.0 819.0,186.5 877.0,156.5" fill="#d49d70" stroke="#51616b" stroke-width="2"/>
+<polygon points="729.0,197.0 819.0,227.0 819.0,186.5 729.0,156.5" fill="#e4c49e" stroke="#51616b" stroke-width="2"/>
+<polygon points="787.0,126.5 877.0,156.5 819.0,186.5 729.0,156.5" fill="#d49d70" stroke="#51616b" stroke-width="2"/>
+<polyline points="604.0,120.8 604.0,93.8" fill="none" stroke="#876441" stroke-width="5"/>
+<circle cx="604.0" cy="87.05" r="19" fill="#548469" stroke="#365d49" stroke-width="2"/>
+<polyline points="610.3,145.1 610.3,118.1" fill="none" stroke="#876441" stroke-width="5"/>
+<circle cx="610.3" cy="111.35" r="19" fill="#548469" stroke="#365d49" stroke-width="2"/>
+<polyline points="669.5,145.1 669.5,118.1" fill="none" stroke="#876441" stroke-width="5"/>
+<circle cx="669.5" cy="111.35" r="19" fill="#548469" stroke="#365d49" stroke-width="2"/>
+<polyline points="501.5,156.2 609.5,192.2 717.5,228.2" fill="none" stroke="#176486" stroke-width="3"/>
+<polyline points="492.5,207.5 501.5,156.2 510.5,207.5" fill="none" stroke="#936d27" stroke-width="4"/>
+<polyline points="489.5,168.2 513.5,168.2" fill="none" stroke="#936d27" stroke-width="4"/>
+<circle cx="501.5" cy="207.5" r="5" fill="#e7b65b"/>
+<polyline points="600.5,243.5 609.5,192.2 618.5,243.5" fill="none" stroke="#936d27" stroke-width="4"/>
+<polyline points="597.5,204.2 621.5,204.2" fill="none" stroke="#936d27" stroke-width="4"/>
+<circle cx="609.5" cy="243.5" r="5" fill="#e7b65b"/>
+<polyline points="708.5,279.5 717.5,228.2 726.5,279.5" fill="none" stroke="#936d27" stroke-width="4"/>
+<polyline points="705.5,240.2 729.5,240.2" fill="none" stroke="#936d27" stroke-width="4"/>
+<circle cx="717.5" cy="279.5" r="5" fill="#e7b65b"/>
+<text x="400" y="106" text-anchor="start" font-weight="normal">bosc</text>
+<polyline points="467.0,102.0 582.2,138.2" fill="none" stroke="#71828b" stroke-width="2"/>
+<text x="886" y="140" text-anchor="start" font-weight="normal">edifici</text>
+<text x="854" y="303" text-anchor="start" font-weight="normal">torres i cable</text>
+<path d="M470,319 L345,365 M740,319 L870,365" stroke="#71828b" fill="none" stroke-width="3"/>
+<text x="35" y="398" text-anchor="start" font-weight="bold">b · Vector</text>
+<text x="645" y="398" text-anchor="start" font-weight="bold">c · Ràster</text>
+<polygon points="45.0,435.0 485.0,435.0 485.0,787.0 45.0,787.0" fill="#f1eddc" stroke="#9ca9af" stroke-width="2"/>
+<polygon points="89.0,479.0 221.0,479.0 221.0,589.0 89.0,589.0" fill="#cfe1cd" stroke="#548469" stroke-width="2"/>
+<polygon points="309.0,479.0 419.0,479.0 419.0,567.0 309.0,567.0" fill="#d49d70" stroke="#875333" stroke-width="2"/>
+<polygon points="45.0,637.4 485.0,602.2 485.0,655.0 45.0,690.2" fill="#9fa8ad" stroke="#606f79" stroke-width="2"/>
+<polyline points="155.0,721.0 287.0,721.0 419.0,721.0" fill="none" stroke="#176486" stroke-width="5"/>
+<circle cx="155.0" cy="721.0" r="9" fill="#e7b65b" stroke="#6c501d" stroke-width="2"/>
+<text x="155.0" y="755.0" text-anchor="middle" font-weight="normal">T1</text>
+<circle cx="287.0" cy="721.0" r="9" fill="#e7b65b" stroke="#6c501d" stroke-width="2"/>
+<text x="287.0" y="755.0" text-anchor="middle" font-weight="normal">T2</text>
+<circle cx="419.0" cy="721.0" r="9" fill="#e7b65b" stroke="#6c501d" stroke-width="2"/>
+<text x="419.0" y="755.0" text-anchor="middle" font-weight="normal">T3</text>
+<text x="155.0" y="536.2" text-anchor="middle" font-weight="normal">B1</text>
+<text x="364.0" y="534.0" text-anchor="middle" font-weight="normal">E1</text>
+<rect x="655" y="435" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="699" y="435" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="743" y="435" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="787" y="435" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="831" y="435" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="875" y="435" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="919" y="435" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="963" y="435" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="1007" y="435" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="1051" y="435" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="655" y="479" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="699" y="479" width="44" height="44" fill="#cfe1cd" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="743" y="479" width="44" height="44" fill="#cfe1cd" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="787" y="479" width="44" height="44" fill="#cfe1cd" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="831" y="479" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="875" y="479" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="919" y="479" width="44" height="44" fill="#d49d70" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="963" y="479" width="44" height="44" fill="#d49d70" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="1007" y="479" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="1051" y="479" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="655" y="523" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="699" y="523" width="44" height="44" fill="#cfe1cd" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="743" y="523" width="44" height="44" fill="#cfe1cd" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="787" y="523" width="44" height="44" fill="#cfe1cd" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="831" y="523" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="875" y="523" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="919" y="523" width="44" height="44" fill="#d49d70" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="963" y="523" width="44" height="44" fill="#d49d70" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="1007" y="523" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="1051" y="523" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="655" y="567" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="699" y="567" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="743" y="567" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="787" y="567" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="831" y="567" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="875" y="567" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="919" y="567" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="963" y="567" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="1007" y="567" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="1051" y="567" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="655" y="611" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="699" y="611" width="44" height="44" fill="#9fa8ad" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="743" y="611" width="44" height="44" fill="#9fa8ad" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="787" y="611" width="44" height="44" fill="#9fa8ad" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="831" y="611" width="44" height="44" fill="#9fa8ad" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="875" y="611" width="44" height="44" fill="#9fa8ad" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="919" y="611" width="44" height="44" fill="#9fa8ad" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="963" y="611" width="44" height="44" fill="#9fa8ad" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="1007" y="611" width="44" height="44" fill="#9fa8ad" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="1051" y="611" width="44" height="44" fill="#9fa8ad" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="655" y="655" width="44" height="44" fill="#9fa8ad" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="699" y="655" width="44" height="44" fill="#9fa8ad" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="743" y="655" width="44" height="44" fill="#9fa8ad" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="787" y="655" width="44" height="44" fill="#9fa8ad" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="831" y="655" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="875" y="655" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="919" y="655" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="963" y="655" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="1007" y="655" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="1051" y="655" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="655" y="699" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="699" y="699" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="743" y="699" width="44" height="44" fill="#e7b65b" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="787" y="699" width="44" height="44" fill="#176486" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="831" y="699" width="44" height="44" fill="#176486" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="875" y="699" width="44" height="44" fill="#e7b65b" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="919" y="699" width="44" height="44" fill="#176486" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="963" y="699" width="44" height="44" fill="#176486" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="1007" y="699" width="44" height="44" fill="#e7b65b" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="1051" y="699" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="655" y="743" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="699" y="743" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="743" y="743" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="787" y="743" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="831" y="743" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="875" y="743" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="919" y="743" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="963" y="743" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="1007" y="743" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<rect x="1051" y="743" width="44" height="44" fill="#f1eddc" stroke="#ffffff" stroke-width="1.5"/>
+<polygon points="655.0,435.0 1095.0,435.0 1095.0,787.0 655.0,787.0" fill="none" stroke="#9ca9af" stroke-width="2"/>
+<rect x="70" y="832" width="25" height="25" fill="#f1eddc" stroke="#51616b"/>
+<text x="106" y="855" text-anchor="start" font-weight="normal">sòl obert</text>
+<rect x="460" y="832" width="25" height="25" fill="#cfe1cd" stroke="#51616b"/>
+<text x="496" y="855" text-anchor="start" font-weight="normal">bosc</text>
+<rect x="850" y="832" width="25" height="25" fill="#d49d70" stroke="#51616b"/>
+<text x="886" y="855" text-anchor="start" font-weight="normal">edificació</text>
+<rect x="70" y="891" width="25" height="25" fill="#9fa8ad" stroke="#51616b"/>
+<text x="106" y="914" text-anchor="start" font-weight="normal">carretera</text>
+<rect x="460" y="891" width="25" height="25" fill="#e7b65b" stroke="#51616b"/>
+<text x="496" y="914" text-anchor="start" font-weight="normal">torre</text>
+<rect x="850" y="891" width="25" height="25" fill="#176486" stroke="#51616b"/>
+<text x="886" y="914" text-anchor="start" font-weight="normal">tram de cable</text>
+</g>
+</svg>

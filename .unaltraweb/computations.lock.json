@@ -1,5 +1,39 @@
 {
   "records": {
+    "assets/quarto/03-estructura-formats-referenciacio/citygml-bim.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/03-estructura-formats-referenciacio/citygml-bim.qmd",
+          "sha256": "a05d8ba66e6baf7f7eb16a855376536d65715bb367219f908e2e40b81a9881ca"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "9332192d841c075bbba14cd1d8a57940779c59219b49bb3ef643d3918abea6e1",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/03-estructura-formats-referenciacio/citygml-bim.svg",
+          "sha256": "d2007beb98044e51436e83d4ce1b83ec3114d5facd91239ad1724df8054ed7b3",
+          "size": 4675
+        }
+      ],
+      "rendered_at": "2026-09-30T21:59:06+00:00"
+    },
     "assets/quarto/03-estructura-formats-referenciacio/geographic-projected-utm.qmd": {
       "dependencies": [
         {
@@ -67,6 +101,256 @@
         }
       ],
       "rendered_at": "2026-09-19T21:46:45+00:00"
+    },
+    "assets/quarto/03-estructura-formats-referenciacio/point-cloud-tin.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/03-estructura-formats-referenciacio/point-cloud-tin.qmd",
+          "sha256": "e0ad09cdbace18bbfa0f3e0148b8d81b8cc8a601ef2e78c3f8f554edf031e1a7"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "a07d4cec4aa365ea7b3dd9dc2d637396d7d41afb2f26534baa064bb0ec4bf211",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/03-estructura-formats-referenciacio/point-cloud-tin.svg",
+          "sha256": "76c4df68f44863037cb0d646e5099e16ea7a964d3a6a2197ff54a2732437d99e",
+          "size": 38010
+        }
+      ],
+      "rendered_at": "2026-09-30T21:48:41+00:00"
+    },
+    "assets/quarto/03-estructura-formats-referenciacio/real-world-vector-raster.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/03-estructura-formats-referenciacio/real-world-vector-raster.qmd",
+          "sha256": "fd9b21c0ca4fef9394d48a955085a565c227c04f3f930e72937e3b0aee62a186"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "c2bcab5cd98ab17af976821a90d1d5652cdef4f0cf0c27c9eb4ab073c2d7f0f1",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/03-estructura-formats-referenciacio/real-world-vector-raster.svg",
+          "sha256": "5705c80ca7ce9ad6288da7ef8724a4c4f56b169bcb134a47edbea506c080e166",
+          "size": 13497
+        }
+      ],
+      "rendered_at": "2026-10-01T08:03:47+00:00"
+    },
+    "assets/quarto/03-estructura-formats-referenciacio/surface-volume-models.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/03-estructura-formats-referenciacio/surface-volume-models.qmd",
+          "sha256": "364154e6f4dee7d51cc4b7f715c270dd6a66cae30cda7ea94fff2afe3b45ebc2"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "f80547c19955336b93743b2f7fe041225777d89eaeade49e9f123a21cad821c9",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/03-estructura-formats-referenciacio/surface-volume-models.svg",
+          "sha256": "70535a8e4e2cc83b581df2ee720ebd1c115437a0dae9c1d516339ae0ea94ce20",
+          "size": 58769
+        }
+      ],
+      "rendered_at": "2026-10-01T08:17:16+00:00"
+    },
+    "assets/quarto/03-estructura-formats-referenciacio/tower-model-conceptual.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/03-estructura-formats-referenciacio/tower-model-conceptual.qmd",
+          "sha256": "c939ae9794499cd5e381db654e2e4efbfb21f576a3508bfc0bc102ad83c991c6"
+        },
+        {
+          "path": "assets/quarto/03-estructura-formats-referenciacio/tower-model-scene.svg",
+          "sha256": "fe2815f6e01aa364cdff7982df4b05620b5e3a10e117c536cab227eac71bc94d"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "33c075bcad6ccee4746287bf1ad275b6b220d06f7a343b64a6297a9b39165869",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/03-estructura-formats-referenciacio/tower-model-conceptual.svg",
+          "sha256": "2ff746a26e1aff3ca9719900e70f5b762f3b1eb9d125f15af44c46e5d31a14f2",
+          "size": 3744
+        }
+      ],
+      "rendered_at": "2026-10-01T20:42:23+00:00"
+    },
+    "assets/quarto/03-estructura-formats-referenciacio/tower-model-logical.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/03-estructura-formats-referenciacio/tower-model-logical.qmd",
+          "sha256": "f98d6d1fef3b30e7d26c11e09fd58f871292eec03397288a8709f27f452be01e"
+        },
+        {
+          "path": "assets/quarto/03-estructura-formats-referenciacio/tower-model-scene.svg",
+          "sha256": "fe2815f6e01aa364cdff7982df4b05620b5e3a10e117c536cab227eac71bc94d"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "651aefdb49cda01e879f98466c90420a044477545e67e76214a1323c8f58a2c9",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/03-estructura-formats-referenciacio/tower-model-logical.svg",
+          "sha256": "63b2bd0f1a3bfae367cd6c030d985ea2eac28b4628658d7d12e94cd26f7d4c19",
+          "size": 3481
+        }
+      ],
+      "rendered_at": "2026-10-01T20:42:32+00:00"
+    },
+    "assets/quarto/03-estructura-formats-referenciacio/tower-model-physical.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/03-estructura-formats-referenciacio/tower-model-physical.qmd",
+          "sha256": "ccf51bdb4c9321e90197302bc4899a41a57e9c15a1e428e3329bb6eb1cea34f5"
+        },
+        {
+          "path": "assets/quarto/03-estructura-formats-referenciacio/tower-model-scene.svg",
+          "sha256": "fe2815f6e01aa364cdff7982df4b05620b5e3a10e117c536cab227eac71bc94d"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "e60bfa0890cf94a05524e905ee49db702ed2d800da33f27ad6afe9519e024bfc",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/03-estructura-formats-referenciacio/tower-model-physical.svg",
+          "sha256": "bc055318d418ae3ab55df68f6699ff4daa0a19d339427e2ba5d582b55fe9c6bc",
+          "size": 3816
+        }
+      ],
+      "rendered_at": "2026-10-01T20:42:43+00:00"
+    },
+    "assets/quarto/03-estructura-formats-referenciacio/tower-network-update.qmd": {
+      "dependencies": [
+        {
+          "path": "assets/quarto/03-estructura-formats-referenciacio/tower-network-update.qmd",
+          "sha256": "0dbca4b82f107d5fcb1450497327e4e67b8713136b18da2293f99950080b535d"
+        },
+        {
+          "path": ".unaltraweb/computations.yml",
+          "sha256": "fa5cedc8d3192f05e40bdf43b9c343e561907139984377b9f9702922bcd8ec06"
+        }
+      ],
+      "engine": "python",
+      "fingerprint": "091beefe6994b13452026eccf0d2779c3f1606dd003c7a94b01397d9375d4409",
+      "image": {
+        "engine": "python",
+        "environment": "local",
+        "image": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "source": "environment:COMPUTE_PYTHON_IMAGE"
+      },
+      "image_identity": {
+        "available": "true",
+        "digest": "ghcr.io/dosquartsdedocs/unaltraweb-compute-python@sha256:18cb269811bd4005800382da25a480ec2bca7eac8d0501ad1ef36bad1c0f8cd9",
+        "id": "sha256:039af70322afeea49f34e28f5efa11ab86d091baaf02100a7414bb0104f344bc"
+      },
+      "mode": "figure",
+      "outputs": [
+        {
+          "path": "assets/img/generated/03-estructura-formats-referenciacio/tower-network-update.svg",
+          "sha256": "989c35a6aa3d7a7a97d66fb5c9d1f47f78eb8ba061dc1cf0f92f5bb05ebe4a62",
+          "size": 3846
+        }
+      ],
+      "rendered_at": "2026-09-30T21:59:29+00:00"
     },
     "assets/quarto/04-model-vectorial-digitalitzacio/arc-node-spaghetti.qmd": {
       "dependencies": [

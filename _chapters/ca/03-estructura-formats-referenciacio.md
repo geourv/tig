@@ -1,7 +1,7 @@
 ---
 layout: manual-chapter
-title: Estructura, formats i referenciació
-description: Models de dades, formats geogràfics, sistemes de referència i criteris per integrar capes sense falsejar-ne la posició.
+title: Models de dades, formats i referenciació
+description: Models conceptuals, lògics i físics; representacions vectorials, ràster i 3D; formats i sistemes de referència per integrar dades geogràfiques.
 lang: ca
 ref: manual-data-structures-formats-crs
 profiles: [unaltremanual]
@@ -18,13 +18,13 @@ El nom d'un fitxer no resol aquestes preguntes. L'extensió informa del format, 
 
 >>>>> En acabar el capítol, cal poder diagnosticar l'estructura i la referenciació d'una capa, transformar-la amb criteri i completar la primera micropràctica.
 >>>>>
->>>>> - Distingir model vectorial, model ràster, estructura interna i format d'emmagatzematge.
+>>>>> - Distingir els nivells conceptual, lògic i físic, i justificar representacions vectorials, ràster, de superfície o de volum segons la pregunta.
 >>>>> - Triar un format segons edició, anàlisi, intercanvi i conservació.
 >>>>> - Explicar què aporta un CRS i diferenciar assignació, transformació i visualització al vol.
 >>>>> - Relacionar escala, resolució, precisió i exactitud amb l'ús previst.
 >>>>> - Materialitzar en `EPSG:25831` les dues representacions municipals, validar el projecte `pr1` i preparar-ne els dos fitxers lliurables.
 
-## De la Terra a una parella de coordenades
+## Referenciació terrestre i coordenades
 
 Una coordenada és el final d'una cadena de decisions, no una etiqueta enganxada a un punt. El punt pertany primer a la Terra física. Per descriure'l cal adoptar una superfície i un marc de referència, expressar-ne la posició mitjançant un sistema de coordenades i, si es necessita un mapa pla, aplicar una projecció. Només aleshores apareixen nombres com longitud i latitud en graus o est i nord en metres.
 
@@ -102,55 +102,123 @@ Canviar d'escala obliga a **generalitzar**: seleccionar allò pertinent, simplif
 
 No tots els mapes necessiten una fletxa de nord o una llegenda extensa. L'orientació pot quedar inequívoca per una retícula i una capa única amb significat explícit pot no requerir llegenda. Tanmateix, ometre un element només és correcte si la pregunta que resol continua tenint una resposta clara. El títol o el text que acompanya el mapa ha d'identificar el fenomen i l'àmbit, i la font, la data, el CRS i les unitats no s'han de deixar a la memòria de qui l'ha elaborat.
 
-## Model, estructura i format
+## Models conceptuals, lògics i físics {#nivells-model-dades}
 
-Model de dades
-: Defineix com s'abstrau un fenomen. El model vectorial utilitza entitats discretes amb geometries i atributs; el model ràster divideix l'espai en una graella de cel·les i registra un valor per banda.
+Un **model de dades** selecciona els objectes, les propietats i les relacions necessaris per respondre una pregunta geogràfica. En una xarxa elèctrica pot interessar saber quines torres sostenen cada tram i quina altura té cada suport. El paisatge conté molta més informació de la que cal conservar per a aquest inventari {% cite longleyGeographicInformationScience2015 %}.
 
-Estructura
-: Descriu com s'organitzen les peces dins del model, com el tipus geomètric, els camps i les relacions d'un vector o les files, columnes, bandes, mida de cel·la i `NoData` d'un ràster.
+Les tres figures següents mantenen la mateixa escena de torres i cables. Les anotacions mostren què s'hi decideix en cada nivell: **quins objectes interessen**, **com es representen amb dades** i **com es desen en un sistema concret**. Dins de cada model, tots els elements del mateix tipus repeteixen les mateixes propietats, amb els seus valors corresponents.
 
-Format
-: Convenció que permet emmagatzemar o intercanviar una estructura de dades.
+### Model conceptual: objectes, propietats i relacions
 
-Cap model no és superior en tots els casos: l'elecció depèn de la pregunta, la naturalesa del fenomen i l'operació prevista {% cite longleyGeographicInformationScience2015 %}.
+El **model conceptual** identifica els elements rellevants i el seu significat. En el cas de la figura hi ha torres de suport i trams de cable. Cada tram queda delimitat per dues torres, i la torre central és compartida pels dos trams. La posició i l'altura són propietats que cal conèixer per descriure els suports.
 
-La distinció entre fenòmens discrets i camps continus ajuda a començar, però no és una regla automàtica. Límits municipals i fanals acostumen a representar-se com a entitats vectorials; l'elevació i la temperatura, com a camps ràster. Tanmateix, un camp continu es pot mostrejar amb punts i una categoria d'ús del sòl es pot codificar en una graella. El mètode d'observació i l'anàlisi prevista també intervenen en l'elecció.
+![Tres torres amb la seva posició relativa, altura i nombre de trams, i dos trams de cable amb els dos suports identificats en llenguatge corrent]({{ site.baseurl }}/assets/quarto/03-estructura-formats-referenciacio/tower-model-conceptual.qmd "Model conceptual de la xarxa elèctrica. Identifica les torres, els trams i les relacions de suport, amb propietats com la posició i l'altura, sense fixar encara una geometria digital ni un format."){: data-figure-width-web="42rem" data-figure-width-pdf="88%" data-caption-source="Font: elaboració pròpia; escena i valors sintètics."}
 
-Aquestes tres paraules responen, per tant, preguntes diferents. El model diu quina mena de món es construeix amb les dades; l'estructura diu quins elements i regles el formen; i el format diu com es codifica perquè un programa el pugui llegir o escriure. Canviar un Shapefile per un GeoPackage modifica l'emmagatzematge, però no converteix una línia central de carretera en una superfície viària. Vectoritzar un ràster, en canvi, sí que canvia el model i obliga a definir com les cel·les es converteixen en objectes, quins contorns se simplifiquen i quins valors es conserven.
+### Model lògic: geometries, identificadors i atributs
 
-També cal separar el **conjunt de dades** de la **capa**. Un conjunt de dades és una unitat identificable que pot contenir una o més capes, taules o bandes. Una capa és una vista organitzada d'un contingut espacial homogeni per treballar-hi al SIG. Un fitxer GeoPackage pot contenir moltes capes; un conjunt Shapefile representa normalment una sola capa; un GeoTIFF pot tenir diverses bandes; i un projecte QGIS pot enllaçar tots aquests recursos sense copiar-los dins del fitxer `.qgz`. L'arbre de capes que es veu a QGIS és una organització del projecte, no una descripció fiable de quants fitxers o contenidors hi ha al disc.
+El **model lògic** especifica com es representaran aquells objectes amb dades. En l'exemple, cada torre es representa amb un punt al peu del suport, un identificador i un atribut d'altura. Cada tram té una representació lineal i conserva els identificadors de les dues torres extremes. T2 és compartida per L1 i L2: aquesta relació queda expressada en les dades, no només suggerida pel dibuix.
 
-### Objectes discrets i camps
+![Cada torre amb identificador, geometria puntual, altura i trams relacionats, i cada tram amb identificador, geometria lineal i torres inicial i final]({{ site.baseurl }}/assets/quarto/03-estructura-formats-referenciacio/tower-model-logical.qmd "Model lògic de la xarxa elèctrica. Representa les torres amb punts i els trams amb línies, amb identificadors, altures i referències als suports. Les altures no són cotes del terreny; l'ordre dels extrems no indica el sentit del corrent."){: data-figure-width-web="42rem" data-figure-width-pdf="88%" data-caption-source="Font: elaboració pròpia; escena i valors sintètics."}
 
-El model vectorial és especialment adequat quan interessa conservar la identitat d'objectes o unitats: cada municipi, tram, parcel·la o fanal pot tenir un identificador i un registre d'atributs. La geometria n'expressa una abstracció espacial i la taula permet descriure'n categoria, data, font o estat. Els límits poden ser nítids per convenció, com una divisió administrativa, encara que no siguin visibles sobre el terreny. La possibilitat de consultar cada entitat no implica, però, que la realitat estigui formada necessàriament per objectes independents; és una decisió del model.
+### Model físic: fitxers, capes i tipus de camp
 
-El model ràster és especialment adequat quan una variable es concep com un camp observat o estimat sobre una graella. Cada cel·la ocupa una posició definida per l'origen, les dimensions, l'orientació i el CRS de la graella, i emmagatzema un valor per banda. Una ortofoto sol tenir bandes de resposta radiomètrica; un model digital d'elevacions, una banda d'altura; i un ràster classificat, codis de coberta. El significat d'un valor depèn del tipus de variable, de la unitat, del mètode de mostreig i de la convenció de `NoData`, no només del color amb què es representa {% cite felicisimoModelosDigitalesTerreno1994 %}.
+El **model físic** concreta on i com es desaran les dades. Una implementació possible utilitza el fitxer GeoPackage `xarxa.gpkg`, amb una capa de punts `torres` i una capa de línies `trams`. Cada torre conserva `id_torre` com a text i `altura_m` com a nombre decimal. Cada tram conserva `id_tram`, `torre_inici` i `torre_final` com a text; aquests dos darrers camps identifiquen els suports. Totes dues capes utilitzen `EPSG:25831` {% cite ogcGeoPackage2024 %}.
 
-La cel·la no és sempre una observació puntual situada al centre. En un producte pot representar una mitjana, una classe dominant, una mesura instantània, una estimació interpolada o una quantitat integrada sobre l'àrea. Tampoc no s'ha de confondre **píxel de pantalla** amb **cel·la de dades**: el primer depèn del dispositiu i del zoom; la segona forma part de l'estructura del ràster. Quan QGIS reescala la visualització, pot assignar molts píxels de pantalla a una cel·la o resumir moltes cel·les en un píxel sense canviar la resolució original.
+![Cada torre amb la capa i els camps id_torre i altura_m, amb tipus i valors, i cada tram amb id_tram, torre_inici i torre_final complets; el fitxer i el CRS són comuns]({{ site.baseurl }}/assets/quarto/03-estructura-formats-referenciacio/tower-model-physical.qmd "Model físic de la xarxa elèctrica en un GeoPackage. Especifica el fitxer, les capes, el CRS i els noms i tipus de camp. Cada element mostra els camps de la seva capa amb els valors corresponents."){: data-figure-width-web="42rem" data-figure-width-pdf="88%" data-caption-source="Font: elaboració pròpia; exemple d'emmagatzematge de l'escena sintètica."}
 
-La conversió entre vector i ràster sempre requereix una regla. Rasteritzar polígons obliga a triar mida i alineació de cel·la i a decidir quin valor rep una cel·la travessada per més d'una entitat. Vectoritzar classes ràster obliga a decidir quines cel·les formen una regió, com es tracta el veïnatge i quant se simplifica un contorn esglaonat. El resultat pot ser útil, però no és una còpia neutral: hereta la resolució d'origen i afegeix les decisions de conversió.
+Canviar el format de desament pot mantenir la mateixa organització lògica, sempre que conservi les geometries, els atributs i les relacions necessàries. En canvi, representar tota la xarxa com una imatge faria perdre la identificació directa de cada torre i tram. Per això el format és una decisió d'emmagatzematge i no defineix, tot sol, què modelen les dades.
 
-### Altres models amb un abast delimitat
+>> **«Físic» es refereix aquí a l'emmagatzematge digital.** Les tres figures mostren el mateix paisatge; el que canvia és la informació que s'hi especifica per construir el conjunt de dades.
 
-Vector i ràster són les estructures generals del curs, però altres models conserven relacions que es perdrien si es forcés qualsevol dada dins de punts, línies o cel·les independents:
+## Objectes i camps: representacions vectorials i ràster {#objectes-camps-vector-raster}
 
-- Una **xarxa** afegeix nodes, connectivitat, direcció, costos i restriccions. Dues línies que es creuen en planta no queden connectades automàticament.
-- Una xarxa irregular de triangles o **TIN** aproxima una superfície amb triangles i línies de ruptura, concentrant detall on varia el relleu {% cite felicisimoModelosDigitalesTerreno1994 %}.
-- Un **núvol de punts** conserva grans volums de mostres 3D, sovint LiDAR o fotogramètriques, amb atributs d'adquisició; no equival operativament a una multipunt ordinària.
-- Un **voxel** discretitza un volum, per exemple geològic, mentre que una **malla** connecta elements d'una superfície o un volum i associa valors a nodes, cares o cel·les.
-- Una **cobertura** assigna valors a posicions d'un domini espacial o espaciotemporal; el ràster n'és una implementació habitual, però no l'única.
-- Un **DGGS** divideix la Terra en cel·les jeràrquiques identificables per indexar i agregar dades a diverses resolucions.
+Un **objecte discret** té identitat i límits definits pel model: un fanal, una parcel·la o un municipi. Un **camp** associa una propietat a les posicions d'un domini, com l'elevació, la temperatura o la classe de coberta. «Camp» no significa necessàriament variable contínua: les cobertes són categòriques. Tampoc no s'ha de confondre aquest ús geogràfic amb un camp o columna d'una taula.
 
-Les tessel·les XYZ o WMTS són principalment una estratègia de distribució i memòria cau. Una imatge renderitzada pot haver perdut atributs i valors originals, i una vista 3D no prova que la font tingui Z ni un CRS vertical.
+El **model vectorial** representa geometries mitjançant coordenades. Els punts localitzen, les línies descriuen trajectes i els polígons delimiten superfícies; els atributs n'expliquen el significat. Un bosc es pot descriure com un polígon per mesurar-ne l'àrea o com un conjunt de punts si l'objectiu és inventariar cada arbre. Els límits d'un municipi poden ser nítids per convenció administrativa encara que no siguin visibles sobre el terreny.
 
-### Estructura lògica i estructura física
+El **model ràster** divideix l'espai en una graella i associa un valor a cada cel·la i banda. Una ortofoto registra una resposta radiomètrica; un model d'elevacions, altures; i un ràster de cobertes, classes. La posició de les cel·les es deriva de les files i columnes, l'origen, la mida, l'orientació i el CRS. El valor pot representar una observació, una mitjana, una classe dominant o una estimació: la cel·la i la seva semàntica s'han de definir conjuntament.
 
-L'estructura lògica indica entitats, camps, relacions, bandes o cel·les; la física ordena bytes, índexs i taules. Dos GeoTIFF poden conservar els mateixos valors i tenir costos diferents de lectura segons l'organització en tires o blocs. Un índex espacial accelera consultes sense canviar les geometries.
+![El mateix paisatge amb bosc, edifici, carretera i tres torres unides per cable es representa en perspectiva, en vector i en una graella quadrada amb els mateixos colors i posicions]({{ site.baseurl }}/assets/quarto/03-estructura-formats-referenciacio/real-world-vector-raster.qmd "Correspondència entre paisatge, vector i ràster sobre el mateix àmbit. Les cel·les són quadrades i la carretera forma una franja contínua d'un costat a l'altre. El ràster mostra les mateixes classes, però discretitza els contorns i representa punts i cables amb cel·les; no conserva els identificadors ni la connectivitat del vector."){: data-figure-width-web="42rem" data-figure-width-pdf="88%" data-caption-source="Font: elaboració pròpia amb geometries sintètiques; el paisatge és un esquema, no una observació territorial."}
 
-L'esquema ha de declarar unitat d'observació, geometria o graella, camps o bandes, tipus, unitats, nuls, identificadors, CRS, temps i restriccions. Si el format de destinació trunca camps, converteix dates, elimina dominis o perd la referència vertical, la sortida pot obrir-se i no ser equivalent.
+En aquesta transposició didàctica, els polígons aporten la classe del centre de cada cel·la; les torres i els trams de cable marquen les cel·les que els contenen, amb prioritat de la torre sobre el cable. Els colors permeten reconèixer els mateixos elements en les tres vistes. La cel·la ocupada per una torre no representa la seva petjada real, i la continuïtat de cel·les blaves no substitueix una taula de connexions entre torres.
+
+La distinció objecte/camp orienta la tria, però no imposa vector/ràster. Un camp d'elevacions es pot descriure amb punts de mostreig, corbes de nivell, triangles o una graella. Una classificació del sòl es pot representar amb polígons o cel·les. Cal preguntar quina informació ha de conservar-se: la identitat de cada parcel·la, la connectivitat d'una xarxa o la comparació de valors sobre un suport regular.
+
+>>> **Dues preguntes sobre una carretera.** Per estimar la superfície pavimentada cal un polígon de calçada o una classificació ràster amb detall adequat. Per calcular un itinerari cal una xarxa amb trams, connexions i restriccions de pas. Una línia que dibuixa l'eix no aporta per si sola ni l'amplada real ni els girs permesos.
+
+Rasteritzar i vectoritzar exigeix regles i pot perdre informació. Una carretera més estreta que la cel·la pot desaparèixer si s'assigna la classe del centre; marcar totes les cel·les que toca pot exagerar-ne la superfície. El [capítol de model i anàlisi ràster]({{ site.baseurl }}/ca/chapters/model-analisi-raster/) desenvolupa resolució, alineació, `NoData`, remostreig i conversió. Aquí interessa reconèixer que canviar de representació altera allò que es pot identificar i mesurar.
+
+## Geometries independents, topologia i xarxes {#geometries-topologia-xarxes}
+
+En una estructura d'**espagueti** (*spaghetti*), cada geometria desa les seves coordenades independentment. Dos polígons adjacents poden repetir tots els vèrtexs de la frontera; dues línies poden tenir extrems coincidents sense referenciar un mateix node. Aquest emmagatzematge no implica necessàriament errors: les capes de geometries simples són útils per a moltes anàlisis i permeten calcular relacions espacials. El que no incorporen per defecte és una estructura compartida que mantingui totes les coincidències {% cite ogcSimpleFeatures2011 %}.
+
+Una **estructura topològica explícita** representa relacions mitjançant elements amb identitat, com nodes, arcs i cares. Una frontera comuna pot emmagatzemar-se una vegada i ser referenciada per dues cares. En una xarxa, els arcs indiquen els nodes que connecten. El model funcional hi afegeix informació que la geometria no resol: circuits, sentit de circulació, costos o restriccions. Dues línies que es creuen en planta poden estar a altures diferents i no tenir connexió.
+
+### Torres i trams: geometries vinculades
+
+En una xarxa elèctrica simplificada es poden capturar primer els punts de les torres i registrar després els parells que defineixen els trams. L1 uneix T1 amb T2, i L2 uneix T2 amb T3. A partir d'aquestes referències es construeix cada línia entre les posicions actuals dels seus extrems. No cal digitalitzar dues vegades les mateixes coordenades.
+
+Dibuixar les torres no permet deduir tota la xarxa: cal conèixer els parells connectats o disposar d'un ordre documentat dins de cada circuit. Unir cada punt amb el més proper podria inventar connexions. A més, una recta entre suports només és una representació planimètrica simplificada; calcular distàncies de seguretat respecte del cable real exigeix considerar-ne la cota, la curvatura i les condicions físiques.
+
+![La torre T2 es desplaça: en geometries independents els trams queden a la posició antiga, mentre que els trams reconstruïts amb els identificadors de les torres mantenen la connexió]({{ site.baseurl }}/assets/quarto/03-estructura-formats-referenciacio/tower-network-update.qmd "El moviment de T2 afecta L1 i L2. A l'esquerra només s'ha editat el punt; a la dreta una regla reconstrueix els trams des de les torres referenciades. La línia discontínua indica la posició anterior, no un tercer tram."){: data-figure-width-web="42rem" data-figure-width-pdf="88%" data-caption-source="Font: elaboració pròpia; xarxa sintètica."}
+
+>>> **Correcció de la torre central.** Si es corregeix la posició de T2, cal actualitzar els extrems de L1 i L2 que hi arriben. Les tres torres continuen sent les mateixes i els trams mantenen les connexions; el que canvia és la seva geometria.
+
+L'eina d'edició ha de mantenir expressament la connexió o reconstruir les línies després de moure la torre. Desar les dues capes dins d'un mateix GeoPackage no activa aquest comportament automàticament. La comprovació consisteix a verificar que cada tram continua arribant als suports que té assignats.
+
+>>>> **L'ajust de vèrtexs no és una dependència persistent.** L'autoensamblat ajuda a fer coincidir coordenades durant la captura. El moviment posterior d'una torre només arrossega els trams si l'eina i el model mantenen expressament aquesta relació. La comprovació ha de comparar els extrems de cada tram amb les torres referenciades i detectar identificadors inexistents.
+
+El [capítol de digitalització vectorial]({{ site.baseurl }}/ca/chapters/model-vectorial-digitalitzacio/) concreta les regles de captura i els controls de topologia. La distinció entre emmagatzematge independent i elements compartits reapareix més endavant en la comparació entre GeoJSON i TopoJSON.
+
+## Núvols de punts i superfícies TIN {#nuvols-punts-tin}
+
+Un aixecament LiDAR o una reconstrucció fotogramètrica pot produir un **núvol de punts**: moltes mostres amb coordenades X, Y i Z i, segons l'adquisició, intensitat, color, nombre de retorn o classificació. Les mostres descriuen superfícies observades, no necessàriament objectes identificats. Mil punts sobre una coberta no són mil edificis, i els buits poden correspondre a oclusions o manca d'observació {% cite qgisUserGuide344 %}.
+
+LAS i la seva forma comprimida LAZ són formats habituals de núvols de punts. Conservar-los permet tornar a classificar mostres de sòl, vegetació o construccions sense haver reduït prematurament la informació a una altura per cel·la. La densitat de punts no equival a la resolució d'un ràster: primer cal decidir quines mostres s'utilitzen i com s'estima una superfície entre elles.
+
+Una **xarxa irregular de triangles**, o **TIN** (*triangulated irregular network*), connecta vèrtexs mitjançant arestes i cares triangulars. En un TIN del terreny cada vèrtex té una cota i cada cara permet interpolar la superfície interior, habitualment com un pla. La distribució irregular pot concentrar vèrtexs en canvis de pendent i utilitzar triangles més grans en zones uniformes. Les línies de ruptura poden imposar arestes al llarg d'una carena o un talús perquè la triangulació no els travessi arbitràriament {% cite felicisimoModelosDigitalesTerreno1994 %}.
+
+![Mostres de sòl, vegetació i coberta en un núvol tridimensional, al costat d'una superfície de triangles formada amb punts seleccionats del sòl]({{ site.baseurl }}/assets/quarto/03-estructura-formats-referenciacio/point-cloud-tin.qmd "Un núvol conserva mostres separades; un TIN afegeix connectivitat i una interpolació entre vèrtexs. En aquest exemple, el TIN utilitza una selecció de punts de sòl i exclou la vegetació i la coberta. Les cares entre mostres són estimades."){: data-figure-width-web="42rem" data-figure-width-pdf="88%" data-caption-source="Font: elaboració pròpia amb un relleu i un mostreig sintètics."}
+
+>>> **Un talús al costat d'una carretera.** Si s'han mesurat punts a la coronació i al peu, un TIN pot conservar aquestes dues línies com a ruptures de pendent. Una graella representa el mateix relleu amb altures en posicions regulars; si les cel·les són grans, el talús queda generalitzat. Cap opció recupera un peu de talús que no s'hagi observat.
+
+El TIN és una estructura vectorial de superfície, no una família oposada a qualsevol vector. Tampoc no és superior al ràster en tots els casos: la graella facilita l'àlgebra de mapes i les operacions de veïnatge, mentre que el TIN explicita la malla i les ruptures incorporades. Convertir entre tots dos implica interpolació i una decisió sobre el detall que es conserva.
+
+## Superfícies 2,5D, volums i models semàntics 3D {#superficies-volums-3d}
+
+Un model d'elevacions convencional assigna una sola altura a cada posició horitzontal: $z=f(x,y)$. Se sol descriure com a **2,5D** perquè utilitza Z, però no representa lliurement tot el volum. Tant una graella d'elevacions com un TIN del terreny poden seguir aquest supòsit. Permeten representar el relleu, però una sola superfície no conserva alhora el tauler d'un pont i el sòl que hi ha a sota.
+
+Una geometria **3D** pot representar posicions superposades en planta, parets verticals, voladissos i cavitats. Un núvol pot mostrejar-ne diverses superfícies; una **malla de superfície** connecta vèrtexs i cares per descriure una pell; i un **sòlid** delimita un volum amb una frontera tancada i coherent. Una malla oberta de façanes no defineix necessàriament un interior ni permet calcular un volum vàlid.
+
+### Voxels i malles de volum
+
+Un **voxel** és una cel·la volumètrica. En una graella regular s'identifica amb tres índexs i unes dimensions en X, Y i Z; no cal que sigui un cub. Cada voxel pot contenir una classe geològica, una concentració o una temperatura. A diferència d'un ràster d'elevacions, el model pot assignar valors diferents a diversos nivells d'una mateixa columna vertical.
+
+![El mateix terreny verd i pont blau es representen com una superfície del sòl, una geometria 3D amb piles i tauler i una graella de voxels que conserva el pas d'aire sota el pont]({{ site.baseurl }}/assets/quarto/03-estructura-formats-referenciacio/surface-volume-models.qmd "Tres models del mateix àmbit. La superfície 2,5D conserva només la cota del sòl; la geometria 3D incorpora el pont. Els voxels discretitzen aquest mateix sòl i les mateixes piles i tauler, amb els mateixos colors. Les cel·les d'aire no es dibuixen, de manera que el buit sota el pont continua visible."){: data-figure-width-web="42rem" data-figure-width-pdf="88%" data-caption-source="Font: elaboració pròpia; geometries sintètiques."}
+
+La graella de la figura assigna a cada voxel la classe del seu centre: sòl, pont o aire. Els contorns es tornen esglaonats, però es conserva la diferència entre el terreny, la construcció i l'espai buit inferior. L'aire és una classe coneguda que s'ha ocultat per llegibilitat, no una absència de dades. Una graella més grossa podria perdre una pila estreta o tancar un pas que el model geomètric manté obert.
+
+Per estudiar un aqüífer, una superfície pot descriure la cota del sostre d'una formació; un volum de voxels pot representar materials o concentracions a profunditats diferents. Una **malla de volum** utilitza cel·les, per exemple tetraedres, que s'adapten a geometries més complexes. En simulacions d'aigua o calor, els valors poden associar-se a nodes, cares o cel·les i variar amb el temps. Cal llegir aquesta associació per interpretar-los: una visualització 3D acolorida no la revela tota sola.
+
+>> **Perspectiva, dimensió i exactitud són propietats diferents.** Una ortofoto estesa sobre un terreny pot semblar tridimensional sense contenir parets ni objectes 3D. Extrudir una planta d'edifici amb una altura estimada crea una geometria, però no certifica una coberta observada. Z també necessita unitats i referència vertical.
+
+### CityGML i BIM: significat dels objectes construïts
+
+La geometria no explica tota sola si una cara representa una coberta, un mur o un forjat. **CityGML** defineix un model d'informació per a objectes urbans, com edificis, vies, vegetació i ponts, amb propietats i relacions semàntiques. Aquesta distinció permet consultar edificis o superfícies de coberta i relacionar-los amb el context territorial. CityGML 3.0 separa el model conceptual de les codificacions que l'implementen, entre les quals hi ha GML; no és simplement una extensió per desar triangles {% cite ogcCityGMLOverview %}.
+
+Els **nivells de detall** (*Level of Detail*, LoD) expressen diferents graus de representació geomètrica. Un volum simplificat pot ser suficient per a una primera estimació d'ombres, mentre que l'estudi de cobertes pot requerir-ne la forma. Un nivell de detall superior no garanteix més exactitud ni que totes les propietats estiguin informades. Els models urbans també poden descriure espais interiors: no s'han de definir només per l'aparença exterior.
+
+**BIM** (*Building Information Modelling*) és una metodologia de gestió d'informació de construccions al llarg del seu cicle de vida, no un únic format. Els seus models poden identificar murs, forjats, portes, instal·lacions i espais, amb materials, dimensions i relacions constructives. **IFC**, mantingut per buildingSMART, és un esquema obert per intercanviar aquesta informació i admet diferents codificacions. Un model IFC aporta objectes i propietats, no només una forma visible {% cite buildingSMARTIndustryFoundationClasses %}.
+
+![Un edifici representat en el seu context urbà amb coberta i façanes diferenciades i el mateix volum descompost en murs, forjats i un conducte]({{ site.baseurl }}/assets/quarto/03-estructura-formats-referenciacio/citygml-bim.qmd "Dues finalitats de modelització d'un edifici. La vista urbana destaca l'objecte i les seves superfícies; la vista constructiva, els components i les propietats que permeten gestionar-los. La vista esclatada és una convenció gràfica i no representa la posició real de les peces."){: data-figure-width-web="42rem" data-figure-width-pdf="88%" data-caption-source="Font: elaboració pròpia; esquema conceptual, no exportació d'un fitxer CityGML o IFC."}
+
+>>> **Ombres al barri i reforma d'una coberta.** Per estimar quins edificis projecten ombra sobre una plaça cal el seu emplaçament i una geometria urbana adequada. Per preparar la reforma interessa distingir elements de coberta, capes de material, gruixos i connexions constructives. Una mateixa construcció participa en tots dos problemes, però les dades necessàries no són idèntiques.
+
+Integrar SIG i BIM requereix acordar la referenciació, les unitats, els identificadors i les equivalències entre classes. Un model constructiu pot utilitzar coordenades locals; un model urbà, un CRS territorial. A més de situar-los correctament, cal decidir com s'agrupen peces en un edifici i quines propietats es conserven. Exportar només una malla visible pot perdre aquesta semàntica, encara que el resultat mantingui una aparença detallada.
 
 ## Fitxers, conjunts i contenidors
+
+Un **conjunt de dades** és una unitat identificable que pot contenir una o més capes, taules o bandes. Una **capa** és una vista organitzada d'un contingut espacial per treballar-hi al SIG. Un GeoPackage pot contenir moltes capes, un conjunt Shapefile en representa normalment una i un GeoTIFF pot tenir diverses bandes. L'arbre de capes de QGIS organitza el projecte, però no indica quants fitxers hi ha al disc.
 
 Un **fitxer** és una unitat d'emmagatzematge, però una dada pot dependre de diverses peces: el Shapefile distribueix una capa i una imatge pot requerir un *world file* i un `.prj`. Un **contenidor** agrupa continguts gestionats; un `.gpkg` pot allotjar taules, índexs i metadades dins de SQLite. Ni la carpeta ni el contenidor substitueixen la còpia de seguretat i la documentació.
 
@@ -205,7 +273,7 @@ GeoPackage és un estàndard d'implementació de l'OGC basat en SQLite. Defineix
 
 «GeoPackage pot contenir ràsters» necessita precisió: el nucli inclou piràmides de tessel·les d'imatges o mapes, mentre que les cobertures numèriques en tessel·les depenen d'una extensió. Un lector vectorial no ha de suportar totes les extensions; per intercanviar un ràster analític de coma flotant, GeoTIFF sol ser més previsible.
 
-La taula `gpkg_extensions` declara funcionalitats addicionals, que poden ser compartides o pròpies d'un productor. `layer_styles` pot contenir estils de QGIS i `qgis_projects`, projectes; un altre client pot llegir les entitats i ignorar aquesta configuració. A `sandbox/pr1-fonts-cognom.gpkg`, l'entrada incrustada `pr1` és la còpia de treball de la primera micropràctica. La representació externa només es prepara després dels controls.
+La taula `gpkg_extensions` declara funcionalitats addicionals, que poden ser compartides o pròpies d'un productor. `layer_styles` pot contenir estils de QGIS i `qgis_projects`, projectes; un altre client pot llegir les entitats i ignorar aquesta configuració. Al GeoPackage de `sandbox/`, l'entrada incrustada `pr1` és la còpia de treball del projecte municipal. La representació externa només es prepara després dels controls.
 
 >>>> **Els fitxers `-journal`, `-wal` i `-shm` no són residus que es puguin esborrar.** Durant una escriptura SQLite, al costat de `projecte.gpkg` pot aparèixer `projecte.gpkg-journal` o la parella `projecte.gpkg-wal` i `projecte.gpkg-shm`. Aquestes peces registren o coordinen la transacció activa. Desar els canvis no obliga el programa a tancar-ne la connexió, i els fitxers laterals poden continuar presents fins que la sessió d'escriptura queda completament tancada, per exemple en tancar QGIS. Mentre hi siguin, no s'han d'eliminar, reanomenar, moure ni separar del `.gpkg`. Abans de copiar, comprimir, sincronitzar o lliurar el contenidor cal tancar totes les connexions, comprovar que els fitxers laterals han desaparegut i reobrir una còpia per verificar que les capes i taules esperades es llegeixen correctament. Si continuen presents després del tancament, s'ha de conservar el conjunt i diagnosticar-lo; eliminar-los a mà pot perdre canvis o malmetre la base.
 
@@ -337,7 +405,7 @@ El *world file* no conté el CRS, ni els valors `NoData`, ni les bandes. Una ima
 
 La **interoperabilitat** exigeix que dos programes interpretin de manera compatible geometries, camps, nuls, text, dates, CRS i extensions, no només que obrin el fitxer. Una codificació de caràcters defineix com una seqüència de bytes representa lletres, dígits i signes. Si s'interpreta malament, `Móra d'Ebre` pot continuar tenint una geometria correcta mentre els accents, els símbols o els noms dels atributs es mostren alterats.
 
-### Diagnosticar el text d'un Shapefile
+### Codificació del DBF i caràcters mal interpretats
 
 En un Shapefile, els textos són al `.dbf`. El controlador de GDAL intenta llegir primer la codificació declarada al `.cpg` i, si no hi és, pot recórrer a la marca de pàgina de codis del mateix DBF. Totes dues indicacions poden faltar, ser ambigües o no descriure correctament els bytes; per això una capa que s'obre sense error encara pot mostrar text mal interpretat {% cite gdalContributorsESRIShapefileDBF2026 %}.
 
@@ -354,7 +422,7 @@ Un diagnòstic reproduïble segueix aquests passos:
 
 Substituir manualment els accents visibles no resol el problema: pot alterar només alguns registres i ocultar que tota la columna s'ha descodificat amb una regla equivocada. Tampoc no s'ha de declarar `UTF-8` en un `.cpg` si el DBF continua codificat en Windows-1252. La conversió real necessita llegir els bytes amb la codificació correcta i escriure una sortida nova amb la codificació de destinació.
 
-### Formats amb altres contractes de text
+### Codificació i tipus d'atribut en GeoPackage, CSV i GeoJSON
 
 GeoPackage no necessita un `.cpg` lateral perquè el text es gestiona dins de la base SQLite. Un CSV, en canvi, no fixa per si sol una única codificació i l'ha de declarar el productor o el contracte d'intercanvi. GeoJSON és text JSON: RFC 7946 recomana seguir el perfil I-JSON i l'estàndard JSON vigent exigeix UTF-8 per a l'intercanvi entre sistemes fora d'un ecosistema tancat. Per tant, un GeoJSON conforme destinat a intercanvi s'ha d'escriure en UTF-8, no acompanyar-se d'un `.cpg` {% cite butlerGeoJSON2016 brayJSON2017 %}.
 
@@ -362,7 +430,7 @@ La codificació no resol els tipus. `00123` pot ser un identificador textual, un
 
 La sortida s'ha de reobrir com una font nova i comparar recompte, geometria, esquema, nuls, caràcters, identificadors, extensió, CRS i valors. En ràster s'afegeixen dimensions, bandes, tipus, resolució, alineació i `NoData`. Un checksum només prova identitat de bytes.
 
-## Detalls de coordenades i referències
+## Eixos, dimensions i sistemes de referència de coordenades
 
 Un cop establerta la cadena bàsica, cal reconèixer els casos en què l'ordre, una dimensió addicional o una referència antiga canvien la interpretació. Una **coordenada** és un dels nombres d'una seqüència ordenada i la seqüència completa és una **tupla de coordenades**. El mateix parell pot significar est i nord en metres, índexs d'una graella o dos atributs sense component espacial.
 
@@ -457,6 +525,56 @@ El codi de la cantonada inferior dreta de QGIS identifica el CRS del projecte i 
 
 Font de l'ortofoto: [ICGC, Ortofoto Territorial 2025, servei WMS](https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms), llicència [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
+### Lectura d'una cadena de CRS: EPSG:25831 {#cadena-crs-epsg-25831}
+
+Una **cadena de CRS** és una representació textual de la seva definició. `EPSG:25831` és la forma breu d'identificar-la: `EPSG` indica el registre d'autoritat i `25831`, l'entrada corresponent a **ETRS89 / UTM zona 31N**. El número és una clau de consulta; no s'ha d'intentar deduir tota la definició separant-ne els dígits.
+
+Una cadena **PROJ** fa visibles els paràmetres mitjançant expressions `+nom=valor` i alguns indicadors sense valor. La forma compacta següent descriu la projecció UTM sobre l'el·lipsoide GRS80 utilitzada per `EPSG:25831`. És útil per llegir la configuració cartogràfica, però no conserva tota la informació de la definició EPSG {% cite projContributorsPROJ2026 %}.
+
+::: listing "Paràmetres cartogràfics d'EPSG:25831 expressats com a cadena PROJ"
+```text
++proj=utm +zone=31 +ellps=GRS80 +units=m +no_defs +type=crs
+```
+:::
+
+::: table "Lectura de la cadena PROJ per components"
+| Component | Què significa |
+| --- | --- |
+| `+proj=utm` | Utilitza la projecció Universal Transversa de Mercator, basada en la Transversa de Mercator amb els paràmetres de cada fus |
+| `+zone=31` | Selecciona el fus 31, amb meridià central a 3° est de Greenwich |
+| Absència de `+south` | En la convenció UTM de PROJ, correspon a l'hemisferi nord; `+south` seleccionaria el sud |
+| `+ellps=GRS80` | Defineix l'el·lipsoide GRS80: semieix major de 6.378.137 m i invers de l'aplanament de 298,257222101; no identifica tot sol el marc ETRS89 |
+| `+units=m` | Les coordenades projectades horitzontals s'expressen en metres; no defineix un CRS vertical |
+| `+no_defs` | Indicador heretat que evitava carregar paràmetres de fitxers de valors predeterminats; no significa «sense sistema de referència» |
+| `+type=crs` | Indica a PROJ que la cadena descriu un CRS, en lloc de només una operació de coordenades |
+:::
+
+La forma `utm` incorpora paràmetres que no apareixen escrits a la cadena curta. La mateixa **conversió cartogràfica** del fus 31 nord es pot desplegar amb `tmerc`, el nom de la Transversa de Mercator a PROJ. Els salts de línia següents només separen grups de paràmetres per facilitar-ne la lectura:
+
+::: listing "La mateixa projecció amb origen, escala i falsos orígens explícits"
+```text
++proj=tmerc +lat_0=0 +lon_0=3 +k_0=0.9996
++x_0=500000 +y_0=0
++ellps=GRS80 +units=m +type=crs
+```
+:::
+
+::: table "Paràmetres que la convenció UTM fixa per al fus 31 nord"
+| Paràmetre | Valor i interpretació |
+| --- | --- |
+| `+lat_0=0` | Latitud de l'origen: l'equador, 0° |
+| `+lon_0=3` | Longitud del meridià central: 3° est |
+| `+k_0=0.9996` | Factor d'escala al meridià central, sense unitats; controla la deformació de la projecció, no l'escala d'impressió del mapa |
+| `+x_0=500000` | Fals est de 500.000 m; el meridià central rep aquesta coordenada E |
+| `+y_0=0` | Fals nord de 0 m; a l'equador la coordenada N és zero per a aquest fus nord |
+:::
+
+>>> **Comprovació dels paràmetres.** Per a una posició del meridià central a 3° E i 41° N, expressada en ETRS89, l'est projectat és 500.000 m. La coordenada nord és aproximadament 4.538.757 m. El primer valor deriva del fals est; el segon depèn de la latitud i de la projecció. Canviar només `+units` o `+zone` alteraria la interpretació o el càlcul, no el lloc real observat.
+
+>>>> **GRS80 no és sinònim d'ETRS89.** L'el·lipsoide descriu una forma matemàtica, mentre que el marc relaciona les coordenades amb la Terra. Per configurar la capa cal seleccionar `EPSG:25831`; per conservar una definició completa es pot utilitzar WKT2 o PROJJSON. Una exportació PROJ pot incloure també un `+towgs84` heretat amb zeros: no prova que ETRS89 i WGS 84 siguin idèntics a qualsevol època i exactitud.
+
+En WKT2, `PROJCRS` identifica el CRS projectat i `BASEGEOGCRS`, la referència geogràfica ETRS89. Els blocs `CONVERSION` i `PARAMETER` descriuen la projecció. `AXIS` i `LENGTHUNIT` especifiquen els eixos est–nord en metres, mentre que `ID["EPSG",25831]` identifica el CRS complet. Llegir aquests blocs permet comprovar la referència, els paràmetres i les unitats sense confondre'ls amb la simbologia del mapa.
+
 ### Assignar, transformar i visualitzar
 
 Assignar un CRS
@@ -499,7 +617,7 @@ Materialitzar una capa transformada és convenient quan s'ha de distribuir en un
 
 En vector, la transformació recalcula cada vèrtex. Les línies rectes en un CRS poden esdevenir corbes en un altre, però una geometria segmentada només en transforma els vèrtexs existents; en trajectes llargs pot caldre densificar abans si s'ha de representar bé la corba. En ràster, la reprojecció crea una graella nova i necessita resolució, extensió, alineació i mètode de remostreig. El veí més proper sol preservar codis categòrics; mètodes interpoladors poden ser adequats per a camps continus, però creen valors nous. Aquesta diferència fa especialment inadequat reprojectar ràsters repetidament només per uniformar una carpeta.
 
-### Comprovacions operatives a QGIS
+### Verificació del CRS de la font, del projecte i de la sortida a QGIS
 
 QGIS separa el CRS de la font, el CRS del projecte i el CRS escollit per a una sortida. La barra d'estat mostra el del projecte. Les propietats de cada capa, a les pestanyes d'informació o font segons el proveïdor, mostren el CRS interpretat, l'extensió, la geometria, el nombre d'entitats o les dimensions ràster. La primera comprovació consisteix a llegir aquestes propietats, no a canviar el CRS del projecte fins que el dibuix sembli correcte {% cite qgisUserGuide344 %}.
 
@@ -534,9 +652,9 @@ Afegir decimals o vèrtexs no millora l'exactitud d'una font. Una ortofoto de p�
 
 També s'han de comparar data, unitat d'observació i generalització. Un eix viari i un polígon de calçada poden compartir CRS i representar objectes diferents; una ortofoto de 2024 i un inventari de 2018 poden estar alineats i discrepar per un canvi real. Més classes no impliquen més exactitud si la font no permet distingir-les. Les xifres finals han de reflectir el component menys precís que condiciona la pregunta.
 
-## Diagnòstic abans de convertir
+## Errors de posició, unitats i codificació de les capes {#diagnostic-errors-capes}
 
-Quan una capa no encaixa, el diagnòstic ha de precedir la conversió. Cal comprovar l'extensió numèrica, les unitats plausibles, el CRS declarat, el format, les metadades i una posició coneguda. Després es pot decidir si falta assignar la referència correcta, si cal transformar les coordenades o si les dades no són compatibles.
+Una capa desplaçada, una superfície de magnitud inesperada i un nom amb accents alterats són símptomes de problemes diferents. L'extensió numèrica, les unitats, el CRS declarat, la codificació i les metadades permeten contrastar-ne les causes. Una posició coneguda ajuda a decidir si falta assignar la referència correcta, si cal transformar les coordenades o si les fonts representen realitats incompatibles.
 
 Una conversió de format s'ha de verificar amb recomptes, tipus geomètric, camps, valors nuls, extensió i CRS. En ràsters també cal comparar files, columnes, bandes, tipus numèric, resolució i `NoData`. El fet que el fitxer nou s'obri no demostra que la conversió sigui completa.
 
@@ -553,43 +671,93 @@ Una conversió de format s'ha de verificar amb recomptes, tipus geomètric, camp
 
 La conversió també pot revelar incompatibilitats legítimes. Una `GeometryCollection` heterogènia no cap en una capa Shapefile d'un sol tipus sense separar-ne les peces. Un `DateTime` amb zona no es conserva en un camp de data dBase. Un GeoPackage amb projectes i estils QGIS pot perdre aquestes taules en exportar només les entitats. En aquests casos, el procediment correcte no és ocultar l'avís, sinó definir quina part es transfereix, quina es conserva a l'original i quina limitació tindrà el producte.
 
+## Formats i CRS del projecte municipal {#cas-projecte-municipal}
+
+El [cas guiat del capítol anterior]({{ site.baseurl }}/ca/chapters/sintesi-documentacio/#primer-projecte-municipal) ha creat una capa local a partir de la selecció de Vila-seca i ha desat dues vistes QGIS dins del mateix GeoPackage. Ara es poden comprovar els models, les estructures i les referències espacials d'aquell resultat, més enllà de la seva aparença al mapa.
+
+### Un fitxer, una capa i diverses vistes
+
+La taula `municipi_vilaseca` conté la geometria i els atributs. `pr1` i `comparacio` són projectes QGIS: conserven maneres diferents d'organitzar i representar aquella capa i el WMS. El `.qgz` extern és una altra representació del projecte principal i continua llegint les dades del GeoPackage. No hi ha tres còpies del terme municipal només perquè existeixin tres maneres d'obrir el mapa.
+
+![GeoPackage amb una capa municipal compartida pels projectes pr1 i comparacio i per un projecte extern QGZ]({{ site.baseurl }}/assets/diagrams/ca/03-estructura-formats-referenciacio/geopackage-projects.puml "Relació entre contenidor, capa i projectes del cas guiat. Les tres vistes llegeixen la mateixa capa municipal. El GeoPackage és un fitxer, no una carpeta; l'agrupació interior del diagrama representa el seu contingut lògic."){: data-figure-width-web="37rem" data-figure-width-pdf="88%"}
+
+Una modificació de la geometria compartida pot afectar totes les vistes quan es tornin a carregar. En canvi, un canvi d'estil desat només en un projecte no actualitza automàticament els altres. Per interpretar una discrepància cal identificar si ha canviat la dada, la configuració de la capa o el projecte obert.
+
+::: table "Controls del resultat municipal comprovat amb QGIS"
+| Propietat | Resultat del cas | Què acredita |
+| --- | --- | --- |
+| Selecció d'origen | Una entitat dins de nou municipis de l'entorn | S'ha acotat el subconjunt que s'exporta |
+| Identitat | `CODIMUNI = '431711'`; `NOMMUNI = 'Vila-seca'` | El registre correspon al municipi previst |
+| Capa local | `municipi_vilaseca`, una entitat `MultiPolygon` | La selecció s'ha materialitzat al contenidor |
+| CRS de la capa | `EPSG:25831` | Les coordenades locals es conserven en ETRS89 / UTM 31N |
+| Geometria | No buida, vàlida i igual a la seleccionada | L'exportació conserva el terme de la font |
+| Projectes incrustats | `pr1` i `comparacio` | El mateix GeoPackage admet projectes amb noms diferents |
+| Reobertura | Projecte extern i dues entrades incrustades oberts des d'una ruta nova | Les fonts locals es resolen al contenidor traslladat |
+:::
+
+### Comprovar què ha canviat durant l'exportació
+
+En el cas ICGC, la font i la capa exportada declaren `EPSG:25831`. La selecció i el canvi de contenidor no han modificat les coordenades de la geometria. Si s'utilitza, en canvi, una entrada geogràfica en `EPSG:4258` i es desa la sortida en `EPSG:25831`, cal conservar els dos CRS i l'operació aplicada. Coincidir visualment al llenç no permet distingir aquestes dues situacions.
+
+A `Propietats > Informació` s'han de llegir el CRS i l'extensió de la font efectiva. El CRS de la barra d'estat correspon a la vista del projecte. Si es canvia només aquest últim, no s'han reescrit les coordenades del GeoPackage. Si es canvia el nom visible de la capa al panell, tampoc no s'ha reanomenat necessàriament la taula interna.
+
+La prova sense connexió comprova les dependències locals: al cas, la geometria es recupera des del GeoPackage traslladat. El WMS necessita xarxa per tornar a dibuixar el context. Aquesta dependència remota s'ha d'explicar als apunts i provar separadament; una imatge que encara apareix a la memòria cau no demostra que el servidor estigui responent.
+
+### Comparar una segona representació municipal
+
+Una ampliació pot incorporar una font del CNIG. Cal inspeccionar-ne els camps, el nivell administratiu, el format i el CRS reals abans de copiar-hi una expressió d'una altra distribució. Els codis ICGC i CNIG poden identificar el mateix municipi amb estructures diferents; la seva aparença numèrica no els converteix en una clau comuna.
+
+La comparació cartogràfica manté extensió i escala i utilitza contorns distingibles. Les diferències poden respondre a data, escala, finalitat o criteri de delimitació. Una font més detallada no és automàticament més adequada per a qualsevol pregunta, i una diferència entre contorns no s'ha d'atribuir al CRS sense haver comprovat les referències de totes dues capes.
+
 ## Activitats
 
-### Fitxa comparativa de les tres fonts inicials
+### Identificació dels nivells de modelització
 
-La fitxa iniciada al capítol anterior es completa amb l'Ortofoto Territorial de 2025, les divisions administratives 1:5.000 accessibles mitjançant Open ICGC i la capa municipal `AdministrativeUnit` de `LINEAS_LIMITE_GML.ZIP` del CNIG. Per a cada recurs cal identificar productor, producte, model, estructura, format o servei, CRS, unitat d'observació, escala o resolució i data. La conclusió ha d'explicar per què el WMS només aporta context visual i per què les dues geometries municipals poden ser vàlides per a finalitats diferents.
+Cal afegir una quarta torre i un tram nou a un esbós de l'escena. L'explicació ha de distingir l'objecte i la seva relació amb la xarxa, la geometria i els atributs que el representaran, i la capa i el fitxer on es conservaran. La comprovació consisteix a poder assignar cada decisió al nivell conceptual, lògic o físic i justificar-la sobre el mateix dibuix.
+
+### Elecció d'una representació de superfície o volum
+
+Cal justificar una representació per a cadascun d'aquests casos: inventari d'edificis, pendent del sòl, cotes del pont i del terreny inferior, concentració d'un contaminant al subsòl i materials d'una reforma. Per a cada cas s'indica la unitat representada, una dada imprescindible i una informació que es perdria en reduir-lo a una sola graella d'elevacions. Es pot proposar més d'un model si s'explica què aporta cadascun.
+
+### Fitxa de les fonts del projecte
+
+La fitxa iniciada al capítol anterior es completa amb el WMS i la font del límit municipal escollits. Per a cada recurs cal identificar productor, producte, model, estructura, format o servei, CRS, unitat d'observació, escala o resolució i data. Si s'ha incorporat una segona font municipal, la comparació explica què aporta i quines diferències s'han observat. La conclusió ha de distingir el context visual de la geometria local que es conservarà al GeoPackage.
 
 ### Comprovació de la visualització al vol
 
-Amb `pr1` obert des de `sandbox/pr1-fonts-cognom.gpkg`, cal confirmar que la barra d'estat mostra `EPSG:25831` com a CRS del projecte. A continuació s'inspecciona el CRS de cadascuna de les dues fonts municipals a `Propietats > Informació`. Que la capa del CNIG declarada en `EPSG:4258` coincideixi visualment amb l'ortofoto no significa que les coordenades ja s'hagin transformat al fitxer: QGIS la representa al vol en el CRS del projecte.
+Amb `pr1` obert des de `sandbox/pr1-project-setup-cognom.gpkg`, cal llegir el CRS de la barra d'estat i el de cada font a `Propietats > Informació`. En l'ampliació amb el GML del CNIG en `EPSG:4258`, la coincidència visual amb el projecte de Vila-seca en `EPSG:25831` mostra la representació al vol, no una transformació del fitxer. Si només es disposa de les capes locals ja exportades en `EPSG:25831`, la seva superposició no prova aquest canvi: cal conservar una entrada en un CRS diferent per fer l'experiment.
 
 El diari ha de conservar el CRS del projecte, el CRS de cada font, les unitats i l'extensió observada. Canviar el CRS del projecte no forma part de la prova; l'objectiu és distingir la referència de la vista de la referència emmagatzemada a cada capa.
 
 >>>> **Canviar el format o el CRS del projecte no repara una capa mal referenciada.** Una correcció només és justificable si la font permet saber què significaven les coordenades originals; en cas contrari, la incertesa s'ha de conservar i la capa es pot haver de descartar.
 
-### Micropràctica 1: municipi i ortofoto
+### Preguntes: interpretar els controls del cas
 
-La micropràctica iniciada al capítol 02 es completa materialitzant les dues geometries municipals en un únic CRS i preparant una composició cartogràfica. Vila-seca és el cas de demostració; les capes i el mapa conservats han de correspondre al municipi assignat.
+Quina diferència hi ha entre seleccionar un municipi i conservar-ne una capa local? Com es detectaria que l'exportació ha inclòs tota la capa original? Per què una sola entitat pot ser `MultiPolygon`? Què permet afirmar la prova fora de línia del cas de Vila-seca i quina comprovació encara exigeix connexió? Les respostes han d'indicar una evidència del projecte o dels apunts.
 
-::: table "Contracte final de la micropràctica 1"
+### Activitat integradora: projecte municipal i apunts reproduïbles {#activitat-projecte-municipal}
+
+Cal completar el projecte del municipi escollit amb un terme seleccionat d'una capa de límits, exportat al GeoPackage i carregat des d'aquest contenidor. El resultat conserva el projecte incrustat, la còpia externa, un WMS i uns apunts breus en PDF. Les explicacions i captures han de permetre repetir els passos importants, entendre les decisions i comprovar els resultats.
+
+::: table "Resultats essencials del projecte municipal"
 | Component | Requisit |
 | --- | --- |
-| Entrades | Projecte de treball `pr1`; WMS de l'Ortofoto Territorial de 2025; divisions administratives 1:5.000 d'Open ICGC; `LINEAS_LIMITE_GML.ZIP` del CNIG conservat a `data/raw` i la seva capa municipal `AdministrativeUnit` en `EPSG:4258` |
-| Operacions mínimes | Comprovar els CRS; seleccionar una única entitat municipal a cada font; exportar totes dues seleccions a `sandbox/pr1-fonts-cognom.gpkg` en `EPSG:25831`; substituir les capes d'inspecció per les dues capes exportades; preparar una composició de mapa; desar el projecte incrustat i crear la versió externa homònima |
-| Resultats | Capes `municipality_icgc_5k` i `municipality_cnig`, ortofoto de context, composició cartogràfica i projecte incrustat `pr1` dins del GeoPackage |
-| Evidències del diari | Producte i data de cada font, camps i valors de selecció, CRS d'origen i destinació, recompte, extensió, incidències, diferències observades entre límits i controls de transport |
-| Comprovacions | Una entitat a cada capa; geometria de polígon; `EPSG:25831`; identificador oficial conservat; cap capa local temporal ni URI cap a `data/raw`; composició llegible; obertura independent del projecte incrustat i de l'extern |
-| Lliurables | `dist/pr1-fonts-cognom.gpkg` i `dist/pr1-fonts-cognom.qgz`, amb `cognom` substituït pel de l'estudiant |
+| Entrades | Projecte iniciat al capítol 02, una capa de límits municipals i un servei WMS adequat |
+| Preparació | Seleccionar el municipi, exportar-lo al GeoPackage amb un CRS justificat i carregar-ne la taula local |
+| Projectes | Entrada incrustada `pr1` i còpia externa `.qgz`, amb fonts coherents i camins locals relatius |
+| Apunts PDF | Fonts, passos importants, camp i valor de selecció, paràmetres d'exportació, decisions, captures llegibles, controls i incidències |
+| Comprovacions | Municipi correcte; recompte coherent; geometria i CRS comprovats; capa local reoberta; WMS comprovat amb connexió; dues obertures independents en una ubicació nova |
+| Fitxers que cal conservar | `pr1-project-setup-cognom.gpkg`, `pr1-project-setup-cognom.qgz` i els apunts PDF, amb `cognom` substituït pel de l'estudiant |
 :::
 
-Per crear cada capa municipal, cal activar la selecció verificada i utilitzar `Exporta > Desa les entitats seleccionades com a...`. El format de destinació és GeoPackage, el fitxer és `sandbox/pr1-fonts-cognom.gpkg` i el CRS de sortida és `EPSG:25831`. La capa de l'ICGC rep el nom `municipality_icgc_5k` i la del CNIG, `municipality_cnig`. L'exportació ha de conservar l'identificador oficial útil de cada font i produir exactament una entitat. Després cal reobrir totes dues capes des del GeoPackage i comprovar geometria, esquema, recompte, extensió i CRS. Quan les còpies han superat aquests controls, substitueixen les capes font al panell i a la composició; les dues capes d'inspecció s'eliminen del projecte perquè cap representació desada depengui d'Open ICGC, de `data/raw` ni d'una extracció externa.
+La primera comprovació es fa sobre les dades reobertes, no sobre el nom del fitxer: el terme ha de correspondre al municipi escollit i conservar l'identificador útil de la font. En una font amb una entitat per municipi, s'espera una entitat a la sortida. Si l'estructura de la font és diferent, cal explicar el recompte i comprovar que s'han conservat totes les parts del terme.
 
-El WMS es manté com a context remot i no es converteix en una capa analítica del GeoPackage. Amb les dues geometries sobre l'Ortofoto Territorial de 2025, cal descriure qualsevol diferència visible sense decidir automàticament que el contorn més detallat és el més correcte. La comparació ha de referir-se a l'escala, la data, la finalitat i les metadades de cada producte.
+Els apunts segueixen el criteri del [capítol de documentació]({{ site.baseurl }}/ca/chapters/sintesi-documentacio/#apunts-projecte-municipal): cada captura sosté una decisió o un control i va acompanyada d'una explicació. El PDF ha de permetre localitzar les fonts, repetir la selecció i l'exportació i distingir com es desen i s'obren les dues representacions del projecte.
 
-La composició recupera els criteris treballats a TIGIT. Ha d'incloure el municipi assignat, una extensió i una escala justificades, la identificació de les dues geometries, l'ortofoto de context i les fonts i dates necessàries per interpretar el mapa. La llegenda, l'orientació i l'escala gràfica s'incorporen quan resolen una necessitat de lectura, no com a ornaments automàtics.
+Les ampliacions poden afegir altres WMS, capes vectorials, simbologies, etiquetes, grups, mapes o composicions. S'han de poder obrir i explicar juntament amb el projecte, i els apunts n'han de justificar la funció. Afegir una composició no compensa una capa municipal absent del GeoPackage ni una ruta trencada.
 
-Quan les capes exportades i la composició han superat els controls, es confirma que les úniques capes vectorials municipals carregades són `municipality_icgc_5k` i `municipality_cnig`, que totes dues apunten al GeoPackage homònim i que el projecte desa camins relatius. Aleshores es desa `pr1` dins de `sandbox/pr1-fonts-cognom.gpkg`. Sense canviar aquestes fonts locals, es crea al mateix directori la representació externa `sandbox/pr1-fonts-cognom.qgz` i es comprova que referencia el GeoPackage homònim. Desar el `.qgz` no actualitza l'entrada incrustada. Després de validar les dues representacions, es tanca QGIS i es copien conjuntament a `dist/`; les còpies de distribució conserven els noms `pr1-fonts-cognom.gpkg` i `pr1-fonts-cognom.qgz`.
+Després de validar les dades es desen expressament el projecte incrustat `pr1` i la còpia externa `.qgz`, tots dos a `sandbox/` i amb la nomenclatura establerta. Amb QGIS tancat, la parella es copia conjuntament a `dist/` i s'hi afegeixen els apunts PDF revisats. El nom base dels fitxers geogràfics es manté; el PDF pot compartir aquest nom amb la seva extensió pròpia.
 
-La prova final copia només els dos fitxers de `dist` a una ubicació neta. Primer s'obre explícitament `pr1-fonts-cognom.qgz` i després, en una sessió separada, `pr1` des de `pr1-fonts-cognom.gpkg`. Totes dues representacions han de mostrar les dues capes municipals, el WMS, el CRS `EPSG:25831` i la composició. Si una capa local apunta encara a `sandbox`, a `data/raw`, a la font d'inspecció o a una carpeta personal, el lliurament no està preparat.
+La prova final obre el `.qgz` i el projecte incrustat des d'una còpia en una ubicació nova. Les capes locals necessàries han d'apuntar al GeoPackage d'aquesta còpia i conservar contingut, CRS i configuració. El WMS es comprova amb connexió i el PDF, en un lector extern. Qualsevol reparació manual d'una ruta obliga a corregir el projecte de treball, tornar-lo a desar en totes dues representacions i repetir la prova.
 
->> **Resultat de la micropràctica.** `dist` conté exactament `pr1-fonts-cognom.gpkg`, amb totes les capes locals i la instantània incrustada `pr1`, i `pr1-fonts-cognom.qgz`, amb el mateix nom base. No cal crear cap paquet ZIP en aquesta fase.
+>> **Resultat conservat.** El GeoPackage reuneix el terme municipal i el projecte incrustat `pr1`; el `.qgz` permet obrir-ne la representació externa; els apunts PDF expliquen com s'ha preparat i comprovat el conjunt. Aquesta instantània serà el punt de partida de la digitalització.

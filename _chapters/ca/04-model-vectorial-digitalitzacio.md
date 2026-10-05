@@ -146,7 +146,7 @@ La prova pilot ha d'incloure una zona fàcil i una d'ambigua. S'hi mesuren temps
 
 La fitxa també ha d'establir què no es pot afirmar. Una placa identificada sobre una coberta no prova potència, connexió a xarxa ni estat de funcionament. Un eix visible d'un carril no determina necessàriament el sentit de circulació. Registrar `desconegut` o un nul justificat és preferible a completar atributs per inferència no documentada.
 
-## Disseny de la taula d'atributs
+## Disseny de la taula d'atributs {#disseny-taula-atributs}
 
 Els atributs s'han de definir mentre encara és possible modificar el model sense recodificar tota la capa. Cada camp necessita un nom, una definició, un tipus, una unitat, un domini i una política de valors nuls. Les categories observades s'han de separar de les interpretacions que no es poden verificar amb la font.
 
@@ -284,7 +284,7 @@ La revisió visual s'ha de fer a dues escales. Una escala pròxima a la de captu
 
 Per conservar traçabilitat no cal crear una còpia completa després de cada clic. Sí que cal mantenir l'original, establir fites recuperables abans de reparacions massives, registrar l'àmbit i la data de cada sessió i anotar incidències que afectin la interpretació. Si diverses persones editen el mateix fitxer GeoPackage mitjançant una carpeta sincronitzada, una convenció de lots no resol els conflictes d'escriptura; cal serialitzar el treball o utilitzar una base preparada per a concurrència.
 
-## Geometria, topologia i altres dimensions de qualitat
+## Validesa geomètrica, coherència topològica i exactitud
 
 Una geometria pot ser vàlida de manera individual i incomplir el model territorial. Dos polígons municipals sense autointerseccions poden deixar una escletxa entre ells; dues línies vàlides poden quedar desconnectades; un punt pot ser correcte però situar-se fora de la zona on el model l'admet.
 
@@ -353,11 +353,11 @@ La reparació automàtica pot dividir un polígon, convertir una sortida en mult
 
 Els errors detectats necessiten un registre mínim amb identificador, regla, ubicació, causa interpretada, acció, responsable i estat. Una excepció acceptada no s'ha d'esborrar del recompte sense explicació: es marca com a justificada i es vincula a una raó, com un final real de xarxa. Aquesta separació entre errors oberts, corregits i excepcions permet repetir la validació sense discutir de nou cada cas.
 
-## Un cas de captura a Vila-seca
+## Digitalització de fanals, carrils bici i plaques solars a Vila-seca
 
-Amb QGIS tancat, es copia `dist/pr1-fonts-cognom.gpkg` a `sandbox/pr2-digitalitzacio-cognom.gpkg`; no es copia ni es reanomena `pr1-fonts-cognom.qgz`. Des de la còpia s'obre el projecte incrustat heretat, es desa com a `pr2` i s'elimina l'entrada `pr1`, de manera que al GeoPackage només hi quedi `pr2`. Abans d'editar, totes les fonts locals es reorienten a `sandbox/pr2-digitalitzacio-cognom.gpkg` i es comprova que cap URI apunti a `dist/`, a `pr1-fonts-cognom.gpkg` ni a una ruta personal.
+Amb QGIS tancat, es copia el GeoPackage validat de `pr1` des de `dist/` a `sandbox/`. La còpia s'anomena `pr2-digitalitzacio-cognom.gpkg`; no es copia ni es reanomena el `.qgz` anterior. Des de la còpia s'obre el projecte principal heretat, es desa com a `pr2` i es comprova abans de retirar l'entrada `pr1` de la còpia. Si es conserven altres vistes, com `comparacio`, se'n revisen també les fonts. Totes les capes locals han d'apuntar al GeoPackage nou, no a `dist/`, al contenidor predecessor ni a una ruta personal.
 
-Les capes `municipality_icgc_5k` i `municipality_cnig` es conserven sense modificacions com les dues representacions municipals de referència. `municipi_treball` es materialitza dins del GeoPackage `pr2` com una capa derivada de la representació escollida: el diari identifica la font, l'operació, l'identificador oficial i la derivació del camp textual `codi_muni`. La capa nova no substitueix ni reanomena cap de les dues fonts.
+Les capes municipals preparades a `pr1` es conserven sense modificacions. Si s'ha treballat amb una sola font, aquesta és el punt de partida; si s'ha fet la comparació ICGC–CNIG, es preserven totes dues. En el cas de classe es diuen `vilaseca_icgc_15000` i `vilaseca_cnig`; els projectes de referència reconstruïts utilitzen `municipality_icgc_5k` i `municipality_cnig`. El diari identifica la correspondència sense exigir reanomenar les taules. `municipi_treball` es materialitza dins de `pr2` com una capa derivada del límit escollit, amb la font, l'operació, l'identificador oficial i la derivació del camp textual `codi_muni` documentats. La capa nova no substitueix cap font.
 
 La demostració a l'aula se situa a l'entorn de la Facultat de Turisme i Geografia. L'Ortofoto Territorial 2025 de l'ICGC arriba per WMS i serveix de context visual comú. Sobre aquesta vista es preparen tres capes amb finalitats diferents: els **fanals** del carrer de Joanot Martorell com a punts; els **carrils bici** de la Via Màxima com a trams lineals; i els **panells solars** visibles a la coberta de la Facultat com a polígons. Les capes comparteixen l'àmbit i el CRS, però no l'esquema ni les regles topològiques.
 
@@ -373,9 +373,9 @@ El WMS no aporta les geometries editables de cap d'aquestes capes. La captura se
 
 ![QGIS amb l'Ortofoto Territorial 2025 de l'ICGC sobre l'entorn de la Facultat i tres capes docents: fanals puntuals al carrer de Joanot Martorell, trams de carril bici connectats a la Via Màxima i polígons de panells solars sobre la coberta]({{ site.baseurl }}/assets/img/qgis/qgis-digitizing-faculty-demo.annotations.svg "La demostració relaciona cada família geomètrica amb un objecte recognoscible i manté visible la barra d'autoensamblat que cal configurar per connectar els trams de carril bici. El WMS és només el context visual; les geometries superposades són fixtures docents pendents d'observació i validació."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
 
-Els fitxers de referència distribuïts amb el manual utilitzen, per a aquestes tres capes, dades de prova sintètiques generades de manera determinista dins de Vila-seca. No provenen d'observacions de camp, inventaris ni interpretació de l'ortofoto i no són aptes per descriure o analitzar el territori; només permeten comprovar els esquemes, els identificadors i les regles topològiques. La micropràctica, en canvi, exigeix fonts o observacions documentades del municipi assignat.
+Els fitxers de referència distribuïts amb el manual utilitzen, per a aquestes tres capes, dades de prova sintètiques generades de manera determinista dins de Vila-seca. No provenen d'observacions de camp, inventaris ni interpretació de l'ortofoto i no són aptes per descriure o analitzar el territori; només permeten comprovar els esquemes, els identificadors i les regles topològiques. L'activitat, en canvi, exigeix fonts o observacions documentades del municipi escollit.
 
-La demostració no fixa els objectes que tot l'alumnat ha de trobar. Cada estudiant aplica el mateix contracte de punt, línia connectada i polígon al municipi assignat, amb fonts pròpies documentades. Quan un dels tres casos no és observable o no existeix, se substitueix per un fenomen equivalent que permeti justificar la mateixa decisió geomètrica i executar els mateixos controls.
+La demostració no fixa els objectes que tot l'alumnat ha de trobar. Cada estudiant aplica el mateix contracte de punt, línia connectada i polígon al municipi escollit, amb fonts pròpies documentades. Quan un dels tres casos no és observable o no existeix, se substitueix per un fenomen equivalent que permeti justificar la mateixa decisió geomètrica i executar els mateixos controls.
 
 La preparació comença amb una taula de fonts i tres frases d'unitat d'observació. Per als fanals, cada fila representa un suport individual i la posició correspon al peu observat o a la coordenada documentada de l'inventari. Per als carrils, cada fila representa un tram homogeni entre canvis de connectivitat o atributs. Per a les plaques, cada fila pot representar una superfície contínua visible; si es vol representar la instal·lació completa, les peces separades s'agrupen només quan una font permet afirmar que hi pertanyen.
 
@@ -387,31 +387,33 @@ La captura s'organitza per carrers o illes i cada lot es tanca amb una consulta 
 
 El control final combina recompte, identificadors, camps obligatoris, geometries invàlides, duplicats, extrems de xarxa i una mostra contrastada amb la font. Corregir un error obliga a repetir els controls afectats i a registrar la incidència al diari.
 
-La mostra de contrast ha d'incloure casos ordinaris i extrems, no només les entitats més netes. El diari conserva la fitxa de captura, la configuració d'ajust amb unitats, els resultats de validació, les excepcions i una breu interpretació del que cada capa permet analitzar. Després dels controls es desa el projecte incrustat `pr2` i es crea de nou `sandbox/pr2-digitalitzacio-cognom.qgz`, amb camins relatius al GeoPackage homònim; aquest fitxer no deriva d'una còpia del `.qgz` de `pr1`. Amb QGIS tancat, la parella validada es copia a `dist/` sense canviar-ne els noms i les dues representacions es proven des d'una ubicació neta. El mapa final pot mostrar les tres capes capturades, però la verificació es basa en les dades reobertes des del GeoPackage i en la conservació dels identificadors, no en una captura de pantalla del llenç.
+La mostra de contrast ha d'incloure casos ordinaris i extrems, no només les entitats més netes. El diari conserva la fitxa de captura, la configuració d'ajust amb unitats, els resultats de validació, les excepcions i una breu interpretació del que cada capa permet analitzar. Després dels controls es desa el projecte incrustat `pr2`.
+
+`pr2-digitalitzacio-cognom.qgz` es crea de nou a `sandbox/`, amb camins relatius al GeoPackage homònim; no deriva d'una còpia del `.qgz` de `pr1`. Amb QGIS tancat, la parella validada es copia a `dist/` sense canviar-ne els noms i les dues representacions es proven des d'una ubicació neta. El mapa final pot mostrar les tres capes capturades, però la verificació es basa en les dades reobertes des del GeoPackage i en la conservació dels identificadors, no en una captura de pantalla del llenç.
 
 ## Activitats
 
-### Comprovació: representar el mateix fenomen
+### Comprovació: geometries alternatives per a rius, carreteres i edificis
 
-Cal proposar dues representacions per a un riu, una carretera i un edifici, cadascuna associada a una pregunta diferent. L'activitat s'avalua per la justificació de la geometria i de l'escala, no per l'aparença del símbol.
+Cal proposar dues representacions per a un riu, una carretera i un edifici, cadascuna associada a una pregunta diferent. La comprovació consisteix a justificar la geometria i l'escala amb què es podria respondre cada pregunta.
 
 ### Pràctica guiada: classificació d'errors
 
 Sobre una capa de prova s'identificaran una autointersecció, un buit, un solapament, un duplicat, un extrem penjant, un punt exterior i un atribut nul. Cada cas s'ha de classificar com a error geomètric, topològic, posicional o temàtic, i s'ha d'explicar si la regla depèn de la finalitat de la capa.
 
-### Micropràctica 2: digitalització vectorial
+### Activitat integradora: digitalització vectorial
 
-La segona micropràctica lliurable aplica el model de punts, línies i polígons al municipi assignat. Si alguna categoria no és observable o no existeix al territori, s'ha de substituir per una entitat equivalent que permeti demostrar la mateixa decisió geomètrica.
+La segona instantània del projecte aplica el model de punts, línies i polígons al municipi escollit. Si alguna categoria no és observable o no existeix al territori, s'ha de substituir per una entitat equivalent que permeti demostrar la mateixa decisió geomètrica.
 
 ::: table "Contracte de la micropràctica 2"
 | Component | Requisit |
 | --- | --- |
-| Entrades | `dist/pr1-fonts-cognom.gpkg`, que es copia a `sandbox/pr2-digitalitzacio-cognom.gpkg`; fonts de captura oficials o observacions documentades; `municipality_icgc_5k` i `municipality_cnig` preservades |
-| Operacions mínimes | No copiar el `.qgz` de `pr1`; establir un únic projecte incrustat `pr2`; reorientar les fonts locals; derivar `municipi_treball` sense substituir les capes font; dissenyar tres esquemes, configurar dominis i ajust, capturar punts, línies i polígons i executar controls geomètrics i topològics |
-| Resultats | `municipality_icgc_5k` i `municipality_cnig` intactes, `municipi_treball` documentada i tres capes de captura noves dins de `pr2-digitalitzacio-cognom.gpkg`, amb identificadors estables i atributs complets |
+| Entrades | `dist/pr1-project-setup-cognom.gpkg`, que es copia a `sandbox/pr2-digitalitzacio-cognom.gpkg`; fonts de captura oficials o observacions documentades; límits municipals preparats a `pr1` preservats |
+| Operacions mínimes | No copiar el `.qgz` de `pr1`; establir el projecte principal `pr2`; reorientar les fonts locals de les vistes conservades; derivar `municipi_treball` sense substituir les capes font; dissenyar tres esquemes, configurar dominis i ajust, capturar punts, línies i polígons i executar controls geomètrics i topològics |
+| Resultats | Fonts municipals heretades intactes, `municipi_treball` documentada i tres capes de captura noves dins de `pr2-digitalitzacio-cognom.gpkg`, amb identificadors estables i atributs complets |
 | Evidències del diari | Finalitat de cada capa, font, escala, esquema, regles, incidències i correccions |
-| Comprovacions | Exactament un projecte incrustat `pr2`; cap URI local cap a `dist/` o `pr1`; camins relatius al `.qgz`; identificadors únics, geometries vàlides, connectivitat justificada, absència de solapaments no admesos i mostra contrastada |
+| Comprovacions | Projecte principal `pr2` identificat; fonts revisades a totes les vistes conservades; cap URI local cap a `dist/` o `pr1`; camins relatius al `.qgz`; identificadors únics, geometries vàlides, connectivitat justificada, absència de solapaments no admesos i mostra contrastada |
 | Fitxers que cal conservar | `dist/pr2-digitalitzacio-cognom.gpkg`, amb el projecte incrustat `pr2`; `dist/pr2-digitalitzacio-cognom.qgz`; i diari amb la taula de controls |
 :::
 
-El cas resolt de Vila-seca utilitzarà fanals, carrils bici i plaques solars. El lliurament ha de respondre al municipi assignat i no reproduir sense comprovació les geometries de la demostració.
+El cas resolt de Vila-seca utilitzarà fanals, carrils bici i plaques solars. El projecte propi ha de respondre al municipi escollit i conservar les comprovacions de les geometries capturades.

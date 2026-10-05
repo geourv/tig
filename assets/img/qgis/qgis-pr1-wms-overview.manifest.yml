@@ -1,0 +1,27 @@
+{
+  "capture": "wms-overview",
+  "producer": "TIG case-specific PyQGIS/Qt actor",
+  "transport": "native-qgis-gui",
+  "image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "qgis": "3.44.11-Solothurn",
+  "locale": "ca_ES",
+  "camera": {
+    "kind": "native-screen",
+    "x": 0,
+    "y": 0,
+    "width": 1100,
+    "height": 730,
+    "device_pixel_ratio": 1.0
+  },
+  "png_sha256": "78cf7a8d2a95189584efde38a527d5f8be571f2adf4926bc56e49af640c54f9c",
+  "evidence": {
+    "provider": "wms",
+    "uri": "crs=EPSG:25831&format=image/jpeg&layers=ortofoto_25cm_color_2025&styles=&url=https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms",
+    "municipality_count": 9,
+    "crs": "EPSG:25831",
+    "canvas_extent": "338814.4386549036134966,4547107.8680475000292063 : 350448.2495450970600359,4555520.2246525008231401"
+  },
+  "source": "context/practiques/capture_pr1_guided.py",
+  "native_ui": true,
+  "source_geometry": "municipis_entorn.gpkg, fixed ICGC edition 20260120"
+}

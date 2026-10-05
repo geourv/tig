@@ -33,6 +33,50 @@ exclude:
   - vendor
   - _site/
   - assets/projectes/vila-seca/
+  - assets/plotly/demo.html
+# Jekyll theme assets bypass exclude. Defaults replace the inherited list,
+# so retain the shared values before suppressing this unused demonstration.
+defaults:
+  - scope:
+      path: assets
+    values:
+      sitemap: false
+  - scope:
+      path: ""
+      type: posts
+    values:
+      lang: en
+  - scope:
+      path: ""
+      type: chapters
+    values:
+      lang: en
+      layout: manual-chapter
+  - scope:
+      path: ""
+      type: documentation
+    values:
+      lang: en
+      layout: documentation-page
+  - scope:
+      path: ""
+      type: news
+    values:
+      lang: en
+  - scope:
+      path: ""
+      type: projects
+    values:
+      lang: en
+  - scope:
+      path: ""
+      type: outputs
+    values:
+      lang: en
+  - scope:
+      path: assets/plotly/demo.html
+    values:
+      published: false
 icon: "brand/dosquartsdedocs-logo-white.svg"
 theme: unaltraweb
 author:

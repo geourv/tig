@@ -1,7 +1,7 @@
 LOCAL_CORE ?= /opt/unaltraweb
 LOCAL_GEMFILE := tmp/Gemfile.local
-MCP_IMAGE ?= ghcr.io/dosquartsdedocs/unaltraweb-mcp:0.4.0
-MANUAL_PDF_IMAGE ?= ghcr.io/dosquartsdedocs/unaltraweb-manual-pdf@sha256:bb3e373f8a512495eeed684c23ad904d298c2e20a6dc3ade0d0a60c7ec9a9f11
+MCP_IMAGE ?= ghcr.io/dosquartsdedocs/unaltraweb-mcp:0.5.0
+MANUAL_PDF_IMAGE ?= ghcr.io/dosquartsdedocs/unaltraweb-manual-pdf@sha256:9e0b3a45753c170b795e9a9d6df61580085c113436beac5bf6c8de69b6562097
 MANUAL_PDF_PREVIEW_CLEAN_DRY_RUN ?= 1
 MANUAL_PDF_PREVIEW_CONFIRM_CLEAN ?= 0
 MANUAL_PDF_PREVIEW_RECEIPT_SHA256 ?=
