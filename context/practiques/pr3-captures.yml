@@ -1,0 +1,306 @@
+id: tig-c05-consultes-cnig
+title: Un recorregut de consultes sobre Vila-seca
+source_prompt: |
+  Localitzar Vila-seca manualment a la capa CNIG i seleccionar-lo amb un clic.
+  Mostrar el clic dret sobre la capa activa i ressaltar Filtre. Mostrar la
+  consulta provincial sense duplicar-la en un bloc de codi al manual.
+  Comparar els filtres de taula: seleccionats, visibles i expressió.
+  Mostrar eines i modificadors, i acabar amb el menú i el diàleg natius de
+  selecció per expressió. Continuar amb portals, illes i transport del CNIG.
+  Mostrar les seleccions espacials al mapa i exportar-les realment, amb els
+  diàlegs natius, al GeoPackage existent. Les illes contingudes es representen
+  amb farciment. Portals, illes i viari mostren el terme municipal complet amb
+  el mateix enquadrament de referència. El viari se centra en autovies i autopistes.
+  Acabar amb crear/actualitzar camps, tipus de dades i ajuda d'aggregate.
+  L'actor capture_pr3_guided.py prepara cada estat natiu i executa les accions;
+  el bridge instal·lat d'unaltracaptura 0.3.0 captura i anota aquell estat.
+runtime:
+  locale: ca_ES
+  image: qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc
+captures:
+  - id: manual-selection
+    target: &active {object_name: tigCaptureTarget}
+    drawings:
+      - type: rect
+        target: {class_name: QgsLayerTreeView, item_text: Municipis CNIG}
+        colour: information
+        stroke: 3
+      - type: input
+        input: mouse
+        button: left
+        text: Selecciona Vila-seca
+        target: {object_name: tigManualClick}
+        placement: left
+        leader: true
+        number: none
+        colour: ember
+  - id: layer-filter-menu
+    target: *active
+    mode: screen
+    steps:
+      - action: set_active_visible_menu_action
+        text: Filtre
+    drawings:
+      - type: input
+        input: mouse
+        button: right
+        text: Botó dret · capa activa
+        target: {class_name: QgsLayerTreeView, item_text: Municipis CNIG}
+        placement: below
+        gap: 45
+        number: none
+        number_style: label
+        colour: ember
+      - type: rect
+        target: {text: Filtre}
+        colour: ember
+        stroke: 3
+  - id: layer-filter-dialog
+    target: *active
+    drawings:
+      - type: rect
+        target: {object_name: tigExpression}
+        colour: ember
+        stroke: 3
+      - type: callout
+        text: Consulta del proveïdor
+        target: {object_name: tigExpression}
+        placement: above
+        leader: false
+        target_marker: none
+        number: none
+  - id: table-filter
+    target: *active
+    mode: screen
+    drawings:
+      - type: rect
+        target: {object_name: mFilterButton}
+        colour: ember
+        stroke: 3
+      - type: rect
+        target: {object_name: tigTableSelectedFilter}
+        colour: information
+        stroke: 3
+  - id: table-visible-filter
+    target: *active
+    drawings:
+      - type: callout
+        text: El zoom determina les files
+        target: {object_name: mFilterButton}
+        placement: above
+        target_marker: box
+        number: none
+  - id: table-expression-filter
+    target: *active
+    drawings:
+      - type: rect
+        target: {object_name: mFilterQuery}
+        colour: ember
+        stroke: 3
+      - type: callout
+        text: Filtra la taula
+        target: {object_name: mFilterButton}
+        placement: above
+        target_marker: box
+        number: none
+  - id: selection-tools
+    target: *active
+    mode: screen
+    drawings:
+      - type: rect
+        target: {object_name: tigSelectionRectangle}
+        colour: ember
+        stroke: 3
+  - id: selection-expression-menu
+    target: *active
+    mode: screen
+    steps:
+      - action: set_active_visible_menu_action
+        text: Selecciona objectes segons una expressió
+    drawings:
+      - type: rect
+        target: {object_name: tigExpressionMenuAction}
+        colour: ember
+        stroke: 3
+  - id: selection-expression-dialog
+    target: *active
+    drawings:
+      - type: rect
+        target: {object_name: tigExpression}
+        colour: ember
+        stroke: 3
+      - type: rect
+        target: {object_name: tigSelectExpressionButton}
+        colour: information
+        stroke: 3
+  - id: portals-filter
+    target: *active
+    drawings:
+      - type: rect
+        target: {object_name: tigExpression}
+        colour: ember
+        stroke: 3
+  - id: spatial-selection
+    target: *active
+    drawings: &spatial_drawings
+      - type: rect
+        target: {object_name: tigSpatialPredicate}
+        colour: ember
+        stroke: 3
+      - type: rect
+        target: {object_name: tigSpatialReference}
+        colour: information
+        stroke: 3
+      - type: rect
+        target: {object_name: tigSpatialRun}
+        colour: ember
+        stroke: 3
+  - id: portals-selected
+    target: *active
+    drawings:
+      - type: callout
+        text: Punts seleccionats
+        target: {class_name: QgsLayerTreeView, item_text: Portals CartoCiudad}
+        target_marker: box
+        placement: below
+        number: none
+  - id: selected-export-menu
+    target: *active
+    mode: screen
+    steps:
+      - action: set_active_visible_menu_action
+        text: Desa els objectes seleccionats
+    drawings:
+      - type: input
+        input: mouse
+        button: right
+        text: Botó dret · capa activa
+        target: {class_name: QgsLayerTreeView, item_text: Portals CartoCiudad}
+        placement: below
+        gap: 70
+        number: none
+        colour: ember
+      - type: rect
+        target: {object_name: tigSelectedExportAction}
+        colour: ember
+        stroke: 3
+  - id: portals-export-dialog
+    target: *active
+    drawings: &export_drawings
+      - type: rect
+        target: {object_name: tigExportFile}
+        colour: information
+        stroke: 2
+      - type: rect
+        target: {object_name: tigExportLayer}
+        colour: ember
+        stroke: 2
+      - type: rect
+        target: {object_name: tigExportCrs}
+        colour: information
+        stroke: 2
+      - type: rect
+        target: {object_name: tigExportSelected}
+        colour: ember
+        stroke: 2
+  - id: blocks-spatial-selection
+    target: *active
+    drawings: *spatial_drawings
+  - id: blocks-selected
+    target: *active
+    drawings:
+      - type: callout
+        text: Polígons seleccionats
+        target: {class_name: QgsLayerTreeView, item_text: Illes CartoCiudad}
+        target_marker: box
+        placement: below
+        number: none
+  - id: blocks-export-dialog
+    target: *active
+    drawings: *export_drawings
+  - id: exported-selections
+    target: *active
+    drawings:
+      - type: callout
+        text: Polígons locals
+        target: {class_name: QgsLayerTreeView, item_text: Illes seleccionades}
+        placement: below
+        target_marker: box
+        number: none
+  - id: roads-filter
+    target: *active
+    drawings:
+      - type: rect
+        target: {object_name: tigExpression}
+        colour: ember
+        stroke: 3
+  - id: roads-spatial-selection
+    target: *active
+    drawings: *spatial_drawings
+  - id: roads-selected
+    target: *active
+    drawings:
+      - type: callout
+        text: Trams seleccionats
+        target: {class_name: QgsLayerTreeView, item_text: Vials RT}
+        target_marker: box
+        placement: below
+        number: none
+  - id: roads-export-dialog
+    target: *active
+    drawings: *export_drawings
+  - id: roads-result
+    target: *active
+    drawings:
+      - type: callout
+        text: Trams exportats
+        target: {class_name: QgsLayerTreeView, item_text: Autovies i autopistes}
+        target_marker: box
+        placement: below
+        number: none
+  - id: field-calculator
+    target: *active
+    drawings:
+      - type: rect
+        target: {object_name: mOutputFieldNameLineEdit}
+        colour: ember
+        stroke: 3
+      - type: rect
+        target: {object_name: mOutputFieldTypeComboBox}
+        colour: information
+        stroke: 3
+      - type: rect
+        target: {object_name: tigExpression}
+        colour: ember
+        stroke: 3
+  - id: field-update
+    target: *active
+    drawings:
+      - type: rect
+        target: {object_name: tigUpdateGroup}
+        colour: information
+        stroke: 3
+      - type: rect
+        target: {object_name: tigExpression}
+        colour: ember
+        stroke: 3
+  - id: aggregate-help
+    target: *active
+    drawings:
+      - type: rect
+        target: {object_name: tigFunctionHelp}
+        colour: information
+        stroke: 3
+      - type: rect
+        target: {object_name: tigExpression}
+        colour: ember
+        stroke: 3
+  - id: label-expression
+    target: *active
+    drawings:
+      - type: callout
+        text: Nom i unitat de superfície
+        target: {class_name: QgsLayerTreeView, item_text: Municipis · mesures}
+        target_marker: box
+        placement: below
+        number: none

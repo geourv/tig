@@ -1,0 +1,134 @@
+{
+  "ok": true,
+  "capture_id": "label-expression",
+  "provenance": {
+    "recipe_id": "tig-c05-consultes-cnig",
+    "recipe_title": "Un recorregut de consultes sobre Vila-seca",
+    "recipe_path": "context/practiques/pr3-captures.yml",
+    "capture_title": null,
+    "source_prompt": "Localitzar Vila-seca manualment a la capa CNIG i seleccionar-lo amb un clic.\nMostrar el clic dret sobre la capa activa i ressaltar Filtre. Mostrar la\nconsulta provincial sense duplicar-la en un bloc de codi al manual.\nComparar els filtres de taula: seleccionats, visibles i expressi\u00f3.\nMostrar eines i modificadors, i acabar amb el men\u00fa i el di\u00e0leg natius de\nselecci\u00f3 per expressi\u00f3. Continuar amb portals, illes i transport del CNIG.\nMostrar les seleccions espacials al mapa i exportar-les realment, amb els\ndi\u00e0legs natius, al GeoPackage existent. Les illes contingudes es representen\namb farciment. Portals, illes i viari mostren el terme municipal complet amb\nel mateix enquadrament de refer\u00e8ncia. El viari se centra en autovies i autopistes.\nAcabar amb crear/actualitzar camps, tipus de dades i ajuda d'aggregate.\nL'actor capture_pr3_guided.py prepara cada estat natiu i executa les accions;\nel bridge instal\u00b7lat d'unaltracaptura 0.3.0 captura i anota aquell estat.\n",
+    "recipe_source_prompt": "Localitzar Vila-seca manualment a la capa CNIG i seleccionar-lo amb un clic.\nMostrar el clic dret sobre la capa activa i ressaltar Filtre. Mostrar la\nconsulta provincial sense duplicar-la en un bloc de codi al manual.\nComparar els filtres de taula: seleccionats, visibles i expressi\u00f3.\nMostrar eines i modificadors, i acabar amb el men\u00fa i el di\u00e0leg natius de\nselecci\u00f3 per expressi\u00f3. Continuar amb portals, illes i transport del CNIG.\nMostrar les seleccions espacials al mapa i exportar-les realment, amb els\ndi\u00e0legs natius, al GeoPackage existent. Les illes contingudes es representen\namb farciment. Portals, illes i viari mostren el terme municipal complet amb\nel mateix enquadrament de refer\u00e8ncia. El viari se centra en autovies i autopistes.\nAcabar amb crear/actualitzar camps, tipus de dades i ajuda d'aggregate.\nL'actor capture_pr3_guided.py prepara cada estat natiu i executa les accions;\nel bridge instal\u00b7lat d'unaltracaptura 0.3.0 captura i anota aquell estat.\n",
+    "capture_source_prompt": null
+  },
+  "image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "image_digest": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "probe": {
+    "qgis_version": "3.44.11-Solothurn",
+    "annotation_provider": {
+      "name": "unaltracaptura-qgis",
+      "version": "0.3.0",
+      "release": "https://github.com/dosquartsdedocs/unaltracaptura-qgis/releases/tag/v0.3.0",
+      "wheel": "unaltracaptura_qgis-0.3.0-py3-none-any.whl",
+      "sha256": "5eb4cfdc7bed686f79c3e7cca85136c818dcbaadfa6b67ecb62d4efeab776f1e",
+      "mcp_image": "sha256:f8b76b047194f4a5441c06298f6c4e504027a36d615b80247f574aa5779cab3b"
+    }
+  },
+  "output": "/home/docent/tig/captures/qgis-c05-label-expression.png",
+  "annotation_svg": "/home/docent/tig/captures/qgis-c05-label-expression.annotations.svg",
+  "annotation_svg_background": {
+    "mode": "embedded_png_data_uri",
+    "width": 1190,
+    "height": 900
+  },
+  "manifest": "/home/docent/tig/captures/qgis-c05-label-expression.manifest.yml",
+  "backend": "x11",
+  "locale": {
+    "requested": "ca_ES",
+    "qsettings_user_locale": "ca_ES",
+    "qsettings_override": true
+  },
+  "device_pixel_ratio": 1.0,
+  "coordinate_space": "logical pixels in the captured image; recipe relative coordinates share this space for PNG and SVG annotations",
+  "camera": {
+    "mode": "full",
+    "requested": {
+      "mode": "full"
+    },
+    "full_capture": {
+      "width": 1190,
+      "height": 900
+    },
+    "scale": 1.0
+  },
+  "layout_policy": {},
+  "project_crs": "EPSG:25831",
+  "canvas_crs": "EPSG:25831",
+  "warnings": [],
+  "target": {
+    "object_name": "tigCaptureTarget"
+  },
+  "annotations": [
+    {
+      "type": "callout",
+      "source": "target",
+      "colour": {
+        "mode": "auto_contrast",
+        "token": "ember",
+        "hex": "#b84200",
+        "score": 17.428,
+        "family": "warm"
+      },
+      "shadow": true,
+      "target": {
+        "class_name": "QgsLayerTreeView",
+        "item_text": "Municipis \u00b7 mesures"
+      },
+      "text": "Nom i unitat de superf\u00edcie",
+      "target_anchor": {
+        "x": 287,
+        "y": 191
+      },
+      "target_bbox": {
+        "x": 21,
+        "y": 170,
+        "width": 272,
+        "height": 19
+      },
+      "target_marker": "box",
+      "label_topology": "outside",
+      "target_marker_bbox": {
+        "x": 18,
+        "y": 167,
+        "width": 278,
+        "height": 25
+      },
+      "label_bbox": {
+        "x": 86,
+        "y": 271,
+        "width": 210,
+        "height": 28
+      },
+      "layout_candidate": "halo:r2:bottom:end",
+      "layout_candidate_score": -1560.69,
+      "label_lines": {
+        "title": [
+          "Nom i unitat de superf\u00edcie"
+        ],
+        "body": []
+      },
+      "leader": {
+        "from": {
+          "x": 287,
+          "y": 276
+        },
+        "to": {
+          "x": 287,
+          "y": 191
+        },
+        "label_edge": {
+          "x": 287,
+          "y": 271
+        },
+        "label_snap": "top",
+        "target_snap": "bottom",
+        "vanishing_point": "lower_center_right",
+        "vanishing_point_xy": {
+          "x": 892,
+          "y": 612
+        },
+        "stroke_width": 3,
+        "target_dot": true
+      }
+    }
+  ]
+}

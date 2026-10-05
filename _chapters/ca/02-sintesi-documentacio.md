@@ -14,22 +14,26 @@ manual_references: true
 
 Un projecte SIG no és només el fitxer que QGIS obre. També inclou la pregunta, les dades originals, les transformacions, els paràmetres, els resultats i les decisions que permeten interpretar-los. Si una capa final no es pot relacionar amb una font i un procediment, el mapa pot semblar plausible però no constitueix una evidència verificable.
 
-Aquest capítol inicia la **micropràctica 1** dins d'una estructura `tig/` que servirà per a tot el curs. La còpia de treball serà el projecte QGIS `pr1` incrustat a `sandbox/pr1-fonts-cognom.gpkg`; `cognom` s'ha de substituir pel cognom de l'estudiant i el mateix GeoPackage concentrarà les capes d'informació locals de la pràctica. El capítol crea l'estructura, obre el projecte, incorpora l'Ortofoto Territorial de 2025 de l'ICGC i prepara les dues fonts del límit municipal. El capítol 03 comprovarà els formats i els CRS, materialitzarà les dues extraccions municipals i crearà la versió externa lliurable.
+Aquest capítol construeix un **primer projecte municipal documentat** dins d'una estructura `tig/` que servirà per a tot el curs. El recorregut parteix d'un WMS i d'una capa de municipis, selecciona Vila-seca, en desa la geometria en un GeoPackage i hi incorpora el projecte QGIS `pr1`. Les captures mostren els menús, els diàlegs i les comprovacions que permeten recuperar el treball. El capítol 03 aprofundirà en els formats i els CRS d'aquest mateix resultat.
 
 >>>>> En acabar el capítol, cal poder iniciar un projecte SIG ordenat i explicar com les fonts es convertiran en capes comprovables i, més endavant, en lliurables.
 >>>>>
 >>>>> - Separar dades originals, preparades, resultats intermedis i lliurables dins de l'estructura `tig/`.
->>>>> - Crear `sandbox/pr1-fonts-cognom.gpkg` i desar-hi el projecte de treball `pr1`.
->>>>> - Incorporar el WMS d'ortofoto de 2025 i preparar les fonts municipals de l'ICGC i el CNIG sense confondre visualització, consulta i còpia local.
+>>>>> - Crear el GeoPackage de treball a `sandbox/` i desar-hi el projecte `pr1`.
+>>>>> - Incorporar un WMS i localitzar el municipi en una font vectorial sense confondre visualització, consulta i còpia local.
 >>>>> - Documentar fonts, operacions, paràmetres, controls, incidències i limitacions.
 
-El projecte incrustat i qualsevol còpia externa no se sincronitzen automàticament. Durant el treball s'ha d'obrir `pr1` des del GeoPackage de `sandbox/` i desar-hi els canvis. La representació `.qgz` que es crearà al final del capítol 03 compartirà el nom base `pr1-fonts-cognom`, però no substituirà el projecte incrustat que s'ha d'obrir per continuar treballant.
+Els noms separen la primera fase (`pr1`), la funció (`project-setup`) i el cognom de l'estudiant, que substitueix literalment `cognom`. Les extensions distingeixen el contenidor de dades, la representació externa del projecte i els apunts:
+
+![Tres fitxers de la primera instantània del projecte: GeoPackage, projecte extern i apunts PDF]({{ site.baseurl }}/assets/diagrams/ca/02-sintesi-documentacio/pr1-deliverables.puml "Fitxers que es conserven després de comprovar el projecte: el GeoPackage amb les dades i el projecte incrustat, el projecte extern QGZ i els apunts PDF. El mateix nom base facilita relacionar-los; les extensions identifiquen funcions diferents."){: data-figure-width-web="20rem" data-figure-width-pdf="41%"}
+
+El projecte incrustat i qualsevol còpia externa no se sincronitzen automàticament. Durant el treball s'ha d'obrir `pr1` des del GeoPackage de `sandbox/` i desar-hi els canvis. La representació `.qgz` compartirà el mateix nom base, però no substituirà el projecte incrustat que s'ha d'obrir per continuar treballant.
 
 Organitzar no és embellir una carpeta després d'acabar. L'estructura del sistema de fitxers expressa quines entrades s'han rebut, quines còpies es poden modificar, quines sortides encara són provisionals i quins resultats sostenen la conclusió. Si aquests estats només existeixen a la memòria de qui ha executat el treball, una altra persona no podrà saber si `final_2.gpkg` és una font, una prova o el resultat acceptat.
 
 La documentació tampoc no es limita a descriure programari. Ha d'enllaçar una pregunta amb fonts identificades, operacions concretes, paràmetres, incidències, controls i interpretacions. El treball del curs creixerà dins de la mateixa estructura; una decisió feble en aquesta fase es propaga a les activitats següents. Per això la transportabilitat, el llinatge i la recuperació es proven des del primer conjunt de capes, no només abans del lliurament.
 
-## La cadena d'evidència
+## Traçabilitat de fonts, operacions i resultats
 
 La **traçabilitat** és la possibilitat de reconstruir com s'ha obtingut un resultat. Comença amb una pregunta explícita i continua amb una cadena de peces relacionades: font, còpia original, preparació, operació, control, resultat i interpretació. Cada peça ha de conservar els identificadors necessaris per enllaçar amb l'anterior.
 
@@ -70,11 +74,11 @@ Separar l'estat de les dades evita confondre una font amb una transformació. La
 
 L'estructura comuna del curs és la següent. Els directoris expressen l'estat o la funció dels elements, mentre que el `README.md` i el diari descriuen el conjunt.
 
-![Arbre de directoris i fitxers de l'estructura comuna del curs]({{ site.baseurl }}/assets/diagrams/ca/02-sintesi-documentacio/project-folder-tree.puml "L'arrel tig separa originals, preparacions reutilitzables, intermedis, treball actiu i lliurables; la primera pràctica treballa amb la parella pr1-fonts-cognom a sandbox i només en copia l'estat validat a dist."){: data-figure-width-web="16rem" data-figure-width-pdf="38%"}
+![Arbre de directoris i fitxers de l'estructura comuna del curs]({{ site.baseurl }}/assets/diagrams/ca/02-sintesi-documentacio/project-folder-tree.puml "L'arrel tig separa originals, preparacions reutilitzables, intermedis, treball actiu i resultats validats. La primera activitat conserva la parella pr1-project-setup-cognom i els apunts PDF a dist; el diari general recull el recorregut del projecte."){: data-figure-width-web="21rem" data-figure-width-pdf="48%"}
 
 L'arbre és el contracte comú de les micropràctiques. `data/raw` conserva allò que s'ha rebut del productor: els paquets i, quan cal obrir-los, una extracció íntegra que no s'edita. `data/processed` conté només preparacions derivades dels originals que s'han de reutilitzar en diversos exercicis, com un mosaic DEM combinat i retallat a l'àrea comuna. `data/interim` conserva sortides necessàries per comprovar o reprendre un procés. `sandbox` és l'espai de treball actiu de QGIS i `dist` queda reservat exclusivament per als fitxers validats que es lliuren.
 
-La primera pràctica utilitza `sandbox/pr1-fonts-cognom.gpkg` com a contenidor i còpia de treball. El projecte que QGIS hi desa s'anomena internament `pr1`. En acabar el capítol 03, `sandbox` contindrà també `pr1-fonts-cognom.qgz`; després de validar la parella, tots dos fitxers es copiaran amb el mateix nom base a `dist/`. La carpeta `dist` no conté originals, proves ni l'única còpia del treball.
+La primera pràctica utilitza el GeoPackage de `sandbox/` com a contenidor i còpia de treball. El projecte principal que QGIS hi desa s'anomena internament `pr1`. La còpia externa `.qgz` es crea al costat del GeoPackage; després de validar la parella, tots dos fitxers es copien amb el mateix nom base a `dist/`, juntament amb els apunts en PDF. La carpeta `dist` no conté originals, proves ni l'única còpia del treball.
 
 `data/raw` ha de preservar els noms i els bytes rebuts del productor; la normalització comença en una còpia i queda documentada. Aquesta còpia es treballa a `sandbox` mentre pertany a una micropràctica concreta. Només passa a `data/processed` quan el resultat és una preparació reutilitzable per a activitats diferents. Aquesta distinció evita convertir qualsevol exportació provisional en una dada comuna del curs.
 
@@ -84,13 +88,13 @@ La carpeta `sandbox` conserva els fitxers vius de la micropràctica i també pot
 
 Les capes temporals de QGIS exigeixen una decisió explícita. Mentre només són resultats temporals, poden desaparèixer en tancar la sessió i no són una evidència persistent. Si una selecció o una transformació alimentarà la micropràctica activa, es desa a `sandbox`; si cal compartir-la entre exercicis o reprendre'n el procés, pot passar a `data/processed` o `data/interim` segons la funció. `dist` només rep resultats finals validats. El diàleg de processament no pot decidir aquesta categoria a partir del nom de l'algorisme.
 
-No totes les capes necessiten un fitxer separat. `pr1-fonts-cognom.gpkg` ha de contenir totes les capes d'informació locals de la primera micropràctica, amb noms que indiquin font i contingut. `municipality_icgc_5k` i `municipality_cnig` expliquen millor què representa cada límit que `capa1`, `final2` o `nova_definitiva`.
+No totes les capes necessiten un fitxer separat. El GeoPackage concentra les capes locals de la primera activitat, amb noms que indiquen contingut i funció. A la demostració guiada, `municipi_vilaseca` és la taula que conserva el terme municipal. El fitxer pot rebre altres capes més endavant, sense perdre la identitat de cadascuna.
 
 Els noms han de ser estables, breus i compatibles amb les eines utilitzades. Convé usar minúscules i unitats explícites quan siguin necessàries, com `vies_buffer_200m`. Les dates formen part del nom només quan distingeixen versions reals de les dades o del resultat; no substitueixen un registre de canvis.
 
 ### Convencions de noms, identificadors i esquemes
 
-Un projecte combina almenys tres espais de noms: fitxers del sistema operatiu, capes dins d'un contenidor i camps dins d'una taula. `pr1-fonts-cognom.gpkg` identifica el contenidor i `codi_muni`, un camp. Una capa interna pot anomenar-se `municipality_cnig`. Repetir `pr1` a cada capa no aporta informació, mentre que usar `capa1` impedeix entendre-la fora de l'ordre del panell.
+Un projecte combina almenys tres espais de noms: fitxers del sistema operatiu, capes dins d'un contenidor i camps dins d'una taula. El GeoPackage identifica el contenidor; `municipi_vilaseca`, una taula interna; i `CODIMUNI`, el camp amb el codi municipal de la font ICGC utilitzada. El nom visible `Vila-seca · límit municipal` del panell és una etiqueta del projecte: modificar-lo no reanomena la taula ni el fitxer.
 
 Els sistemes moderns admeten habitualment Unicode i espais, de manera que no és correcte afirmar que qualsevol accent farà fallar QGIS. Tanmateix, un nom com `parcel·les àmbit nord.gpkg` obliga a conservar exactament un espai, un punt volat i un accent, i sovint s'ha de citar entre cometes en una ordre. També pot passar per URL, scripts, SQL, eines antigues o sistemes que normalitzen Unicode de manera diferent. Una convenció conservadora per als **noms tècnics creats pel projecte** és escriure'ls en minúscules i amb caràcters ASCII i, quan no hi ha un vocabulari de projecte fixat, preferentment en anglès; per exemple, `northern-cadastral-parcels.gpkg`. Això redueix friccions i evita decidir com transliterar `ç`, `l·l` o cada vocal accentuada; no implica traduir títols, llegendes, metadades o textos destinats a persones. Els identificadors contractuals del manual, com `municipi_treball`, `codi_muni` i `vies_principals`, són excepcions explícites i s'han de conservar exactament.
 
@@ -140,7 +144,7 @@ Proveïdor de dades de QGIS
 
 Aquest **proveïdor de dades** no és necessàriament l'organisme productor o distribuïdor estudiat al capítol 01, ni tampoc un **proveïdor de Processament**, que agrupa algorismes. Qualificar el terme evita atribuir a una institució una funció interna de QGIS o confondre el lector de la font amb l'eina que la transforma.
 
-Desar el projecte aviat fixa un punt de referència per a les rutes i evita acumular capes en un projecte sense nom. A la primera micropràctica, el projecte de treball es desa dins de `sandbox/pr1-fonts-cognom.gpkg` amb el nom intern `pr1` i es torna a obrir des d'aquest contenidor. Els canvis rellevants es documenten al diari o amb còpies de control deliberades, no amb una cadena de fitxers com `projecte_final_final2.qgz`.
+Desar el projecte aviat fixa un punt de referència per a les rutes i evita acumular capes en un projecte sense nom. A la primera activitat, el projecte de treball es desa dins del GeoPackage de `sandbox/` amb el nom intern `pr1` i es torna a obrir des d'aquest contenidor. Els canvis rellevants es documenten al diari o amb còpies de control deliberades, no amb una cadena de fitxers com `projecte_final_final2.qgz`.
 
 El projecte conserva estils, filtres, unions i composicions que poden canviar el significat de la vista sense canviar les dades. Una capa oculta per un filtre no està buida; una unió dinàmica pot desaparèixer si falta la taula externa; un disseny pot dependre d'una imatge o una tipografia que no viatja amb la font geogràfica. La prova de transport ha d'incloure aquestes dependències i no només comprovar que el llenç mostra algun mapa.
 
@@ -148,13 +152,13 @@ El projecte conserva estils, filtres, unions i composicions que poden canviar el
 
 Les **rutes relatives** descriuen la posició d'un fitxer respecte del projecte i permeten moure conjuntament la carpeta. Les rutes absolutes depenen d'una unitat, un nom d'usuari o una jerarquia concreta. Després de configurar les rutes relatives cal traslladar una còpia de la carpeta a una ubicació diferent, obrir el `.qgz` i comprovar que totes les fonts continuen resolent-se.
 
-A Windows, `C:\Users\anna\tig\sandbox\pr1-fonts-anna.gpkg` és una ruta absoluta.
+A Windows, `C:\Users\anna\tig\sandbox\pr1-project-setup-anna.gpkg` és una ruta absoluta.
 
-En GNU/Linux, `/home/anna/tig/sandbox/pr1-fonts-anna.gpkg` també és una ruta absoluta. Pot ser correcta a l'equip d'origen i inexistent en un altre sistema. En la versió lliurable, una ruta relativa pot expressar que `pr1-fonts-cognom.qgz` i `pr1-fonts-cognom.gpkg` són a la mateixa carpeta `dist`; mentre tots dos fitxers es moguin junts, aquesta relació es conserva.
+En GNU/Linux, `/home/anna/tig/sandbox/pr1-project-setup-anna.gpkg` també és una ruta absoluta. Pot ser correcta a l'equip d'origen i inexistent en un altre sistema. En la versió transportable, una ruta relativa pot expressar que `pr1-project-setup-cognom.qgz` i `pr1-project-setup-cognom.gpkg` són a la mateixa carpeta `dist`; mentre tots dos fitxers es moguin junts, aquesta relació es conserva.
 
 Els segments `.` i `..` signifiquen, respectivament, la carpeta actual i la carpeta superior. Són útils per entendre la lògica, però una acumulació de `../../..` sol indicar que les dades han quedat fora de l'arrel transportable. La solució no és memoritzar el camí, sinó reunir dins d'un arbre comú les dependències que es poden copiar legalment. Un recurs compartit en una unitat de xarxa pot justificar una ruta absoluta en un entorn controlat, però aquesta decisió i el requisit de muntatge s'han de documentar.
 
-QGIS permet definir si desa els camins de les fonts com a relatius o absoluts a les propietats generals del projecte. En un projecte extern, la ruta relativa es calcula respecte del fitxer `.qgz`. La `Carpeta inicial del projecte` és l'accés de conveniència que mostra l'`Explorador`, però es pot canviar sense rebasar les rutes de les fonts. Canviar l'opció no copia fitxers dins de l'arbre ni repara automàticament una font que ja no existeix; la versió de `dist` s'haurà d'obrir i comprovar amb la seva pròpia còpia de `pr1-fonts-cognom.gpkg` {% cite qgisUserGuide344 %}.
+QGIS permet definir si desa els camins de les fonts com a relatius o absoluts a les propietats generals del projecte. En un projecte extern, la ruta relativa es calcula respecte del fitxer `.qgz`. La `Carpeta inicial del projecte` és l'accés de conveniència que mostra l'`Explorador`, però es pot canviar sense rebasar les rutes de les fonts. Canviar l'opció no copia fitxers dins de l'arbre ni repara automàticament una font que ja no existeix; la versió de `dist` s'haurà d'obrir i comprovar amb la seva pròpia còpia de `pr1-project-setup-cognom.gpkg` {% cite qgisUserGuide344 %}.
 
 Les URL de WMS, WMTS, WFS o API no es converteixen en rutes locals relatives. Continuen depenent de xarxa, servidor i, si escau, autenticació. Tampoc no és segur compartir credencials dins del projecte. La transportabilitat ha de distingir capes locals que viatgen amb la carpeta, recursos remots que s'han de tornar a consultar i fonts restringides que cada usuari ha de configurar amb permisos propis.
 
@@ -168,11 +172,13 @@ No és una carpeta comprimida d'ús general. Un GeoTIFF analític, un `.zip` ori
 
 QGIS permet **desar un projecte a un GeoPackage** i **obrir-lo des d'un GeoPackage** mitjançant les accions `Projecte > Desa a > GeoPackage` (*Save to GeoPackage*) i `Projecte > Obre des de > GeoPackage` (*Open from GeoPackage*), encara que la traducció o la posició exacta puguin variar entre versions. En tots dos casos se seleccionen un contenidor i un nom de projecte; no s'estan important o exportant les capes. Altres aplicacions poden llegir les taules geogràfiques i ignorar aquesta definició pròpia de QGIS {% cite qgisUserGuide344 %}.
 
-Al curs, la primera entrada incrustada s'anomena exactament `pr1`. Per continuar la micropràctica s'obre `pr1` des de `sandbox/pr1-fonts-cognom.gpkg`, es treballa sobre les capes locals del mateix contenidor i es desen els canvis en aquesta representació. Després dels controls del capítol 03 se'n crea al mateix `sandbox` una representació externa `pr1-fonts-cognom.qgz`. Amb QGIS tancat, els dos fitxers validats es copien junts a `dist/`.
+Al curs, el primer projecte de treball s'anomena `pr1`. Per continuar l'activitat s'obre aquesta entrada des del GeoPackage de `sandbox/`, es treballa sobre les capes locals del mateix contenidor i es desen els canvis en aquesta representació. Després dels controls se'n crea al mateix directori la representació externa `.qgz`, amb el nom base establert. Amb QGIS tancat, els dos fitxers validats es copien junts a `dist/`; els apunts PDF els acompanyen com a documentació.
+
+Un mateix GeoPackage pot conservar **més d'un projecte QGIS**, cadascun amb un nom diferent. Per exemple, `pr1` pot mostrar el municipi complet i `comparacio`, una vista de detall amb una altra simbologia. Tots dos poden llegir la mateixa taula: desar una segona vista no obliga a duplicar les geometries. Cal saber quin projecte s'està obrint i actualitzant; els noms són part de l'organització del treball, no una limitació del format.
 
 El projecte incrustat, el `.qgz` extern i les còpies de distribució són representacions independents. L'ordre **Desa** actualitza la representació que està oberta en aquell moment; no hi ha cap enllaç que propagui els canvis a les altres. Les versions de `sandbox` són les còpies de treball i les de `dist` descriuen el candidat de la revisió actual. L'estat lliurat és el paquet complet immutable que s'assembla separadament. Qualsevol diferència posterior ha de ser explicable al diari.
 
-El projecte incrustat **no és una còpia de seguretat**. Comparteix `pr1-fonts-cognom.gpkg` amb les capes: si el contenidor es perd o es corromp, es poden perdre alhora les dades i el projecte. Una còpia de recuperació ha d'estar en una ubicació independent. La còpia situada a `dist` tampoc no substitueix una política de còpies de seguretat.
+El projecte incrustat **no és una còpia de seguretat**. Comparteix el GeoPackage amb les capes: si el contenidor es perd o es corromp, es poden perdre alhora les dades i el projecte. Una còpia de recuperació ha d'estar en una ubicació independent. La còpia situada a `dist` tampoc no substitueix una política de còpies de seguretat.
 
 Els noms interns també s'han de gestionar. Esborrar o reanomenar una taula pot trencar les referències desades al projecte de treball, a la instantània incrustada o al `.qgz`; reemplaçar una capa amb una altra del mateix nom pot ocultar un canvi d'esquema. Després d'una importació s'han de revisar geometria, CRS, camps i recomptes, i després tornar a obrir separadament les representacions que s'han de conservar. El contenidor simplifica el transport físic, no la validació del contingut.
 
@@ -190,7 +196,7 @@ Una carpeta sincronitzada pot replicar també una supressió o un fitxer malmès
 
 En un projecte docent es poden combinar còpies de recuperació del conjunt amb fites deliberades dels fitxers centrals. Abans d'una transformació difícil de revertir es crea una còpia tancada del GeoPackage; després es registra al diari què s'ha canviat i quin resultat s'ha validat. No cal conservar una còpia amb marca horària de cada clic. Cal conservar prou estats per recuperar-se i prou documentació per saber quin estat és coherent.
 
-La carpeta `dist` contindrà **còpies de distribució** només quan es tanqui la micropràctica al capítol 03. Aleshores hi haurà `pr1-fonts-cognom.gpkg` i `pr1-fonts-cognom.qgz`; no s'hi copiaran memòries cau, temporals, credencials ni originals. Abans de lliurar-los, tots dos fitxers s'hauran de copiar junts a una ubicació neta i obrir-los sense dependre de `sandbox`. Fins a aquell moment, `dist` continua buit.
+La carpeta `dist` contindrà **còpies de distribució** quan es tanqui l'activitat: el GeoPackage, el `.qgz` homònim i els apunts PDF. No s'hi copiaran memòries cau, temporals, credencials ni originals. La parella geogràfica s'haurà de provar en una ubicació neta, sense dependre de `sandbox`, i el PDF s'haurà de revisar en un lector extern.
 
 `dist` és el candidat pla d'una revisió, no l'arxiu de totes les versions. Si es detecta un error abans del lliurament, no se'n modifica el binari al lloc: es reconstrueix el candidat complet en un `dist` net a partir de les fonts canòniques, regenerant la fita afectada i totes les descendents. Un cop lliurat el paquet complet, es conserva immutable i identificat com una revisió. Qualsevol correcció posterior s'assembla en una carpeta separada com una revisió completa nova, que manté els noms contractuals a l'interior; no es barregen fitxers de revisions diferents ni s'altera el paquet anterior.
 
@@ -199,38 +205,80 @@ La carpeta `dist` contindrà **còpies de distribució** només quan es tanqui l
 | --- | --- | --- |
 | Inventari | Descriu les peces, la ubicació, la funció i les dependències de l'estat actual | Cada entrada existeix i es pot relacionar amb el projecte |
 | Diari | Registra decisions, execucions, incidències, controls i interpretacions | Una altra persona pot reconstruir per què s'ha acceptat cada resultat |
-| Estat de treball | Conserva el projecte incrustat i les capes locals de la micropràctica | `pr1` s'obre des de `sandbox/pr1-fonts-cognom.gpkg` i manté les fonts esperades |
+| Estat de treball | Conserva el projecte incrustat i les capes locals de l'activitat | `pr1` es reobre des del GeoPackage de `sandbox/` i manté les fonts esperades |
 | Còpia de seguretat | Permet recuperar-se d'una pèrdua o corrupció | Es troba en una ubicació independent i se n'ha provat la restauració |
 | Còpia de distribució o transport | Trasllada només les peces redistribuïbles necessàries | Els dos fitxers de `dist` s'obren junts en una ruta neta sense dependre de la còpia de treball |
 :::
 
-### Configuració inicial a QGIS
+## Un primer projecte municipal amb QGIS {#primer-projecte-municipal}
 
-En QGIS, la separació conceptual entre fonts, organització, representació i procés es tradueix en regions funcionals diferents: l'`Explorador` localitza fonts, el panell `Capes` les organitza, el llenç les representa, la caixa d'eines les transforma i la barra d'estat informa de l'escala, les coordenades i el CRS de la vista. La disposició concreta depèn de la versió i del perfil. Abans d'afegir capes cal crear l'arbre `tig/`, obrir un projecte nou i establir `EPSG:25831` com a CRS del projecte. El capítol 03 explicarà per què aquesta definició és adequada per al municipi assignat i com es diferencia del CRS de cada font.
+El cas següent desenvolupa el recorregut sobre Vila-seca amb QGIS 3.44.11. La demostració utilitza el sufix `exemple` als fitxers; en el projecte propi s'hi posa el cognom. Els noms interns `municipi_vilaseca`, `pr1` i `comparacio` identifiquen, respectivament, una capa i dues vistes de projecte. Les finestres són les de QGIS: alguns textos poden continuar en anglès encara que el perfil estigui configurat en català.
 
-En obrir-lo, la captura permet relacionar cada decisió del projecte amb el lloc on es comprova: les dependències a l'`Explorador`, l'ordre al panell `Capes`, el resultat visible al llenç i els algorismes a la caixa d'eines.
+### Situar el WMS i els municipis al llenç
 
-![Interfície de QGIS amb l'Explorador i el panell de Capes a l'esquerra, el llenç del mapa al centre, la Caixa d'eines de processament a la dreta i la barra d'estat amb el localitzador a la part inferior]({{ site.baseurl }}/assets/img/qgis/qgis-interface-overview.png "Interfície de QGIS 3.44.11 en català. La posició i la visibilitat dels panells i de les barres d'eines poden variar segons la versió i el perfil; les regions funcionals es mantenen."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
+Cal crear l'estructura de treball, iniciar un projecte i fixar `EPSG:25831` com a CRS de la vista de Vila-seca. El WMS de l'[Ortofoto Territorial de l'ICGC](https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms) aporta la capa `ortofoto_25cm_color_2025`. S'hi accedeix des del gestor de fonts WMS/WMTS, amb l'adreça base, **Connecta** i la selecció de l'edició. La capa vectorial s'obté de les divisions administratives ICGC 1:5.000. A les captures s'utilitza un extracte local de nou municipis de l'entorn, preparat a partir de la mateixa edició, perquè la selecció es pugui observar amb claredat.
 
-A `Projecte > Propietats > General` es configura l'emmagatzematge de camins relatius i la `Carpeta inicial del projecte` s'estableix a l'arrel `tig/`. Al panell `Explorador`, el menú contextual de l'entrada `GeoPackage` permet crear una base de dades buida a `sandbox/pr1-fonts-cognom.gpkg`; no cal inventar una capa per crear el contenidor. A continuació s'utilitza `Projecte > Desa a > GeoPackage` per desar-hi el projecte amb el nom curt `pr1`. Des d'aquest moment, les sessions de treball s'han de reprendre amb `Projecte > Obre des de > GeoPackage`.
+Al panell `Capes`, els municipis han de quedar **damunt** de l'ortofoto. Una simbologia de polígon sense farciment permet veure la imatge sota els límits. Cal acostar el mapa a Vila-seca amb el zoom i la roda del ratolí; **Escala a la capa** mostra tota la capa, mentre que **Apropa a la selecció** servirà quan el municipi ja estigui seleccionat. La barra d'estat permet llegir el CRS de la vista.
 
-El context visual s'incorpora des del WMS de l'Ortofoto Territorial de l'ICGC. Cal seleccionar l'edició de 2025, donar a la capa un nom llegible com `ICGC Ortofoto territorial 2025` i mantenir-la separada de les entrades vectorials: continua sent una imatge remota de context i no una capa que s'hagi d'introduir al GeoPackage.
+![Projecte QGIS amb el WMS de l'Ortofoto Territorial 2025 i els límits municipals de l'entorn de Vila-seca]({{ site.baseurl }}/assets/img/qgis/qgis-pr1-wms-overview.png "WMS i vector compleixen funcions diferents en el mateix mapa. L'ortofoto ICGC 2025 aporta la imatge; la capa de municipis aporta polígons i atributs seleccionables. La vista està ampliada a Vila-seca i els municipis propers. QGIS 3.44.11; fonts: ICGC."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
 
-La primera font vectorial s'explora amb Open ICGC. Des de les divisions administratives 1:5.000 es carrega la capa de termes municipals, s'identifica el camp que conté el nom o codi oficial i se selecciona el municipi assignat. La selecció permet comprovar que hi ha una única entitat correcta, però encara no es desa: el capítol 03 fixarà el CRS de sortida i crearà `municipality_icgc_5k` dins de `pr1-fonts-cognom.gpkg` amb **Desa les entitats seleccionades com...**.
+### Seleccionar Vila-seca i obrir l'exportació
 
-La segona font és la distribució GML actual del producte d'unitats administratives del CNIG, `LINEAS_LIMITE_GML.ZIP`. El paquet descarregat i el seu contingut complet es conserven a `data/raw` amb els noms rebuts. A QGIS es carrega el subconjunt municipal `AdministrativeUnit` de quart ordre, es localitza el municipi assignat i es comprova que la capa utilitzada declara `EPSG:4258`. Tampoc no es transforma encara: la diferència entre visualització al vol i reprojecció es resoldrà al capítol 03 abans de crear `municipality_cnig` en `EPSG:25831`.
+Primer s'activa **la capa de municipis** al panell, no el WMS. L'eina **Selecciona objectes** permet marcar el terme al mapa. La comprovació es fa amb el nom i el codi de la taula: en aquesta font, Vila-seca té `CODIMUNI = '431711'`. Aquest criteri també permet reproduir la selecció amb una expressió. Abans de continuar cal comprovar que només hi ha una entitat seleccionada; un altre polígon marcat fora de la vista també s'exportaria.
 
-El panell de capes es distribueix en grups que expressen funció, per exemple:
+![Vila-seca ressaltat en groc dins d'una capa amb altres municipis sobre el WMS]({{ site.baseurl }}/assets/img/qgis/qgis-pr1-selected-municipality.png "Una entitat seleccionada dins de nou municipis. El groc expressa un estat de selecció de QGIS; encara no existeix una capa municipal nova. El codi 431711 identifica el terme de Vila-seca en aquesta edició ICGC."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
 
-- `00_context`
-- `10_originals_inspeccio`
-- `20_preparades`
-- `30_intermedies`
-- `40_resultats`
+Amb la selecció activa, es fa clic amb el **botó dret sobre el nom de la capa** al panell `Capes`. Dins del submenú **Exporta** s'escull **Desa els objectes seleccionats com a...**. L'opció **Desa els objectes com a...** és diferent: pot exportar tota la capa si no s'hi activa expressament la limitació a la selecció.
 
-Els prefixos són opcionals, però l'ordre no ha de dependre d'on ha quedat una capa després d'afegir-la. Les fonts remotes de context queden separades de les entrades analítiques i reben un nom que conserva productor i producte.
+![Menú contextual de la capa de municipis amb Exporta i Desa els objectes seleccionats com a]({{ site.baseurl }}/assets/img/qgis/qgis-pr1-export-menu.png "El menú contextual relaciona la selecció visible amb la seva exportació. Cal triar l'opció que es refereix als objectes seleccionats. El mateix polígon de Vila-seca continua ressaltat sota el menú."){: data-figure-width-web="52rem" data-figure-width-pdf="100%"}
 
-Abans de tancar la sessió, `pr1` ha de conservar el WMS de 2025, les dues fonts municipals encara sense harmonitzar i els grups inicials. Cal desar el projecte al GeoPackage, tancar-lo i tornar-lo a obrir explícitament des de `sandbox/pr1-fonts-cognom.gpkg`. El resultat del capítol és un estat de treball, no un lliurament: `dist` ha de continuar buit fins que les capes, el CRS i la composició s'hagin validat al capítol següent.
+### Escollir el contenidor, el nom de capa i el CRS
+
+El diàleg **Desa la capa vectorial com a...** reuneix decisions que després han de quedar als apunts. El format serà **GeoPackage**. Al camp **Nom del fitxer**, el botó de cerca permet anar a `sandbox/` i escollir el contenidor de la pràctica. Si encara no existeix, l'exportació el crea; si ja existeix, s'hi afegeix la capa nova sense substituir el fitxer complet.
+
+El camp **Nom de la capa** identifica la taula interna. En el cas s'utilitza `municipi_vilaseca`: minúscules, caràcters ASCII, sense espais ni accents, amb guió baix per separar paraules. Al selector **SRC** es comprova o s'escull **ETRS89 / UTM zone 31N — EPSG:25831**. El botó del globus permet cercar el codi quan no apareix a la llista. Finalment es manté marcada **Desa només els objectes seleccionats** i es demana afegir el fitxer desat al mapa.
+
+![Diàleg d'exportació amb el fitxer GeoPackage de la pràctica, la capa municipi_vilaseca, EPSG 25831 i només els objectes seleccionats]({{ site.baseurl }}/assets/img/qgis/qgis-pr1-export-dialog.png "Paràmetres reals de l'exportació: format GeoPackage, fitxer de la pràctica, nom intern municipi_vilaseca, CRS EPSG:25831 i només la selecció. Els grups d'opcions avançades estan plegats per concentrar la lectura en aquestes decisions."){: data-figure-width-web="52rem" data-figure-width-pdf="100%"}
+
+En aquesta font ICGC les coordenades ja són en `EPSG:25831`; escollir el mateix CRS conserva la referència i no calcula coordenades noves. Si una altra font està en un CRS diferent, la sortida implica una transformació que s'ha de documentar. El capítol següent explica la diferència entre assignar un CRS, transformar coordenades i representar al vol.
+
+Després de prémer **D'acord**, cal revisar la capa carregada des del GeoPackage: una entitat, nom i codi correctes, geometria no buida i CRS de sortida. La capa general pot retirar-se del panell quan ja no calgui per explorar. **Apropa a la capa** o **Escala a la capa**, segons la traducció disponible, permet situar el resultat al llenç. Un contorn sense farciment manté visible l'ortofoto.
+
+![Límit local de Vila-seca carregat des del GeoPackage sobre l'Ortofoto Territorial 2025 amb zoom municipal]({{ site.baseurl }}/assets/img/qgis/qgis-pr1-wms-result.png "Resultat de l'exportació: una capa local amb el terme de Vila-seca sobre el WMS. El contorn magenta és simbologia del resultat, no la selecció groga de la font. S'ha comprovat que la geometria exportada coincideix amb la seleccionada."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
+
+### Connectar el GeoPackage a l'Explorador
+
+Si el panell `Explorador` no és visible, s'activa des de **Visualitza > Panells**. El clic dret sobre l'entrada **GeoPackage** ofereix **Nova connexió...**. Al selector de fitxers s'escull el GeoPackage de la pràctica. La connexió apareix sota aquella entrada i es pot desplegar per veure'n el contingut.
+
+![Selector de fitxers per connectar el GeoPackage de la pràctica a QGIS]({{ site.baseurl }}/assets/img/qgis/qgis-pr1-connect-dialog.png "Connexió amb el fitxer de treball. La carpeta i el camp Nom de fitxer permeten comprovar que s'ha escollit el GeoPackage de sandbox i no una còpia antiga d'una altra ubicació."){: data-figure-width-web="52rem" data-figure-width-pdf="100%"}
+
+La **connexió** és una manera d'accedir al contenidor des de QGIS; no crea una còpia de les dades. Desplegar-la tampoc no carrega automàticament totes les capes al mapa. Per afegir una capa es pot fer doble clic sobre la seva entrada o arrossegar-la al llenç. En aquest cas, l'exportació ja l'havia afegit al projecte, de manera que cal evitar duplicar-la al panell.
+
+### Desar el projecte dins del GeoPackage
+
+Amb el WMS i el límit local carregats, es configura el desament de camins relatius a les propietats del projecte. Després s'obre **Projecte > Desa a > GeoPackage...**. Aquesta acció desa la configuració del projecte —capes, fonts, ordre, estil, extensió i altres propietats—; l'exportació anterior era la que havia desat les geometries.
+
+![Menú Projecte de QGIS amb Desa a i l'opció GeoPackage]({{ site.baseurl }}/assets/img/qgis/qgis-pr1-save-project-menu.png "Ruta de desament del projecte a un GeoPackage. L'acció Desa a és diferent de l'exportació d'una capa i de Desa com a..., que crea una representació externa del projecte."){: data-figure-width-web="39rem" data-figure-width-pdf="85%"}
+
+Al diàleg es tria la connexió del fitxer de treball i s'escriu `pr1` al camp **Projecte**. El nom de projecte no porta l'extensió `.gpkg` ni `.qgz`: identifica una entrada dins del contenidor. Un nom nou crea una altra entrada; reutilitzar un nom existent pot substituir aquella representació i exigeix comprovar que és la que es vol actualitzar.
+
+![Diàleg natiu de desament a GeoPackage amb la connexió de la pràctica i el projecte pr1]({{ site.baseurl }}/assets/img/qgis/qgis-pr1-save-project-dialog.png "El fitxer s'escull al camp Connexió i el nom intern, al camp Projecte. El resultat comprovat conté l'entrada pr1 dins del mateix GeoPackage que la capa municipal."){: data-figure-width-web="34rem" data-figure-width-pdf="75%"}
+
+### Actualitzar la connexió i recuperar el projecte
+
+L'Explorador pot conservar una vista anterior del contingut. Després de crear capes o desar projectes convé **actualitzar la connexió**: clic dret sobre el GeoPackage i **Actualitza**. També es pot utilitzar el botó d'actualització del panell. Si una entrada acabada de crear no apareix, cal refrescar i tornar a desplegar la connexió abans de concloure que no s'ha desat.
+
+![Menú contextual de la connexió GeoPackage amb l'acció Actualitza i el projecte pr1 al darrere]({{ site.baseurl }}/assets/img/qgis/qgis-pr1-refresh-connection.png "Actualitza torna a llegir el contingut de la connexió. El projecte pr1 es distingeix de la capa municipal per la seva entrada i icona; una llista encara no refrescada pot amagar canvis recents."){: data-figure-width-web="32rem" data-figure-width-pdf="65%"}
+
+Per reprendre la feina s'obre `pr1` des de la connexió o amb **Projecte > Obre des de > GeoPackage**. Cal comprovar que tornen a aparèixer el WMS, el límit local i la configuració desada. Si QGIS demana desar el projecte que hi havia obert, primer s'ha d'identificar aquell projecte i decidir si els seus canvis s'han de conservar.
+
+### Conservar diverses vistes i una còpia externa
+
+La demostració desa una segona vista amb el nom `comparacio`, canviant l'escala i la simbologia del mateix límit. Després d'actualitzar i desplegar la connexió s'hi veuen **dos projectes i una capa**. Obrir `pr1` o `comparacio` recupera una configuració diferent sobre les mateixes dades. Si es modifica la geometria de la taula compartida, el canvi pot afectar totes dues vistes; desar un projecte amb un altre nom no és una còpia de seguretat de les dades.
+
+![Explorador de QGIS amb pr1 i comparacio dins del GeoPackage, juntament amb la capa municipi_vilaseca]({{ site.baseurl }}/assets/img/qgis/qgis-pr1-projects-in-browser.png "Dos projectes QGIS dins d'un únic GeoPackage. pr1 i comparacio comparteixen la capa municipi_vilaseca; la connexió mostra els projectes, la capa i els seus camps com a elements diferents."){: data-figure-width-web="24rem" data-figure-width-pdf="55%"}
+
+Finalment s'obre la vista principal `pr1` i **Projecte > Desa com a...** permet crear la còpia `.qgz` al costat del GeoPackage. Les dues representacions es tornen a obrir per separat i s'hi comproven les fonts. Al cas verificat, tant el `.qgz` com `pr1` i `comparacio` resolen la mateixa capa municipal des d'una ubicació nova. Els apunts han de conservar les decisions, les comprovacions i les incidències d'aquest recorregut.
 
 ## El diari d'activitats
 
@@ -251,9 +299,17 @@ El diari ha de permetre entendre les decisions que no són visibles a les capes 
 
 La versió de QGIS i els proveïdors de Processament s'han d'indicar quan poden alterar un algorisme o els seus paràmetres. També cal registrar els complements imprescindibles. Un projecte que depèn d'una selecció activa, una variable local o una capa temporal no documentades pot deixar de ser reproduïble encara que el fitxer `.qgz` s'obri.
 
-Una entrada de qualitat comença per una decisió o una operació identificable, no per l'hora en què s'ha premut un botó. Pot indicar: objectiu de preparar el límit municipal; font ICGC o CNIG identificada; criteri aplicat al camp documentat; operació i paràmetres; sortida `municipality_icgc_5k` o `municipality_cnig`; controls de geometria, camps, CRS i extensió; i incidències. Aquesta estructura permet repetir el procés en una interfície lleugerament diferent perquè conserva el significat, no només el recorregut visual.
+Una entrada de qualitat comença per una decisió o una operació identificable, no per l'hora en què s'ha premut un botó. En el cas guiat relaciona la font ICGC, el criteri municipal, l'exportació i els seus paràmetres amb la sortida `municipi_vilaseca`. També conserva els controls de geometria, camps, CRS i extensió i les incidències. Aquesta estructura permet repetir el procés en una interfície lleugerament diferent perquè conserva el significat, no només el recorregut visual.
 
 Una nota com «he retallat i ha sortit bé» no identifica entrada, màscara, opció ni prova. Una seqüència de captures de tots els diàlegs pot ser igualment insuficient si no explica per què s'han triat els valors. Les captures són útils quan demostren una configuració difícil de transcriure, un missatge d'error, una diferència abans-després o un control espacial. La resta es documenta millor com a text amb noms literals de capes, camps i paràmetres.
+
+### Apunts breus per repetir la preparació del projecte {#apunts-projecte-municipal}
+
+Els apunts de la primera activitat són una selecció explicada del diari, exportada a PDF. Han de permetre reprendre el procediment després d'un temps: identificar el municipi i les fonts, reconstruir la selecció i l'exportació, distingir les dues formes de desar el projecte i repetir les comprovacions. Una estructura breu pot dedicar un apartat a cada decisió, amb el resultat observat al costat.
+
+Per exemple, la nota sobre el límit de Vila-seca pot relacionar `CODIMUNI = '431711'` amb l'única entitat seleccionada, la taula `municipi_vilaseca` del GeoPackage i el recompte d'una entitat després de tornar-la a carregar. El nom de camp i el valor permeten repetir la selecció; el recompte de sortida detecta si s'ha exportat tota la capa. Una captura de la taula reoberta sosté aquest control, mentre que una imatge del botó **Exporta** només localitza l'acció.
+
+Les captures han de tenir un peu que expliqui què cal observar i prou mida perquè se'n llegeixin el camp, el paràmetre o el missatge rellevant. Convé conservar la font del document i exportar una còpia final com `pr1-project-setup-cognom.pdf`, al costat de la parella geogràfica. Abans de donar-la per acabada cal obrir-la en un lector PDF, comprovar-ne l'ordre, els accents, els peus i la llegibilitat. Els apunts inclouen les incidències reals i les correccions aplicades; una possible incidència encara no observada es presenta com a pregunta de diagnòstic.
 
 Els controls s'han d'escriure amb resultat, no només com a intenció. «Comprovar els nuls» és una tasca pendent; una entrada vàlida incorpora el recompte real, la capa i el camp examinats i la decisió adoptada. El manual no pot anticipar aquestes xifres perquè dependran del producte i de la versió descarregats. El diari ha de distingir el resultat esperat de l'observat quan no coincideixen.
 
@@ -263,7 +319,7 @@ El diari també ha de distingir decisió i estat accidental. La capa activa, una
 
 ## Diagnòstic de fonts i prova de transport
 
-El diagnòstic de fonts ja és aplicable a l'estat de treball d'aquest capítol. La prova de transport, en canvi, es descriu com el protocol que s'executarà després de crear els dos fitxers de `dist` al final del capítol 03; no forma part encara de la primera fase de la micropràctica.
+El diagnòstic de fonts i la prova de transport completen el cas guiat. Desar el projecte i veure un mapa a l'equip d'origen és un primer estat; recuperar les dades i la configuració des d'una ubicació diferent comprova que les dependències s'han conservat.
 
 Una font trencada és un símptoma, no un diagnòstic. QGIS pot no trobar un fitxer, no reconèixer-ne el proveïdor, perdre una taula interna, no tenir permisos, rebre una resposta remota invàlida o obrir les dades en una posició inesperada. Cada causa exigeix una comprovació diferent. Canviar el CRS del projecte, tornar a instal·lar un connector o crear una capa duplicada pot ocultar el missatge sense restaurar la dependència original.
 
@@ -289,11 +345,11 @@ Si una font remota és imprescindible per a l'anàlisi, el projecte ha d'explica
 
 ### Protocol de prova de transport
 
-Després de completar el capítol 03, la prova de transport crearà una situació en què les rutes personals deixin de funcionar. Amb QGIS tancat i els fitxers desats, els dos fitxers de `dist` es copiaran a una ubicació que no comparteixi el mateix camí, per exemple una carpeta temporal amb un altre nom o un altre equip. No s'ha de moure l'única còpia de treball ni esborrar l'origen per fer la prova.
+La prova de transport crea una situació en què les rutes personals deixen de funcionar. Amb QGIS tancat i els fitxers desats, els dos fitxers geogràfics de `dist` es copien a una ubicació que no comparteixi el mateix camí, per exemple una carpeta temporal amb un altre nom o un altre equip. No s'ha de moure l'única còpia de treball ni esborrar l'origen per fer la prova.
 
-Des de la còpia s'obre explícitament el projecte extern `pr1-fonts-cognom.qgz`, no un projecte de la llista de recents que podria apuntar a l'original. Abans d'acceptar cap reparació automàtica, s'observa si apareixen fonts no disponibles. Després es comproven els grups, la visibilitat, els estils, les etiquetes i la composició. Cada capa local s'ha de relacionar amb `pr1-fonts-cognom.gpkg` de la mateixa còpia, no amb `sandbox`, `Descàrregues` o l'escriptori.
+Des de la còpia s'obre explícitament el projecte extern `pr1-project-setup-cognom.qgz`, no un projecte de la llista de recents que podria apuntar a l'original. Abans d'acceptar cap reparació automàtica, s'observa si apareixen fonts no disponibles. Després es comproven les capes, la visibilitat, els estils i les ampliacions incorporades, com etiquetes, grups o composicions. Cada capa local s'ha de relacionar amb `pr1-project-setup-cognom.gpkg` de la mateixa còpia, no amb `sandbox`, `Descàrregues` o l'escriptori.
 
-Un cop registrada la prova del `.qgz`, es tanca sense introduir canvis i s'utilitza **Obre des de GeoPackage** sobre `pr1-fonts-cognom.gpkg` de la còpia. Se selecciona l'entrada `pr1` i es repeteixen els controls: fonts resoltes, grups, CRS, extensió, recomptes i composició. Aquesta segona obertura prova la instantània incrustada inclosa al lliurable, no la còpia de treball de `sandbox`, i no actualitza el projecte extern.
+Un cop registrada la prova del `.qgz`, es tanca sense introduir canvis i s'utilitza **Obre des de GeoPackage** sobre `pr1-project-setup-cognom.gpkg` de la còpia. Se selecciona l'entrada `pr1` i es repeteixen els controls: fonts resoltes, CRS, extensió, recomptes i configuracions incorporades. Aquesta segona obertura prova la instantània incrustada de la còpia transportada i no actualitza el projecte extern.
 
 La validació utilitza els controls ja registrats. Les capes han de conservar els noms, tipus, CRS, camps i recomptes observats durant la preparació; els ràsters, les dimensions, bandes, resolució i `NoData` que corresponguin; i les composicions, els recursos necessaris. No s'introdueixen xifres de referència inventades: es comparen els valors de la prova amb els que el mateix projecte va documentar quan va crear les sortides.
 
@@ -301,7 +357,7 @@ Les fonts remotes es proven separadament. Amb connexió, cal confirmar que el se
 
 Una prova superada deixa una evidència breu: ubicació de la còpia, `.qgz` lliurable obert, entrada incrustada `pr1` oberta per separat, fonts resoltes, controls comparats, dependències remotes i incidències corregides. Si ha calgut cercar manualment una capa, si s'ha obert una font de l'arrel original o si no es pot identificar quina representació s'està comprovant, la prova no s'ha superat. Cal corregir la font canònica a `sandbox`, regenerar la fita afectada i les descendents, crear una còpia de prova nova i repetir totes dues obertures.
 
-## Dos projectes organitzats de manera diferent
+## Dependències disperses i projecte transportable: comparació
 
 Un cas deficient pot semblar funcional a l'equip on s'ha creat. El `.qgz` és a l'escriptori; un límit municipal apunta a `Descàrregues`; el Shapefile s'ha separat del paquet; un ràster és en una memòria externa; i `final.gpkg` conté `capa1`, `capa1_nova` i `definitiva`. El WMS cadastral s'ha tractat com si fos la capa de parcel·les analítica. El diari conté captures dels menús, però no la versió, els filtres, les fonts ni els controls. Finalment, tota la carpeta s'ha comprimit al mateix disc i s'ha anomenat còpia de seguretat.
 
@@ -315,7 +371,7 @@ En un cas ben dissenyat des de l'inici, totes les fonts locals pengen de `tig/`.
 
 La qualitat del cas ben organitzat no prové només de l'arbre. Cada sortida té una procedència, un esquema i controls; el `.qgz` i el projecte incrustat es tornen a obrir per separat després de copiar-los; `dist` exclou allò que no es pot redistribuir; i una còpia de recuperació existeix fora de la ubicació de treball. Si una font falla, el diari permet identificar quin resultat queda afectat i decidir si cal restaurar, reparar o repetir una operació.
 
-## Validació i síntesi
+## Controls de qualitat i interpretació dels resultats
 
 Validar no és només observar que el mapa «té bona forma». Els controls s'han de definir segons l'operació: recomptes abans i després d'una unió, àrees després d'un retall, valors mínims i màxims d'un ràster, nombre d'errors topològics o contrast manual d'una mostra d'entitats. Els controls numèrics i la inspecció espacial es complementen.
 
@@ -325,19 +381,27 @@ La conclusió ha de mantenir la diferència entre observació i inferència. Una
 
 ## Activitats
 
-### Inici de la micropràctica 1
+### Comprovació: identificar on es desa cada peça
 
-La primera micropràctica comença en aquest capítol i acaba al final del capítol 03. Vila-seca serveix com a demostració; cada projecte s'ha d'aplicar al municipi assignat. En aquesta primera fase es prepara l'estructura, les fonts i el projecte de treball, però encara no es crea cap fitxer de lliurament.
+Cal identificar, en un projecte obert, el fitxer que conté el terme municipal, el nom de la taula, el nom visible de la capa i la ubicació del projecte actiu. Després es tanca i es reobre `pr1` des del GeoPackage. La comprovació consisteix a recuperar les mateixes fonts i explicar quina peça s'actualitzaria amb **Desa**.
 
-::: table "Contracte de la primera fase de la micropràctica 1"
+### Preguntes: dependències i evidències
+
+Què es perdria en enviar només el `.qgz`? Per què desar el projecte dins del GeoPackage no incorpora automàticament un WMS? Quina prova permet distingir una ruta local trencada d'una font remota sense connexió? Per a cada resposta cal indicar una propietat o comprovació observable al projecte.
+
+### Activitat integradora: iniciar el projecte del municipi escollit
+
+Cal preparar el projecte del municipi escollit i uns apunts que en permetin repetir les decisions. El resultat ha de conservar el límit local, un WMS, el projecte incrustat `pr1` i una còpia externa coherent. El capítol 03 permetrà aprofundir en els controls de format i de CRS sobre aquesta mateixa instantània.
+
+::: table "Resultats de la preparació inicial del projecte"
 | Component | Requisit |
 | --- | --- |
-| Entrades | Ortofoto Territorial de 2025 de l'ICGC, divisions administratives 1:5.000 accessibles amb Open ICGC i distribució GML actual de les unitats administratives del CNIG per al municipi assignat |
-| Operacions mínimes | Crear l'arbre `tig/`; iniciar un projecte en `EPSG:25831`; crear `sandbox/pr1-fonts-cognom.gpkg` i desar-hi `pr1`; afegir el WMS; localitzar i seleccionar el municipi a la font ICGC; descarregar, conservar i inspeccionar `LINEAS_LIMITE_GML.ZIP` i la capa `AdministrativeUnit` municipal |
-| Estat al final del capítol | Projecte incrustat `pr1` reobert des del GeoPackage, WMS de 2025 visible, dues fonts municipals identificades i `dist` encara buit |
-| Evidències del diari | Productor, producte, data, via d'accés, criteri de selecció municipal, CRS declarat per cada font, contingut del paquet CNIG i incidències observades |
-| Comprovacions | Projecte en `EPSG:25831`; ortofoto identificada com a WMS; una única entitat municipal localitzada a cada font; capa `AdministrativeUnit` del GML en `EPSG:4258`; originals intactes a `data/raw` |
-| Fitxers que cal conservar | `sandbox/pr1-fonts-cognom.gpkg`, paquet i extracció íntegra del CNIG a `data/raw`, `README.md` i diari actualitzat |
+| Entrades | Un WMS adequat a l'àmbit i una capa vectorial de límits municipals amb font identificada |
+| Operacions essencials | Preparar l'arbre `tig/`; carregar el WMS i els municipis; seleccionar el terme; exportar-lo al GeoPackage; connectar el fitxer a l'Explorador; desar-hi `pr1`; actualitzar la connexió i crear el `.qgz` extern |
+| Estat al final del capítol | Capa municipal local, WMS comprovat amb connexió, projecte incrustat i extern reoberts des d'una ubicació nova |
+| Apunts | Productor, producte, data, via d'accés, camp i valor de selecció, CRS de la font i del projecte, decisions i incidències |
+| Comprovacions | Contenidor i entrada `pr1` correctes; municipi ben identificat; WMS distingit del vector; originals descarregats conservats sense canvis |
+| Fitxers que cal conservar | GeoPackage, `.qgz` homònim i apunts PDF; a la carpeta de treball, originals obtinguts, `README.md` i font editable dels apunts |
 :::
 
-En acabar aquesta fase no s'ha de copiar res a `dist`. Les seleccions i els CRS encara s'han d'interpretar amb els conceptes del capítol següent. El punt de continuïtat és `pr1` obert des de `sandbox/pr1-fonts-cognom.gpkg`, amb les fonts localitzades i els criteris necessaris per materialitzar les dues capes municipals sense alterar els originals.
+El punt de continuïtat és `pr1` obert des del GeoPackage, amb el municipi carregat de la seva taula local. Una ampliació pot afegir un segon WMS, una altra font municipal, grups o una segona vista de projecte. Cal documentar què aporta cada peça i comprovar també les fonts dels projectes addicionals que es conserven.

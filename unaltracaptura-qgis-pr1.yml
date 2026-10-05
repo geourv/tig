@@ -1,0 +1,15 @@
+runtime:
+  default_image: qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc
+  display_backend: offscreen
+  pull_policy: never
+  docker_network: none
+  locale: ca_ES
+
+paths:
+  recipes:
+    - recipes/qgis-pr1-project-setup.yml
+  data_root: tmp/unaltracaptura-qgis/data
+  output_root: assets/img/qgis
+  cache_root: tmp/unaltracaptura-qgis/cache
+
+plugins: []

@@ -45,7 +45,7 @@ Aquest punt de partida canvia l'ordre habitual de treball. No es tracta de troba
 
 La selecció d'una font és, per tant, una decisió analítica. Inclou el productor i el procés d'observació, però també el producte, la versió, la via d'accés i la resposta concreta que arriba a QGIS.
 
-## De la necessitat a la pregunta geogràfica
+## Formulació d'una pregunta geogràfica
 
 Una necessitat inicial acostuma a ser massa oberta per orientar una anàlisi. «Millorar la mobilitat ciclista» no indica encara què cal observar. Es pot concretar preguntant quins trams de carril bici formen una xarxa connectada, quins equipaments queden a menys de cinc minuts d'aquesta xarxa o en quins carrers hi ha discontinuïtats. Cada formulació exigeix unitats, dades i operacions diferents.
 
@@ -194,7 +194,7 @@ En WMS, WMTS i WFS, `GetCapabilities` demana un document, habitualment XML, que 
 
 El [Web Map Service (WMS)](https://www.ogc.org/standards/wms/) està orientat a obtenir imatges de mapes georeferenciades. L'operació `GetMap` indica, entre altres peces, la capa, l'estil, el CRS, el rectangle geogràfic (`BBOX`), l'amplada, l'alçada i el format, com PNG o JPEG. El servidor selecciona les dades necessàries, aplica la simbolització i genera els píxels que el client col·loca al llenç.
 
-La connexió de context de la primera micropràctica utilitza l'[adreça base del WMS de l'Ortofoto Territorial de l'ICGC](https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms). El seu [`GetCapabilities`](https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0) descriu la capa vigent i les edicions disponibles, entre les quals caldrà identificar la de 2025. L'[adreça base del WMS PNOA màxima actualitat](https://www.ign.es/wms-inspire/pnoa-ma) i el seu [document de capacitats](https://www.ign.es/wms-inspire/pnoa-ma?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities) serveixen aquí com a segon exemple per observar el mateix contracte, però no són el fons de la micropràctica. A QGIS es desa l'adreça base; els paràmetres de cada imatge els compon el client.
+La connexió de context del cas de Vila-seca utilitza l'[adreça base del WMS de l'Ortofoto Territorial de l'ICGC](https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms). El seu [`GetCapabilities`](https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0) descriu la capa vigent i les edicions disponibles, entre les quals caldrà identificar la de 2025. L'[adreça base del WMS PNOA màxima actualitat](https://www.ign.es/wms-inspire/pnoa-ma) i el seu [document de capacitats](https://www.ign.es/wms-inspire/pnoa-ma?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities) serveixen com a segon exemple per observar el mateix contracte. El WMS escollit per al projecte propi ha de tenir cobertura i contingut adequats al municipi. A QGIS es desa l'adreça base; els paràmetres de cada imatge els compon el client.
 
 La primera petició es pot enganxar directament al navegador. La resposta no és un mapa, sinó el document XML amb què l'ICGC descriu les capacitats del servei:
 
@@ -369,7 +369,7 @@ La secció de [Geoinformació i mapes de l'ICGC](https://www.icgc.cat/ca/Geoinfo
 
 La captura mostra per què «baixar l'ortofoto» encara no és una especificació suficient. Cal definir l'àmbit, distingir les sèries locals i territorials, triar la resolució compatible amb la pregunta i seleccionar un format que conservi la georeferenciació necessària. La previsualització confirma cobertura i aparença, però la fitxa del producte és la que permet interpretar edició, resolució, qualitat i condicions d'ús. El paquet descarregat s'ha d'inventariar després; prémer **Descarregar** no valida el contingut.
 
-Per orientar el llenç o contrastar una capa, un servei de mapa base o d'ortofoto de l'ICGC pot ser suficient. Si el producte ofereix diverses escales o resolucions, no s'ha de triar la més detallada per inèrcia: el nivell adequat depèn de l'extensió, de l'objecte que cal distingir i de la qualitat declarada. La primera micropràctica compararà dues representacions oficials del municipi: les divisions administratives 1:5.000 accessibles des d'Open ICGC i les unitats administratives del CNIG. Que totes dues siguin oficials no implica que comparteixin escala, esquema, format o CRS.
+Per orientar el llenç o contrastar una capa, un servei de mapa base o d'ortofoto de l'ICGC pot ser suficient. Si el producte ofereix diverses escales o resolucions, no s'ha de triar la més detallada per inèrcia: el nivell adequat depèn de l'extensió, de l'objecte que cal distingir i de la qualitat declarada. El projecte municipal necessita un límit vectorial documentat. Una ampliació del cas compara les divisions administratives 1:5.000 accessibles des d'Open ICGC amb les unitats administratives del CNIG. Que totes dues siguin oficials no implica que comparteixin escala, esquema, format o CRS.
 
 ### Cadastre
 
@@ -417,7 +417,7 @@ La qualitat no és una propietat absoluta: una mateixa dada pot ser adequada per
 
 La inspecció ha d'arribar fins a les dades reals. Abans d'utilitzar un camp cal comprovar-ne el nom, el tipus, el domini i els valors absents. Un codi territorial pot semblar un nombre, però s'ha de conservar com a text si els zeros inicials són significatius. Una data de publicació tampoc no és necessàriament la data del fenomen observat.
 
-### Metadades que permeten decidir
+### Metadades de procedència, cobertura i qualitat
 
 Les **metadades** descriuen una dada, un conjunt o un servei. Poden aparèixer en una fitxa del catàleg, un document d'especificacions, un registre normalitzat, un fitxer auxiliar o les propietats que QGIS llegeix de la font. Aquestes peces no sempre coincideixen. La propietat d'una capa pot declarar un CRS i una extensió, mentre que la fitxa del producte explica el mètode de captura, la data, la freqüència d'actualització i l'exactitud. Una inspecció completa relaciona totes dues escales.
 
@@ -429,9 +429,9 @@ El tercer bloc descriu la representació i la qualitat. En vector interessa el t
 
 #### Exemple real: els auxiliars d'una descàrrega del CNIG
 
-La fitxa de [Límites municipales, provinciales y autonómicos](https://centrodedescargas.cnig.es/CentroDescargas/limites-municipales-provinciales-autonomicos) ofereix més d'una distribució. La primera micropràctica utilitzarà concretament la [distribució GML `LINEAS_LIMITE_GML.ZIP`](https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12408588), publicada el 10 d'agost de 2026, que inclou els objectes `AdministrativeUnit` i `AdministrativeBoundary` i `readme.txt`. La fitxa declara coordenades geogràfiques ETRS89 per a la Península, que corresponen a `EPSG:4258`; dins del paquet caldrà seleccionar les unitats administratives municipals de quart ordre. La distribució Shapefile `LINEAS_LIMITE.ZIP`, publicada el 28 de juliol de 2026, inclou les geometries, un PDF explicatiu i `20190208MetadatosDivisionesAdministrativas.xml`. No hi ha un únic ZIP actual que contingui tots dos auxiliars.
+La fitxa de [Límites municipales, provinciales y autonómicos](https://centrodedescargas.cnig.es/CentroDescargas/limites-municipales-provinciales-autonomicos) ofereix més d'una distribució. Aquest exemple de lectura de metadades examina la [distribució GML `LINEAS_LIMITE_GML.ZIP`](https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12408588), publicada el 10 d'agost de 2026, que inclou els objectes `AdministrativeUnit` i `AdministrativeBoundary` i `readme.txt`. La fitxa declara coordenades geogràfiques ETRS89 per a la Península, que corresponen a `EPSG:4258`; dins del paquet cal identificar les unitats administratives municipals de quart ordre. La distribució Shapefile `LINEAS_LIMITE.ZIP`, publicada el 28 de juliol de 2026, inclou les geometries, un PDF explicatiu i `20190208MetadatosDivisionesAdministrativas.xml`. No hi ha un únic ZIP actual que contingui tots dos auxiliars.
 
-El fragment següent prové de l'XML inclòs al ZIP Shapefile, no de la distribució GML triada per a la micropràctica. Les etiquetes `gmd` estructuren els elements de metadades i les etiquetes `gco` contenen valors. Amb poques línies ja es poden recuperar identificador, productor, data del registre, títol, un CRS documentat, llicència i escala:
+El fragment següent prové de l'XML inclòs al ZIP Shapefile, no de la distribució GML examinada en aquest exemple. Les etiquetes `gmd` estructuren els elements de metadades i les etiquetes `gco` contenen valors. Amb poques línies ja es poden recuperar identificador, productor, data del registre, títol, un CRS documentat, llicència i escala:
 
 ::: listing "Fragments de les metadades XML incloses amb els límits administratius"
 ```xml
@@ -461,23 +461,9 @@ El fragment següent prové de l'XML inclòs al ZIP Shapefile, no de la distribu
 
 L'XML complet també adverteix que, amb caràcter general, la geometria té una incertesa d'uns `40 m` i que alguns trams poden ser provisionals. Aquesta informació impedeix usar el producte com si fos un aixecament cadastral o una delimitació local de precisió. El `readme.txt` del ZIP GML compleix una altra funció, més pròxima a un inventari:
 
-::: listing "Estructura resumida al readme del paquet GML"
-```filetree
-AdministrativeBoundary
-  1stOrder: fronteres estatals
-  2ndOrder: comunitats autònomes
-  3rdOrder: províncies
-  4thOrder: municipis
-AdministrativeUnit
-  1stOrder: país
-  2ndOrder: comunitats autònomes
-  3rdOrder: províncies
-  4thOrder: municipis
-Cada fitxer .gml conté com a màxim 10.000 entitats.
-```
-:::
+![Contingut verificat de la distribució GML dels límits administratius del CNIG]({{ site.baseurl }}/assets/diagrams/ca/01-tig-fonts/cnig-administrative-files.puml "Fitxers del paquet GML examinat. AdministrativeBoundary conté límits lineals i AdministrativeUnit, unitats territorials. Els ordres 1–4 corresponen als nivells estatal, autonòmic, provincial i municipal; el repartiment en diversos fitxers de quart ordre respon al límit de 10.000 entitats per fitxer indicat al readme."){: data-figure-width-web="24.5rem" data-figure-width-pdf="58%"}
 
-El contrast temporal i entre distribucions és una comprovació en si mateix: el paquet Shapefile és de 2026, però l'XML que incorpora té data de 2019 i el fragment mostra `EPSG:25831`, mentre que la fitxa actual descriu coordenades geogràfiques ETRS89. Aquest XML s'ha de conservar perquè documenta allò rebut, però no permet atribuir el seu CRS a la distribució GML. El [registre normalitzat vigent del catàleg IDEE](https://www.idee.es/csw-codsi-idee/srv/api/records/spaignLLM/formatters/xml) declara una revisió del producte de `2026-02-12`, identifica l'IGN com a propietari i el CNIG com a distribuïdor, i manté l'escala 1:25.000 i la llicència CC BY 4.0. A la micropràctica, la prova decisiva serà comprovar a QGIS que la capa `AdministrativeUnit` municipal del GML declara `EPSG:4258` abans de transformar-la.
+El contrast temporal i entre distribucions és una comprovació en si mateix: el paquet Shapefile és de 2026, però l'XML que incorpora té data de 2019 i el fragment mostra `EPSG:25831`, mentre que la fitxa actual descriu coordenades geogràfiques ETRS89. Aquest XML s'ha de conservar perquè documenta allò rebut, però no permet atribuir el seu CRS a la distribució GML. El [registre normalitzat vigent del catàleg IDEE](https://www.idee.es/csw-codsi-idee/srv/api/records/spaignLLM/formatters/xml) declara una revisió del producte de `2026-02-12`, identifica l'IGN com a propietari i el CNIG com a distribuïdor, i manté l'escala 1:25.000 i la llicència CC BY 4.0. Si s'utilitza aquest GML, la prova decisiva serà comprovar a QGIS que la capa municipal declara `EPSG:4258` abans de transformar-la. Una capa ja preparada en un GeoPackage no permet deduir retrospectivament aquest CRS d'origen.
 
 Les metadades no converteixen automàticament una font en adequada. Són evidència per prendre una decisió i també poden revelar un límit. Si un producte declara una escala de producció incompatible amb el detall demanat, no s'ha de compensar ampliant el zoom. Si no informa de la data o del criteri de cobertura, aquesta absència s'ha de registrar i pot obligar a cercar una altra font. «Sense informació» no és equivalent a «sense error».
 
@@ -489,7 +475,7 @@ La inspecció visual és necessària però insuficient. Una capa pot superposar-
 
 Quan dues fonts discrepen, no s'ha de triar automàticament la que sembla més detallada. Cal comprovar si representen el mateix fenomen, data i definició. Un eix viari no ha de coincidir exactament amb el centre visible de totes les calçades; un límit administratiu i una tanca física poden respondre realitats diferents; una petjada cadastral i una coberta observada en ortofoto poden tenir dates i finalitats distintes. La discrepància pot ser un error, però també informació sobre els models comparats.
 
-## Incorporació inicial a QGIS
+## Connexió a serveis i càrrega de fitxers a QGIS
 
 Carregar una font a QGIS és una primera inspecció, no una validació completa. Cal revisar l'extensió, el nombre d'entitats o les dimensions del ràster, el CRS declarat, els camps o bandes, els valors absents i la coherència visual amb una capa de referència. Si una capa apareix en un lloc inesperat, no s'ha d'assignar un CRS a l'atzar per fer-la coincidir: primer cal esbrinar què signifiquen les coordenades originals.
 
@@ -518,11 +504,11 @@ Quan una consulta vectorial remota es converteix en entrada estable, `Exporta > 
 
 Les descàrregues s'incorporen amb el gestor vectorial o ràster segons el contingut, no segons el nom comercial del producte. Abans d'afegir-les convé haver descomprimit el paquet i haver identificat el fitxer principal i els auxiliars. Si QGIS mostra diverses subcapes dins d'un GeoPackage, cal seleccionar-les pel nom i la descripció, no carregar-les totes per defecte. El capítol següent establirà on es conserva cada estat del fitxer.
 
-## Exploració inicial de fonts
+## Localització de l'ortofoto i dels límits municipals
 
-El primer contacte amb les fonts no produeix encara cap capa de treball. A l'aula, Vila-seca permet comparar quatre portes d'entrada: una cerca general a Internet, l'Hipermapa com a agregador territorial, les pàgines dels organismes productors i els connectors Open ICGC i QuickMapServices dins de QGIS. Cada estudiant pot repetir l'exploració sobre el municipi assignat, però no ha de descarregar ni transformar cap conjunt en aquest capítol.
+El primer contacte amb les fonts no produeix encara cap capa de treball. A l'aula, Vila-seca permet comparar quatre portes d'entrada: una cerca general a Internet, l'Hipermapa com a agregador territorial, les pàgines dels organismes productors i els connectors Open ICGC i QuickMapServices dins de QGIS. Cada estudiant pot repetir l'exploració sobre el municipi escollit, però no ha de descarregar ni transformar cap conjunt en aquest capítol.
 
-L'exploració ha de permetre reconèixer dues funcions diferents. L'Ortofoto Territorial de 2025 de l'ICGC serà el context visual de la primera micropràctica, mentre que les divisions administratives 1:5.000 d'Open ICGC i les unitats administratives del CNIG seran candidates vectorials. En aquest punt només cal localitzar-ne la fitxa o l'accés i observar quina informació permet distingir productor, producte, capa i via d'accés.
+L'exploració ha de permetre reconèixer dues funcions diferents. L'Ortofoto Territorial de 2025 de l'ICGC és el context WMS del cas resolt, mentre que les divisions administratives 1:5.000 d'Open ICGC i les unitats administratives del CNIG són candidates vectorials. El nucli del projecte utilitza un WMS i un terme municipal extret d'una capa de límits. En aquest punt cal localitzar-ne la fitxa o l'accés i distingir productor, producte, capa i via d'accés; comparar dues fonts serà una ampliació.
 
 Els connectors faciliten la cerca, però no converteixen el catàleg que mostren en productor. Quan una capa descoberta amb Open ICGC o QuickMapServices resulta pertinent, cal seguir-ne la informació fins a l'organisme responsable i comprovar el tipus de servei, la data, l'escala o resolució, el CRS, la llicència i l'atribució. El capítol següent iniciarà el projecte i conservarà les primeres dades.
 
@@ -530,7 +516,7 @@ Els connectors faciliten la cerca, però no converteixen el catàleg que mostren
 
 ### Cerca guiada en portals i visors
 
-Cal formular una pregunta senzilla sobre el municipi assignat i cercar tres recursos que hi puguin contribuir. La cerca combinarà Internet, l'Hipermapa i almenys una pàgina d'un organisme productor. Per a cada resultat cal identificar provisionalment si es tracta d'un portal, un visor, una fitxa de producte, una descàrrega o un servei, i seguir l'enllaç fins al productor quan sigui possible.
+Cal formular una pregunta senzilla sobre el municipi escollit i cercar tres recursos que hi puguin contribuir. La cerca combinarà Internet, l'Hipermapa i almenys una pàgina d'un organisme productor. Per a cada resultat cal identificar provisionalment si es tracta d'un portal, un visor, una fitxa de producte, una descàrrega o un servei, i seguir l'enllaç fins al productor quan sigui possible.
 
 L'activitat és exploratòria: no cal descarregar paquets, crear cap projecte ni preparar cap capa. La comprovació consisteix a poder explicar quina informació aportaria cada recurs i quina dada o metadada encara faltaria abans d'utilitzar-lo en una anàlisi.
 
@@ -538,10 +524,18 @@ L'activitat és exploratòria: no cal descarregar paquets, crear cap projecte ni
 
 Des de `Complements > Gestiona i instal·la complements` es poden localitzar Open ICGC i QuickMapServices. Cal explorar com organitzen els recursos i comparar una capa descoberta amb la seva pàgina o servei oficial. La comparació ha de distingir el connector, el productor, el producte, el tipus d'accés i les condicions d'ús.
 
-També es poden provar les adreces oficials de serveis presentades al capítol i observar què anuncia `GetCapabilities` o què mostra QGIS. No cal conservar cap descàrrega ni seguir encara cap procés d'obtenció de dades. El projecte de la primera micropràctica començarà al capítol següent amb les fonts ja identificades.
+També es poden provar les adreces oficials de serveis presentades al capítol i observar què anuncia `GetCapabilities` o què mostra QGIS. No cal conservar cap descàrrega ni seguir encara cap procés d'obtenció de dades. El projecte municipal començarà al capítol següent amb les fonts ja identificades.
 
 ### Traça d'una descàrrega cadastral ATOM
 
-Cal reconstruir la ruta des del portal INSPIRE fins a un paquet municipal sense començar per l'adreça final. Primer es reprodueix la traça controlada de Vila-seca; després se segueix el mateix procediment fins al municipi assignat, si el feed el publica. L'evidència ha d'identificar el feed general, l'entrada territorial, el feed de l'oficina, el títol municipal, el `link rel="enclosure"`, la data `updated`, els drets i el CRS anunciat.
+Cal reconstruir la ruta des del portal INSPIRE fins a un paquet municipal sense començar per l'adreça final. Primer es reprodueix la traça controlada de Vila-seca; després se segueix el mateix procediment fins al municipi escollit, si el feed el publica. L'evidència ha d'identificar el feed general, l'entrada territorial, el feed de l'oficina, el títol municipal, el `link rel="enclosure"`, la data `updated`, els drets i el CRS anunciat.
 
 La comprovació final compara el codi cadastral amb els identificadors de les fonts administratives ja localitzades. Si no coincideixen, la diferència es conserva i s'investiga; no s'ha de corregir cap codi només perquè un altre organisme utilitza una clau semblant. Es pot repetir la descoberta amb el complement, però el resultat s'ha de poder explicar a partir dels feeds oficials.
+
+### Preguntes: què ha arribat realment a QGIS?
+
+Si una capa mostra una ortofoto però no té entitats seleccionables, quina funció pot tenir al projecte? Si Open ICGC carrega una adreça acabada en `.fgb` amb el proveïdor OGR, quina evidència permet distingir aquest fitxer remot d'un WFS? Per què el nom d'un connector o d'un portal és insuficient com a font dels apunts?
+
+### Activitat integradora: justificar les fonts del projecte municipal
+
+Cal escollir un municipi i conservar una fitxa breu d'un WMS de context i d'una capa vectorial de límits que el contingui. La fitxa identifica productor, producte, data, via d'accés, cobertura, CRS i condicions d'ús, i explica què aporta cada recurs. El resultat ha de permetre iniciar el projecte del capítol següent sense repetir la cerca ni confondre la imatge del municipi amb la geometria que caldrà seleccionar i exportar.

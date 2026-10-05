@@ -1,0 +1,29 @@
+{
+  "source": "divisions-administratives-v2r2-municipis-5000-20260120.fgb",
+  "source_url": "https://datacloud.icgc.cat/datacloud/divisions-administratives/fgb_unzip_EPSG25831/divisions-administratives-v2r2-municipis-5000-20260120.fgb",
+  "source_sha256": "069f755f253f7af969e80403f6e81fa2cadefbd4c40ffd2f825f30e167bf2b2d",
+  "source_count": 947,
+  "licence": "ICGC, CC BY 4.0",
+  "runtime_image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "subset_operation": "Municipalities whose bounding boxes intersect the Vila-seca extent enlarged by 1.7",
+  "subset_count": 9,
+  "subset_names": [
+    "Cambrils",
+    "Constantí",
+    "Reus",
+    "Riudoms",
+    "Salou",
+    "Tarragona",
+    "Vila-seca",
+    "Vinyols i els Arcs",
+    "la Canonja"
+  ],
+  "subset_sha256": "dd7123379cc2c682fe100381de7207144f2aeec5c1de9a4b6885f8357c09728c",
+  "subset_crs": "EPSG:25831",
+  "selection_expression": "\"CODIMUNI\" = '431711'",
+  "municipality_geometry_sha256": "5465f4f9f08264b1c3dda94df031d8ad0f48e2e4b6b82faeb34d4eb50e683169",
+  "wms_url": "https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms",
+  "wms_layer": "ortofoto_25cm_color_2025",
+  "classroom_geometry_equal": true,
+  "prepared_by": "PyQGIS; export and project saves are executed later in the native GUI"
+}

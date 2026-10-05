@@ -108,7 +108,7 @@ La distinció entre contenció estricta i cobertura de la frontera és especialm
 
 ![Exemples de relacions topològiques entre punt i polígon, entre dues línies i entre dos polígons]({{ site.baseurl }}/assets/quarto/06-analisi-geoprocessament-vectorial/spatial-predicates-by-geometry.qmd "El predicat aplicable i la seva interpretació depenen dels tipus geomètrics: la figura contrasta contenció, contacte, creuament, solapament i separació amb geometries ideals."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
 
-### Exemple resolt amb geometries ideals
+### Exemple resolt: punts interiors, sobre la frontera i exteriors
 
 En un conjunt ideal hi ha un polígon quadrat B, un punt P al seu interior, un punt Q sobre una aresta i un punt R a l'exterior. Són geometries didàctiques exactes, no observacions mesurades. P compleix `within(P, B)` i `intersects(P, B)`; Q compleix `touches(Q, B)` i `intersects(Q, B)`, però no `within(Q, B)`; R compleix `disjoint(R, B)`.
 
@@ -127,7 +127,7 @@ POINT (3 1)
 
 Respecte del polígon de la primera línia, els punts següents representen, per ordre, interior, frontera i exterior. Les coordenades només defineixen un exercici cartesià sense unitat territorial. Assignar-los un CRS o interpretar-ne la distància exigiria una decisió addicional que aquesta prova topològica no necessita.
 
-### Model formal i càlcul finit
+### Precisió de coordenades i efectes de la superposició
 
 Les coordenades digitals tenen precisió finita. Geometries procedents de fonts diferents poden representar el mateix límit amb vèrtexs lleugerament separats, i una transformació de CRS pot introduir diferències numèriques. El predicat avalua les geometries disponibles, no la intenció del productor. Ajustar o arrodonir coordenades pot canviar relacions i no s'ha d'aplicar sense una tolerància justificada per l'exactitud i l'escala.
 
@@ -216,7 +216,7 @@ L'operació geomètrica no defineix la suma, la mitjana, el recompte ni cap altr
 
 Quan calen geometria dissolta i estadístiques, el flux més transparent produeix dos resultats controlables: una geometria per clau de grup i una taula agregada per la mateixa clau. Després es comprova que totes dues claus siguin úniques i s'uneixen. Una eina que ofereixi simultàniament geometria i agregats també és vàlida si cada estadística queda configurada explícitament; el nom `Dissolve`, tot sol, no autoritza a suposar-les.
 
-### Exemple resolt: què conserva cada operació
+### Exemple resolt: geometries i atributs de dos polígons superposats
 
 Dos polígons didàctics A i B se superposen parcialment i tenen un identificador propi. Una selecció d'A per `intersects` amb B conserva A complet. Un retall d'A amb B conserva només la part comuna i només els atributs d'A. Una intersecció conserva la mateixa part comuna i hi associa els identificadors d'A i B. La diferència d'A respecte de B conserva la part exclusiva d'A.
 
@@ -351,7 +351,7 @@ La geometria de l'univers és necessària perquè el complement d'una exclusió 
 
 Un criteri atributiu s'ha d'aplicar abans de derivar-ne la geometria quan defineix quines entitats són rellevants. Si només les vies d'una categoria generen una franja, primer se seleccionen i s'extreuen amb el camp documentat; després es calcula el `buffer`. Dissoldre totes les vies i intentar recuperar la categoria més tard perdria la traça de quines geometries han contribuït al criteri.
 
-### Ordre, equivalències i resultats intermedis
+### Ordre de superposició i conservació dels criteris intermedis
 
 Algunes operacions de conjunts tenen equivalències matemàtiques, però el flux digital pot diferir per atributs, precisió i cost. Intersectar primer amb un àmbit petit pot reduir el volum de dades. En `native:clip`, les entitats de la màscara ja es tracten com una geometria conjunta, de manera que predissoldre-les no evita fragments causats pels límits interns; amb altres proveïdors cal comprovar el contracte. Predissoldre continua sent una simplificació possible si redueix volum i si els identificadors i límits eliminats no són necessaris per a la pregunta.
 
@@ -359,7 +359,7 @@ Els resultats intermedis han de correspondre a criteris interpretables.
 
 Una capa `zona_proximitat`, una `zona_exclusio` i una `zona_compatible` es poden validar separadament; una seqüència de capes `temp1`, `temp2` i `final3` no permet relacionar un error amb una decisió. Conservar els intermedis determinants no obliga a conservar totes les proves, però sí les entrades que permeten auditar el resultat final.
 
-### Exemple resolt: combinar tres condicions
+### Exemple resolt: coberta admesa, proximitat i zones excloses
 
 En un cas didàctic, les zones candidates han de quedar dins de l'àmbit U, dins d'una coberta admesa C, prop d'una xarxa seleccionada V i fora d'una zona incompatible E. Primer es valida U i s'extreu C amb una consulta atributiva. Després es crea el `buffer` P de V amb una distància $d$ justificada i es dissol només per obtenir cobertura conjunta. La intersecció $U \cap C \cap P$ crea les inclusions comunes, i la diferència respecte d'E produeix el resultat R.
 
@@ -385,7 +385,7 @@ La validació externa contrasta la sortida amb una font o una observació que no
 
 ## Cas guiat: vies, portals i fanals
 
-Amb QGIS tancat, es copia `dist/pr3-consultes-cognom.gpkg` a `sandbox/pr4-geoprocessament-cognom.gpkg`; no es copia ni es reanomena el `.qgz` de `pr3`. Des de la còpia s'obre el projecte incrustat heretat, es desa com a `pr4` i s'elimina l'entrada `pr3`. Totes les fonts locals es reorienten al GeoPackage `pr4` i es comprova que no apuntin a `dist/`, a `pr3-consultes-cognom.gpkg` ni a una ruta personal. La demostració de Vila-seca utilitza `municipi_treball`, derivada a la micropràctica 2, i `transport_candidats_c06`, preparada a la micropràctica 3. A partir de l'esquema real del producte de transport, se selecciona el subconjunt justificat per la pregunta i es retalla pel límit municipal. La sortida preparada es desa com a `vies_principals`: conserva l'identificador d'origen, incorpora el `codi_muni` textual de `municipi_treball` com a camp de grup i crea un camp ordinari `id_tram`, únic i no nul, verificat després de la fragmentació. Els noms de la capa i dels camps són contractes interns del projecte, no noms atribuïts a la descàrrega del CNIG.
+Amb QGIS tancat, es copia el GeoPackage validat de `pr3` des de `dist/` a `sandbox/`. La còpia s'anomena `pr4-geoprocessament-cognom.gpkg`; no es copia ni es reanomena el `.qgz` de `pr3`. Des de la còpia s'obre el projecte incrustat heretat, es desa com a `pr4` i s'elimina l'entrada `pr3`. Totes les fonts locals es reorienten al GeoPackage `pr4` i es comprova que no apuntin a `dist/`, a `pr3-consultes-cognom.gpkg` ni a una ruta personal. La demostració de Vila-seca utilitza `municipi_treball`, derivada a la micropràctica 2, i `transport_candidats_c06`, preparada a la micropràctica 3. A partir de l'esquema real del producte de transport, se selecciona el subconjunt justificat per la pregunta i es retalla pel límit municipal. La sortida preparada es desa com a `vies_principals`: conserva l'identificador d'origen, incorpora el `codi_muni` textual de `municipi_treball` com a camp de grup i crea un camp ordinari `id_tram`, únic i no nul, verificat després de la fragmentació. Els noms de la capa i dels camps són contractes interns del projecte, no noms atribuïts a la descàrrega del CNIG.
 
 Sobre `vies_principals` es creen àrees d'influència amb distàncies justificades. Una selecció espacial identifica els portals que intersecten aquestes zones, mentre que un retall o una intersecció permetria crear geometries noves. Comparar les sortides fa visible la diferència entre conservar una entitat completa i fragmentar-la.
 
@@ -457,7 +457,7 @@ Amb una capa didàctica de punts d'equipament, una graella respon quants punts o
 
 El control de la graella compara mides i orígens i reconstrueix el recompte total a partir de cel·les. El de Voronoi verifica una correspondència entre generadors únics i cel·les dins de les limitacions de l'eina, incorpora punts externs rellevants i comprova posicions equidistants. El de Delaunay revisa duplicats, casos de vora i arestes que travessen barreres. La interpretació final conserva només les afirmacions que la mètrica geomètrica permet sostenir.
 
-## Controls abans i després
+## Errors geomètrics i controls del geoprocessament
 
 Abans de processar cal comprovar el CRS real, les unitats, l'extensió, la validesa geomètrica, els identificadors estables, els filtres actius i la naturalesa dels atributs. Els FID interns del proveïdor no són identificadors de procedència: `union`, intersecció, diferència, dissolució i altres algorismes poden regenerar-los. Abans d'executar-los cal conservar una clau ordinària i explícita, com `id_font_a` o `id_font_b`, si s'ha de reconstruir la fragmentació. Després, cada operació necessita controls propis.
 
@@ -534,10 +534,10 @@ Es crearan àrees d'influència de 100, 300 i 500 m, amb i sense dissolució, so
 | Component | Requisit |
 | --- | --- |
 | Entrades | `dist/pr3-consultes-cognom.gpkg`, que es copia a `sandbox/pr4-geoprocessament-cognom.gpkg`, amb `municipi_treball`, `transport_candidats_c06`, portals o equipaments i una capa capturada a la micropràctica 2 |
-| Operacions mínimes | No copiar el `.qgz` de `pr3`; establir un únic projecte incrustat `pr4`; reorientar les fonts locals; materialitzar `vies_principals` amb `id_tram` verificat; validar; crear dos buffers justificats; aplicar una selecció espacial i una superposició geomètrica |
+| Operacions mínimes | No copiar el `.qgz` de `pr3`; establir el projecte principal `pr4`; reorientar les fonts locals de les vistes conservades; materialitzar `vies_principals` amb `id_tram` verificat; validar; crear dos buffers justificats; aplicar una selecció espacial i una superposició geomètrica |
 | Resultats | `vies_principals` amb `codi_muni`, `id_tram` i identificadors d'origen verificats, capes persistents de cada criteri i resultat vectorial combinat dins de `pr4-geoprocessament-cognom.gpkg`, amb mesures recalculades |
 | Evidències del diari | Pregunta, llindars, CRS, ordre d'operacions, recompte i àrea després de cada pas i limitacions |
-| Comprovacions | Exactament un projecte incrustat `pr4`; cap URI local cap a `dist/` o `pr3`; camins relatius al `.qgz`; distàncies en metres, geometries vàlides, coincidències múltiples identificades i inspecció d'una mostra |
+| Comprovacions | Projecte principal `pr4` identificat; fonts revisades a totes les vistes conservades; cap URI local cap a `dist/` o `pr3`; camins relatius al `.qgz`; distàncies en metres, geometries vàlides, coincidències múltiples identificades i inspecció d'una mostra |
 | Fitxers que cal conservar | `dist/pr4-geoprocessament-cognom.gpkg`, amb el projecte incrustat `pr4`; `dist/pr4-geoprocessament-cognom.qgz`; diari i capes intermèdies necessàries per auditar el flux |
 :::
 

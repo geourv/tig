@@ -1,0 +1,25 @@
+{
+  "capture": "save-project-dialog",
+  "producer": "TIG case-specific PyQGIS/Qt actor",
+  "transport": "native-qgis-gui",
+  "image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "qgis": "3.44.11-Solothurn",
+  "locale": "ca_ES",
+  "camera": {
+    "kind": "native-widget",
+    "class": "QgsGeoPackageProjectStorageDialog",
+    "title": "Save project to GeoPackage",
+    "object": "QgsGeoPackageProjectStorageDialog",
+    "width": 552,
+    "height": 128,
+    "device_pixel_ratio": 1.0
+  },
+  "png_sha256": "30e22f15732e0a01605117f69e65f711ab79663e083cded1b092f36c9c54df3f",
+  "evidence": {
+    "project_name": "pr1",
+    "file": "/home/docent/tig/sandbox/pr1-project-setup-exemple.gpkg"
+  },
+  "source": "context/practiques/capture_pr1_guided.py",
+  "native_ui": true,
+  "source_geometry": "municipis_entorn.gpkg, fixed ICGC edition 20260120"
+}

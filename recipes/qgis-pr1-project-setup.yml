@@ -1,0 +1,161 @@
+id: qgis-pr1-project-setup
+title: Inspecció del projecte municipal de classe
+source_prompt: |
+  Documenta en català el cas de classe pr1-project-setup-zaragozi.
+  Carrega les dues capes locals reals en un projecte d'inspecció nou.
+  Mostra el resultat local, el nivell municipal del CNIG i el codi i nom de l'ICGC.
+  Les captures proven l'estat reobert, no el procediment original d'exportació.
+  El context d'autoria és context/practiques/pr1-project-setup.md.
+
+runtime:
+  image: qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc
+  locale: ca_ES
+
+compat:
+  qgis: "==3.44.11"
+
+data:
+  - id: pr1-aula
+    type: gpkg
+    path: assets/projectes/vila-seca/pr1-aula/pr1-project-setup-zaragozi.gpkg
+    sha256: 88075560914a0da195dab9540325a7390f49d6b6cdf237c72639e3271c0f7ad9
+
+setup:
+  - action: trigger_action
+    name: mActionNewProject
+  - action: close_transients
+  - action: clear_message_bar
+  - action: set_project_crs
+    auth_id: EPSG:25831
+  - action: load_vector
+    path: assets/projectes/vila-seca/pr1-aula/pr1-project-setup-zaragozi.gpkg|layername=vilaseca_cnig
+    name: Vila-seca (CNIG)
+  - action: style_layer
+    layer: Vila-seca (CNIG)
+    color: "#b86b23"
+    fill_opacity: 0
+    outline_width: 0.8
+  - action: load_vector
+    path: assets/projectes/vila-seca/pr1-aula/pr1-project-setup-zaragozi.gpkg|layername=vilaseca_icgc_15000
+    name: Vila-seca (ICGC, 1:5000)
+  - action: style_layer
+    layer: Vila-seca (ICGC, 1:5000)
+    color: "#2c6e9b"
+    fill_opacity: 0
+    outline_width: 0.5
+  - action: hide_panel
+    title: Browser
+  - action: show_panel
+    title: Layers
+  - action: select_layer
+    layer: Vila-seca (ICGC, 1:5000)
+  - action: zoom_to_layer
+    layer: Vila-seca (ICGC, 1:5000)
+    scale: 1.1
+
+captures:
+  - id: pr1-geopackage
+    title: Les dues capes locals reobertes des del GeoPackage
+    mode: window
+    camera:
+      mode: crop
+      target:
+        object_name: mFileToolBar
+      output_size:
+        width: 600
+        height: 300
+    steps:
+      - action: wait
+        ms: 500
+    target:
+      class_name: QgisApp
+      fallback:
+        - class_name: QMainWindow
+    drawings:
+      - type: callout
+        text: Límit ICGC desat al GeoPackage
+        colour: auto
+        number: "none"
+        target_marker: none
+        leader: false
+        placement: below
+        target:
+          item_text: Vila-seca (ICGC, 1:5000)
+    output:
+      path: assets/img/qgis/qgis-pr1-geopackage.png
+      annotations_svg: assets/img/qgis/qgis-pr1-geopackage.annotations.svg
+      manifest: assets/img/qgis/qgis-pr1-geopackage.manifest.yml
+
+  - id: pr1-layer-source
+    title: Nivell administratiu de la font CNIG a la taula local
+    mode: window
+    camera:
+      mode: crop
+      target:
+        object_name: "unaltracapturaAttributeColumn:COUNTRY"
+      padding: 16
+      output_size:
+        width: 560
+        height: 220
+    steps:
+      - action: close_transients
+      - action: open_attribute_table
+        layer: Vila-seca (CNIG)
+      - action: wait
+        ms: 500
+    target:
+      class_name: QgsAttributeTableDialog
+    drawings:
+      - type: callout
+        text: Unitat de nivell municipal
+        colour: auto
+        number: "none"
+        target_marker: box
+        placement: below
+        target:
+          object_name: "unaltracapturaAttributeColumn:NATLEVNAME"
+    output:
+      path: assets/img/qgis/qgis-pr1-layer-source.png
+      annotations_svg: assets/img/qgis/qgis-pr1-layer-source.annotations.svg
+      manifest: assets/img/qgis/qgis-pr1-layer-source.manifest.yml
+
+  - id: pr1-attribute-check
+    title: Identificador i registre municipal conservats
+    mode: window
+    camera:
+      mode: crop
+      target:
+        object_name: "unaltracapturaAttributeColumn:CODIMUNI"
+      padding: 16
+      output_size:
+        width: 740
+        height: 280
+    steps:
+      - action: close_transients
+      - action: open_attribute_table
+        layer: Vila-seca (ICGC, 1:5000)
+      - action: wait
+        ms: 500
+    target:
+      class_name: QgsAttributeTableDialog
+    drawings:
+      - type: callout
+        text: Codi oficial conservat com a text
+        colour: auto
+        number: "none"
+        target_marker: box
+        placement: below
+        target:
+          object_name: "unaltracapturaAttributeColumn:CODIMUNI"
+      - type: callout
+        text: Una entitat de Vila-seca
+        colour: auto
+        number: "none"
+        target_marker: box
+        placement: below
+        target:
+          object_name: "unaltracapturaAttributeColumn:NOMMUNI"
+    output:
+      path: assets/img/qgis/qgis-pr1-attribute-check.png
+      annotations_svg: assets/img/qgis/qgis-pr1-attribute-check.annotations.svg
+      manifest: assets/img/qgis/qgis-pr1-attribute-check.manifest.yml

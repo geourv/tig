@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Model lògic: punts, línies, identificadors i altures</title>
+  <desc id="desc">Tres torres metàl·liques sostenen dos trams de cable. La torre central és més alta i és compartida pels dos trams. L'escena és sintètica.</desc>
+  <rect width="1200" height="630" fill="#ffffff"/>
+  <defs>
+    <g id="pylon" fill="none" stroke="#936d27" stroke-width="4" stroke-linejoin="miter">
+      <path d="M-29,0 L-9,-154 L0,-180 L9,-154 L29,0 Z" fill="#fbf0d8"/>
+      <path d="M-23,-40 L23,-40 M-18,-80 L18,-80 M-13,-120 L13,-120 M-9,-154 L9,-154"/>
+      <path d="M-29,0 L23,-40 L-18,-80 L13,-120 L-9,-154 M29,0 L-23,-40 L18,-80 L-13,-120 L9,-154" stroke-width="2.5"/>
+      <path d="M-42,-142 L42,-142 M-31,-164 L31,-164" stroke-width="6"/>
+      <path d="M-35,-142 L-35,-126 M35,-142 L35,-126" stroke="#51616b" stroke-width="4"/>
+      <rect x="-37" y="0" width="17" height="12" fill="#c6cbd0" stroke="#7a8991" stroke-width="2"/>
+      <rect x="20" y="0" width="17" height="12" fill="#c6cbd0" stroke="#7a8991" stroke-width="2"/>
+    </g>
+  </defs>
+  <g id="shared-landscape">
+    <path d="M60,391 L1140,391 L1140,414 L60,414 Z" fill="#e5ecdc"/>
+    <path d="M60,391 L1140,391" stroke="#9cac8c" stroke-width="2"/>
+    <use xlink:href="#pylon" transform="translate(200 380)" data-tower-id="T1" data-height-m="12" data-position-ca="esquerra" data-label-x="200"/>
+    <use xlink:href="#pylon" transform="translate(600 380) scale(1 1.1666666667)" data-tower-id="T2" data-height-m="14" data-position-ca="central" data-label-x="600"/>
+    <use xlink:href="#pylon" transform="translate(1000 380)" data-tower-id="T3" data-height-m="12" data-position-ca="dreta" data-label-x="1000"/>
+    <path id="left-span" d="M235,254 Q400,324 565,233" fill="none" stroke="#176486" stroke-width="6" data-span-id="L1" data-start-tower="T1" data-end-tower="T2" data-label-x="400"/>
+    <path id="right-span" d="M635,233 Q800,324 965,254" fill="none" stroke="#176486" stroke-width="6" data-span-id="L2" data-start-tower="T2" data-end-tower="T3" data-label-x="800"/>
+  </g>
+  <g id="short-leaders" fill="none" stroke="#87949b" stroke-width="2">
+    <path d="M400,192 L400,276 M800,192 L800,276"/>
+    <path d="M200,395 L200,426 M600,395 L600,426 M1000,395 L1000,426"/>
+  </g>
+  <g id="annotations" font-family="Arial, Liberation Sans, sans-serif" font-size="28" fill="#21313c" text-anchor="middle">
+<text x="400" y="100" font-weight="700">L1 · línia</text>
+<text x="400" y="140" font-weight="400">Torre inicial: T1</text>
+<text x="400" y="180" font-weight="400">Torre final: T2</text>
+<text x="800" y="100" font-weight="700">L2 · línia</text>
+<text x="800" y="140" font-weight="400">Torre inicial: T2</text>
+<text x="800" y="180" font-weight="400">Torre final: T3</text>
+<text x="200" y="450" font-weight="700">T1 · punt</text>
+<text x="200" y="490" font-weight="400">Altura: 12 m</text>
+<text x="200" y="530" font-weight="400">Trams: L1</text>
+<text x="600" y="450" font-weight="700">T2 · punt</text>
+<text x="600" y="490" font-weight="400">Altura: 14 m</text>
+<text x="600" y="530" font-weight="400">Trams: L1 i L2</text>
+<text x="1000" y="450" font-weight="700">T3 · punt</text>
+<text x="1000" y="490" font-weight="400">Altura: 12 m</text>
+<text x="1000" y="530" font-weight="400">Trams: L2</text>
+</g>
+</svg>

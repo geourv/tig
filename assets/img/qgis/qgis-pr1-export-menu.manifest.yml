@@ -1,0 +1,24 @@
+{
+  "capture": "export-menu",
+  "producer": "TIG case-specific PyQGIS/Qt actor",
+  "transport": "native-qgis-gui",
+  "image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "qgis": "3.44.11-Solothurn",
+  "locale": "ca_ES",
+  "camera": {
+    "kind": "native-screen",
+    "x": 135,
+    "y": 153,
+    "width": 899,
+    "height": 591,
+    "device_pixel_ratio": 1.0
+  },
+  "png_sha256": "800a605d86493c921c567e490a5d371016aff961dc539248cf0ce2fe4afdad28",
+  "evidence": {
+    "action": "Desa els objectes &seleccionats com a...",
+    "selected": 1
+  },
+  "source": "context/practiques/capture_pr1_guided.py",
+  "native_ui": true,
+  "source_geometry": "municipis_entorn.gpkg, fixed ICGC edition 20260120"
+}

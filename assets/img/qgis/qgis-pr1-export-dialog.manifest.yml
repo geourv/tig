@@ -1,0 +1,29 @@
+{
+  "capture": "export-dialog",
+  "producer": "TIG case-specific PyQGIS/Qt actor",
+  "transport": "native-qgis-gui",
+  "image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "qgis": "3.44.11-Solothurn",
+  "locale": "ca_ES",
+  "camera": {
+    "kind": "native-widget",
+    "class": "QgsVectorLayerSaveAsDialog",
+    "title": "Desa la capa vectorial com a...",
+    "object": "QgsVectorLayerSaveAsDialogBase",
+    "width": 850,
+    "height": 540,
+    "device_pixel_ratio": 1.0
+  },
+  "png_sha256": "7a8523f4fca68c13996874227c50a1abeb9012038e20361f61088497a429893f",
+  "evidence": {
+    "format": "GPKG",
+    "filename": "/home/docent/tig/sandbox/pr1-project-setup-exemple.gpkg",
+    "layer": "municipi_vilaseca",
+    "only_selected": true,
+    "crs": "EPSG:25831",
+    "add_to_canvas": true
+  },
+  "source": "context/practiques/capture_pr1_guided.py",
+  "native_ui": true,
+  "source_geometry": "municipis_entorn.gpkg, fixed ICGC edition 20260120"
+}

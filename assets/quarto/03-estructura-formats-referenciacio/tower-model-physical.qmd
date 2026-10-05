@@ -1,0 +1,55 @@
+---
+title: "Capes, tipus de camp i format de la mateixa xarxa"
+lang: ca
+ref: tower_model_physical
+format:
+  gfm:
+    output-file: tower-model-physical.generated.md
+execute:
+  echo: false
+  warning: false
+  message: false
+execute-dir: project
+unaltraweb_compute:
+  engine: python
+  mode: figure
+  inputs:
+    - assets/quarto/03-estructura-formats-referenciacio/tower-model-scene.svg
+  outputs:
+    - assets/img/generated/03-estructura-formats-referenciacio/tower-model-physical.svg
+---
+
+```{python}
+from html import escape
+from pathlib import Path
+from xml.etree import ElementTree as ET
+
+root = next(p for p in (Path.cwd(), *Path.cwd().parents)
+            if (p / ".unaltraweb/computations.yml").is_file())
+scene = (root / "assets/quarto/03-estructura-formats-referenciacio/tower-model-scene.svg").read_text(encoding="utf-8")
+tree = ET.fromstring(scene)
+towers = {e.attrib["data-tower-id"]: e.attrib for e in tree.iter() if "data-tower-id" in e.attrib}
+spans = [e.attrib for e in tree.iter() if "data-span-id" in e.attrib]
+labels = []
+for span in spans:
+    labels.append((int(span["data-label-x"]), 60, [
+        "Capa trams · línia", f"id_tram (text): {span['data-span-id']}",
+        f"torre_inici (text): {span['data-start-tower']}", f"torre_final (text): {span['data-end-tower']}",
+    ]))
+for identifier, tower in towers.items():
+    height = f"{float(tower['data-height-m']):.1f}".replace(".", ",")
+    labels.append((int(tower["data-label-x"]), 450, [
+        "Capa torres · punt", f"id_torre (text): {identifier}", f"altura_m (decimal): {height}",
+    ]))
+annotations = ['<g id="annotations" font-family="Arial, Liberation Sans, sans-serif" font-size="28" fill="#21313c" text-anchor="middle">']
+for x, y, lines in labels:
+    for i, line in enumerate(lines):
+        annotations.append(f'<text x="{x}" y="{y + 40*i}" font-weight="{700 if i == 0 else 400}">{escape(line)}</text>')
+annotations.append('<text x="600" y="599">Fitxer: xarxa.gpkg · CRS: EPSG:25831 · Altures en m</text>')
+annotations.append('</g>')
+scene = scene.replace("Torres i trams d'una mateixa xarxa", "Model físic: capes i camps dins d'un GeoPackage")
+scene = scene.replace("<!-- model-annotations -->", "\n".join(annotations))
+output = root / "assets/img/generated/03-estructura-formats-referenciacio/tower-model-physical.svg"
+output.parent.mkdir(parents=True, exist_ok=True)
+output.write_text(scene, encoding="utf-8")
+```

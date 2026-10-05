@@ -24,7 +24,7 @@ La mateixa estructura serveix per a elevacions, temperatures, imatges de satèl�
 >>>>> - Calcular i interpretar derivats del terreny i expressions booleanes de mapes.
 >>>>> - Relacionar valors ràster amb zones vectorials, quantificar incertesa i comprovar l'efecte de la resolució.
 
-## Del fenomen a la graella
+## Model ràster i suport espacial de les cel·les
 
 El ràster és útil quan la pregunta demana una cobertura completa o una mesura repetida sobre posicions regulars. També permet combinar variables diferents quan s'han portat a una geometria comuna. La decisió no depèn només del format disponible: depèn de què s'observa i de quina operació haurà de respondre la pregunta.
 
@@ -239,7 +239,7 @@ A QGIS, `gdal:cliprasterbymasklayer` correspon a **Retallar ràster per capa de 
 
 Retallar massa aviat pot eliminar context necessari. Un pendent necessita veïns, una mitjana focal necessita la finestra completa, una distància necessita conèixer fonts properes de fora del municipi i una conca hidrogràfica pot rebre flux d'aigües amunt. Per això convé calcular sobre una regió amb marge justificat i retallar al límit d'informe després. El marge ha de correspondre al radi del veïnatge, a la distància d'influència o, en processos hidrològics, a tota la conca contribuent.
 
-### Cas guiat: de Tarragona a Vila-seca
+### Cas guiat: mosaic d'elevacions i retall de Vila-seca
 
 El cas comença amb una vista provincial i avança fins al municipi. Aquesta seqüència permet veure per què el producte, la tessel·lació i la resolució s'han d'escollir segons l'escala de la pregunta. Els dos fulls MDT25 i l'MDT200 provincial pertanyen a la primera cobertura PNOA-LiDAR {% cite ignMDT25PrimeraCobertura ignMDT200PrimeraCobertura %}; així s'evita barrejar deliberadament campanyes diferents, encara que això no demostra una data ni un procés de generalització idèntics a totes les cel·les.
 
@@ -432,7 +432,7 @@ La **reclassificació** converteix valors o intervals en classes. Els intervals 
 
 Els llindars poden provenir d'una norma, d'una relació funcional, de la distribució observada o d'una decisió exploratòria. Aquestes justificacions no són intercanviables. Si un llindar canvia entre municipis perquè s'adapta a quantils locals, les classes ja no representen els mateixos valors absoluts; si es manté un llindar comú, alguns municipis poden quedar gairebé en una sola classe. La comparació exigeix decidir quina propietat es vol conservar.
 
-### De les consultes als predicats ràster
+### Predicats ràster i màscares booleanes
 
 Al capítol de consultes, un predicat s'avaluava per a cada fila d'una taula i retornava cert o fals. En una expressió ràster, el mateix principi s'aplica a cada posició de la graella. La comparació següent pregunta si l'elevació és inferior a 2 m. En una cel·la vàlida, QGIS codifica habitualment el resultat cert com a 1 i el fals com a 0:
 
@@ -610,7 +610,7 @@ La comparació entre 25 m i 200 m no busca demostrar que una resolució sigui se
 
 Les captures anteriors responen com difereixen **dos productes oficials publicats**. Compartir el primer cicle PNOA-LiDAR redueix una font de confusió temporal, però els orígens desplaçats 12,5 m i un procés de producció que no es controla impedeixen presentar la diferència com l'efecte causal pur de la mida de cel·la. L'experiment següent respon una pregunta més limitada: què canvia quan es manté fixa una font comuna i només es construeixen dos suports niats.
 
-Per a aquest experiment controlat, la font ha de ser comuna i prou detallada per sostenir les dues sortides. Si el producte original és més gros que 25 m, remostrejar-lo a 25 m no permet presentar aquesta branca com a observació fina. Es conservaran el paquet original, les metadades, la data d'accés i la identificació exacta del producte. El límit de Vila-seca o del municipi assignat serà la zona d'informe, però l'entrada d'elevacions inclourà un marge suficient per als derivats.
+Per a aquest experiment controlat, la font ha de ser comuna i prou detallada per sostenir les dues sortides. Si el producte original és més gros que 25 m, remostrejar-lo a 25 m no permet presentar aquesta branca com a observació fina. Es conservaran el paquet original, les metadades, la data d'accés i la identificació exacta del producte. El límit de Vila-seca o del municipi escollit serà la zona d'informe, però l'entrada d'elevacions inclourà un marge suficient per als derivats.
 
 L'extensió de treball es definirà en un `CRS` projectat adequat. Els seus límits s'ajustaran a una graella mare de 200 m i aquesta es niarà amb la de 25 m. L'origen serà idèntic i l'amplada i l'alçada seran múltiples de 200 m. D'aquesta manera, cada cel·la de 200 m correspondrà exactament a 64 cel·les de 25 m i es podrà separar l'efecte de la mida de l'efecte d'un desplaçament de malla.
 
@@ -699,7 +699,7 @@ Amb l'eina d'identificació s'han de consultar els dos centres de cel·la següe
 | 363360 | 4545635 | `NoData` | Absència exclosa dels càlculs, emmagatzemada amb el sentinella `-32767` |
 :::
 
-La comprovació acaba repetint una mitjana sobre una finestra que inclogui cel·les vàlides i absents: primer s'ha de mantenir `NoData` i després, només en una còpia temporal, substituir-lo per zero. Cal registrar el recompte vàlid i explicar per què la segona mitjana canvia sense que hagi aparegut cap cota nova al territori. Aquesta activitat és una prova de diagnòstic i no forma part de la micropràctica lliurable 5.
+La comprovació acaba repetint una mitjana sobre una finestra que inclogui cel·les vàlides i absents: primer s'ha de mantenir `NoData` i després, només en una còpia temporal, substituir-lo per zero. Cal registrar el recompte vàlid i explicar per què la segona mitjana canvia sense que hagi aparegut cap cota nova al territori. Aquesta prova de diagnòstic ajuda a interpretar els absents abans de l'activitat integradora.
 
 ### Pràctica guiada: el relleu de Vila-seca a dues resolucions
 
@@ -730,10 +730,10 @@ No es copia ni es reanomena el `.qgz` de `pr4`. Des de la còpia s'obre el proje
 | Component | Requisit |
 | --- | --- |
 | Entrades | `dist/pr4-geoprocessament-cognom.gpkg`, que es copia a `sandbox/pr5-raster-cognom.gpkg`, amb `municipi_treball`; i subconjunt documentat d'un model d'elevacions oficial amb marge suficient |
-| Operacions mínimes | No copiar el `.qgz` de `pr4`; establir un únic projecte incrustat `pr5`; reorientar les fonts locals; preparar dues resolucions niades amb `gdal:warpreproject`; calcular pendent i orientació amb `gdal:slope` i `gdal:aspect`; reclassificar amb `native:reclassifybytable`; combinar dues condicions amb `native:rastercalc`; i resumir amb `native:zonalstatisticsfb` |
+| Operacions mínimes | No copiar el `.qgz` de `pr4`; establir el projecte principal `pr5`; reorientar les fonts locals de les vistes conservades; preparar dues resolucions niades amb `gdal:warpreproject`; calcular pendent i orientació amb `gdal:slope` i `gdal:aspect`; reclassificar amb `native:reclassifybytable`; combinar dues condicions amb `native:rastercalc`; i resumir amb `native:zonalstatisticsfb` |
 | Resultats | Deu GeoTIFF continus i categòrics amb els noms fixats, com a fitxers germans de la parella `pr5-raster-cognom`; taula d'estadístiques persistent al GeoPackage; i mapa comparatiu incorporat a la instantània `pr5` |
 | Evidències del diari | Font i procedència de l'elevació, `CRS`, referència vertical, resolució, alineació, `NoData`, remostreig, llindars, comportament del recompte zonal, controls i interpretació de les diferències |
-| Comprovacions | Exactament un projecte incrustat `pr5`; cap URI local cap a `dist/` o `pr4`; camins relatius des del `.qgz` al GeoPackage i als GeoTIFF germans; dimensions esperades, relació de niament, rangs plausibles, recomptes zonals sense arrodonir, superfície ràster comparada amb la vectorial, efectes de vora, simbologia comuna i obertura equivalent de les dues representacions del projecte |
+| Comprovacions | Projecte principal `pr5` identificat; fonts revisades a totes les vistes conservades; cap URI local cap a `dist/` o `pr4`; camins relatius des del `.qgz` al GeoPackage i als GeoTIFF germans; dimensions esperades, relació de niament, rangs plausibles, recomptes zonals sense arrodonir, superfície ràster comparada amb la vectorial, efectes de vora, simbologia comuna i obertura equivalent de les dues representacions del projecte |
 | Fitxers que cal conservar | `dist/pr5-raster-cognom.gpkg`, amb la taula comparativa i el projecte incrustat `pr5`; `dist/pr5-raster-cognom.qgz`; els deu GeoTIFF analítics amb els noms fixats; i diari amb els controls |
 :::
 

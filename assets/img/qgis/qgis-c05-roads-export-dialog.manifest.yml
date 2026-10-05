@@ -1,0 +1,138 @@
+{
+  "ok": true,
+  "capture_id": "roads-export-dialog",
+  "provenance": {
+    "recipe_id": "tig-c05-consultes-cnig",
+    "recipe_title": "Un recorregut de consultes sobre Vila-seca",
+    "recipe_path": "context/practiques/pr3-captures.yml",
+    "capture_title": null,
+    "source_prompt": "Localitzar Vila-seca manualment a la capa CNIG i seleccionar-lo amb un clic.\nMostrar el clic dret sobre la capa activa i ressaltar Filtre. Mostrar la\nconsulta provincial sense duplicar-la en un bloc de codi al manual.\nComparar els filtres de taula: seleccionats, visibles i expressi\u00f3.\nMostrar eines i modificadors, i acabar amb el men\u00fa i el di\u00e0leg natius de\nselecci\u00f3 per expressi\u00f3. Continuar amb portals, illes i transport del CNIG.\nMostrar les seleccions espacials al mapa i exportar-les realment, amb els\ndi\u00e0legs natius, al GeoPackage existent. Les illes contingudes es representen\namb farciment. Portals, illes i viari mostren el terme municipal complet amb\nel mateix enquadrament de refer\u00e8ncia. El viari se centra en autovies i autopistes.\nAcabar amb crear/actualitzar camps, tipus de dades i ajuda d'aggregate.\nL'actor capture_pr3_guided.py prepara cada estat natiu i executa les accions;\nel bridge instal\u00b7lat d'unaltracaptura 0.3.0 captura i anota aquell estat.\n",
+    "recipe_source_prompt": "Localitzar Vila-seca manualment a la capa CNIG i seleccionar-lo amb un clic.\nMostrar el clic dret sobre la capa activa i ressaltar Filtre. Mostrar la\nconsulta provincial sense duplicar-la en un bloc de codi al manual.\nComparar els filtres de taula: seleccionats, visibles i expressi\u00f3.\nMostrar eines i modificadors, i acabar amb el men\u00fa i el di\u00e0leg natius de\nselecci\u00f3 per expressi\u00f3. Continuar amb portals, illes i transport del CNIG.\nMostrar les seleccions espacials al mapa i exportar-les realment, amb els\ndi\u00e0legs natius, al GeoPackage existent. Les illes contingudes es representen\namb farciment. Portals, illes i viari mostren el terme municipal complet amb\nel mateix enquadrament de refer\u00e8ncia. El viari se centra en autovies i autopistes.\nAcabar amb crear/actualitzar camps, tipus de dades i ajuda d'aggregate.\nL'actor capture_pr3_guided.py prepara cada estat natiu i executa les accions;\nel bridge instal\u00b7lat d'unaltracaptura 0.3.0 captura i anota aquell estat.\n",
+    "capture_source_prompt": null
+  },
+  "image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "image_digest": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "probe": {
+    "qgis_version": "3.44.11-Solothurn",
+    "annotation_provider": {
+      "name": "unaltracaptura-qgis",
+      "version": "0.3.0",
+      "release": "https://github.com/dosquartsdedocs/unaltracaptura-qgis/releases/tag/v0.3.0",
+      "wheel": "unaltracaptura_qgis-0.3.0-py3-none-any.whl",
+      "sha256": "5eb4cfdc7bed686f79c3e7cca85136c818dcbaadfa6b67ecb62d4efeab776f1e",
+      "mcp_image": "sha256:f8b76b047194f4a5441c06298f6c4e504027a36d615b80247f574aa5779cab3b"
+    }
+  },
+  "output": "/home/docent/tig/captures/qgis-c05-roads-export-dialog.png",
+  "annotation_svg": "/home/docent/tig/captures/qgis-c05-roads-export-dialog.annotations.svg",
+  "annotation_svg_background": {
+    "mode": "embedded_png_data_uri",
+    "width": 900,
+    "height": 540
+  },
+  "manifest": "/home/docent/tig/captures/qgis-c05-roads-export-dialog.manifest.yml",
+  "backend": "x11",
+  "locale": {
+    "requested": "ca_ES",
+    "qsettings_user_locale": "ca_ES",
+    "qsettings_override": true
+  },
+  "device_pixel_ratio": 1.0,
+  "coordinate_space": "logical pixels in the captured image; recipe relative coordinates share this space for PNG and SVG annotations",
+  "camera": {
+    "mode": "full",
+    "requested": {
+      "mode": "full"
+    },
+    "full_capture": {
+      "width": 900,
+      "height": 540
+    },
+    "scale": 1.0
+  },
+  "layout_policy": {},
+  "project_crs": "EPSG:25831",
+  "canvas_crs": "EPSG:25831",
+  "warnings": [],
+  "target": {
+    "object_name": "tigCaptureTarget"
+  },
+  "annotations": [
+    {
+      "type": "rect",
+      "source": "target",
+      "colour": {
+        "mode": "explicit",
+        "token": "information",
+        "hex": "#0072b2"
+      },
+      "shadow": true,
+      "target": {
+        "object_name": "tigExportFile"
+      },
+      "bbox": {
+        "x": 146,
+        "y": 47,
+        "width": 740,
+        "height": 39
+      }
+    },
+    {
+      "type": "rect",
+      "source": "target",
+      "colour": {
+        "mode": "explicit",
+        "token": "ember",
+        "hex": "#b84200"
+      },
+      "shadow": true,
+      "target": {
+        "object_name": "tigExportLayer"
+      },
+      "bbox": {
+        "x": 146,
+        "y": 80,
+        "width": 740,
+        "height": 39
+      }
+    },
+    {
+      "type": "rect",
+      "source": "target",
+      "colour": {
+        "mode": "explicit",
+        "token": "information",
+        "hex": "#0072b2"
+      },
+      "shadow": true,
+      "target": {
+        "object_name": "tigExportCrs"
+      },
+      "bbox": {
+        "x": 146,
+        "y": 113,
+        "width": 740,
+        "height": 39
+      }
+    },
+    {
+      "type": "rect",
+      "source": "target",
+      "colour": {
+        "mode": "explicit",
+        "token": "ember",
+        "hex": "#b84200"
+      },
+      "shadow": true,
+      "target": {
+        "object_name": "tigExportSelected"
+      },
+      "bbox": {
+        "x": 15,
+        "y": 198,
+        "width": 870,
+        "height": 37
+      }
+    }
+  ]
+}

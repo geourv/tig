@@ -1,0 +1,82 @@
+---
+title: "Semàntica urbana i components constructius"
+lang: ca
+ref: citygml_bim
+format:
+  gfm:
+    output-file: citygml-bim.generated.md
+execute:
+  echo: false
+  warning: false
+  message: false
+execute-dir: project
+unaltraweb_compute:
+  engine: python
+  mode: figure
+  outputs:
+    - assets/img/generated/03-estructura-formats-referenciacio/citygml-bim.svg
+---
+
+```{python}
+from pathlib import Path
+from html import escape
+
+svg=['<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="660" viewBox="0 0 1200 660" role="img" aria-labelledby="title desc">',
+     '<title id="title">Un edifici en un model urbà i en un model constructiu</title>',
+     '<desc id="desc">A l esquerra un edifici es relaciona amb el seu entorn urbà i diferencia coberta i façanes. A la dreta una vista esclatada mostra murs, forjats i un conducte amb propietats constructives.</desc>',
+     '<rect width="1200" height="660" fill="#ffffff"/>',
+     '<g font-family="Arial, Liberation Sans, sans-serif" font-size="28" fill="#21313c">']
+def text(x,y,s,bold=False,anchor="start"):
+    svg.append(f'<text x="{x}" y="{y}" text-anchor="{anchor}" font-weight="{700 if bold else 400}">{escape(s)}</text>')
+def poly(points,fill,stroke="#637780"):
+    pts=" ".join(f"{x:.1f},{y:.1f}" for x,y in points)
+    svg.append(f'<polygon points="{pts}" fill="{fill}" stroke="{stroke}" stroke-width="2"/>')
+def p(x,y,z,ox,oy=300): return ox+40*x-24*y,oy+15*x+18*y-40*z
+def face(xyz,ox,color,oy=300): poly([p(*q,ox,oy) for q in xyz],color)
+def block(x,y,w,d,h,ox,colors):
+    face([(x,y,0),(x+w,y,0),(x+w,y,h),(x,y,h)],ox,colors[0])
+    face([(x+w,y,0),(x+w,y+d,0),(x+w,y+d,h),(x+w,y,h)],ox,colors[1])
+    face([(x,y+d,0),(x+w,y+d,0),(x+w,y+d,h),(x,y+d,h)],ox,colors[0])
+    face([(x,y,h),(x+w,y,h),(x+w,y+d,h),(x,y+d,h)],ox,colors[2])
+def leader(points):
+    pts=" ".join(f"{x:.1f},{y:.1f}" for x,y in points)
+    svg.append(f'<polyline points="{pts}" fill="none" stroke="#637780" stroke-width="2"/>')
+text(30,45,"a · Model urbà: CityGML",True)
+text(630,45,"b · Model constructiu: BIM / IFC",True)
+face([(-1,-2,0),(6,-2,0),(6,6,0),(-1,6,0)],230,"#f1f4f3")
+block(0,-1,1.5,1.3,1.5,230,["#e1e7e9","#cfd9de","#edf1f2"])
+block(4,.1,1.3,1.5,2.2,230,["#e1e7e9","#cfd9de","#edf1f2"])
+block(.6,1,3,2.5,3,230,["#e0c295","#c89b6f","#b9654e"])
+text(58,150,"coberta")
+leader([(165,146),p(1.8,2,3,230)])
+text(397,184,"façana")
+leader([(405,195),p(3.6,2.2,1.5,230)])
+text(290,554,"edifici E1 · ús residencial",anchor="middle")
+text(290,616,"objectes urbans i superfícies",anchor="middle")
+
+# Same main footprint, exploded for legibility. Layer offsets are diagrammatic.
+ox,oy=865,427
+for level in [0,2.1,5.8]:
+    face([(0,0,level),(3,0,level),(3,2.5,level),(0,2.5,level)],ox,"#9dbdce",oy)
+    face([(0,2.5,level-.16),(3,2.5,level-.16),(3,2.5,level),(0,2.5,level)],ox,"#567f95",oy)
+face([(0,0,2.8),(3,0,2.8),(3,0,4.8),(0,0,4.8)],ox,"#e0c295",oy)
+face([(3,0,2.8),(3,2.5,2.8),(3,2.5,4.8),(3,0,4.8)],ox,"#c89b6f",oy)
+pipe=[p(.3,.7,1,ox,oy),p(1.4,.7,1,ox,oy),p(1.4,2.3,1,ox,oy)]
+pts=" ".join(f"{x},{y}" for x,y in pipe)
+svg.append(f'<polyline points="{pts}" fill="none" stroke="#b45c3b" stroke-width="8"/>')
+text(640,133,"forjat · gruix")
+leader([(812,141),p(.8,1.2,5.8,ox,oy)])
+text(995,259,"mur")
+text(995,295,"material")
+leader([(985,303),p(3,1.2,3.7,ox,oy)])
+text(640,365,"conducte")
+text(640,401,"sistema")
+leader([(785,393),pipe[1]])
+text(900,554,"vista esclatada",anchor="middle")
+text(900,616,"components i relacions",anchor="middle")
+svg.extend(['</g>','</svg>'])
+root=next(p for p in (Path.cwd(),*Path.cwd().parents) if (p/".unaltraweb/computations.yml").is_file())
+out=root/"assets/img/generated/03-estructura-formats-referenciacio/citygml-bim.svg"
+out.parent.mkdir(parents=True,exist_ok=True)
+out.write_text("\n".join(svg)+"\n",encoding="utf-8")
+```

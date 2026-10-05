@@ -1,0 +1,141 @@
+{
+  "ok": true,
+  "qgis": "3.44.11-Solothurn",
+  "image": "qgis/qgis@sha256:e016b5296b99f0b07760b883888bc4ba615c0099feae9432374b4c83e8e073cc",
+  "geometry_sha256": "5465f4f9f08264b1c3dda94df031d8ad0f48e2e4b6b82faeb34d4eb50e683169",
+  "municipality_count": 1,
+  "embedded_projects": [
+    "comparacio",
+    "pr1"
+  ],
+  "reopened": [
+    {
+      "name": "external",
+      "local_count": 1,
+      "local_source": "/workspace/tmp/pr1-guided/run10/tig/sandbox/pr1-project-setup-exemple.gpkg|layername=municipi_vilaseca",
+      "wms": "crs=EPSG:25831&format=image/jpeg&layers=ortofoto_25cm_color_2025&styles=&url=https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms"
+    },
+    {
+      "name": "pr1",
+      "local_count": 1,
+      "local_source": "/workspace/tmp/pr1-guided/run10/tig/sandbox/pr1-project-setup-exemple.gpkg|layername=municipi_vilaseca",
+      "wms": "crs=EPSG:25831&format=image/jpeg&layers=ortofoto_25cm_color_2025&styles=&url=https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms"
+    },
+    {
+      "name": "comparacio",
+      "local_count": 1,
+      "local_source": "/workspace/tmp/pr1-guided/run10/tig/sandbox/pr1-project-setup-exemple.gpkg|layername=municipi_vilaseca",
+      "wms": "crs=EPSG:25831&format=image/jpeg&layers=ortofoto_25cm_color_2025&styles=&url=https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms"
+    }
+  ],
+  "captures": {
+    "wms-overview": "78cf7a8d2a95189584efde38a527d5f8be571f2adf4926bc56e49af640c54f9c",
+    "selected-municipality": "5bf218c8ec4cf3dd4ce4db8a30831d98fe4160d317aecfe96a17ba347df13dc0",
+    "export-menu": "800a605d86493c921c567e490a5d371016aff961dc539248cf0ce2fe4afdad28",
+    "export-dialog": "7a8523f4fca68c13996874227c50a1abeb9012038e20361f61088497a429893f",
+    "wms-result": "1b576a1f06fd88217506044f66f01c95bd594f174bb8a41f904feb0774646b71",
+    "connect-dialog": "e06caa5d5d52b77781b560f9a3900f9af5dee1f6516e465cc144c745fd6897bf",
+    "save-project-menu": "4a603c4c48b1744e8a335fd1a42ff4a69b0dd72ca778c5ea3af3aeb9a794e419",
+    "save-project-dialog": "30e22f15732e0a01605117f69e65f711ab79663e083cded1b092f36c9c54df3f",
+    "refresh-connection": "344ead994c071826577eb06f6463597ee862f5896e0eec4ad027eb648b41bdb2",
+    "projects-in-browser": "22c232f772b2ea6428d91b907c9a75e04df1e0f2f99651b1cc76ba361ed8b13f"
+  },
+  "gui_export_verified": true,
+  "gui_project_saves_verified": true,
+  "gui_steps": [
+    {
+      "event": "start"
+    },
+    {
+      "event": "wms-ready",
+      "uri": "crs=EPSG:25831&format=image/jpeg&layers=ortofoto_25cm_color_2025&styles=&url=https://geoserveis.icgc.cat/servei/catalunya/orto-territorial/wms"
+    },
+    {
+      "event": "restore-municipal-extent",
+      "requested": "339214.4002000003820285,4547107.8680475000292063 : 350048.2880000002915040,4555520.2246525008231401",
+      "actual": "127653.0342809364956338,4429237.5000000000000000 : 660424.9657190635334700,4814482.5000000000000000"
+    },
+    {
+      "event": "native-export-dialog-configured",
+      "format": "GPKG",
+      "filename": "/home/docent/tig/sandbox/pr1-project-setup-exemple.gpkg",
+      "layer": "municipi_vilaseca",
+      "only_selected": true,
+      "crs": "EPSG:25831",
+      "add_to_canvas": true
+    },
+    {
+      "event": "native-accept-buttons",
+      "buttons": [
+        {
+          "box": "mButtonBox",
+          "text": "D'acord",
+          "visible": true,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "event": "native-export-output-loaded",
+      "source": "/home/docent/tig/sandbox/pr1-project-setup-exemple.gpkg|layername=municipi_vilaseca",
+      "count": 1
+    },
+    {
+      "event": "native-accept-buttons",
+      "buttons": [
+        {
+          "box": "buttonBox",
+          "text": "&Obre",
+          "visible": true,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "event": "native-project-save-configured",
+      "project": "pr1"
+    },
+    {
+      "event": "native-accept-buttons",
+      "buttons": [
+        {
+          "box": "buttonBox",
+          "text": "D'acord",
+          "visible": true,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "event": "project-exists-in-geopackage",
+      "names": [
+        "pr1"
+      ],
+      "active_project": "geopackage:/home/docent/tig/sandbox/pr1-project-setup-exemple.gpkg?projectName=pr1"
+    },
+    {
+      "event": "native-project-save-configured",
+      "project": "comparacio"
+    },
+    {
+      "event": "native-accept-buttons",
+      "buttons": [
+        {
+          "box": "buttonBox",
+          "text": "D'acord",
+          "visible": true,
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "event": "project-exists-in-geopackage",
+      "names": [
+        "comparacio",
+        "pr1"
+      ],
+      "active_project": "geopackage:/home/docent/tig/sandbox/pr1-project-setup-exemple.gpkg?projectName=comparacio"
+    }
+  ],
+  "external_project_save": "PyQGIS write after reopening the native-GUI-saved pr1; not a claimed GUI click"
+}

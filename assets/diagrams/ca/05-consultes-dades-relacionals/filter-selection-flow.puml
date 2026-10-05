@@ -1,0 +1,15 @@
+@startuml
+top to bottom direction
+skinparam roundcorner 0
+skinparam linetype polyline
+rectangle "Font CNIG\n8.132 municipis" as source
+rectangle "Capa filtrada\n184 municipis" as layer
+rectangle "Selecció\n3 municipis marcats" as selection
+rectangle "Taula filtrada\n3 files visibles" as table
+rectangle "Capa desada\n184 municipis" as output
+source --> layer : CODNUT3 = ES514
+layer --> selection : marcar Reus, Salou i Vila-seca
+selection --> table : mostrar seleccionats
+layer --> output : exportar totes les entitats
+table -[hidden]right-> output
+@enduml

@@ -1,0 +1,93 @@
+---
+title: "Mostres tridimensionals i superfície TIN"
+lang: ca
+ref: point_cloud_tin
+format:
+  gfm:
+    output-file: point-cloud-tin.generated.md
+execute:
+  echo: false
+  warning: false
+  message: false
+execute-dir: project
+unaltraweb_compute:
+  engine: python
+  mode: figure
+  outputs:
+    - assets/img/generated/03-estructura-formats-referenciacio/point-cloud-tin.svg
+---
+
+```{python}
+from pathlib import Path
+from html import escape
+from math import sin, cos
+from random import Random
+
+# Synthetic coordinates in arbitrary units; deterministic sampling, no observed data.
+rng=Random(21)
+svg=['<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">',
+     '<title id="title">Núvol de punts i TIN del sòl seleccionat</title>',
+     '<desc id="desc">El núvol conté mostres del sòl, de la vegetació i d una coberta. El TIN uneix només punts seleccionats del sòl mitjançant triangles irregulars; les cares interpolen entre els vèrtexs.</desc>',
+     '<rect width="1200" height="620" fill="#ffffff"/>',
+     '<g font-family="Arial, Liberation Sans, sans-serif" font-size="28" fill="#21313c">']
+
+def text(x,y,s,bold=False,anchor="start"):
+    svg.append(f'<text x="{x}" y="{y}" text-anchor="{anchor}" font-weight="{700 if bold else 400}">{escape(s)}</text>')
+
+def height(x,y): return .35+.10*x+.15*y+.55*sin(x*.65)*cos(y*.4)
+def proj(x,y,z,ox): return ox+45*x-31*y,220+17*x+20*y-46*z
+def poly(pts,fill,stroke="#667b83",sw=1.5):
+    p=" ".join(f"{x:.2f},{y:.2f}" for x,y in pts)
+    svg.append(f'<polygon points="{p}" fill="{fill}" stroke="{stroke}" stroke-width="{sw}"/>')
+def dot(x,y,z,ox,color,r=3.5):
+    a,b=proj(x,y,z,ox)
+    svg.append(f'<circle cx="{a:.2f}" cy="{b:.2f}" r="{r}" fill="{color}"/>')
+
+text(32,45,"a · Núvol de punts XYZ",True)
+text(632,45,"b · TIN del terreny",True)
+for ox in (230,830):
+    poly([proj(x,y,0,ox) for x,y in [(0,0),(6,0),(6,5),(0,5)]],"#f2f5f4","#d3dcdf")
+
+xs=[0,.8,1.9,3.5,4.7,6]
+ys=[0,.8,2.2,3.4,5]
+nodes=[(x,y,height(x,y)) for y in ys for x in xs]
+for x,y,z in nodes: dot(x,y,z,230,"#91692f",5)
+for _ in range(210):
+    x,y=rng.uniform(0,6),rng.uniform(0,5)
+    dot(x,y,height(x,y),230,"#b49660")
+# Vegetation and a flat roof are extra observations, not vertices of the ground TIN.
+for _ in range(150):
+    x,y=rng.uniform(.4,2.2),rng.uniform(2.1,4.3)
+    z=height(x,y)+rng.uniform(.6,2.8)
+    dot(x,y,z,230,"#3e8061")
+for i in range(14):
+    for j in range(10):
+        x,y=3.4+i*.15,.6+j*.13
+        dot(x,y,3.3,230,"#ad5d49")
+
+# Irregular XY spacing produces a terrain TIN; every vertex has one height.
+triangles=[]
+for j in range(len(ys)-1):
+    for i in range(len(xs)-1):
+        a=j*len(xs)+i; b=a+1; c=a+len(xs); d=c+1
+        triangles.extend([(a,b,c),(b,d,c)])
+for tri in sorted(triangles,key=lambda t:sum(nodes[k][0]+nodes[k][1] for k in t)):
+    xyz=[nodes[k] for k in tri]
+    z=sum(p[2] for p in xyz)/3
+    color=["#e7dec5","#d5ddbc","#b8cfb4","#9fbdaf"][min(3,int(z*2))]
+    poly([proj(*p,830) for p in xyz],color)
+for x,y,z in nodes: dot(x,y,z,830,"#41584e",4)
+assert len(triangles)==2*(len(xs)-1)*(len(ys)-1)
+assert len({(x,y) for x,y,z in nodes})==len(nodes)
+text(36,477,"mostres separades")
+text(636,477,"vèrtexs, arestes i cares")
+for x,label,color in [(40,"sòl","#b49660"),(220,"vegetació","#3e8061"),(480,"coberta","#ad5d49")]:
+    svg.append(f'<circle cx="{x}" cy="538" r="7" fill="{color}"/>')
+    text(x+18,548,label)
+text(600,601,"classificació del sòl + triangulació → superfície estimada",anchor="middle")
+svg.extend(['</g>','</svg>'])
+root=next(p for p in (Path.cwd(),*Path.cwd().parents) if (p/".unaltraweb/computations.yml").is_file())
+out=root/"assets/img/generated/03-estructura-formats-referenciacio/point-cloud-tin.svg"
+out.parent.mkdir(parents=True,exist_ok=True)
+out.write_text("\n".join(svg)+"\n",encoding="utf-8")
+```

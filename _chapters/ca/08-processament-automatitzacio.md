@@ -56,7 +56,7 @@ La terminologia varia entre disciplines, però el criteri operatiu del curs és 
 
 La modalitat més formal no és sempre la més adequada. Automatitzar una operació que només s'executarà una vegada, encara s'està explorant i canvia a cada prova pot costar més que documentar-la bé. En canvi, repetir trenta retalls amb la mateixa regla justifica un lot, i encadenar preparació, retall, derivació i resum justifica un model. La decisió s'ha de basar en estabilitat, repetició, risc d'error i necessitat d'auditoria, no en la impressió que programar sempre és més avançat.
 
-### Processament de QGIS i contracte d'algorisme
+### Algorismes de QGIS: entrades, paràmetres i sortides
 
 La caixa d'eines de Processament reuneix algorismes de proveïdors diferents sota una interfície semblant. Un algorisme natiu de QGIS, un programa de GDAL i una eina aportada per un complement poden tenir noms pròxims però comportaments, paràmetres i requisits diferents. El **proveïdor** i l'**identificador**, com `native:buffer`, formen part del mètode. El nom traduït i la posició dins del menú ajuden a localitzar l'eina, però poden canviar amb l'idioma o la versió.
 
@@ -192,7 +192,7 @@ El model ha de tenir un propòsit cohesionat. Un únic diagrama que descarrega f
 
 Validar l'estructura del model només comprova que les connexions i els paràmetres són formalment admissibles. No demostra que la pregunta, el `CRS`, la distància, la resolució o la regla de `NoData` siguin correctes. Cal executar-lo sobre un cas conegut i comparar-lo amb el procediment manual. La prova ha de revisar valors i geometries, no només que els dos processos creen capes amb el mateix nom.
 
-### Dependències, noms i errors
+### Dependències entre algorismes i gestió d'errors
 
 Una **dependència** és qualsevol element extern sense el qual el procés no es pot interpretar o executar. Inclou fitxers i capes, però també camps, `CRS`, transformacions, proveïdors, complements, versions de QGIS, fonts tipogràfiques, expressions, variables, connexions a bases de dades i serveis remots. Un `.model3` pot conservar els nodes i continuar sense funcionar perquè falta el proveïdor que implementa un algorisme.
 
@@ -246,13 +246,17 @@ La ROI pot ser una sortida persistent perquè fa visible l'àmbit de càlcul. El
 
 Els sis passos s'han de validar amb controls definits: una entitat municipal, extensió de ROI justificada, mida i origen de cel·la conservats, recompte de valors vàlids positiu i estadístiques dins de la precisió esperada. Si la seqüència s'incorpora a un model ampliat, l'execució manual i la del model han de coincidir en aquests controls. Si difereixen, cal revisar les seleccions, el tractament de `NoData`, les destinacions i els valors predeterminats; no s'ha de triar un resultat només perquè sembla més recent.
 
-La micropràctica final exigeix executar i validar els sis passos i conservar `sandbox/pr6_pendent_roi_graus.tif`, però no convertir necessàriament tota la seqüència en un sol model. El requisit mínim de programació visual és construir, validar i conservar `sandbox/pr6_roi_municipal.model3`, amb el graf `municipi_treball + distancia_m -> ROI`, de la pràctica guiada; el model es pot ampliar amb passos del cas integrat sempre que es tornin a validar. El tancament del projecte continua tenint com a objecte principal la síntesi verificada de les micropràctiques 1–5.
+La micropràctica final exigeix executar i validar els sis passos. El fitxer `pr6_pendent_roi_graus.tif` es conserva a `sandbox/`, però no cal convertir necessàriament tota la seqüència en un sol model.
+
+`pr6_roi_municipal.model3` és el model mínim que cal construir, validar i conservar a `sandbox/`. Parteix de `municipi_treball` i `distancia_m` i retorna la ROI de la pràctica guiada. Es pot ampliar amb passos del cas integrat sempre que es tornin a validar. El tancament del projecte continua tenint com a objecte principal la síntesi verificada de les micropràctiques 1–5.
 
 ### Desar, versionar i transportar processos
 
 QGIS permet conservar models al perfil d'usuari, exportar-los com a fitxers `.model3` i, segons el flux utilitzat, associar-los al projecte. Un model inclòs en un projecte viatja amb el `.qgz`, però no incorpora automàticament les fonts, els proveïdors, els complements ni les credencials. Un `.model3` facilita reutilització i comparació de versions, però manté les mateixes dependències externes.
 
-Un model desat només al perfil personal pot desaparèixer del paquet encara que funcioni a l'ordinador d'origen. Com que el model validat forma part del resultat obligatori, cal exportar-lo com a `sandbox/pr6_roi_municipal.model3` i registrar-ne la versió. `sandbox/pr6-sintesi-cognom.qgz` es crearà de nou encara que el projecte també es desi dins del GeoPackage, perquè permet revisar-ne l'estructura i recuperar-lo amb més facilitat.
+Un model desat només al perfil personal pot desaparèixer del paquet encara que funcioni a l'ordinador d'origen. Com que el model validat forma part del resultat obligatori, cal exportar-lo a la carpeta de treball amb el nom indicat i registrar-ne la versió.
+
+`pr6-sintesi-cognom.qgz` es crearà de nou a `sandbox/` encara que el projecte també es desi dins del GeoPackage, perquè permet revisar-ne l'estructura i recuperar-lo amb més facilitat.
 
 Les rutes relatives funcionen quan el projecte i les dades mantenen una estructura comuna. No resolen dependències situades fora de l'arrel, connexions amb noms locals ni recursos disponibles només al perfil de QGIS. Abans d'empaquetar cal inventariar totes les fonts des de les propietats del projecte i decidir si cada una s'inclou, es pot tornar a obtenir o només serveix com a context remot. La llicència pot impedir redistribuir una entrada encara que tècnicament càpiga al ZIP.
 
@@ -261,7 +265,7 @@ La **prova de transport** no consisteix a moure només el `.qgz`. Després de va
 ::: table "Protocol de prova de transport"
 | Fase | Acció | Criteri d'acceptació |
 | --- | --- | --- |
-| Preparació | Tancar edicions, desar el projecte incrustat `pr6`, crear de nou `pr6-sintesi-cognom.qgz`, tancar QGIS, verificar els GeoTIFF heretats i copiar a `dist/` només els fitxers nous de `pr6` | No hi ha cap capa pendent ni fitxer temporal imprescindible; el GeoPackage només conté el projecte `pr6`; les dues representacions parteixen del mateix estat validat; i cap fitxer de `pr5` se sobreescriu |
+| Preparació | Tancar edicions, desar el projecte principal `pr6`, crear de nou `pr6-sintesi-cognom.qgz`, tancar QGIS, verificar els GeoTIFF heretats i copiar a `dist/` només els fitxers nous de `pr6` | No hi ha cap capa pendent ni fitxer temporal imprescindible; les fonts de totes les vistes conservades estan revisades; les dues representacions principals parteixen del mateix estat validat; i cap fitxer de `pr5` se sobreescriu |
 | Aïllament | Extreure el paquet en una ruta nova | El projecte no pot resoldre fonts per coincidència amb la carpeta original |
 | Obertura | Obrir per separat `pr6-sintesi-cognom.qgz` i l'entrada incrustada `pr6`, tancant QGIS entre proves, i revisar el registre de missatges | No hi ha fonts perdudes, referències a `dist/`, al GeoPackage `pr5-raster-cognom.gpkg` o a directoris de pràctiques anteriors, ni proveïdors imprescindibles desconeguts en cap representació |
 | Inventari | Obrir una capa de cada grup, les taules i els ràsters | Esquema, `CRS`, extensió, estils i valors continuen disponibles |
@@ -287,23 +291,23 @@ Els controls executables no són exclusius de Python: molts es poden expressar a
 
 ## Auditoria completa del projecte final
 
-El producte final ha de respondre la pregunta territorial formulada a l'inici i permetre reconstruir com s'ha arribat a la resposta. No és una acumulació de totes les capes creades durant el curs. Conserva les entrades necessàries, els resultats amb una funció clara i els intermedis imprescindibles per auditar decisions o incidències. La resta es pot eliminar del panell o del paquet només després de comprovar que és regenerable i no conté l'única evidència d'un pas crític. No s'eliminen del GeoPackage `municipality_icgc_5k`, `municipality_cnig`, `municipi_treball` ni cap altra entrada heretada exigida pel contracte; només es descarten proves temporals o redundants justificades.
+El producte final ha de respondre la pregunta territorial formulada a l'inici i permetre reconstruir com s'ha arribat a la resposta. No és una acumulació de totes les capes creades durant el curs. Conserva les entrades necessàries, els resultats amb una funció clara i els intermedis imprescindibles per auditar decisions o incidències. La resta es pot eliminar del panell o del paquet només després de comprovar que és regenerable i no conté l'única evidència d'un pas crític. Es conserven el límit o límits municipals preparats a `pr1`, `municipi_treball` i les altres entrades heretades exigides pel recorregut; només es descarten proves temporals o redundants justificades.
 
 ### Pregunta, abast i inventari
 
 La pregunta final ha d'identificar fenomen, municipi, període, unitat d'anàlisi i mesura o relació espacial. Pot haver evolucionat respecte de la proposta inicial, però el canvi s'ha de registrar. Una pregunta sobre «zones adequades» s'ha de reformular com a «zones que compleixen els criteris A, B i C» si no s'han incorporat tots els factors necessaris per afirmar adequació.
 
-L'inventari relaciona cada peça amb una funció: font original, dada preparada, intermedi de diagnòstic, resultat analític, taula de control, mapa o documentació. Una capa sense funció identificable no s'ha de conservar només perquè existeix; una capa necessària no s'ha d'eliminar perquè no apareix al mapa final. El nom, la ubicació, el format, el productor i la dependència immediata han de permetre seguir-ne el llinatge. Les dues capes municipals font, `municipi_treball` i els GeoTIFF heretats de `pr5` formen part explícita d'aquest inventari obligatori.
+L'inventari relaciona cada peça amb una funció: font original, dada preparada, intermedi de diagnòstic, resultat analític, taula de control, mapa o documentació. Una capa sense funció identificable no s'ha de conservar només perquè existeix; una capa necessària no s'ha d'eliminar perquè no apareix al mapa final. El nom, la ubicació, el format, el productor i la dependència immediata han de permetre seguir-ne el llinatge. Les capes municipals font realment preparades, `municipi_treball` i els GeoTIFF heretats de `pr5` formen part explícita d'aquest inventari.
 
 ::: table "Continuïtat de les micropràctiques dins del projecte final"
 | Fase | Entrada canònica | Sortida persistent | Consumidor següent |
 | --- | --- | --- | --- |
-| Micropràctica 1 | Pregunta territorial, paquets originals autoritzats i metadades de les dues fonts municipals | `pr1-fonts-cognom.gpkg`, amb `municipality_icgc_5k`, `municipality_cnig` i l'únic projecte incrustat `pr1`; `.qgz` homònim, inventari i diari | `pr2` copia físicament el GeoPackage lliurat, no el `.qgz` |
-| Micropràctica 2 | `dist/pr1-fonts-cognom.gpkg` i fonts de captura documentades | `pr2-digitalitzacio-cognom.gpkg`, amb les dues fonts preservades, `municipi_treball` derivada, capes digitalitzades i l'únic projecte incrustat `pr2`; `.qgz` homònim | `pr3` copia físicament el GeoPackage lliurat, no el `.qgz` |
-| Micropràctica 3 | `dist/pr2-digitalitzacio-cognom.gpkg` i fonts tabulars o vectorials documentades | `pr3-consultes-cognom.gpkg`, amb consultes, atributs derivats, subconjunts, relacions, diagnòstics i l'únic projecte incrustat `pr3`; `.qgz` homònim | `pr4` copia físicament el GeoPackage lliurat, no el `.qgz` |
-| Micropràctica 4 | `dist/pr3-consultes-cognom.gpkg`, xarxa, equipaments i capes capturades heretades | `pr4-geoprocessament-cognom.gpkg`, amb capes de cada criteri vectorial, resultat combinat, mesures recalculades i l'únic projecte incrustat `pr4`; `.qgz` homònim | `pr5` copia físicament el GeoPackage lliurat, no el `.qgz` |
-| Micropràctica 5 | `dist/pr4-geoprocessament-cognom.gpkg` i MDE oficial documentat amb marge | `pr5-raster-cognom.gpkg`, amb taula zonal i l'únic projecte incrustat `pr5`; `.qgz` homònim i els deu GeoTIFF analítics germans | `pr6` copia físicament el GeoPackage i els GeoTIFF lliurats, però no el `.qgz` |
-| Micropràctica 6 | `dist/pr5-raster-cognom.gpkg`, els deu GeoTIFF de `pr5` i el diari acumulat | `pr6-sintesi-cognom.gpkg`, amb l'únic projecte incrustat `pr6`; `.qgz` homònim nou, còpies locals dels GeoTIFF, `pr6_pendent_roi_graus.tif`, `pr6_roi_municipal.model3`, exportacions finals i diari complet | Prova de transport, lliurament i explicació oral |
+| Projecte inicial (`pr1`) | Municipi escollit, capa de límits documentada i WMS | `pr1-project-setup-cognom.gpkg`, amb el terme municipal i el projecte incrustat `pr1`; `.qgz` homònim i apunts PDF | `pr2` copia físicament el GeoPackage validat, no el `.qgz` |
+| Digitalització (`pr2`) | `dist/pr1-project-setup-cognom.gpkg` i fonts de captura documentades | `pr2-digitalitzacio-cognom.gpkg`, amb les fonts municipals preparades preservades, `municipi_treball` derivada, capes digitalitzades i projecte principal `pr2`; `.qgz` homònim | `pr3` copia físicament el GeoPackage validat, no el `.qgz` |
+| Micropràctica 3 | `dist/pr2-digitalitzacio-cognom.gpkg` i fonts tabulars o vectorials documentades | `pr3-consultes-cognom.gpkg`, amb consultes, atributs derivats, subconjunts, relacions, diagnòstics i projecte principal `pr3`; `.qgz` homònim | `pr4` copia físicament el GeoPackage lliurat, no el `.qgz` |
+| Micropràctica 4 | `dist/pr3-consultes-cognom.gpkg`, xarxa, equipaments i capes capturades heretades | `pr4-geoprocessament-cognom.gpkg`, amb capes de cada criteri vectorial, resultat combinat, mesures recalculades i projecte principal `pr4`; `.qgz` homònim | `pr5` copia físicament el GeoPackage lliurat, no el `.qgz` |
+| Micropràctica 5 | `dist/pr4-geoprocessament-cognom.gpkg` i MDE oficial documentat amb marge | `pr5-raster-cognom.gpkg`, amb taula zonal i projecte principal `pr5`; `.qgz` homònim i els deu GeoTIFF analítics germans | `pr6` copia físicament el GeoPackage i els GeoTIFF lliurats, però no el `.qgz` |
+| Micropràctica 6 | `dist/pr5-raster-cognom.gpkg`, els deu GeoTIFF de `pr5` i el diari acumulat | `pr6-sintesi-cognom.gpkg`, amb projecte principal `pr6`; `.qgz` homònim nou, còpies locals dels GeoTIFF, `pr6_pendent_roi_graus.tif`, `pr6_roi_municipal.model3`, exportacions finals i diari complet | Prova de transport, lliurament i explicació oral |
 :::
 
 ### Fonts, llicències i procedència
@@ -338,9 +342,9 @@ La validació s'ha de fer després de cada transformació decisiva i repetir-se 
 
 El lot i el model QGIS obligatoris s'auditaran com a peces addicionals, no com a substituts dels resultats. Cal comprovar-ne versió, dependències, paràmetres, destinacions i prova de reexecució. Les consultes SQL o PostGIS i els scripts PyQGIS són ampliacions opcionals i, si s'incorporen, s'auditen i es conserven separadament.
 
-### Estat del projecte QGIS
+### Coherència del projecte extern i del projecte incrustat
 
-El punt de control final té dues representacions de `pr6`: `sandbox/pr6-sintesi-cognom.qgz` i el projecte `pr6` incrustat a `sandbox/pr6-sintesi-cognom.gpkg`. El GeoPackage no pot conservar l'entrada incrustada `pr5` ni cap altra. El `.qgz` ha d'obrir-se sense fonts perdudes i continua sent la representació més fàcil de revisar i recuperar. La còpia incrustada també s'ha de desar expressament; no canvia només perquè s'hagi desat el fitxer extern.
+El punt de control final té dues representacions principals de `pr6`: el `.qgz` extern i el projecte `pr6` incrustat al GeoPackage homònim de `sandbox/`. Altres vistes poden conservar-se amb noms diferents, sempre que la seva funció i les seves fonts estiguin comprovades. El `.qgz` ha d'obrir-se sense fonts perdudes i continua sent una representació fàcil de revisar i recuperar. La còpia incrustada també s'ha de desar expressament; no canvia només perquè s'hagi desat el fitxer extern.
 
 Després de netejar el panell i validar les sortides, cal desar el projecte incrustat `pr6` i crear de nou el `.qgz` homònim des del mateix estat de la sessió. Tot seguit es tanca QGIS, es verifiquen els GeoTIFF heretats, es copien a `dist/` només els fitxers nous de `pr6` i s'assembla el paquet complet en una carpeta separada. Cada representació es prova des d'una extracció neta d'aquest paquet, no des de la llista de projectes recents. En totes dues s'han de contrastar fonts, grups, noms de capa, filtres, estils, composicions i una mostra de recomptes o valors; no n'hi ha prou que el llenç tingui una aparença semblant.
 
@@ -410,7 +414,7 @@ Les incidències són part legítima de l'explicació. Descriure un error de `CR
 
 Quan el treball s'ha fet en equip, cada participant ha de poder explicar les decisions centrals i la seva contribució, no només la peça que va editar. El diari pot identificar responsabilitats sense fragmentar l'autoria del resultat. Utilitzar un model, SQL o codi d'una altra font exigeix atribució i comprensió: executar-lo no demostra per si sol que se'n coneguin les precondicions o els límits.
 
-## Tancament del producte final SIG
+## Fitxers i comprovacions del lliurament final SIG
 
 Les peces finals tenen funcions complementàries. El GeoPackage reuneix capes vectorials i taules; els GeoTIFF conserven ràsters analítics; el `.qgz` registra organització, estils, relacions i composicions; el `.model3` conserva el procés QGIS parametritzat; les exportacions comuniquen una selecció; i el diari conserva decisions, controls i limitacions. Cap peça no substitueix les altres.
 
@@ -427,7 +431,7 @@ Les peces finals tenen funcions complementàries. El GeoPackage reuneix capes ve
 | Explicació oral | Justificació d'una mostra del procés, diferència entre dades i inferències i resposta sobre autoria i límits |
 :::
 
-La neteja final es farà només sobre la còpia activa `pr6`, mai sobre el lliurament immutable de `pr5`. Abans de descartar una capa cal comprovar que es pot regenerar, que no alimenta cap composició i que no és l'única evidència d'un pas. Es conservaran sempre `municipality_icgc_5k`, `municipality_cnig`, `municipi_treball`, la resta d'entrades heretades exigides i les còpies locals dels GeoTIFF de `pr5`. Després es repetirà l'inventari, es desaran totes les peces, es tancarà QGIS i s'executarà la prova de transport. Una capa que només existeix perquè continuava oberta a la memòria quedarà així detectada abans del lliurament.
+La neteja final es farà només sobre la còpia activa `pr6`, mai sobre el lliurament immutable de `pr5`. Abans de descartar una capa cal comprovar que es pot regenerar, que no alimenta cap composició i que no és l'única evidència d'un pas. Es conservaran sempre les capes municipals font heretades, `municipi_treball`, la resta d'entrades necessàries i les còpies locals dels GeoTIFF de `pr5`. Després es repetirà l'inventari, es desaran totes les peces, es tancarà QGIS i s'executarà la prova de transport. Una capa que només existeix perquè continuava oberta a la memòria quedarà així detectada abans del lliurament.
 
 ## Activitats
 
@@ -443,7 +447,7 @@ Després s'executarà el mateix buffer per lots amb les distàncies diferenciade
 
 Finalment es construirà i es desarà un model QGIS `.model3` amb el graf `municipi_treball + distancia_m -> ROI`: una entrada vectorial, un paràmetre numèric en metres i `native:buffer` amb els mateixos paràmetres fixos. Una execució amb 500 m s'escriurà a `roi_model_500m_auditoria`, mai sobre l'entrada ni sobre les sortides manual o de lot. El model es considerarà validat quan coincideixin amb `roi_manual_500m_auditoria` el `CRS`, el recompte, la validesa, l'extensió, la superfície i la diferència espacial dins de la tolerància documentada.
 
-### Pràctica guiada: prova de transport adversa
+### Pràctica guiada: obertura del projecte en una ubicació neta
 
 Sobre una còpia del paquet es provocarà una dependència controlada, com una capa situada fora de l'arrel o un nom de camp no disponible. El projecte s'obrirà des d'una carpeta nova, es diagnosticarà el problema sense reconstruir-lo per intuïció i es corregirà a la font o al contracte. El diari registrarà símptoma, causa, correcció i controls repetits.
 
@@ -455,10 +459,10 @@ La sisena micropràctica crea la instantània final `pr6` a partir d'una còpia 
 | Component | Requisit |
 | --- | --- |
 | Entrades | `dist/pr5-raster-cognom.gpkg`, els deu GeoTIFF que l'acompanyen i el diari acumulat; el GeoPackage es copia com a `sandbox/pr6-sintesi-cognom.gpkg` i els GeoTIFF es copien a `sandbox/` sense reanomenar-los |
-| Operacions mínimes | No copiar el `.qgz` de `pr5`; establir un únic projecte incrustat `pr6`; reorientar totes les fonts locals; completar una auditoria integrada; executar i validar els sis passos de la seqüència integrada de relleu; executar i validar el buffer manual; comparar distàncies amb el lot; construir, desar i validar `pr6_roi_municipal.model3`; reexecutar des de l'entrada canònica una branca vectorial o ràster existent i comparar-la amb el resultat conservat; repetir els controls crítics; preparar la simbolització; compondre i exportar almenys un mapa; documentar les limitacions; i crear de nou el `.qgz` homònim |
+| Operacions mínimes | No copiar el `.qgz` de `pr5`; establir el projecte principal `pr6`; reorientar les fonts locals de totes les vistes conservades; completar una auditoria integrada; executar i validar els sis passos de la seqüència integrada de relleu; executar i validar el buffer manual; comparar distàncies amb el lot; construir, desar i validar `pr6_roi_municipal.model3`; reexecutar des de l'entrada canònica una branca vectorial o ràster existent i comparar-la amb el resultat conservat; repetir els controls crítics; preparar la simbolització; compondre i exportar almenys un mapa; documentar les limitacions; i crear de nou el `.qgz` homònim |
 | Resultats | Auditoria integrada; `pr6-sintesi-cognom.gpkg` i còpies locals dels GeoTIFF auditats; `pr6_pendent_roi_graus.tif`; `pr6_roi_municipal.model3` validat; `pr6-sintesi-cognom.qgz` nou i projecte incrustat `pr6` amb la coherència verificada; almenys un mapa exportat i diari complet |
 | Evidències del diari | Inventari i llinatge finals, contractes i controls de la seqüència integrada de relleu, comparacions de l'execució manual, el lot, el model i la branca reexecutada, relació entre pregunta i resultats, incidències, decisions de neteja, limitacions, prova de les dues representacions, prova neta del paquet i guió de la defensa oral |
-| Comprovacions | Exactament un projecte incrustat `pr6`; cap URI local cap a `dist/`, a `pr5-raster-cognom.gpkg` ni a una carpeta anterior; `pr6_pendent_roi_graus.tif` amb rang, graella, `NoData` i recompte vàlid comprovats; equivalència del model amb el buffer manual i de la branca reexecutada amb el resultat canònic dins de les toleràncies declarades; cap sobreescriptura de `municipi_treball`; absència de fonts perdudes; esquemes i `CRS` identificats; resultats traçables; ràsters documentats; mapa llegible; i obertura independent correcta de les dues representacions des del paquet extret |
+| Comprovacions | Projecte principal `pr6` identificat; fonts revisades a totes les vistes conservades; cap URI local cap a `dist/`, a `pr5-raster-cognom.gpkg` ni a una carpeta anterior; `pr6_pendent_roi_graus.tif` amb rang, graella, `NoData` i recompte vàlid comprovats; equivalència del model amb el buffer manual i de la branca reexecutada amb el resultat canònic dins de les toleràncies declarades; cap sobreescriptura de `municipi_treball`; absència de fonts perdudes; esquemes i `CRS` identificats; resultats traçables; ràsters documentats; mapa llegible; i obertura independent correcta de les dues representacions des del paquet extret |
 | Fitxers que cal conservar | `dist/pr6-sintesi-cognom.gpkg`, amb el projecte incrustat `pr6`; `dist/pr6-sintesi-cognom.qgz`; els deu GeoTIFF de `pr5` ja lliurats i verificats sense reanomenar-los ni sobreescriure'ls; `dist/pr6_pendent_roi_graus.tif`; `dist/pr6_roi_municipal.model3`; mapa exportat; paquet final i diari |
 | Paquet final i prova neta | Amb QGIS tancat, verificar els GeoTIFF heretats, copiar a `dist/` només els fitxers nous de `pr6` i assemblar el conjunt complet en una carpeta separada sense canviar-ne els noms; extreure el paquet en una carpeta neta que no comparteixi la ruta original i comprovar-hi l'obertura de `pr6-sintesi-cognom.qgz`, del projecte incrustat `pr6`, de les dades, dels GeoTIFF, de `pr6_roi_municipal.model3` i del mapa exportat sense reparar dependències de manera implícita |
 | Defensa oral | Fer una defensa oral breu que relacioni pregunta, fonts, model, paràmetres, un control, resultat, autoria i limitacions |
@@ -467,7 +471,7 @@ La sisena micropràctica crea la instantània final `pr6` a partir d'una còpia 
 
 El model obligatori és deliberadament petit: formalitza un buffer ja validat sense convertir tota l'anàlisi acumulada en un diagrama artificial. La seva evidència és la comparació controlada amb la sortida manual; la reexecució de la branca acumulada comprova, de manera separada, que el resultat final continua derivant de les entrades canòniques.
 
-### Activitat integradora: reexecutar una branca acumulada
+### Activitat integradora: reexecució i comparació de resultats heretats
 
 Cal escollir una branca que ja intervingui en la conclusió del projecte: per exemple, un criteri vectorial de la micropràctica 4 que parteixi de `municipi_treball` i de capes preparades, o la seqüència de pendent, reclassificació i resum zonal de la micropràctica 5. La taula de continuïtat n'identifica l'entrada canònica, la sortida persistent i el consumidor. La reexecució parteix exactament d'aquesta entrada; no torna a descarregar una edició diferent ni inicia un altre cas d'estudi.
 
@@ -492,7 +496,7 @@ Una expressió de QGIS és el primer nivell reproduïble per formular un filtre,
 
 #### SQL tabular en un GeoPackage
 
-L'entorn d'execució dels exemples següents és la finestra SQL del **Gestor de bases de dades de QGIS 3.44**, amb la connexió SQLite oberta directament sobre `sandbox/pr6-sintesi-cognom.gpkg`. No és una capa virtual ni una connexió PostgreSQL. Les dues primeres consultes utilitzen la capa real del municipi assignat; després s'introdueixen dues taules didàctiques petites per practicar nuls i unions sense atribuir aquests camps a cap producte oficial.
+L'entorn d'execució dels exemples següents és la finestra SQL del **Gestor de bases de dades de QGIS 3.44**, amb la connexió SQLite oberta directament sobre `sandbox/pr6-sintesi-cognom.gpkg`. No és una capa virtual ni una connexió PostgreSQL. Les dues primeres consultes utilitzen la capa real del municipi escollit; després s'introdueixen dues taules didàctiques petites per practicar nuls i unions sense atribuir aquests camps a cap producte oficial.
 
 ::: listing "Primera lectura SQL de la capa municipal real"
 ```sql

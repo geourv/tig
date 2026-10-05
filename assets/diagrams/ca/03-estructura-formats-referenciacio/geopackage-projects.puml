@@ -1,0 +1,17 @@
+@startuml
+top to bottom direction
+skinparam roundcorner 0
+
+rectangle "pr1-project-setup-exemple.gpkg" as gpkg {
+  rectangle "Projectes QGIS" as projects {
+    rectangle "pr1\nVista general" as pr1
+    rectangle "comparacio\nVista de detall" as comparison
+  }
+  rectangle "municipi_vilaseca\nCapa vectorial\nMultiPolygon · EPSG:25831" as municipality
+}
+
+file "pr1-project-setup-exemple.qgz\nProjecte extern independent" as external
+pr1 --> municipality : llegeix
+comparison --> municipality : llegeix
+external --> municipality : llegeix
+@enduml
