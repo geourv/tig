@@ -40,7 +40,7 @@ jobs:
       contents: read
       pages: write
       id-token: write
-    uses: dosquartsdedocs/unaltraweb/.github/workflows/site-deploy.yml@02af70001bf8085af860fd57f8d7e75ec96a89c7
+    uses: dosquartsdedocs/unaltraweb/.github/workflows/site-deploy.yml@0845277b9ddd7c7b5bdcf5d6459846a1958970f3
     with:
       reviewed_sha: ${{ inputs.reviewed_sha }}
       manual-pdf-image: "ghcr.io/dosquartsdedocs/unaltraweb-manual-pdf@sha256:9e0b3a45753c170b795e9a9d6df61580085c113436beac5bf6c8de69b6562097"
