@@ -19,6 +19,10 @@ paths:
 
 plugins: []
 data:
+  - id: tig-buffer-municipal-source
+    type: gpkg
+    path: practiques/tig-buffer-municipal-500m/inputs/municipi-font.gpkg
+    sha256: 46aa316b88ec9f6eac559ca4f2037f1e142a997d3c0722febb8912a9a03654dd
   - id: cnig-vila-seca-administrative-unit
     type: vector
     path: prepared/cnig/administrative-units/vila-seca-cnig.raw.json
@@ -100,6 +104,30 @@ data:
     sha256: 4370d6fd4e0fc00356177f75742ea5fa552cacbe970b9ae8fe30ac1b425c6e0e
 
 teaching_resources:
+  - id: tig-buffer-municipal-source
+    kind: bundled
+    provider: cnig
+    type: vector
+    path: practiques/tig-buffer-municipal-500m/inputs/municipi-font.gpkg
+    title: Límit municipal de Vila-seca per al buffer de 500 m
+    description: >-
+      Còpia binària verificada del GeoPackage municipal existent. La pràctica
+      selecciona només municipi_treball i declara motor, productes, font DejaVu
+      Sans i captures locals a practiques/tig-buffer-municipal-500m/activity.json.
+      El projecte històric amb WMS es conserva a la font i no es copia als
+      checkpoints inicial/resolt de la pràctica.
+    licence: CC BY 4.0 ign.es
+    size: small
+    formats: [geopackage]
+    tags: [tig, vila_seca, municipality, buffer, offline, cnig]
+    teaching_use:
+      - Construir i comprovar una àrea d'influència plana de 500 m sobre una entitat municipal.
+      - Distingir el límit original, el resultat persistent i les dependències dels projectes.
+    layers:
+      - name: municipi_treball
+        title: Municipi de treball
+        geometry: polygon
+        crs: EPSG:25831
   - id: cnig-vila-seca-administrative-unit
     kind: downloadable
     provider: cnig

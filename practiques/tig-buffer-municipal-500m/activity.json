@@ -1,0 +1,166 @@
+{
+  "schema_version": 2,
+  "kind": "qgis-practice-request-v2",
+  "activity": {
+    "id": "tig-buffer-municipal-500m",
+    "version": "0.1.1",
+    "title": "Àrea d’influència municipal de 500 m · Vila-seca"
+  },
+  "qgis_image": "sha256:1003721d96abe9607d8337b36851f9b29f84c2f8f92b377d1a73ff03c9d15cd2",
+  "script": "compute.py",
+  "inputs": [
+    {
+      "id": "municipi-source",
+      "path": "inputs/municipi-font.gpkg",
+      "sha256": "46aa316b88ec9f6eac559ca4f2037f1e142a997d3c0722febb8912a9a03654dd"
+    }
+  ],
+  "parameters": {
+    "distance_m": 500.0,
+    "segments_per_quadrant": 8,
+    "dissolve": false,
+    "contour_sampling_step_m": 25.0,
+    "contour_distance_tolerance_m": 5.421745017609492,
+    "numeric_distance_tolerance_m": 0.01,
+    "coverage_tolerance_m2": 0.01
+  },
+  "products": [
+    {
+      "id": "initial-data",
+      "path": "data/municipi_treball.gpkg",
+      "role": "initial-data",
+      "format": "geopackage",
+      "depends_on": ["font-regular"],
+      "members": [
+        {"kind": "vector", "name": "municipi_treball", "role": "initial-data"},
+        {"kind": "project", "name": "inicial", "role": "initial-project"}
+      ]
+    },
+    {
+      "id": "buffer-data",
+      "path": "data/municipi_buffer_500m.gpkg",
+      "role": "resolved-data",
+      "format": "geopackage",
+      "depends_on": ["initial-data", "font-regular"],
+      "members": [
+        {"kind": "vector", "name": "municipi_buffer_500m", "role": "resolved-data"},
+        {"kind": "project", "name": "resolt", "role": "resolved-project"}
+      ]
+    },
+    {
+      "id": "font-regular",
+      "path": "data/fonts/DejaVuSans.ttf",
+      "role": "initial-data",
+      "format": "font",
+      "depends_on": []
+    },
+    {
+      "id": "arc-probe-input",
+      "path": "data/arc_probe_input.gpkg",
+      "role": "resolved-data",
+      "format": "geopackage",
+      "depends_on": [],
+      "members": [
+        {"kind": "vector", "name": "arc_probe_input", "role": "resolved-data"}
+      ]
+    },
+    {
+      "id": "arc-probe-buffer",
+      "path": "data/arc_probe_buffer.gpkg",
+      "role": "resolved-data",
+      "format": "geopackage",
+      "depends_on": [],
+      "members": [
+        {"kind": "vector", "name": "arc_probe_buffer", "role": "resolved-data"}
+      ]
+    }
+  ],
+  "fonts": [{"file": "font-regular", "family": "DejaVu Sans"}],
+  "projects": [
+    {
+      "id": "initial-project",
+      "path": "projects/initial/initial.qgz",
+      "role": "initial-project",
+      "source_product": "initial-data",
+      "source_project": "inicial",
+      "compose": true,
+      "capture": true,
+      "scene": {
+        "setup": [
+          {"action": "close_transients"},
+          {"action": "show_panel", "title": "Layers"},
+          {"action": "zoom_to_layer", "layer": "Municipi de treball", "scale": 1.25},
+          {"action": "clear_message_bar"}
+        ],
+        "presentation": {
+          "active_layer": "Municipi de treball",
+          "checks": {"project_crs": "EPSG:25831", "required_layers": ["Municipi de treball"]}
+        },
+        "captures": [
+          {
+            "id": "overview",
+            "target": {"class_name": "QgisApp"},
+            "drawings": [
+              {
+                "type": "callout",
+                "target": {"layer_name": "Municipi de treball"},
+                "text": "Límit municipal · entrada local",
+                "target_marker": "box",
+                "colour": "green"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "resolved-project",
+      "path": "projects/resolved/resolved.qgz",
+      "role": "resolved-project",
+      "source_product": "buffer-data",
+      "source_project": "resolt",
+      "compose": true,
+      "capture": true,
+      "scene": {
+        "setup": [
+          {"action": "close_transients"},
+          {"action": "show_panel", "title": "Layers"},
+          {"action": "zoom_to_layer", "layer": "Buffer de 500 m", "scale": 1.15},
+          {"action": "clear_message_bar"}
+        ],
+        "presentation": {
+          "active_layer": "Buffer de 500 m",
+          "checks": {
+            "project_crs": "EPSG:25831",
+            "required_layers": ["Municipi de treball", "Buffer de 500 m"]
+          }
+        },
+        "captures": [
+          {
+            "id": "overview",
+            "target": {"class_name": "QgisApp"},
+            "drawings": [
+              {
+                "type": "callout",
+                "target": {"layer_name": "Municipi de treball"},
+                "text": "Límit municipal de referència",
+                "target_marker": "box",
+                "colour": "green"
+              },
+              {
+                "type": "callout",
+                "target": {"layer_name": "Buffer de 500 m"},
+                "text": "Buffer persistit · 500 m",
+                "target_marker": "box",
+                "colour": "green"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "exports": [],
+  "timeout_seconds": 300,
+  "locale": "ca_ES"
+}
