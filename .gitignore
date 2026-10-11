@@ -24,3 +24,10 @@ __pycache__/
 # QGIS MCP runtime and render coordination.
 /.unaltracaptura-qgis/runtime/
 /.unaltracaptura-qgis/render-locks/
+
+# Practice deliveries are retained; ignored does not mean disposable.
+# sandbox/ already covers practice runs and producer-owned job staging.
+/dist/practiques/
+
+# Verified local input; provenance and preparation remain versioned.
+/practiques/tig-buffer-municipal-500m/inputs/municipi-font.gpkg
