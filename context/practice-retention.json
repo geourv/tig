@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "kind": "tig-practice-retention-index",
+  "activity": "tig-buffer-municipal-500m",
+  "source_version": "0.1.1",
+  "content_status": "draft",
+  "scope": "Source-only consolidation; existing retained evidence, not a new execution or a durable-copy receipt.",
+  "retention": {
+    "automatic_cleanup": "never",
+    "durable_external_copy": "pending owner/hub destination and verified copy receipt",
+    "new_git_content": "sources, reproducibility code and manifests only",
+    "delivery": "PDF and ZIP per activity, outside Git, for later Moodle delivery"
+  },
+  "local_input": {
+    "path": "practiques/tig-buffer-municipal-500m/inputs/municipi-font.gpkg",
+    "bytes": 139264,
+    "sha256": "46aa316b88ec9f6eac559ca4f2037f1e142a997d3c0722febb8912a9a03654dd",
+    "git": "exact-path ignored; retained in place",
+    "historical_source": "assets/projectes/vila-seca/dades_preparades/projecte_tig.gpkg",
+    "provenance": "assets/projectes/vila-seca/procedencia.yml",
+    "source_url": "https://api-features.ign.es/collections/administrativeunit/items/1172246?f=json",
+    "licence": "CC BY 4.0 ign.es",
+    "preparation": "practiques/tig-buffer-municipal-500m/README.md#entrada-i-recursos",
+    "preparation_policy": "Verify original bytes and hash; copy only if absent; verify an existing identical destination; never overwrite a mismatch."
+  },
+  "accepted_bundle": {
+    "root": "sandbox/practiques/tig-buffer-municipal-500m/run-04-validated",
+    "manifest": "bundle.json",
+    "manifest_sha256": "8bf979b7cc6c60312fb0a5421ab8a5f9b82bdd7d4cd128778e1ce73247dfcaff",
+    "inventory_entries": 32,
+    "files_including_manifest": 33,
+    "payload_bytes": 3345942,
+    "producer_version": "0.6.0rc2",
+    "producer_revision": "sha256:5922d3dc411c14c7c3c2d9257a78b4d42f42fb1aae8451bcf245ca44a0e91992",
+    "qgis_image_id": "sha256:1003721d96abe9607d8337b36851f9b29f84c2f8f92b377d1a73ff03c9d15cd2",
+    "retained_checks": 30,
+    "producer_offline_reopen": "passed after relocation of the external and embedded projects",
+    "members": [
+      {"path": "payload/sources/activity.py", "bytes": 26124, "sha256": "67569e6adeb10681b73fc4b00191b034bbaa009aa5dd4e271f7a2ad702b8e3fd"},
+      {"path": "payload/data/arc_probe_buffer.gpkg", "bytes": 98304, "sha256": "5be08b452005d2002cee3b4d161768f9a87325741f1e0ade83c1142e91e7fa67"},
+      {"path": "payload/data/arc_probe_input.gpkg", "bytes": 98304, "sha256": "e7188c20a4ea29cc13182ec773d27b49e690d76fc32edd19f9567fbd2a9e4301"},
+      {"path": "payload/data/municipi_buffer_500m.gpkg", "bytes": 135168, "sha256": "ffd29f9634357c2988c72f190a6b265abee56c4888a432dfd3094a7ac52b80fa"},
+      {"path": "payload/controls/calculation.json", "bytes": 6044, "sha256": "b6c0129dd04f6c4145b6093ec433db00e776c6be55377dbc394fe64c1193c6a5"},
+      {"path": "payload/controls/execution.json", "bytes": 940, "sha256": "39733b56c16fd6630c644380f79d35892526536c4596880e0db61b507fb14783"},
+      {"path": "payload/data/fonts/DejaVuSans.ttf", "bytes": 759720, "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280"},
+      {"path": "payload/data/municipi_treball.gpkg", "bytes": 135168, "sha256": "b26980378423c19cfc2bcffd14fa1e9cc445557a8042b9c1478df86448a28a8b"},
+      {"path": "payload/projects/initial/initial.qgz", "bytes": 11725, "sha256": "af2eb7b07c4da8d292f3078d69e44527b685f3a59fe6a39f3a292c22cd99ec9c"},
+      {"path": "payload/config-initial-project.json", "bytes": 641, "sha256": "6db34b54968f7e0f7f0c0c14f428a41b08bdbbbc6501b6db893924862b39f109"},
+      {"path": "payload/captures/initial-project/overview.manifest.json", "bytes": 7405, "sha256": "7ac5c5e97a5ea16b0a2dbef922b1e883832450d418f03ff3c2949106d2b6563a"},
+      {"path": "payload/captures/initial-project/overview.original.png", "bytes": 165576, "sha256": "05bc0d9a4b26e6f395c2e31f4d685994a3658f66076ff21859812d629b107942"},
+      {"path": "payload/captures/initial-project/overview.png", "bytes": 169078, "sha256": "7a2ab436984fe8a9668a38a083814f3d7c1246a1f0af6f08670af3c838b1cd61"},
+      {"path": "payload/projects/initial/initial.qgz.receipt.json", "bytes": 4281, "sha256": "2f0a63bdbbc153c60e9f1aa9f260847b6097f289715bd9a81e6a27f078df680b"},
+      {"path": "payload/recipes/initial-project.json", "bytes": 6150, "sha256": "7fac43a84f424aec6ccc82266b32044664c276547d01e96d89cf50d6dba0c0f7"},
+      {"path": "payload/controls/initial-project.render.json", "bytes": 51815, "sha256": "d068bb27b6f5319afeb2241a7f46976942e56ef7249368147d06e6200850cf68"},
+      {"path": "payload/captures/initial-project/overview.annotations.svg", "bytes": 443310, "sha256": "f5594aeda826a93f9f4b2783a3fcb5675f737f4bbedb85868065a8d7f34772bb"},
+      {"path": "payload/sources/inputs/inputs/municipi-font.gpkg", "bytes": 139264, "sha256": "46aa316b88ec9f6eac559ca4f2037f1e142a997d3c0722febb8912a9a03654dd"},
+      {"path": "payload/controls/offline-reopen.json", "bytes": 13173, "sha256": "6414440885bbedf15ee1f3eb745f30a1f6faec1f473387c17882db7d4069fd80"},
+      {"path": "payload/practice.json", "bytes": 19072, "sha256": "1963edee0e1e96c266f85c2c9e5f96deca8b2198613991c70cfe358b68043fc8"},
+      {"path": "payload/controls/qgis-practice-v2.schema.json", "bytes": 8563, "sha256": "528c8be229c72c346f134ffaa60094f94224094a25b6fb11bcc87802ddc7fffb"},
+      {"path": "payload/sources/rebuild.json", "bytes": 6028, "sha256": "b54fcf5640e434c70c56081b1d0bdff3aff3bf7cd2fdb86fc24319990410a7e4"},
+      {"path": "payload/sources/request.original.json", "bytes": 5029, "sha256": "8c9a7c0934f3e460959008dd41c9a0b084bc6b17a5275b7eabbc39c19d9b2424"},
+      {"path": "payload/projects/resolved/resolved.qgz", "bytes": 13303, "sha256": "1d90d281a9590cf7db453b3742a5da68050dd93d57fc49dab89216143941087d"},
+      {"path": "payload/config-resolved-project.json", "bytes": 645, "sha256": "5a6314513390d7f653a8f853a4b475d4e1b39b456f421c1286cf7537f30dcdcb"},
+      {"path": "payload/captures/resolved-project/overview.manifest.json", "bytes": 9741, "sha256": "8764305bb96c109a88ab06518b3037a248abb24a8125eea63737f98e4a62acbc"},
+      {"path": "payload/captures/resolved-project/overview.original.png", "bytes": 200224, "sha256": "615d059ce2993180b2659961258f495472b8a2486fe8c04b6cc53260b6300cf3"},
+      {"path": "payload/captures/resolved-project/overview.png", "bytes": 206595, "sha256": "d7b908dc9bf6451bdd255b1a22275e227c2c748e5b2ee1692e3d89bda3162ebe"},
+      {"path": "payload/projects/resolved/resolved.qgz.receipt.json", "bytes": 4310, "sha256": "5392c0b5e5c83bfcdafeddac8e6b7d050c37786a923c7f1b1694f272b236122c"},
+      {"path": "payload/recipes/resolved-project.json", "bytes": 7870, "sha256": "eea67dc9a35c4aa3c7633b5edf695a1a5f1f284f9587955fb447ec51e74d98e7"},
+      {"path": "payload/controls/resolved-project.render.json", "bytes": 54927, "sha256": "f93d485907b8c91ef03476c59f3daadaaef798da793e0b349ff5124a4ddf56ee"},
+      {"path": "payload/captures/resolved-project/overview.annotations.svg", "bytes": 537445, "sha256": "f0471bf2199846d55e09c68f09e3d790ffeee473fcacf669f9f8431cb593a848"}
+    ]
+  },
+  "retained_jobs": [
+    {"path": "sandbox/qgis-practice-jobs/practice-f7b14a7bbd3a442b83e85ca28568927c", "role": "failed historical 497 m control"},
+    {"path": "sandbox/qgis-practice-jobs/practice-e8e57180d04e41d9931f33f4c580483d", "role": "failed historical control with complete diagnostic"},
+    {"path": "sandbox/qgis-practice-jobs/practice-9a407f15883047428b7c44c117159065", "role": "causal proof retaining the failed historical control"},
+    {"path": "sandbox/qgis-practice-jobs/practice-6a90aff3ad3645b09401f703bf0d7c61", "role": "accepted run-04 producer job"}
+  ],
+  "retained_files": [
+    {"path": "sandbox/pr1-project-setup-zaragozi.gpkg", "bytes": 307200, "sha256": "88075560914a0da195dab9540325a7390f49d6b6cdf237c72639e3271c0f7ad9", "role": "author original"},
+    {"path": "sandbox/pr1-project-setup-zaragozi.qgz", "bytes": 31605, "sha256": "7147be541f7da8f487ebb1e1d3ef3b9f1602f01a109f7c21e7468c161d4cc050", "role": "author original"},
+    {"path": "assets/pdf/manual-ca.pdf", "bytes": 43589176, "sha256": "3d58d63b7315099ac3518401415c35f0a0acf4a3f7f41ee6270716f394309bc4", "role": "previously approved and published manual; not a new practice reading"},
+    {"path": "opencode.json", "bytes": 1360, "sha256": "7b947fb3ff7ae77e095cb0d118125b1dfe0a77f4912b8ff3b7cd0063816b55d1", "role": "locally ignored operational MCP selection; temporary paths"}
+  ],
+  "additional_retained_paths": [
+    {"path": "assets/img/manual-cover-ca.png", "bytes": 899060, "role": "existing public manual cover", "sha256_status": "not recorded in this index; inventory when making the durable copy"}
+  ],
+  "font_licence": "https://dejavu-fonts.github.io/License.html",
+  "runtime_recovery": {
+    "host_adapter_wheel_sha256": "2c9b0c21cbdf7f226a76fd792b9a8fe31e51a525ad0e14398aa052b7a89e7a2a",
+    "host_adapter_ready_sha256": "7c7f98fb11f0aaab827644c201a6b8527079ec8b26a96da3f346dbf861c2f9ec",
+    "controller_image_id": "sha256:17ef0d24e8611a6802b3c01ff440e6e552eac728343733198056fdbc6cdf379e",
+    "controller_fingerprint": "sha256:5b8de154fc10665f71056b2887959d41a2a6f5fb5726611d1ee3482c7d7b3d36",
+    "pdf_worker_reference": "ghcr.io/dosquartsdedocs/unaltraweb-manual-pdf@sha256:1bb3f2dafd741e96c28639ec1cc8ccaeb81cbaa73e649f787c0b4ef59997bd4b",
+    "pdf_worker_image_id": "sha256:618163d3f924439792b2306617bd9612f566c5881166102fa544b4e782d569fa",
+    "qgis_client_wheel_sha256": "1a7456c0b81e0a4729b702b60d9340456efea9a88b9f5c21b97c8ff4823d09bf",
+    "handoff": "context/practice-tools-handoff.md",
+    "persistent_installation": "pending shared owner releases and hub-managed installation; do not copy or relocate the existing venvs"
+  },
+  "restore": [
+    "Restore the source commit and the complete retained bundle tree with its relative paths.",
+    "Verify the original bundle manifest hash and all members before using the restored data.",
+    "Use the native producer practice-check for initial-project and resolved-project after the hub supplies the persistent client.",
+    "Reopen payload/projects/initial/initial.qgz and payload/projects/resolved/resolved.qgz with both GeoPackages and the declared font available; retain embedded inicial/resolt projects.",
+    "Restore the local input from a declared byte-identical source using the README preparation instruction; no GIS calculation is needed to restore it."
+  ],
+  "pending_deliverables": [
+    "edition configuration",
+    "student reading PDF",
+    "teacher reading PDF",
+    "student Moodle ZIP",
+    "teacher Moodle ZIP",
+    "final extracted-delivery verification and reopening",
+    "author editorial review"
+  ]
+}
