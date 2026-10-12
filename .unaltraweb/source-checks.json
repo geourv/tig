@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "profile": "unaltremanual",
+  "public_roots": [
+    "_chapters",
+    "_pages"
+  ],
+  "practice_roots": [
+    "practiques",
+    "_practices",
+    "assets/projectes"
+  ],
+  "data_roots": [
+    "sandbox",
+    "dist",
+    "tmp",
+    "assets/pdf",
+    "practiques/tig-buffer-municipal-500m/inputs",
+    "assets/projectes/crs-visualisation/icgc-orthophoto-2025.xml",
+    "assets/projectes/crs-visualisation/icgc-orthophoto-2025.xml.aux.xml",
+    "assets/projectes/crs-visualisation/openstreetmap.xml",
+    "assets/projectes/crs-visualisation/openstreetmap.xml.aux.xml",
+    "assets/projectes/crs-visualisation/world-extent.geojson",
+    "assets/projectes/crs-visualisation/world-view-25831.csv",
+    "assets/projectes/crs-visualisation/world-view-25831.vrt",
+    "assets/projectes/vila-seca/dades_originals",
+    "assets/projectes/vila-seca/dades_preparades",
+    "assets/projectes/vila-seca/informes",
+    "assets/projectes/vila-seca/pr1-aula",
+    "assets/projectes/vila-seca/pr1-guia",
+    "assets/projectes/vila-seca/pr3-guia",
+    "assets/projectes/vila-seca/ex05-seleccions-jerarquiques-vila-seca.qgz",
+    "assets/projectes/vila-seca/pr1-fonts-vila-seca.qgz",
+    "assets/projectes/vila-seca/pr2-digitalitzacio-vila-seca.qgz",
+    "assets/projectes/vila-seca/projecte_tig.qgz",
+    "assets/projectes/vila-seca/projecte-tig-vila-seca.zip",
+    "assets/projectes/vila-seca/SHA256SUMS",
+    "assets/projectes/vila-seca/SHA256SUMS-reference-exercises"
+  ],
+  "allow_empty_public_sources": false
+}

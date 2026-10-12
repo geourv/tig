@@ -24,11 +24,15 @@ exclude:
   - Gemfile.lock
   - INSTALL.md
   - LICENSE
+  - opencode.json
+  - opencode.jsonc
   - package.json
   - package-lock.json
   - purgecss.config.js
   - README.md
+  - practiques/
   - sandbox/
+  - dist/
   - tmp/
   - vendor
   - _site/

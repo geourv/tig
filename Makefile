@@ -1,7 +1,9 @@
 LOCAL_CORE ?= /opt/unaltraweb
-LOCAL_GEMFILE := tmp/Gemfile.local
-MCP_IMAGE ?= ghcr.io/dosquartsdedocs/unaltraweb-mcp:0.5.0
-MANUAL_PDF_IMAGE ?= ghcr.io/dosquartsdedocs/unaltraweb-manual-pdf@sha256:9e0b3a45753c170b795e9a9d6df61580085c113436beac5bf6c8de69b6562097
+# Empty selects factory-owned, runtime-specific generated state. An explicit
+# Gemfile is author-owned and requires its existing frozen lock.
+LOCAL_GEMFILE ?=
+MCP_IMAGE ?= ghcr.io/dosquartsdedocs/unaltraweb-mcp:0.7.1
+MANUAL_PDF_IMAGE ?= ghcr.io/dosquartsdedocs/unaltraweb-manual-pdf@sha256:1bb3f2dafd741e96c28639ec1cc8ccaeb81cbaa73e649f787c0b4ef59997bd4b
 MANUAL_PDF_PREVIEW_CLEAN_DRY_RUN ?= 1
 MANUAL_PDF_PREVIEW_CONFIRM_CLEAN ?= 0
 MANUAL_PDF_PREVIEW_RECEIPT_SHA256 ?=
@@ -22,21 +24,16 @@ runtime-image:
 	@docker image inspect "$(MCP_IMAGE)" >/dev/null 2>&1 || docker pull "$(MCP_IMAGE)" >/dev/null 2>&1 || { printf '%s\n' 'Unable to use $(MCP_IMAGE). If this is an unpublished candidate, build it with make mcp-build in the unaltraweb factory checkout.' >&2; exit 1; }
 
 local-gemfile:
-	@mkdir -p tmp
-	@printf '%s\n' 'source "https://rubygems.org"' '' 'group :jekyll_plugins do' '  gem "unaltraweb", path: "$(LOCAL_CORE)"' 'end' > $(LOCAL_GEMFILE)
+	@PYTHONPATH="$(LOCAL_CORE)/src" python3 -m unaltraweb_mcp.bundler_runtime --project "$${PWD}" --core "$(LOCAL_CORE)" --gemfile "$(LOCAL_GEMFILE)"
 
 site-check-native:
 	@unaltraweb-mcp --project "$${PWD}" mcp site-check >/dev/null
 
-build-native: local-gemfile site-check-native
-	@BUNDLE_GEMFILE=$(LOCAL_GEMFILE) bundle lock --local
-	@BUNDLE_GEMFILE=$(LOCAL_GEMFILE) bundle check
-	@umask 022 && BUNDLE_GEMFILE=$(LOCAL_GEMFILE) bundle exec jekyll build --config $(LOCAL_CORE)/_config.yml,_config.yml --disable-disk-cache
+build-native: site-check-native
+	@umask 022 && PYTHONPATH="$(LOCAL_CORE)/src" python3 -m unaltraweb_mcp.bundler_runtime --project "$${PWD}" --core "$(LOCAL_CORE)" --gemfile "$(LOCAL_GEMFILE)" -- bundle exec jekyll build --config $(LOCAL_CORE)/_config.yml,_config.yml --disable-disk-cache
 
-serve-capture-native: local-gemfile
-	@BUNDLE_GEMFILE=$(LOCAL_GEMFILE) bundle lock --local
-	@BUNDLE_GEMFILE=$(LOCAL_GEMFILE) bundle check
-	@BUNDLE_GEMFILE=$(LOCAL_GEMFILE) bundle exec jekyll serve --config $(LOCAL_CORE)/_config.yml,_config.yml --host $${HOST:-0.0.0.0} --port $${PORT:-4000} --disable-disk-cache
+serve-capture-native:
+	@PYTHONPATH="$(LOCAL_CORE)/src" python3 -m unaltraweb_mcp.bundler_runtime --project "$${PWD}" --core "$(LOCAL_CORE)" --gemfile "$(LOCAL_GEMFILE)" -- bundle exec jekyll serve --config $(LOCAL_CORE)/_config.yml,_config.yml --host $${HOST:-0.0.0.0} --port $${PORT:-4000} --disable-disk-cache
 
 serve-native: site-check-native serve-capture-native
 
