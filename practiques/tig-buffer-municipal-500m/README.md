@@ -206,10 +206,11 @@ El productor ja ha generat les dues captures reals dins del bundle del run-04.
 Les lectures no incorporen una captura antiga ni un enllaç fictici a una imatge:
 el compositor hi vincularà els fitxers reals seleccionats del descriptor segellat.
 
-La request de productes és autònoma respecte del catàleg general:
-`unaltracaptura-qgis.yml` continua sent la configuració principal i declara l'entrada
-docent. El motor d'aquesta activitat el fixa `activity.json`, sense reconfigurar
-les captures històriques del manual.
+La request de productes és autònoma respecte del catàleg general.
+`unaltracaptura-qgis.yml` conserva la configuració de les captures històriques i no
+registra aquesta entrada. `activity.json` fixa el motor, l'input relatiu al directori
+de la pràctica i el seu hash; la preparació de la còpia local es descriu més amunt.
+Aquesta entrada no passa pel `data_root` del preparador global de captures.
 
 ## Lectures, metadades i conservació
 
