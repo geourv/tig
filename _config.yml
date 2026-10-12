@@ -24,6 +24,8 @@ exclude:
   - Gemfile.lock
   - INSTALL.md
   - LICENSE
+  - opencode.json
+  - opencode.jsonc
   - package.json
   - package-lock.json
   - purgecss.config.js
