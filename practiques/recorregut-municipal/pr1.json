@@ -1,0 +1,218 @@
+{
+  "schema_version": 2,
+  "kind": "qgis-practice-request-v2",
+  "activity": {
+    "id": "pr1-project-setup",
+    "version": "0.2.0",
+    "title": "Descàrrega CNIG i projecte municipal"
+  },
+  "qgis_image": "sha256:1003721d96abe9607d8337b36851f9b29f84c2f8f92b377d1a73ff03c9d15cd2",
+  "script": "compute.py",
+  "inputs": [
+    {
+      "id": "limits-original",
+      "path": "inputs/lineas_limite_cnig_20260728.zip",
+      "sha256": "d752b1b943e6c60f46a23119d6c3d4ad0b198461c502f0a5433197d7a5e34c83"
+    },
+    {
+      "id": "pnoa-image",
+      "path": "inputs/pnoa_vilaseca_context.png",
+      "sha256": "1f4c08ad287e6d076fd16dbf46c0ff5ad0e4036e0bb0c0eca8fe8f194a75234f"
+    },
+    {
+      "id": "pnoa-metadata",
+      "path": "inputs/pnoa_vilaseca_procedencia.json",
+      "sha256": "34ad2887be8fb0074a339c4d76651bd41c5eb28f5c98faa33b25129d76d132a3"
+    },
+    {
+      "id": "pnoa-capabilities",
+      "path": "inputs/pnoa_capabilities.xml",
+      "sha256": "907f75b17d07c1ddc6f2dfcf2a04efa7c66de4b1ea7e46e0c2524a9dfdebad52"
+    }
+  ],
+  "parameters": {
+    "stage": "pr1",
+    "municipality_code": "34094343171",
+    "municipality_name": "Vila-seca",
+    "input_hashes": {
+      "limits-original": "d752b1b943e6c60f46a23119d6c3d4ad0b198461c502f0a5433197d7a5e34c83",
+      "pnoa-image": "1f4c08ad287e6d076fd16dbf46c0ff5ad0e4036e0bb0c0eca8fe8f194a75234f",
+      "pnoa-metadata": "34ad2887be8fb0074a339c4d76651bd41c5eb28f5c98faa33b25129d76d132a3",
+      "pnoa-capabilities": "907f75b17d07c1ddc6f2dfcf2a04efa7c66de4b1ea7e46e0c2524a9dfdebad52"
+    },
+    "buffer_distance_m": 500,
+    "segments": 8,
+    "initial_rasters": [
+      "ortho"
+    ],
+    "all_rasters": [
+      "ortho"
+    ]
+  },
+  "products": [
+    {
+      "id": "initial-data",
+      "path": "data/entrada_docent.gpkg",
+      "role": "initial-data",
+      "format": "geopackage",
+      "depends_on": [
+        "font-regular",
+        "ortho"
+      ],
+      "members": [
+        {
+          "kind": "vector",
+          "name": "recintes_cnig",
+          "role": "initial-data"
+        },
+        {
+          "kind": "table",
+          "name": "fonts_dades",
+          "role": "metadata"
+        },
+        {
+          "kind": "project",
+          "name": "inicial",
+          "role": "initial-project"
+        }
+      ]
+    },
+    {
+      "id": "resolved-data",
+      "path": "data/pr1-project-setup-exemple.gpkg",
+      "role": "resolved-data",
+      "format": "geopackage",
+      "depends_on": [
+        "font-regular",
+        "ortho"
+      ],
+      "members": [
+        {
+          "kind": "vector",
+          "name": "recintes_cnig",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "municipi_treball",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "table",
+          "name": "fonts_dades",
+          "role": "metadata"
+        },
+        {
+          "kind": "project",
+          "name": "pr1",
+          "role": "resolved-project"
+        }
+      ]
+    },
+    {
+      "id": "ortho",
+      "path": "data/pnoa_context.tif",
+      "role": "initial-data",
+      "format": "geotiff",
+      "depends_on": []
+    },
+    {
+      "id": "font-regular",
+      "path": "data/fonts/DejaVuSans.ttf",
+      "role": "initial-data",
+      "format": "font",
+      "depends_on": []
+    },
+    {
+      "id": "font-licence",
+      "path": "data/fonts/DejaVuSans-licence.csv",
+      "role": "initial-data",
+      "format": "csv",
+      "depends_on": [
+        "font-licence-types"
+      ]
+    },
+    {
+      "id": "font-licence-types",
+      "path": "data/fonts/DejaVuSans-licence.csvt",
+      "role": "initial-data",
+      "format": "csvt",
+      "depends_on": []
+    }
+  ],
+  "fonts": [
+    {
+      "file": "font-regular",
+      "family": "DejaVu Sans"
+    }
+  ],
+  "projects": [
+    {
+      "id": "initial-project",
+      "path": "projects/inicial.qgz",
+      "role": "initial-project",
+      "source_product": "initial-data",
+      "source_project": "inicial",
+      "compose": true,
+      "capture": false,
+      "scene": {
+        "setup": [
+          {
+            "action": "close_transients"
+          },
+          {
+            "action": "show_panel",
+            "title": "Layers"
+          },
+          {
+            "action": "clear_message_bar"
+          }
+        ],
+        "presentation": {
+          "checks": {
+            "project_crs": "EPSG:25831"
+          }
+        }
+      }
+    },
+    {
+      "id": "resolved-project",
+      "path": "projects/pr1-project-setup-exemple.qgz",
+      "role": "resolved-project",
+      "source_product": "resolved-data",
+      "source_project": "pr1",
+      "compose": true,
+      "capture": true,
+      "scene": {
+        "setup": [
+          {
+            "action": "close_transients"
+          },
+          {
+            "action": "show_panel",
+            "title": "Layers"
+          },
+          {
+            "action": "clear_message_bar"
+          }
+        ],
+        "presentation": {
+          "checks": {
+            "project_crs": "EPSG:25831"
+          }
+        }
+      }
+    }
+  ],
+  "exports": [
+    {
+      "id": "map-pdf",
+      "path": "figures/mapa-revisio.pdf",
+      "format": "pdf",
+      "project": "resolved-project",
+      "layout": "Mapa de revisió"
+    }
+  ],
+  "timeout_seconds": 600,
+  "locale": "ca_ES"
+}

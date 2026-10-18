@@ -1,0 +1,83 @@
+{
+  "schema_version": 2,
+  "kind": "qgis-practice-request-v2",
+  "activity": {
+    "id": "pr1-project-setup",
+    "version": "0.1.1",
+    "title": "PR1 · dades inicials i projecte municipal de Vila-seca"
+  },
+  "qgis_image": "sha256:1003721d96abe9607d8337b36851f9b29f84c2f8f92b377d1a73ff03c9d15cd2",
+  "script": "compute.py",
+  "inputs": [
+    {"id": "municipis-source", "path": "inputs/municipis-icgc-20260120.fgb", "sha256": "069f755f253f7af969e80403f6e81fa2cadefbd4c40ffd2f825f30e167bf2b2d"},
+    {"id": "cnig-source", "path": "inputs/municipi-cnig-font.gpkg", "sha256": "46aa316b88ec9f6eac559ca4f2037f1e142a997d3c0722febb8912a9a03654dd"},
+    {"id": "ortho-source", "path": "inputs/ortofoto-vilaseca-2025.tif", "sha256": "8cfdb39b6fce124844644087bc39a365da9bcef6401286644590b60c4fd07ad0"}
+  ],
+  "parameters": {
+    "municipality_code": "431711",
+    "municipality_name": "Vila-seca",
+    "catalogue_count": 947,
+    "map_scale": 60000,
+    "locator_scale": 400000
+  },
+  "products": [
+    {
+      "id": "initial-data", "path": "data/municipis_inicials.gpkg",
+      "role": "initial-data", "format": "geopackage",
+      "depends_on": ["local-orthophoto", "font-regular"],
+      "members": [
+        {"kind": "vector", "name": "municipis_icgc", "role": "initial-data"},
+        {"kind": "table", "name": "fonts_dades", "role": "metadata"},
+        {"kind": "project", "name": "inicial", "role": "initial-project"}
+      ]
+    },
+    {
+      "id": "resolved-data", "path": "data/pr1-project-setup-exemple.gpkg",
+      "role": "resolved-data", "format": "geopackage",
+      "depends_on": ["local-orthophoto", "font-regular"],
+      "members": [
+        {"kind": "vector", "name": "municipis_icgc", "role": "initial-data"},
+        {"kind": "vector", "name": "municipi_treball", "role": "resolved-data"},
+        {"kind": "vector", "name": "municipi_cnig", "role": "resolved-data"},
+        {"kind": "table", "name": "fonts_dades", "role": "metadata"},
+        {"kind": "project", "name": "pr1", "role": "resolved-project"},
+        {"kind": "project", "name": "comparacio", "role": "resolved-project"}
+      ]
+    },
+    {"id": "local-orthophoto", "path": "data/ortofoto_vilaseca_2025.tif", "role": "initial-data", "format": "geotiff", "depends_on": []},
+    {"id": "font-regular", "path": "data/fonts/DejaVuSans.ttf", "role": "initial-data", "format": "font", "depends_on": []},
+    {"id": "font-licence", "path": "data/fonts/DejaVuSans-licence.csv", "role": "initial-data", "format": "csv", "depends_on": ["font-licence-types"]},
+    {"id": "font-licence-types", "path": "data/fonts/DejaVuSans-licence.csvt", "role": "initial-data", "format": "csvt", "depends_on": []}
+  ],
+  "fonts": [{"file": "font-regular", "family": "DejaVu Sans"}],
+  "projects": [
+    {
+      "id": "initial-project", "path": "projects/initial/initial.qgz", "role": "initial-project",
+      "source_product": "initial-data", "source_project": "inicial", "compose": true, "capture": true,
+      "scene": {
+        "setup": [{"action": "close_transients"}, {"action": "show_panel", "title": "Layers"}, {"action": "clear_message_bar"}],
+        "presentation": {"active_layer": "Municipis ICGC", "checks": {"project_crs": "EPSG:25831", "required_layers": ["Municipis ICGC", "Ortofoto local 2025"]}},
+        "captures": [{"id": "overview", "target": {"class_name": "QgisApp"}, "drawings": [
+          {"type": "callout", "target": {"layer_name": "Municipis ICGC"}, "text": "Entrada · 947 municipis", "target_marker": "box", "colour": "green"}
+        ]}]
+      }
+    },
+    {
+      "id": "resolved-project", "path": "projects/resolved/pr1-project-setup-exemple.qgz", "role": "resolved-project",
+      "source_product": "resolved-data", "source_project": "pr1", "compose": true, "capture": true,
+      "scene": {
+        "setup": [{"action": "close_transients"}, {"action": "show_panel", "title": "Layers"}, {"action": "zoom_to_layer", "layer": "Municipi de treball", "scale": 1.2}, {"action": "clear_message_bar"}],
+        "presentation": {"active_layer": "Municipi de treball", "checks": {"project_crs": "EPSG:25831", "required_layers": ["Municipis ICGC", "Municipi de treball", "Municipi CNIG", "Ortofoto local 2025"]}},
+        "captures": [{"id": "overview", "target": {"class_name": "QgisApp"}, "drawings": [
+          {"type": "callout", "target": {"layer_name": "Municipi de treball"}, "text": "Selecció exportada · Vila-seca", "target_marker": "box", "colour": "green"},
+          {"type": "callout", "target": {"layer_name": "Municipi CNIG"}, "text": "Segona font · CNIG", "target_marker": "box", "colour": "green"}
+        ]}]
+      }
+    }
+  ],
+  "exports": [
+    {"id": "map-base-pdf", "path": "figures/pr1-base-composicio.pdf", "format": "pdf", "project": "resolved-project", "layout": "Base municipal"}
+  ],
+  "timeout_seconds": 600,
+  "locale": "ca_ES"
+}

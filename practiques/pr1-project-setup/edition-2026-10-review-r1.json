@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "kind": "unaltraweb-practice-edition",
+  "slug": "pr1-project-setup",
+  "version": "2026-10-review-r1",
+  "language": "ca",
+  "gis": {
+    "profile": "qgis-practice-v2",
+    "bundle": "sandbox/practiques/pr1-project-setup/run-02/bundle.json",
+    "sha256": "e0d3b9d3a591b0566fdd6cef3afbc65cdc91856f8c89cf92017f3ac6d9e321dc",
+    "verifier": {
+      "origin": "prepared-image",
+      "package": "unaltracaptura-qgis",
+      "version": "0.6.0",
+      "revision": "sha256:4dcd2c40bca4836a202c0c5cc400553b0f134925023b7300e0c0ff2fff1d8492",
+      "image_id": "sha256:1fe4a54a42cbac4a6eea596be73425985ab3bca5f28f5871d2fa66d7c0a05f8b",
+      "schema_sha256": "528c8be229c72c346f134ffaa60094f94224094a25b6fb11bcc87802ddc7fffb"
+    },
+    "teacher_only": [
+      "resolved-data", "resolved-project", "resolved-project-png",
+      "resolved-project-original", "resolved-project-svg", "map-base-pdf"
+    ]
+  },
+  "selection": {
+    "alumnat": ["initial-project", "initial-project-png", "font-licence"],
+    "docent": ["initial-project", "resolved-project", "resolved-project-png", "map-base-pdf", "font-licence"]
+  },
+  "readings": {
+    "alumnat": {
+      "source": "practiques/pr1-project-setup/ca/alumnat/LLEGIU-ME.md",
+      "approved_sha256": "078d84585c127ae8862e209abacb56667628408b97ea78e0b63f1f28dd0996ec"
+    },
+    "docent": {
+      "source": "practiques/pr1-project-setup/ca/docent/LLEGIU-ME.md",
+      "approved_sha256": "a52fb84d19ed036edac9e5077827c02da6e9ebe320461267a4557d0659b0b11f"
+    }
+  }
+}
