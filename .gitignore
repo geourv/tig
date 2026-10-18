@@ -31,3 +31,6 @@ __pycache__/
 
 # Verified local input; provenance and preparation remain versioned.
 /practiques/tig-buffer-municipal-500m/inputs/municipi-font.gpkg
+
+# Private assessment state at any depth; retained locally, never distributed.
+.unaltramesa/
