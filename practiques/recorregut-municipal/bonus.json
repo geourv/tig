@@ -1,0 +1,945 @@
+{
+  "schema_version": 2,
+  "kind": "qgis-practice-request-v2",
+  "activity": {
+    "id": "bonus-pyqgis-sql",
+    "version": "0.2.0",
+    "title": "Reproducció PyQGIS i SQLite"
+  },
+  "qgis_image": "sha256:1003721d96abe9607d8337b36851f9b29f84c2f8f92b377d1a73ff03c9d15cd2",
+  "script": "compute.py",
+  "inputs": [
+    {
+      "id": "limits-original",
+      "path": "inputs/lineas_limite_cnig_20260728.zip",
+      "sha256": "d752b1b943e6c60f46a23119d6c3d4ad0b198461c502f0a5433197d7a5e34c83"
+    },
+    {
+      "id": "pnoa-image",
+      "path": "inputs/pnoa_vilaseca_context.png",
+      "sha256": "1f4c08ad287e6d076fd16dbf46c0ff5ad0e4036e0bb0c0eca8fe8f194a75234f"
+    },
+    {
+      "id": "pnoa-metadata",
+      "path": "inputs/pnoa_vilaseca_procedencia.json",
+      "sha256": "34ad2887be8fb0074a339c4d76651bd41c5eb28f5c98faa33b25129d76d132a3"
+    },
+    {
+      "id": "pnoa-capabilities",
+      "path": "inputs/pnoa_capabilities.xml",
+      "sha256": "907f75b17d07c1ddc6f2dfcf2a04efa7c66de4b1ea7e46e0c2524a9dfdebad52"
+    },
+    {
+      "id": "previous",
+      "path": "inputs/pr6-sintesi-exemple.gpkg",
+      "sha256": "18510fb7656040d33839d26760e0543b88a4e5028d857da926eea868a79a1ce4"
+    },
+    {
+      "id": "cartociudad-original",
+      "path": "inputs/cartociudad_tarragona_202604.zip",
+      "sha256": "7aa8f388d52d4b4c56a4bf25a8601502346c5dccd06405d556895c11d400f919"
+    },
+    {
+      "id": "transport-original",
+      "path": "inputs/transport_tarragona_202607.zip",
+      "sha256": "26e02dee7bef2ab40b46f60d7f97274cab9f47b3b7a418db09b8c43b85303d72"
+    },
+    {
+      "id": "mdt25-0472",
+      "path": "inputs/mdt25_0472.tif",
+      "sha256": "325b8028bc99d4726cfdd9cb777de0ac06ed815a62da2b0e313c0c17daf4bb7c"
+    },
+    {
+      "id": "mdt25-0473",
+      "path": "inputs/mdt25_0473.tif",
+      "sha256": "827b2a41b61a9636178847137647fb46f07d4f227165279d1487e757921f22bf"
+    },
+    {
+      "id": "mdt200-original",
+      "path": "inputs/mdt200_tarragona.tif",
+      "sha256": "1827b96fd3c2d1f7cc6cb41b169fecd98ecade31581debc5264158aa3b65b118"
+    },
+    {
+      "id": "prior-pr5-elevacio-25m",
+      "path": "inputs/pr5_elevacio_25m.tif",
+      "sha256": "7cad06372641e23f4446582d2c05872b5a1e073a94ee6d126a939dd6889d7164"
+    },
+    {
+      "id": "prior-pr5-pendent-25m-graus",
+      "path": "inputs/pr5_pendent_25m_graus.tif",
+      "sha256": "dc4c2522f633905d69157e3c8c709482c7131f6736394c36c4494f7d7b96af06"
+    },
+    {
+      "id": "prior-pr5-orientacio-25m-graus",
+      "path": "inputs/pr5_orientacio_25m_graus.tif",
+      "sha256": "761ec39aec9362567eba3be8d295d084f3e536d9cd32b0629950ddea8558c685"
+    },
+    {
+      "id": "prior-pr5-elevacio-classes-25m",
+      "path": "inputs/pr5_elevacio_classes_25m.tif",
+      "sha256": "fb2649fa9f88164fb8447b2d9c92c2897e8db1388ded0c1e3931ffed3e210a46"
+    },
+    {
+      "id": "prior-pr5-mascara-elevacio-pendent-25m",
+      "path": "inputs/pr5_mascara_elevacio_pendent_25m.tif",
+      "sha256": "59104d29a9afdac11b087218c4680e056c3188f553b27ba05ce33a2ed3c72e3d"
+    },
+    {
+      "id": "prior-pr5-elevacio-200m",
+      "path": "inputs/pr5_elevacio_200m.tif",
+      "sha256": "60c6726934548314dff894ff479e4d24cef36c65e1b8213d3244e57199a04e52"
+    },
+    {
+      "id": "prior-pr5-pendent-200m-graus",
+      "path": "inputs/pr5_pendent_200m_graus.tif",
+      "sha256": "4f12da85d02cedd0fc7981ecb607c34359a7501a2b35f68545878f92c8d66fcb"
+    },
+    {
+      "id": "prior-pr5-orientacio-200m-graus",
+      "path": "inputs/pr5_orientacio_200m_graus.tif",
+      "sha256": "726aafc6e1528f9d0245e9abdb6c5864fb6aedcb40e1b2657968f09f2febd19c"
+    },
+    {
+      "id": "prior-pr5-elevacio-classes-200m",
+      "path": "inputs/pr5_elevacio_classes_200m.tif",
+      "sha256": "f2cc70a6febfcf86d8a4586b6099fe54ae1f465faff3e93f0560fff711fb152a"
+    },
+    {
+      "id": "prior-pr5-mascara-elevacio-pendent-200m",
+      "path": "inputs/pr5_mascara_elevacio_pendent_200m.tif",
+      "sha256": "f50396c7ce2bc658012228f9be8b01f20cef68b83e1d94c502fa1517b1621ef6"
+    },
+    {
+      "id": "bonus-code",
+      "path": "bonus_roi.py",
+      "sha256": "db0135a27a16056caac0a4a806a0bdc170b778acf8bbca4f192eb8201f940856"
+    },
+    {
+      "id": "bonus-sql",
+      "path": "bonus_portals.sql",
+      "sha256": "e33aca474dec94364ca8fa592035174d8d4e2931871c10d3474952641ef42aa1"
+    },
+    {
+      "id": "postgis-source",
+      "path": "bonus_postgis.sql",
+      "sha256": "1e1d49fa502f073eecd97572681c50f4004e6d6bdabf8c4dd56fb24e3258952a"
+    },
+    {
+      "id": "roi-model",
+      "path": "pr6_roi_municipal.model3",
+      "sha256": "99c27269db0615a23e764359569f4a6a4ada8ba3eda46bdaddfb24978688bff0"
+    },
+    {
+      "id": "prior-pr6-slope",
+      "path": "inputs/pr6_pendent_roi_graus.tif",
+      "sha256": "dc4c2522f633905d69157e3c8c709482c7131f6736394c36c4494f7d7b96af06"
+    }
+  ],
+  "parameters": {
+    "stage": "bonus",
+    "municipality_code": "34094343171",
+    "municipality_name": "Vila-seca",
+    "input_hashes": {
+      "limits-original": "d752b1b943e6c60f46a23119d6c3d4ad0b198461c502f0a5433197d7a5e34c83",
+      "pnoa-image": "1f4c08ad287e6d076fd16dbf46c0ff5ad0e4036e0bb0c0eca8fe8f194a75234f",
+      "pnoa-metadata": "34ad2887be8fb0074a339c4d76651bd41c5eb28f5c98faa33b25129d76d132a3",
+      "pnoa-capabilities": "907f75b17d07c1ddc6f2dfcf2a04efa7c66de4b1ea7e46e0c2524a9dfdebad52",
+      "previous": "18510fb7656040d33839d26760e0543b88a4e5028d857da926eea868a79a1ce4",
+      "cartociudad-original": "7aa8f388d52d4b4c56a4bf25a8601502346c5dccd06405d556895c11d400f919",
+      "transport-original": "26e02dee7bef2ab40b46f60d7f97274cab9f47b3b7a418db09b8c43b85303d72",
+      "mdt25-0472": "325b8028bc99d4726cfdd9cb777de0ac06ed815a62da2b0e313c0c17daf4bb7c",
+      "mdt25-0473": "827b2a41b61a9636178847137647fb46f07d4f227165279d1487e757921f22bf",
+      "mdt200-original": "1827b96fd3c2d1f7cc6cb41b169fecd98ecade31581debc5264158aa3b65b118",
+      "prior-pr5-elevacio-25m": "7cad06372641e23f4446582d2c05872b5a1e073a94ee6d126a939dd6889d7164",
+      "prior-pr5-pendent-25m-graus": "dc4c2522f633905d69157e3c8c709482c7131f6736394c36c4494f7d7b96af06",
+      "prior-pr5-orientacio-25m-graus": "761ec39aec9362567eba3be8d295d084f3e536d9cd32b0629950ddea8558c685",
+      "prior-pr5-elevacio-classes-25m": "fb2649fa9f88164fb8447b2d9c92c2897e8db1388ded0c1e3931ffed3e210a46",
+      "prior-pr5-mascara-elevacio-pendent-25m": "59104d29a9afdac11b087218c4680e056c3188f553b27ba05ce33a2ed3c72e3d",
+      "prior-pr5-elevacio-200m": "60c6726934548314dff894ff479e4d24cef36c65e1b8213d3244e57199a04e52",
+      "prior-pr5-pendent-200m-graus": "4f12da85d02cedd0fc7981ecb607c34359a7501a2b35f68545878f92c8d66fcb",
+      "prior-pr5-orientacio-200m-graus": "726aafc6e1528f9d0245e9abdb6c5864fb6aedcb40e1b2657968f09f2febd19c",
+      "prior-pr5-elevacio-classes-200m": "f2cc70a6febfcf86d8a4586b6099fe54ae1f465faff3e93f0560fff711fb152a",
+      "prior-pr5-mascara-elevacio-pendent-200m": "f50396c7ce2bc658012228f9be8b01f20cef68b83e1d94c502fa1517b1621ef6",
+      "bonus-code": "db0135a27a16056caac0a4a806a0bdc170b778acf8bbca4f192eb8201f940856",
+      "bonus-sql": "e33aca474dec94364ca8fa592035174d8d4e2931871c10d3474952641ef42aa1",
+      "postgis-source": "1e1d49fa502f073eecd97572681c50f4004e6d6bdabf8c4dd56fb24e3258952a",
+      "roi-model": "99c27269db0615a23e764359569f4a6a4ada8ba3eda46bdaddfb24978688bff0",
+      "prior-pr6-slope": "dc4c2522f633905d69157e3c8c709482c7131f6736394c36c4494f7d7b96af06"
+    },
+    "buffer_distance_m": 500,
+    "segments": 8,
+    "initial_rasters": [
+      "ortho",
+      "pr5-elevacio-25m",
+      "pr5-pendent-25m-graus",
+      "pr5-orientacio-25m-graus",
+      "pr5-elevacio-classes-25m",
+      "pr5-mascara-elevacio-pendent-25m",
+      "pr5-elevacio-200m",
+      "pr5-pendent-200m-graus",
+      "pr5-orientacio-200m-graus",
+      "pr5-elevacio-classes-200m",
+      "pr5-mascara-elevacio-pendent-200m",
+      "pr6-slope"
+    ],
+    "all_rasters": [
+      "ortho",
+      "pr5-elevacio-25m",
+      "pr5-pendent-25m-graus",
+      "pr5-orientacio-25m-graus",
+      "pr5-elevacio-classes-25m",
+      "pr5-mascara-elevacio-pendent-25m",
+      "pr5-elevacio-200m",
+      "pr5-pendent-200m-graus",
+      "pr5-orientacio-200m-graus",
+      "pr5-elevacio-classes-200m",
+      "pr5-mascara-elevacio-pendent-200m",
+      "pr6-slope"
+    ]
+  },
+  "products": [
+    {
+      "id": "initial-data",
+      "path": "data/entrada_docent.gpkg",
+      "role": "initial-data",
+      "format": "geopackage",
+      "depends_on": [
+        "font-regular",
+        "ortho",
+        "pr5-elevacio-25m",
+        "pr5-pendent-25m-graus",
+        "pr5-orientacio-25m-graus",
+        "pr5-elevacio-classes-25m",
+        "pr5-mascara-elevacio-pendent-25m",
+        "pr5-elevacio-200m",
+        "pr5-pendent-200m-graus",
+        "pr5-orientacio-200m-graus",
+        "pr5-elevacio-classes-200m",
+        "pr5-mascara-elevacio-pendent-200m",
+        "pr6-slope"
+      ],
+      "members": [
+        {
+          "kind": "vector",
+          "name": "recintes_cnig",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "municipi_treball",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "fanals",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "carrils_bici",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "plaques_solars",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "municipi_consulta",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "municipis_tarragona",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "portals_municipi",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "illes_municipi",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "illes_intersectants",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "transport_candidats_c06",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "vies_secundaries",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "fanals_sintetics",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffers_fanals_10m",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffers_fanals_30m",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffers_fanals_50m",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffers_segments_4",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffers_segments_16",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_linia_arrodonit",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_linia_pla",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_linia_quadrat",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_unio_bisell",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_unio_mitra",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffers_dissolts",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "unio_buffers_bruta",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "zones_solapament",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "vies_retallades",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "vies_interseccio",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "vies_exteriors",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "municipi_buffer_500m",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "roi",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "rectangle_orientat",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "envolupant_convexa",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "cercle_minim",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "zones_cota_baixa",
+          "role": "initial-data"
+        },
+        {
+          "kind": "table",
+          "name": "estadistiques_raster",
+          "role": "metadata"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_manual_500m",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "roi_manual_500m",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_lot_250m",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "roi_lot_250m",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_lot_500m",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "roi_lot_500m",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_lot_750m",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "roi_lot_750m",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_model_500m",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "roi_model_500m",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_transferencia_reus",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "roi_transferencia_reus",
+          "role": "initial-data"
+        },
+        {
+          "kind": "table",
+          "name": "fonts_dades",
+          "role": "metadata"
+        },
+        {
+          "kind": "project",
+          "name": "inicial",
+          "role": "initial-project"
+        }
+      ]
+    },
+    {
+      "id": "resolved-data",
+      "path": "data/bonus-pyqgis-sql-exemple.gpkg",
+      "role": "resolved-data",
+      "format": "geopackage",
+      "depends_on": [
+        "font-regular",
+        "ortho",
+        "pr5-elevacio-25m",
+        "pr5-pendent-25m-graus",
+        "pr5-orientacio-25m-graus",
+        "pr5-elevacio-classes-25m",
+        "pr5-mascara-elevacio-pendent-25m",
+        "pr5-elevacio-200m",
+        "pr5-pendent-200m-graus",
+        "pr5-orientacio-200m-graus",
+        "pr5-elevacio-classes-200m",
+        "pr5-mascara-elevacio-pendent-200m",
+        "pr6-slope"
+      ],
+      "members": [
+        {
+          "kind": "vector",
+          "name": "recintes_cnig",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "municipi_treball",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "fanals",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "carrils_bici",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "plaques_solars",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "municipi_consulta",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "municipis_tarragona",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "portals_municipi",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "illes_municipi",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "illes_intersectants",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "transport_candidats_c06",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "vies_secundaries",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "fanals_sintetics",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffers_fanals_10m",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffers_fanals_30m",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffers_fanals_50m",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffers_segments_4",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffers_segments_16",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_linia_arrodonit",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_linia_pla",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_linia_quadrat",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_unio_bisell",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_unio_mitra",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffers_dissolts",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "unio_buffers_bruta",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "zones_solapament",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "vies_retallades",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "vies_interseccio",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "vies_exteriors",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "municipi_buffer_500m",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "roi",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "rectangle_orientat",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "envolupant_convexa",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "cercle_minim",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "zones_cota_baixa",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "table",
+          "name": "estadistiques_raster",
+          "role": "metadata"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_manual_500m",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "roi_manual_500m",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_lot_250m",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "roi_lot_250m",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_lot_500m",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "roi_lot_500m",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_lot_750m",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "roi_lot_750m",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_model_500m",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "roi_model_500m",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_transferencia_reus",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "roi_transferencia_reus",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "buffer_pyqgis_500m",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "roi_pyqgis_500m",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "table",
+          "name": "portals_per_codi",
+          "role": "metadata"
+        },
+        {
+          "kind": "table",
+          "name": "fonts_dades",
+          "role": "metadata"
+        },
+        {
+          "kind": "project",
+          "name": "bonus",
+          "role": "resolved-project"
+        }
+      ]
+    },
+    {
+      "id": "ortho",
+      "path": "data/pnoa_context.tif",
+      "role": "initial-data",
+      "format": "geotiff",
+      "depends_on": []
+    },
+    {
+      "id": "pr5-elevacio-25m",
+      "path": "data/pr5_elevacio_25m.tif",
+      "role": "initial-data",
+      "format": "geotiff",
+      "depends_on": []
+    },
+    {
+      "id": "pr5-pendent-25m-graus",
+      "path": "data/pr5_pendent_25m_graus.tif",
+      "role": "initial-data",
+      "format": "geotiff",
+      "depends_on": []
+    },
+    {
+      "id": "pr5-orientacio-25m-graus",
+      "path": "data/pr5_orientacio_25m_graus.tif",
+      "role": "initial-data",
+      "format": "geotiff",
+      "depends_on": []
+    },
+    {
+      "id": "pr5-elevacio-classes-25m",
+      "path": "data/pr5_elevacio_classes_25m.tif",
+      "role": "initial-data",
+      "format": "geotiff",
+      "depends_on": []
+    },
+    {
+      "id": "pr5-mascara-elevacio-pendent-25m",
+      "path": "data/pr5_mascara_elevacio_pendent_25m.tif",
+      "role": "initial-data",
+      "format": "geotiff",
+      "depends_on": []
+    },
+    {
+      "id": "pr5-elevacio-200m",
+      "path": "data/pr5_elevacio_200m.tif",
+      "role": "initial-data",
+      "format": "geotiff",
+      "depends_on": []
+    },
+    {
+      "id": "pr5-pendent-200m-graus",
+      "path": "data/pr5_pendent_200m_graus.tif",
+      "role": "initial-data",
+      "format": "geotiff",
+      "depends_on": []
+    },
+    {
+      "id": "pr5-orientacio-200m-graus",
+      "path": "data/pr5_orientacio_200m_graus.tif",
+      "role": "initial-data",
+      "format": "geotiff",
+      "depends_on": []
+    },
+    {
+      "id": "pr5-elevacio-classes-200m",
+      "path": "data/pr5_elevacio_classes_200m.tif",
+      "role": "initial-data",
+      "format": "geotiff",
+      "depends_on": []
+    },
+    {
+      "id": "pr5-mascara-elevacio-pendent-200m",
+      "path": "data/pr5_mascara_elevacio_pendent_200m.tif",
+      "role": "initial-data",
+      "format": "geotiff",
+      "depends_on": []
+    },
+    {
+      "id": "pr6-slope",
+      "path": "data/pr6_pendent_roi_graus.tif",
+      "role": "initial-data",
+      "format": "geotiff",
+      "depends_on": []
+    },
+    {
+      "id": "font-regular",
+      "path": "data/fonts/DejaVuSans.ttf",
+      "role": "initial-data",
+      "format": "font",
+      "depends_on": []
+    },
+    {
+      "id": "font-licence",
+      "path": "data/fonts/DejaVuSans-licence.csv",
+      "role": "initial-data",
+      "format": "csv",
+      "depends_on": [
+        "font-licence-types"
+      ]
+    },
+    {
+      "id": "font-licence-types",
+      "path": "data/fonts/DejaVuSans-licence.csvt",
+      "role": "initial-data",
+      "format": "csvt",
+      "depends_on": []
+    }
+  ],
+  "fonts": [
+    {
+      "file": "font-regular",
+      "family": "DejaVu Sans"
+    }
+  ],
+  "projects": [
+    {
+      "id": "initial-project",
+      "path": "projects/inicial.qgz",
+      "role": "initial-project",
+      "source_product": "initial-data",
+      "source_project": "inicial",
+      "compose": true,
+      "capture": false,
+      "scene": {
+        "setup": [
+          {
+            "action": "close_transients"
+          },
+          {
+            "action": "show_panel",
+            "title": "Layers"
+          },
+          {
+            "action": "clear_message_bar"
+          }
+        ],
+        "presentation": {
+          "checks": {
+            "project_crs": "EPSG:25831"
+          }
+        }
+      }
+    },
+    {
+      "id": "resolved-project",
+      "path": "projects/bonus-pyqgis-sql-exemple.qgz",
+      "role": "resolved-project",
+      "source_product": "resolved-data",
+      "source_project": "bonus",
+      "compose": true,
+      "capture": true,
+      "scene": {
+        "setup": [
+          {
+            "action": "close_transients"
+          },
+          {
+            "action": "show_panel",
+            "title": "Layers"
+          },
+          {
+            "action": "clear_message_bar"
+          }
+        ],
+        "presentation": {
+          "checks": {
+            "project_crs": "EPSG:25831"
+          }
+        }
+      }
+    }
+  ],
+  "exports": [
+    {
+      "id": "map-pdf",
+      "path": "figures/mapa-revisio.pdf",
+      "format": "pdf",
+      "project": "resolved-project",
+      "layout": "Mapa de revisió"
+    }
+  ],
+  "timeout_seconds": 600,
+  "locale": "ca_ES"
+}

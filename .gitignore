@@ -29,8 +29,11 @@ __pycache__/
 # sandbox/ already covers practice runs and producer-owned job staging.
 /dist/practiques/
 
-# Verified local input; provenance and preparation remain versioned.
-/practiques/tig-buffer-municipal-500m/inputs/municipi-font.gpkg
+# Retained data folders; ignored does not mean disposable.
+# Authoring sources, models and requests stay outside these folders.
+/practiques/tig-buffer-municipal-500m/inputs/
+/practiques/pr1-project-setup/inputs/
+/practiques/recorregut-municipal/inputs/
 
 # Private assessment state at any depth; retained locally, never distributed.
 .unaltramesa/

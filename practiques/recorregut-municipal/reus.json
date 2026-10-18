@@ -1,0 +1,265 @@
+{
+  "schema_version": 2,
+  "kind": "qgis-practice-request-v2",
+  "activity": {
+    "id": "pr4-tessellacions-reus",
+    "version": "0.2.0",
+    "title": "Reus · proximitat postal estimada"
+  },
+  "qgis_image": "sha256:1003721d96abe9607d8337b36851f9b29f84c2f8f92b377d1a73ff03c9d15cd2",
+  "script": "compute.py",
+  "inputs": [
+    {
+      "id": "limits-original",
+      "path": "inputs/lineas_limite_cnig_20260728.zip",
+      "sha256": "d752b1b943e6c60f46a23119d6c3d4ad0b198461c502f0a5433197d7a5e34c83"
+    },
+    {
+      "id": "cartociudad-original",
+      "path": "inputs/cartociudad_tarragona_202604.zip",
+      "sha256": "7aa8f388d52d4b4c56a4bf25a8601502346c5dccd06405d556895c11d400f919"
+    },
+    {
+      "id": "cartociudad",
+      "path": "inputs/tarragona.gpkg",
+      "sha256": "75b3523872d582ece5dfa2edd488674852557d898bf65f36b511e45be695f90e"
+    }
+  ],
+  "parameters": {
+    "stage": "reus",
+    "municipality_code": "34094343123",
+    "municipality_name": "Reus",
+    "input_hashes": {
+      "limits-original": "d752b1b943e6c60f46a23119d6c3d4ad0b198461c502f0a5433197d7a5e34c83",
+      "cartociudad-original": "7aa8f388d52d4b4c56a4bf25a8601502346c5dccd06405d556895c11d400f919",
+      "cartociudad": "75b3523872d582ece5dfa2edd488674852557d898bf65f36b511e45be695f90e"
+    },
+    "buffer_distance_m": 500,
+    "segments": 8,
+    "initial_rasters": [],
+    "all_rasters": [],
+    "reus_margins_m": [
+      1500,
+      3000
+    ],
+    "holdout_block_m": 500,
+    "holdout_rule": "(floor(x/500) + 2*floor(y/500)) modulo 5 = 0"
+  },
+  "products": [
+    {
+      "id": "initial-data",
+      "path": "data/entrada_docent.gpkg",
+      "role": "initial-data",
+      "format": "geopackage",
+      "depends_on": [
+        "font-regular"
+      ],
+      "members": [
+        {
+          "kind": "vector",
+          "name": "recintes_cnig",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "municipi_treball",
+          "role": "initial-data"
+        },
+        {
+          "kind": "vector",
+          "name": "portals_entorn",
+          "role": "initial-data"
+        },
+        {
+          "kind": "table",
+          "name": "fonts_dades",
+          "role": "metadata"
+        },
+        {
+          "kind": "project",
+          "name": "inicial",
+          "role": "initial-project"
+        }
+      ]
+    },
+    {
+      "id": "resolved-data",
+      "path": "data/pr4-tessellacions-reus-exemple.gpkg",
+      "role": "resolved-data",
+      "format": "geopackage",
+      "depends_on": [
+        "font-regular"
+      ],
+      "members": [
+        {
+          "kind": "vector",
+          "name": "recintes_cnig",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "municipi_treball",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "portals_entorn",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "portals_generadors",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "generadors_entorn_ampli",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "portals_validacio",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "table",
+          "name": "correspondencia_portals",
+          "role": "metadata"
+        },
+        {
+          "kind": "vector",
+          "name": "delaunay_portals",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "voronoi_portals",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "zones_cp_estimades",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "vector",
+          "name": "zones_cp_entorn_ampli",
+          "role": "resolved-data"
+        },
+        {
+          "kind": "table",
+          "name": "validacio_postal",
+          "role": "metadata"
+        },
+        {
+          "kind": "table",
+          "name": "fonts_dades",
+          "role": "metadata"
+        },
+        {
+          "kind": "project",
+          "name": "reus",
+          "role": "resolved-project"
+        }
+      ]
+    },
+    {
+      "id": "font-regular",
+      "path": "data/fonts/DejaVuSans.ttf",
+      "role": "initial-data",
+      "format": "font",
+      "depends_on": []
+    },
+    {
+      "id": "font-licence",
+      "path": "data/fonts/DejaVuSans-licence.csv",
+      "role": "initial-data",
+      "format": "csv",
+      "depends_on": [
+        "font-licence-types"
+      ]
+    },
+    {
+      "id": "font-licence-types",
+      "path": "data/fonts/DejaVuSans-licence.csvt",
+      "role": "initial-data",
+      "format": "csvt",
+      "depends_on": []
+    }
+  ],
+  "fonts": [
+    {
+      "file": "font-regular",
+      "family": "DejaVu Sans"
+    }
+  ],
+  "projects": [
+    {
+      "id": "initial-project",
+      "path": "projects/inicial.qgz",
+      "role": "initial-project",
+      "source_product": "initial-data",
+      "source_project": "inicial",
+      "compose": true,
+      "capture": false,
+      "scene": {
+        "setup": [
+          {
+            "action": "close_transients"
+          },
+          {
+            "action": "show_panel",
+            "title": "Layers"
+          },
+          {
+            "action": "clear_message_bar"
+          }
+        ],
+        "presentation": {
+          "checks": {
+            "project_crs": "EPSG:25831"
+          }
+        }
+      }
+    },
+    {
+      "id": "resolved-project",
+      "path": "projects/pr4-tessellacions-reus-exemple.qgz",
+      "role": "resolved-project",
+      "source_product": "resolved-data",
+      "source_project": "reus",
+      "compose": true,
+      "capture": true,
+      "scene": {
+        "setup": [
+          {
+            "action": "close_transients"
+          },
+          {
+            "action": "show_panel",
+            "title": "Layers"
+          },
+          {
+            "action": "clear_message_bar"
+          }
+        ],
+        "presentation": {
+          "checks": {
+            "project_crs": "EPSG:25831"
+          }
+        }
+      }
+    }
+  ],
+  "exports": [
+    {
+      "id": "map-pdf",
+      "path": "figures/mapa-revisio.pdf",
+      "format": "pdf",
+      "project": "resolved-project",
+      "layout": "Mapa de revisió"
+    }
+  ],
+  "timeout_seconds": 600,
+  "locale": "ca_ES"
+}
