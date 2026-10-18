@@ -1,0 +1,15 @@
+{
+  "kind": "teacher_confirmed_statement_companion",
+  "activity": "tig/pr1-moodle",
+  "edition": "moodle-confirmed-2026-10-18",
+  "statement_source": "Text de la tasca Moodle aportat explícitament pel docent en aquesta conversa el 2026-10-18",
+  "transcription": "Contingut docent transcrit amb format Markdown; no s'han inclòs les files d'interfície dels dos adjunts d'exemple.",
+  "date_meaning": "Data de confirmació d'aquesta definició; no s'infereix una data de publicació de la Tasca a partir dels adjunts.",
+  "scoring": "Tres blocs comunicats de 70/20/10. Les preguntes i comprovacions no introdueixen subpesos.",
+  "example_attachments": "No retinguts ni usats com a resposta esperada; no se'n pressuposen continguts o hashes.",
+  "class_naming_policy": "Pendent de context docent; no inferida dels noms dels exemples.",
+  "real_cohort_selected": false,
+  "privacy_approval": false,
+  "grading_authority": "teacher",
+  "distinct_from": "Esborrany CNIG 2026-10-r4 del manual, amb composició obligatòria i dos PDF diferenciats"
+}

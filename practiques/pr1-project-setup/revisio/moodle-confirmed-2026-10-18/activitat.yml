@@ -1,0 +1,25 @@
+schema_version: 1
+kind: unaltramesa.activity
+id: tig/pr1-moodle
+title: Micropràctica TIG PR1 — projecte QGIS, municipi i WMS
+edition: moodle-confirmed-2026-10-18
+language: ca
+statement: statement.md
+recipe: recipe.yml
+rubric: rubric.yml
+review_guide: guide.yml
+parts: [micropractice]
+parameters_schema:
+  type: object
+  properties: {}
+  additionalProperties: false
+references: []
+scoring_scheme: 70/20/10
+extension_examples:
+  - Altres serveis WMS o capes vectorials funcionals i pertinents.
+  - Simbologies, etiquetes o grups que millorin funcionalment el projecte.
+  - Mapes o composicions com a ampliació opcional; no són un lliurable imprescindible.
+presentation_examples:
+  - Apunts útils per reprendre el procediment, amb decisions, comprovacions i incidències contextualitzades.
+  - Captures llegibles que acreditin allò que el text afirma; un recompte d'imatges no és una nota.
+  - Organització clara del projecte i dels productes, separada de la correcció tècnica ja valorada al bloc bàsic.

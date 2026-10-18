@@ -1,0 +1,50 @@
+schema_version: 1
+id: tig-pr1-moodle-confirmed-2026-10-18
+title: Micropràctica TIG PR1 — enunciat Moodle confirmat
+statement_version: moodle-confirmed-2026-10-18
+rubric_id: tig-pr1-moodle-confirmed-2026-10-18
+review_guide_id: tig-pr1-moodle-confirmed-2026-10-18
+artifacts:
+  - role: geopackage
+    formats: [gpkg]
+    cardinality: {min: 1}
+  - role: external_project
+    formats: [qgz]
+    cardinality: {min: 1}
+  - role: notes
+    formats: [pdf]
+    cardinality: {min: 1}
+  - role: supporting_material
+    formats: [png, jpg, jpeg, svg, csv, txt, md, qml, qpt]
+    cardinality: {min: 0}
+checks:
+  - use: submission.required_artifacts@1
+  - use: submission.unexpected_files@1
+  - use: submission.hygiene@1
+  - use: sqlite.sidecar_inventory@1
+  - use: gpkg.summary@1
+  - use: qgis.qgz_summary@1
+  - use: qgis.project_pair@1
+  - use: gis.delivery_hygiene@1
+  - use: pdf.inventory@1
+  - use: pdf.text_evidence@2
+    with: {run_ocr: true}
+  - use: pdf.capture_context@2
+  - use: extensions.candidates@1
+    with: {baseline_wms_layers: 1, baseline_feature_layers: 1}
+  - use: submission.formalities@1
+    with:
+      activity_identifiers: [pr1]
+      title_terms: [projecte, qgis, wms, municipi]
+  - use: text.integrity_signals@1
+review_policy:
+  normative_source: teacher_confirmed_moodle_statement
+  automatic_points: false
+  final_authority: teacher
+  maps_are_optional_extensions: true
+  separate_map_pdf_required: false
+  cnig_download_required: false
+  fixed_epsg_required: false
+  extension_category_quotas: false
+  processing_damage_is_not_student_error: true
+  unknown_class_naming_rules_require_teacher_context: true

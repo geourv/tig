@@ -1,0 +1,80 @@
+schema_version: 1
+id: tig-pr1-moodle-confirmed-2026-10-18
+recipe: tig-pr1-moodle-confirmed-2026-10-18
+title: PR1 Moodle — els tres blocs comunicats
+scoring_policy:
+  total_points: 100
+  automatic_points: false
+  final_authority: teacher
+  sections:
+    - {id: essentials, title: Requisits imprescindibles, max_points: 70}
+    - {id: extensions, title: Ampliacions funcionals, max_points: 20}
+    - {id: notes, title: Apunts, presentació i organització, max_points: 10}
+criteria:
+  - id: BASIC
+    section: essentials
+    title: Realització correcta dels requisits imprescindibles
+    max_points: 70
+    responsibility: hybrid
+    part: micropractice
+    communicated: assigned_requirement
+    evidence_checks: [submission.required_artifacts@1, gpkg.summary@1, qgis.qgz_summary@1, qgis.project_pair@1, gis.delivery_hygiene@1, pdf.text_evidence@2, pdf.capture_context@2, submission.formalities@1]
+    expected_evidence:
+      - Terme del municipi escollit desat i carregat des del GeoPackage; procedència i passos descrits.
+      - Projecte QGIS incrustat, còpia externa QGZ i capa WMS configurada.
+      - Apunts PDF presents; obertura, disponibilitat de capes i rutes comprovades.
+    alternatives:
+      - Municipi escollit per l'estudiant i font de límits adequada; no imposar el cas docent o una descàrrega CNIG.
+      - Representacions funcionalment equivalents encara que la serialització o metadades difereixin.
+      - Fitxers complementaris justificats; més d'un PDF o GeoPackage requereix identificar-ne el paper, no fallar per recompte.
+    tolerances: {}
+    missing_evidence: Pendent/no avaluable si no es pot inspeccionar; separar absència del lliurable de dany de processament.
+    automation_gaps:
+      - L'obertura QGIS real i la identitat geogràfica del municipi necessiten contrast docent o evidència de domini.
+      - La pauta exacta de noms comunicada a classe no figura al text; no inferir-la del nom del fitxer d'exemple.
+      - Amb diversos QGZ/GPKG, la comparació automàtica unívoca pot quedar pendent d'identificar el parell principal.
+    guidance: Valorar globalment el bloc de 70 punts amb evidències per requisit. No afegir requisits CNIG, EPSG fix, mapa obligatori ni PDF de mapa separat. No descomptar repetidament el mateix problema de dades/rutes.
+    teacher_confirmation: Confirmar funcionament, municipi i pautes de classe; decidir la puntuació del bloc.
+  - id: EXTENSIONS
+    section: extensions
+    title: Ampliacions funcionals
+    max_points: 20
+    responsibility: hybrid
+    part: micropractice
+    communicated: assigned_requirement
+    evidence_checks: [extensions.candidates@1, qgis.qgz_summary@1, gpkg.summary@1, pdf.text_evidence@2, pdf.capture_context@2]
+    expected_evidence:
+      - Millores presents, funcionals i pertinents, contrastades amb el projecte i la documentació.
+      - Distinció entre una ampliació afirmada, intentada, implementada i útil.
+    alternatives:
+      - Altres WMS, vectors, simbologia, etiquetes, grups, mapes, composicions o una altra millora funcional justificable.
+      - No cal reunir tots els tipus enumerats; no reservar automàticament cinc punts per cadascun.
+    tolerances: {}
+    missing_evidence: Una afirmació sense prova no acredita funcionalitat. Si l'evidència no es pot inspeccionar, deixar pendent i explicar per què.
+    automation_gaps:
+      - L'existència d'una capa, estil o composició no n'acredita tota sola la funcionalitat o qualitat.
+      - Les afirmacions visuals requereixen imatges efectivament inspeccionades; les no comprovades queden pendents.
+    guidance: Proposar punts dins del bloc únic de 20 segons funcionalitat i pertinència, sense quotes per categoria ni doble recompte. El primer WMS i el municipi formen part del bàsic. Les ampliacions no substitueixen requisits imprescindibles.
+    teacher_confirmation: Confirmar funcionament, pertinència i absència de doble puntuació; decidir la puntuació del bloc.
+  - id: DOCUMENTATION
+    section: notes
+    title: Qualitat dels apunts, captures, presentació i organització
+    max_points: 10
+    responsibility: hybrid
+    requires_vision: true
+    part: micropractice
+    communicated: assigned_requirement
+    evidence_checks: [pdf.inventory@1, pdf.text_evidence@2, pdf.capture_context@2, submission.hygiene@1, submission.formalities@1]
+    expected_evidence:
+      - Passos rellevants, decisions, comprovacions i incidències que permetin reprendre el procediment.
+      - Captures llegibles i pertinents, vinculades a les explicacions.
+      - Presentació clara i organització útil del projecte i la documentació.
+    alternatives:
+      - Explicació concisa i ben situada; no exigir una captura de cada clic.
+      - Captures completes o retalls útils segons l'evidència; el rellotge absent no comporta descompte automàtic.
+    tolerances: {}
+    missing_evidence: Sense visió operativa o amb pèrdues introduïdes per la preparació, deixar el judici visual pendent.
+    automation_gaps:
+      - La llegibilitat i la utilitat pedagògica exigeixen lectura i visió; els recomptes no són qualificacions.
+    guidance: Valorar comunicació i organització dins del bloc de 10, sense tornar a descomptar la mateixa incorrecció tècnica valorada al bàsic. La terminologia CRS és context per entendre decisions, no una quota nova de punts ni una prova exigida que el text no comunica.
+    teacher_confirmation: Revisar les citacions i el PDF pseudonimitzat; decidir la puntuació del bloc.
