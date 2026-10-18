@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "kind": "tig-review-definition-import",
+  "source": "/home/benizar/git/unaltramesa/.unaltramesa/activity-sources/tig-pr1-moodle/confirmed-2026-10-18",
+  "edition": "moodle-confirmed-2026-10-18",
+  "files": {
+    "activitat.yml": "77da948f417e3f4522b0ffe9658989bdd73ac2a0aa7c1daf0425748580a42be0",
+    "statement.md": "110cd8ba37aeb9762635098a19e938060d2fe378c020e25fb2cda0135c7f5977",
+    "recipe.yml": "20485969d54ff48a248951793aa564aaebd4e20377665dcf6b25031f4e5ecbe6",
+    "rubric.yml": "9cd5ed1a1a807e3e962f136e61cc936df49e8037f01cc30d84fdc7ea4b813610",
+    "guide.yml": "9eb9d00a958b2447a52a0063ab767af22f5d9ffe8259f4b344e36f0f8b031b7b",
+    "provenance.json": "44273b88befaf18d666eece30f9f147a29811dd43bc7c3da9640411542567f69",
+    "validation.json": "dbf0d843349592a1a582e09c960e24c26afcdfc7055f66e6d692c752f6981e34"
+  },
+  "source_bytes_preserved": true,
+  "real_submissions_used": false
+}

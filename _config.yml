@@ -10,6 +10,8 @@ default_lang: "ca"
 languages: ["ca"]
 exclude:
   - .bundle/
+  - .unaltramesa/
+  - "**/.unaltramesa/**"
   - AGENTS.md
   - bin/
   - CONTRIBUTING.md

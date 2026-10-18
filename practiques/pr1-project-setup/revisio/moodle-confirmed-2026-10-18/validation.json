@@ -1,0 +1,17 @@
+{
+  "kind": "activity_definition_synthetic_validation",
+  "activity": "tig/pr1-moodle",
+  "edition": "moodle-confirmed-2026-10-18",
+  "recipe": "tig-pr1-moodle-confirmed-2026-10-18",
+  "effective_sha256": "7c899db02195a75c76cb5217cfcab13fc5c017b4ae98ab99ddcc4b23dba09d1e",
+  "runtime_version": "0.10.0",
+  "image_id": "sha256:e4e0edeed0f159e5968f7435d32dc4eeb8b80c6b5071879b5952c4e12163867c",
+  "code_sha256": "8448b77b20aedeff5de98e32612500ab5b8463af28296d8a60179f1cbb659fa7",
+  "synthetic_flow": ["prepare_existing_export", "bind_definition", "migration_preflight", "versioned_migration", "synthetic_teacher_approval", "mcp_review", "pending_proposal", "private_prefinal_ods"],
+  "one_notes_pdf_satisfies_artifact_requirements": true,
+  "map_or_composition_required": false,
+  "originals_and_aliases_preserved_in_test": true,
+  "real_submissions_used": false,
+  "real_privacy_approval": false,
+  "report": "docs/tig-pr1-vscode.md"
+}
