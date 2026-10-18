@@ -49,6 +49,10 @@ make down
 
 These commands validate, build, preview, test, and stop the site. They do not publish it or change Git history.
 
+## Correcció de la micropràctica Moodle PR1
+
+La [definició confirmada el 18/10/2026 i la guia d’operador](practiques/pr1-project-setup/revisio/moodle-confirmed-2026-10-18/README.md) preparen la pseudonimització i la revisió assistida amb Unaltramesa. Conserven els tres blocs 70/20/10 i les composicions opcionals; aquesta edició és independent del recorregut CNIG ampliat del manual. Les dades i els resultats individuals romanen a `sandbox/` i `.unaltramesa/`, exclosos de Git i del web.
+
 ## MCP Agent Workflow
 
 Open this repository as the IDE workspace and read `AGENTS.md`. Before editing, use the configured MCP control plane's read-only checkout preflight in the repository's primary mutable checkout. When a process-held cooperative lease is required, launch the editing command through its `exec` wrapper. Never create, switch to, move, prune, repair, or remove linked worktrees implicitly.

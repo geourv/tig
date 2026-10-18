@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "kind": "tig-review-integration-validation",
+  "ok": true,
+  "activity": "tig/pr1-moodle",
+  "edition": "moodle-confirmed-2026-10-18",
+  "real_submissions_used": false,
+  "real_privacy_approval": false,
+  "imported_bytes_verified": 7,
+  "runtime_images": {
+    "unaltramesa": "sha256:e4e0edeed0f159e5968f7435d32dc4eeb8b80c6b5071879b5952c4e12163867c",
+    "jekyll": "sha256:f0e7915527fa68a67448287e131ec431aeae902b8269856e4e219e67faade146",
+    "practice_packager": "sha256:576dcd772f2c345fa2021745f975f8392568d8d2783f7a66ba41a3521b3bd546"
+  },
+  "definition_and_synthetic_checks": {
+    "ok": true,
+    "effective_sha256": "7c899db02195a75c76cb5217cfcab13fc5c017b4ae98ab99ddcc4b23dba09d1e",
+    "criteria": {
+      "BASIC": 70,
+      "EXTENSIONS": 20,
+      "DOCUMENTATION": 10
+    },
+    "one_notes_pdf_without_map": "pass",
+    "additional_pdf": "pass",
+    "missing_notes": "fail_as_expected",
+    "wrong_edition": "rejected",
+    "checks_run": 14,
+    "input_bytes_preserved": true,
+    "synthetic_crs": "EPSG:4326",
+    "composition_present": false,
+    "limits": "Tests structural evidence and cardinalities; not geographic correctness, QGIS opening or visual grading."
+  },
+  "git": {
+    "private_paths_ignored": 8,
+    "private_state_tracked": false,
+    "definition_versionable": true,
+    "applied_patterns": {
+      ".unaltramesa/private/identities.json": ".unaltramesa/",
+      ".unaltramesa/private/pseudonym.key": ".unaltramesa/",
+      ".unaltramesa/reports/teacher-workbook.ods": ".unaltramesa/",
+      "assets/.unaltramesa/private/probe.json": ".unaltramesa/",
+      "practiques/pr1-project-setup/revisio/.unaltramesa/private/probe.json": ".unaltramesa/",
+      "sandbox/revisions/pr1-moodle/synthetic/run-01/originals/synthetic.pdf": "sandbox/",
+      "sandbox/revisions/pr1-moodle/synthetic/run-01/.unaltramesa/staging/stu-synthetic/notes.pdf": "sandbox/",
+      "sandbox/revisions/pr1-moodle/synthetic/run-01/.unaltramesa/reports/teacher-workbook.ods": "sandbox/"
+    }
+  },
+  "web": {
+    "ok": true,
+    "jekyll": "4.4.1",
+    "published_files": [
+      "assets/public-probe.txt"
+    ],
+    "private_probes_excluded": 10,
+    "scope": "Actual TIG exclusions with synthetic content; theme/plugins disabled for this isolated filter test."
+  },
+  "student_package": {
+    "ok": true,
+    "archive_members": [
+      "payload/data/example.txt"
+    ],
+    "unselected_private_state_excluded": true,
+    "teacher_and_control_selections_rejected": 3,
+    "scope": "Unaltraweb explicit selection/closure and ZIP writer, using only synthetic files."
+  },
+  "input_sha256": {
+    "_config.yml": "5bf8a3d67985a2378b6e5ebb14fbdc68254aaa0689e7f75440d7ccc9718dde66"
+  },
+  "verification_script_sha256": "c0fae9fe4a99228bbf49d57dc21b283d45c675a6ace8d3afaa4a27f6754352f8"
+}
