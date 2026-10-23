@@ -1,0 +1,398 @@
+{
+  "ok": true,
+  "capture_id": "reus-codis-postals",
+  "worker_process": {
+    "role": "qgis-render",
+    "pid": 1,
+    "ppid": 0,
+    "pid_namespace": "pid:[4026534283]"
+  },
+  "provenance": {
+    "recipe_id": "tig-c06-reus-tesselles",
+    "recipe_title": "Reus \u00b7 malles, arestes, Voronoi i atlas",
+    "recipe_path": "/workspace/practiques/pr4-tessellacions-reus/cas/captures.yml",
+    "capture_title": "Zonificaci\u00f3 postal estimada a partir dels portals",
+    "source_prompt": "Explicar, en aquest ordre, les tessel\u00b7les regulars, la triangulaci\u00f3 i les seves arestes de dist\u00e0ncia, el Voronoi postal de Reus i l'atlas amb cobertura regular. Mostrar l'Explorador i el WMS IGN/PNOA, sense tenyir l'ortofoto; els punters s'ancoren en caixes o petits cercles visibles sobre controls reals.",
+    "recipe_source_prompt": "Explicar, en aquest ordre, les tessel\u00b7les regulars, la triangulaci\u00f3 i les seves arestes de dist\u00e0ncia, el Voronoi postal de Reus i l'atlas amb cobertura regular. Mostrar l'Explorador i el WMS IGN/PNOA, sense tenyir l'ortofoto; els punters s'ancoren en caixes o petits cercles visibles sobre controls reals.",
+    "capture_source_prompt": null
+  },
+  "image": "sha256:1003721d96abe9607d8337b36851f9b29f84c2f8f92b377d1a73ff03c9d15cd2",
+  "image_digest": "sha256:1003721d96abe9607d8337b36851f9b29f84c2f8f92b377d1a73ff03c9d15cd2",
+  "probe": {
+    "ok": true,
+    "python_version": "3.13.7",
+    "qgis_version": "3.44.11",
+    "qt_version": "5.15.17",
+    "gdal_version": "3.10.3",
+    "qgis_process": {
+      "ok": true,
+      "path": "/usr/bin/qgis_process",
+      "version": "QGIS 3.44.11-Solothurn 'Solothurn' (f8f5812197f)\nQGIS code revision f8f5812197f\nQt version 5.15.17\nPython version 3.13.7\nGDAL/OGR version 3.10.3\nPROJ version 9.6.0\nEPSG Registry database version v12.004 (2025-03-02)\nGEOS version 3.13.1-CAPI-1.19.2\nSQLite version 3.46.1\nOS Ubuntu 25.10",
+      "returncode": 0
+    },
+    "analysis_checked": false,
+    "process": {
+      "role": "qgis-probe",
+      "pid": 1,
+      "ppid": 0,
+      "pid_namespace": "pid:[4026534283]"
+    },
+    "image": "sha256:1003721d96abe9607d8337b36851f9b29f84c2f8f92b377d1a73ff03c9d15cd2",
+    "digest": "sha256:1003721d96abe9607d8337b36851f9b29f84c2f8f92b377d1a73ff03c9d15cd2",
+    "raw": "{\"ok\": true, \"python_version\": \"3.13.7\", \"qgis_version\": \"3.44.11-Solothurn\", \"qt_version\": \"5.15.17\", \"gdal_version\": \"3.10.3\", \"qgis_process\": {\"ok\": true, \"path\": \"/usr/bin/qgis_process\", \"version\": \"QGIS 3.44.11-Solothurn 'Solothurn' (f8f5812197f)\\nQGIS code revision f8f5812197f\\nQt version 5.15.17\\nPython version 3.13.7\\nGDAL/OGR version 3.10.3\\nPROJ version 9.6.0\\nEPSG Registry database version v12.004 (2025-03-02)\\nGEOS version 3.13.1-CAPI-1.19.2\\nSQLite version 3.46.1\\nOS Ubuntu 25.10\", \"returncode\": 0}, \"analysis_checked\": false, \"process\": {\"role\": \"qgis-probe\", \"pid\": 1, \"ppid\": 0, \"pid_namespace\": \"pid:[4026534283]\"}}\n",
+    "returncode": 0
+  },
+  "output": "/workspace/assets/img/qgis/qgis-c06-reus-codis-postals.png",
+  "annotation_svg": "/workspace/assets/img/qgis/qgis-c06-reus-codis-postals.annotations.svg",
+  "annotation_svg_background": {
+    "mode": "embedded_png_data_uri",
+    "width": 1440,
+    "height": 900
+  },
+  "manifest": "/workspace/assets/img/qgis/qgis-c06-reus-codis-postals.manifest.yml",
+  "backend": "offscreen",
+  "locale": {
+    "requested": "ca_ES",
+    "qsettings_user_locale": "ca_ES",
+    "qsettings_override": true
+  },
+  "device_pixel_ratio": 1.0426788330078125,
+  "coordinate_space": "logical pixels in the captured image; recipe relative coordinates share this space for PNG and SVG annotations",
+  "camera": {
+    "mode": "full",
+    "requested": {
+      "mode": "full",
+      "target": null,
+      "padding": 0,
+      "output_size": null
+    },
+    "full_capture": {
+      "width": 1440,
+      "height": 900
+    },
+    "scale": 1.0
+  },
+  "layout_policy": {
+    "reading_direction": "left_to_right",
+    "prefer_local_empty_space": true,
+    "prefer_leaderless_labels": true,
+    "avoid_diagonal_leaders": true,
+    "allow_diagonal_leaders": "when_no_clear_local_candidate",
+    "protect_text": true,
+    "protect_controls": true,
+    "obstacle_padding": 4.0
+  },
+  "project_crs": "EPSG:25831",
+  "canvas_crs": "EPSG:25831",
+  "scene": {
+    "project_file": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/projects/reus-tesselles.qgz",
+    "project_title": "Reus: malles, dist\u00e0ncies, codis postals i atlas \u00b7 Resolta",
+    "window_title": "*Reus: malles, dist\u00e0ncies, codis postals i atlas \u00b7 Resolta \u2014 QGIS",
+    "dirty": true,
+    "active_layer": "zones_postals",
+    "layer_tree": [
+      {
+        "kind": "group",
+        "name": "\u00c0mbit i generadors",
+        "expanded": true,
+        "visible": true,
+        "children": [
+          {
+            "kind": "layer",
+            "name": "municipi_reus",
+            "visible": true,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=municipi_reus",
+            "crs": "EPSG:25831",
+            "persistent": true
+          },
+          {
+            "kind": "layer",
+            "name": "generadors",
+            "visible": false,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=generadors",
+            "crs": "EPSG:25831",
+            "persistent": true
+          },
+          {
+            "kind": "layer",
+            "name": "portals_entorn",
+            "visible": false,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=portals_entorn",
+            "crs": "EPSG:25831",
+            "persistent": true
+          },
+          {
+            "kind": "layer",
+            "name": "domini",
+            "visible": false,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=domini",
+            "crs": "EPSG:25831",
+            "persistent": true
+          }
+        ]
+      },
+      {
+        "kind": "group",
+        "name": "Malles regulars",
+        "expanded": true,
+        "visible": true,
+        "children": [
+          {
+            "kind": "layer",
+            "name": "Sector nord \u00b7 enquadrament de comparaci\u00f3",
+            "visible": false,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=malla_1000m|subset=\"id_cella\" = 'g1000_r011_c006'",
+            "crs": "EPSG:25831",
+            "persistent": true
+          },
+          {
+            "kind": "layer",
+            "name": "malla_500m",
+            "visible": false,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=malla_500m",
+            "crs": "EPSG:25831",
+            "persistent": true
+          },
+          {
+            "kind": "layer",
+            "name": "malla_1000m",
+            "visible": false,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=malla_1000m",
+            "crs": "EPSG:25831",
+            "persistent": true
+          },
+          {
+            "kind": "layer",
+            "name": "cobertura_atlas",
+            "visible": false,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=cobertura_atlas",
+            "crs": "EPSG:25831",
+            "persistent": true
+          }
+        ]
+      },
+      {
+        "kind": "group",
+        "name": "Triangulaci\u00f3 i arestes",
+        "expanded": true,
+        "visible": true,
+        "children": [
+          {
+            "kind": "layer",
+            "name": "triangles",
+            "visible": false,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=triangles",
+            "crs": "EPSG:25831",
+            "persistent": true
+          },
+          {
+            "kind": "layer",
+            "name": "arestes",
+            "visible": false,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=arestes",
+            "crs": "EPSG:25831",
+            "persistent": true
+          }
+        ]
+      },
+      {
+        "kind": "group",
+        "name": "Llindars i components",
+        "expanded": true,
+        "visible": true,
+        "children": [
+          {
+            "kind": "layer",
+            "name": "arestes_25m",
+            "visible": false,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=arestes_25m",
+            "crs": "EPSG:25831",
+            "persistent": true
+          },
+          {
+            "kind": "layer",
+            "name": "arestes_50m",
+            "visible": false,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=arestes_50m",
+            "crs": "EPSG:25831",
+            "persistent": true
+          },
+          {
+            "kind": "layer",
+            "name": "arestes_100m",
+            "visible": false,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=arestes_100m",
+            "crs": "EPSG:25831",
+            "persistent": true
+          },
+          {
+            "kind": "layer",
+            "name": "grups_25m",
+            "visible": false,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=grups_25m",
+            "crs": "EPSG:25831",
+            "persistent": true
+          },
+          {
+            "kind": "layer",
+            "name": "grups_50m",
+            "visible": false,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=grups_50m",
+            "crs": "EPSG:25831",
+            "persistent": true
+          },
+          {
+            "kind": "layer",
+            "name": "grups_100m",
+            "visible": false,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=grups_100m",
+            "crs": "EPSG:25831",
+            "persistent": true
+          }
+        ]
+      },
+      {
+        "kind": "group",
+        "name": "Zonificaci\u00f3 postal estimada",
+        "expanded": true,
+        "visible": true,
+        "children": [
+          {
+            "kind": "layer",
+            "name": "voronoi",
+            "visible": false,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=voronoi",
+            "crs": "EPSG:25831",
+            "persistent": true
+          },
+          {
+            "kind": "layer",
+            "name": "zones_postals",
+            "visible": true,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=zones_postals",
+            "crs": "EPSG:25831",
+            "persistent": true
+          }
+        ]
+      },
+      {
+        "kind": "group",
+        "name": "Original provincial",
+        "expanded": false,
+        "visible": true,
+        "children": [
+          {
+            "kind": "layer",
+            "name": "CartoCiudad \u00b7 font provincial",
+            "visible": false,
+            "valid": true,
+            "provider": "ogr",
+            "source": "/workspace/practiques/recorregut-municipal/inputs/tarragona.gpkg|layername=portalpk_publi",
+            "crs": "EPSG:4258",
+            "persistent": true
+          }
+        ]
+      },
+      {
+        "kind": "group",
+        "name": "Context WMS",
+        "expanded": true,
+        "visible": true,
+        "children": [
+          {
+            "kind": "layer",
+            "name": "Ortofoto IGN/PNOA (WMS)",
+            "visible": true,
+            "valid": true,
+            "provider": "wms",
+            "source": "crs=EPSG:25831&format=image/jpeg&layers=OI.OrthoimageCoverage&styles=&url=https://www.ign.es/wms-inspire/pnoa-ma?&version=1.3.0",
+            "crs": "EPSG:25831",
+            "persistent": true
+          }
+        ]
+      }
+    ],
+    "checks": {
+      "ok": true,
+      "requested": {
+        "project_crs": "EPSG:25831",
+        "required_layers": [],
+        "visible_layers": [],
+        "persistent_layers": [
+          "municipi_reus",
+          "generadors"
+        ]
+      }
+    }
+  },
+  "project_state": {
+    "action": "open",
+    "state_before": "source",
+    "fingerprint_sha256": "a4b609af3b6f7b05ffce9b627a6496ea579bad903856bfc26c2716a96aaaf11f",
+    "source": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/projects/reus-tesselles.qgz",
+    "output": null
+  },
+  "geopackage_connections": [
+    {
+      "path": "/workspace/practiques/recorregut-municipal/inputs/tarragona.gpkg",
+      "name": "01 CartoCiudad \u00b7 tarragona.gpkg"
+    },
+    {
+      "path": "/workspace/practiques/recorregut-municipal/inputs/red_viaria.gpkg",
+      "name": "02 Viari CNIG \u00b7 red_viaria.gpkg"
+    },
+    {
+      "path": "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg",
+      "name": "03 Reus \u00b7 tessel\u00b7les"
+    }
+  ],
+  "warnings": [],
+  "target": {
+    "object_name": null,
+    "class_name": "QgisApp",
+    "text": null,
+    "item_text": null,
+    "layer_name": null,
+    "target_part": null,
+    "title": null,
+    "parent_window": null,
+    "fallback": []
+  },
+  "annotations": []
+}

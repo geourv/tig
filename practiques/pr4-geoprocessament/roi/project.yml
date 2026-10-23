@@ -1,0 +1,12 @@
+runtime:
+  default_image: sha256:1003721d96abe9607d8337b36851f9b29f84c2f8f92b377d1a73ff03c9d15cd2
+  display_backend: offscreen
+  pull_policy: never
+  docker_network: bridge
+  locale: ca_ES
+paths:
+  recipes: [captures.yml]
+  data_root: ../../..
+  output_root: ../../../assets/img/qgis
+  cache_root: ../../../tmp/unaltracaptura-qgis/roi34
+plugins: [processing]

@@ -1,7 +1,7 @@
 ---
 layout: manual-chapter
 title: Anàlisi i geoprocessament vectorial
-description: Relacions espacials, àrees d'influència, superposicions i tessel·lacions per construir i validar resultats vectorials.
+description: Envolupants, distàncies, superposicions i tessel·lacions, amb casos CNIG de Vila-seca i Reus i un atlas de cobertura regular.
 lang: ca
 ref: manual-vector-analysis-geoprocessing
 profiles: [unaltremanual]
@@ -12,111 +12,195 @@ part: Continguts
 manual_references: true
 ---
 
-Una consulta identifica entitats que compleixen una condició; el geoprocessament pot crear geometries noves a partir d'aquestes entitats. Delimitar una franja al voltant d'una carretera, retallar una capa pel terme municipal o calcular la part comuna de dues zones transforma tant l'espai com la taula associada. El resultat només és interpretable si es coneix què conserva i què modifica cada operació.
+Quina geometria permet delimitar un àmbit de treball, conservar-ne l'entorn i comparar després punts, carrers i illes? Una consulta identifica entitats; el **geoprocessament** en pot construir de noves. El recorregut comença amb formes senzilles que contenen un municipi, incorpora distàncies i superposicions i acaba amb unitats per resumir dades, estudiar veïnatges i organitzar un atlas.
 
-L'anàlisi vectorial treballa amb relacions de distància, contenció, contacte i superposició. Aquestes relacions no són només eines de QGIS: expressen un model del problema. Una **àrea d'influència** (`buffer`) representa una distància geomètrica; una intersecció representa coincidència entre geometries; cap de les dues operacions incorpora per si sola accessibilitat, risc o causalitat.
+Vila-seca proporciona el cas de preparació i transformació de geometries. Reus permet seguir els mateixos portals de CartoCiudad a través d'una malla regular, una triangulació i un diagrama de Voronoi. A cada pas cal distingir la pregunta territorial, l'operació geomètrica i allò que realment acredita la sortida.
 
->>>>> En acabar el capítol, cal poder construir i validar una seqüència de geoprocessament vectorial adequada per a una pregunta territorial.
+>>>>> En acabar el capítol, cal poder construir i comprovar un recorregut vectorial amb resultats persistents.
 >>>>>
->>>>> - Distingir selecció espacial, unió d'atributs, retall i superposició geomètrica.
->>>>> - Triar entre àrea d'influència, intersecció, diferència, unió i dissolució segons el resultat esperat.
->>>>> - Explicar què representen un centroide, un punt sobre la superfície, una envolupant i una distància entre geometries.
->>>>> - Interpretar com una operació fragmenta geometries i replica o agrega atributs.
->>>>> - Comprovar CRS, validesa, recomptes, superfícies i múltiples coincidències.
+>>>>> - Escollir una envolupant i justificar distàncies, CRS i paràmetres del buffer.
+>>>>> - Distingir selecció, retall, intersecció, diferència, unió i dissolució, inclosos els efectes sobre els atributs.
+>>>>> - Derivar parts, punts representatius i vèrtexs sense perdre la identitat d'origen.
+>>>>> - Interpretar malles, arestes de Delaunay i dominis de Voronoi amb controls de recompte, proximitat i vora.
+>>>>> - Preparar tessel·les com a cobertura d'un atlas i comprovar ordre, escala i enquadrament de les pàgines.
 
-## Predicats i transformacions
+## Envolupants del municipi
 
-Els predicats topològics descriuen relacions com `intersects`, `disjoint`, `touches`, `within`, `contains`, `overlaps`, `crosses` i `equals`. Alguns són direccionals: si un punt és `within` d'un polígon, el polígon el `contains`. Una selecció per `intersects` conserva la geometria completa de l'entitat seleccionada, encara que només una petita part coincideixi amb la zona de consulta {% cite ogcSimpleFeatures2011 %}.
+Una **envolupant** resumeix l'extensió d'una geometria o d'un conjunt de geometries mitjançant una forma que els conté. És útil per definir una àrea de cerca, preparar un retall o comparar l'espai addicional que comporta una aproximació. No equival al territori ocupat: les concavitats, els forats i les separacions entre parts poden quedar inclosos dins de l'envolupant.
 
-Topologia d'edició
-: Ajuda a mantenir límits o nodes compartits mentre es modifiquen dades.
+El **caixetí delimitador** ordinari és el rectangle definit pels mínims i màxims de les coordenades X i Y. Els seus costats segueixen els eixos del sistema de referència de coordenades (**CRS**). Un rectangle mínim orientat deixa variar l'orientació per minimitzar-ne l'àrea. El primer facilita treballar amb graelles no rotades; el segon pot ajustar-se millor a una forma obliqua. Cap dels dos necessita seguir la direcció de la costa.
 
-Predicat topològic
-: Avalua una relació entre dues geometries i retorna un valor lògic.
+L'**embolcall convex** és la geometria convexa mínima contenidora: uneix els extrems i omple les concavitats. El **cercle mínim contenidor** busca un centre i un radi que continguin l'entrada; no és, en general, un buffer del centroide. Una envolupant còncava respon a una altra família de mètodes i depèn del paràmetre de concavitat. No s'ha de confondre amb aquestes quatre formes.
 
-Geoprocessament
-: Construeix geometries o dades noves mitjançant una operació, com la part comuna o la diferència.
+### Una entrada comuna i quatre tipus
 
-No són sinònims. Una capa pot superar una regla d'edició i, tanmateix, no complir el predicat que exigeix l'anàlisi; una selecció correcta tampoc no crea la superfície que només una superposició pot obtenir.
+La capa `municipi_treball` conté el terme CNIG de Vila-seca de juliol de 2026, preparat en EPSG:25831. En aquest primer pas l'entrada és **el municipi sense buffer**. El projecte mostra l'Explorador amb els GeoPackage de treball, CartoCiudad i viari CNIG; el WMS IGN/PNOA queda sota els vectors. Els contorns permeten llegir l'ortofoto sense alterar-ne els colors.
 
-### Interior, frontera i exterior
+![Quatre envolupants del municipi de Vila-seca, amb contorns sobre el WMS i les connexions GeoPackage visibles]({{ site.baseurl }}/assets/img/qgis/qgis-c06-envolupants-comparacio.png "Les quatre formes contenen el mateix terme municipal magenta: caixa alineada verda, rectangle orientat blau, cercle taronja i embolcall convex violeta. Els espais que afegeixen responen a les seves propietats geomètriques, no a una ampliació administrativa."){: data-figure-width-web="64rem" data-figure-width-pdf="100%"}
 
-Interior
-: Punts que pertanyen a l'objecte sense formar-ne la frontera.
+**Geometria delimitadora mínima** permet escollir el tipus. El seu identificador a Processament és `qgis:minimumboundinggeometry`.
 
-Frontera
-: Conjunt que separa l'interior de l'exterior segons la dimensió i el tipus geomètric.
+Amb un únic municipi, deixar el camp de grup buit produeix una geometria per al conjunt d'entrada. Si hi ha diverses entitats, el camp opcional permet calcular una envolupant per classe; deixar-lo buit no significa necessàriament calcular-ne una per fila.
 
-Exterior
-: Resta de l'espai que no pertany ni a l'interior ni a la frontera.
+Per obtenir caixes per entitat es pot emprar `native:boundingboxes`, visible com **Caixetins delimitadors** {% cite qgisUserGuide344 %}.
 
-Aquests tres conjunts permeten descriure una relació sense dependre de la mida, l'orientació o la forma visual dels símbols.
+![Diàleg de geometria delimitadora mínima amb municipi_treball i selector del tipus destacats]({{ site.baseurl }}/assets/img/qgis/qgis-c06-envolupants-tipus.png "La mateixa eina permet canviar el tipus de geometria delimitadora. La captura mostra seleccionada l'envolupant rectangular i el camp d'agrupació buit; el municipi és l'entrada de totes les comparacions."){: data-figure-width-web="44rem" data-figure-width-pdf="88%"}
 
-::: table "Interior i frontera segons la dimensió geomètrica"
-| Geometria simple | Interior | Frontera | Conseqüència analítica |
-| --- | --- | --- | --- |
-| Punt | El mateix punt | Conjunt buit | Un punt no té una vora lineal amagada sota el marcador |
-| Línia oberta | Els punts de la línia excepte els extrems | Els dos extrems, en el cas simple | Un contacte en un extrem pot ser `touches`; un tall interior pot ser `crosses` |
-| Línia tancada simple | El recorregut lineal | Frontera buida segons la regla topològica de la corba tancada | Tancar visualment una línia no la converteix en polígon |
-| Polígon | La superfície situada dins dels anells | Anell exterior i anells dels forats | Un punt sobre l'anell no és a l'interior, tot i que interseca el polígon |
+::: table "Tipus de geometria delimitadora mínima a QGIS 3.44"
+| Tipus | Valor de `TYPE` | Propietat que es comprova |
+| --- | ---: | --- |
+| Envolupant o caixetí delimitador | 0 | Extrems X/Y i costats alineats amb el CRS |
+| Rectangle mínim orientat | 1 | Contenció i mínima àrea rectangular amb orientació lliure |
+| Cercle mínim contenidor | 2 | Centre, radi i aproximació poligonal del cercle |
+| Embolcall convex | 3 | Contenció i absència de concavitats |
 :::
 
-La frontera no és el traç que es veu a la pantalla. El gruix d'una línia o del contorn d'un polígon és simbologia i no participa en el predicat. Un punt que sembla quedar «sobre» un límit a una escala concreta pot estar a un costat quan s'examinen les coordenades. Per això els casos de frontera s'han de comprovar amb la geometria, l'exactitud de la font i l'escala del problema, no només ampliant el mapa.
+Es conserva cada sortida amb un nom propi i es comproven validesa, extensió, àrea i contenció. En un cercle discretitzat, el radi matemàtic i el polígon de segments no són el mateix objecte: la tolerància ha de correspondre a l'aproximació. La comparació només és interpretable si es manté la mateixa entrada. Més endavant es repetirà sobre un buffer, que ja serà una geometria diferent.
 
-En un polígon amb un forat, l'interior exclou el forat i la frontera inclou l'anell que el delimita. Un punt dins del forat és a l'exterior del polígon; un punt sobre l'anell interior és a la frontera. En una multigeometria, la frontera es deriva del conjunt complet i pot no coincidir amb la simple suma intuïtiva de les fronteres de cada part. Aquestes diferències expliquen per què cal utilitzar predicats implementats segons un model formal en lloc de deduir relacions a partir de caixes envolupants.
+## Distàncies, buffers i regió d'interès
 
-### La matriu DE-9IM
+### Distància i model de mesura
 
-El **model d'intersecció estès dimensional de nou posicions** (DE-9IM) compara l'interior, la frontera i l'exterior d'una geometria A amb els mateixos tres conjunts d'una geometria B. Les nou interseccions formen una matriu 3 × 3. Cada cel·la indica si la intersecció és buida o quina dimensió màxima té: punt, línia o superfície {% cite ogcSimpleFeatures2011 %}.
+La distància mínima entre dues geometries és la longitud del segment més curt que les connecta sota la mètrica adoptada. Dues geometries que s'intersequen tenen distància mínima zero. Mesurar entre centroides respon una altra pregunta: dues formes allargades poden tenir centres llunyans i vores molt pròximes.
 
-La formulació de les nou interseccions parteix del treball d'Egenhofer i Franzosa sobre relacions topològiques entre conjunts de punts {% cite egenhoferPointSetTopological1991 %}. Clementini, Di Felice i van Oosterom hi van incorporar la dimensió de les interseccions i van proposar un conjunt reduït de relacions amb nom per a la interacció amb usuaris {% cite clementiniFormalTopological1993 %}.
+En el pla, la distància euclidiana entre dos punts es calcula amb les diferències de coordenades. La distància de Manhattan restringeix el recorregut a direccions ortogonals; una distància sobre una xarxa segueix arcs connectats i pot incorporar sentits, barreres, costos o temps. Per tant, proximitat geomètrica i accessibilitat no són intercanviables.
 
-::: table "Estructura de la matriu DE-9IM per a A i B"
+![Tres models de distància entre el mateix origen i destinació]({{ site.baseurl }}/assets/quarto/06-analisi-geoprocessament-vectorial/distance-models.qmd "La línia recta, el recorregut ortogonal i una ruta sobre xarxa defineixen espais de moviment diferents. Una barrera pot ser irrellevant per a la distància euclidiana i determinant per al trajecte possible."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
+
+Una operació plana interpreta les coordenades i les unitats del CRS pertinent. Un valor de 500 només significa 500 metres quan la unitat lineal és el metre; no té aquest significat sobre longituds i latituds en graus. En els casos locals del capítol es preparen explícitament les capes en **EPSG:25831**. Canviar només el CRS del projecte modifica la representació, no les coordenades emmagatzemades de cada font.
+
+Una mesura geodèsica sobre l'el·lipsoide tampoc no és idèntica a una mesura plana. El procediment s'escull segons extensió, deformació admissible i pregunta. A QGIS convé distingir les funcions de mesura configurades amb l'el·lipsoide del projecte de les operacions geomètriques planes de Processament. La coincidència visual amb el WMS complementa aquests controls; no certifica l'exactitud posicional.
+
+### Quines parelles es comparen?
+
+Un càlcul de distàncies pot retornar un camp, una taula de parelles, arestes o una superfície. Primer cal decidir quins orígens i destinacions participen, si la distància és direccional i com es tracten empats o absències.
+
+::: table "Patrons de comparació de distàncies"
+| Patró | Resultat | Control determinant |
+| --- | --- | --- |
+| Origen únic o estrella | Una distància de l'origen a cada destinació | Identitat de l'origen i cobertura de destinacions |
+| Veí més pròxim | Una o diverses candidates mínimes per entitat | Empats, ID de la candidata i distància |
+| Dos conjunts | Fins a $n\times m$ parelles | Volum de la taula i significat de cada parella |
+| Totes les parelles no dirigides | $n(n-1)/2$ parelles sense autoparelles | No duplicar A–B i B–A |
+| Graf de veïnatge | Només les arestes definides pel criteri | Distingir el criteri de veïnatge de totes les parelles |
+| Buffer | Zona situada dins del llindar geomètric | CRS, radi, aproximació i identitat dels generadors |
+:::
+
+Un índex espacial pot descartar moltes candidates sense calcular totes les distàncies. Aquesta acceleració no canvia la pregunta: la comprovació final es fa sobre geometries, no només sobre caixes. Les arestes de Delaunay, que es desenvoluparan amb Reus, són una manera concreta de proposar parelles veïnes; no constitueixen la matriu exhaustiva. El capítol ràster presentarà una altra representació: un valor de distància per cel·la.
+
+### Àrea d'influència i aproximació de corbes
+
+Un **buffer** o àrea d'influència amb extrems i unions arrodonits aproxima el conjunt de posicions situades a una distància màxima de la geometria. Al voltant d'un punt forma un disc aproximat; al voltant d'una línia, una franja; al voltant d'un polígon, una expansió. El radi es mesura des de la geometria d'entrada, no des del gruix del símbol dibuixat.
+
+El paràmetre **segments** de `native:buffer` indica quants segments s'utilitzen per aproximar un quart de circumferència. Més segments afegeixen vèrtexs i redueixen la desviació geomètrica de l'arc, però no milloren la cartografia original. En arcs parcials, la subdivisió del motor pot diferir de la d'una circumferència regular; qualsevol control de precisió ha de correspondre al cas executat.
+
+En línies obertes, un extrem pla acaba a la coordenada final; un de quadrat prolonga la franja i pot incloure posicions diagonals més llunyanes que el radi nominal; un d'arrodonit aproxima el semicercle de proximitat. Les unions arrodonides, bisellades o en punta també canvien la superfície a les cantonades. El límit de mitra restringeix les prolongacions en punta. Si la pregunta és literalment distància màxima, no es poden tractar tots aquests estils com a equivalents.
+
+![Efectes del radi, els segments, els extrems i les unions]({{ site.baseurl }}/assets/quarto/06-analisi-geoprocessament-vectorial/buffer-parameters.qmd "Els paràmetres del buffer alteren la geometria resultant. Cal mantenir-los constants en una comparació de radi, o variar-ne un de sol per atribuir-li el canvi observat."){: data-figure-width-web="50.5rem" data-figure-width-pdf="100%"}
+
+Un buffer d'un sol costat depèn de l'ordre dels vèrtexs de la línia: invertir-ne el sentit intercanvia esquerra i dreta. Una distància procedent d'un camp exigeix revisar unitats, nuls i signes. En polígons, una distància negativa produeix retracció i pot eliminar parts estretes, dividir una geometria o deixar-la buida. Aquests canvis s'han de comptar, no descartar silenciosament.
+
+### Cobertura conjunta o generadors individuals
+
+Els buffers individuals conserven la identitat dels generadors, però poden superposar-se. Sumar-ne les àrees compta les coincidències diverses vegades. Una còpia dissolta elimina les fronteres interiors i permet mesurar la petjada conjunta; deixa de descriure directament quin generador cobreix cada posició.
+
+![Buffers individuals i cobertura dissolta dels mateixos generadors]({{ site.baseurl }}/assets/quarto/06-analisi-geoprocessament-vectorial/buffer-dissolve.qmd "La dissolució permet mesurar cobertura única. La capa individual continua essent necessària per atribuir cada zona als seus generadors i estudiar coincidències múltiples."){: data-figure-width-web="45rem" data-figure-width-pdf="100%"}
+
+Per seleccionar portals pròxims a una xarxa es pot utilitzar un predicat de distància o un buffer adequadament aproximat. La selecció retorna un conjunt d'IDs: un portal no es duplica només perquè intersequi diversos buffers. En canvi, una taula que relacioni cada portal amb tots els trams pròxims sí que pot contenir diverses files per portal. La dissolució i el recompte s'escullen segons aquesta diferència.
+
+### Buffer municipal de 500 m
+
+El cas de continuïtat necessita un marge al voltant de Vila-seca. S'aplica `native:buffer` a `municipi_treball`, amb distància **500 m**, **8 segments per quadrant**, unions arrodonides, límit de mitra 2 i dissolució desactivada. La sortida es desa com `municipi_buffer_500m` al GeoPackage de treball. El valor és una decisió d'àmbit del cas, no una franja normativa.
+
+![Diàleg natiu de buffer municipal amb distància i segments destacats]({{ site.baseurl }}/assets/img/qgis/qgis-c06-buffer-municipal.png "Els 500 m s'interpreten sobre la capa municipal en EPSG:25831; els 8 segments fixen l'aproximació per quadrant. La captura acredita la configuració. La validesa, la contenció i la distància es comproven sobre la sortida persistent."){: data-figure-width-web="44rem" data-figure-width-pdf="88%"}
+
+Després d'executar, es reobre la capa i es comprova que conté el municipi, que les geometries són vàlides i que l'àrea ha augmentat. En aquesta edició CNIG, el terme ocupa **21,704 km²** i el buffer **40,286 km²**. El control mostrejat de distància observa aproximadament 495,183–500 m a la frontera exterior, coherent amb la discretització estudiada; no és una mesura d'exactitud de la font ni un certificat continu de tot el contorn.
+
+### La caixa ROI del buffer {#cas-guiat-una-roi-comuna-per-al-geoprocessament}
+
+La **regió d'interès (`roi`)** del recorregut és la caixa no orientada de `municipi_buffer_500m`. S'aplica `native:boundingboxes` al buffer, no directament al terme, i es desa la capa `roi` al mateix GeoPackage. S'hi incorpora `id_roi` per identificar l'àmbit en les superposicions posteriors. En el cas resolt el valor és `roi_vilaseca_500m`.
+
+![Caixetins delimitadors amb el buffer municipal com a entrada i la destinació GeoPackage]({{ site.baseurl }}/assets/img/qgis/qgis-c06-caixa-roi.png "La destinació persistent identifica el fitxer i la capa roi. La caixa es calcula sobre el buffer municipal; no és la mateixa envolupant que s'ha comparat al començament sobre el terme original."){: data-figure-width-web="44rem" data-figure-width-pdf="88%"}
+
+La caixa ocupa **87,609 km²** i segueix els eixos d'EPSG:25831. Les cantonades poden quedar a més de 500 m del terme: la condició de distància defineix el buffer, mentre que la caixa només el conté. Aquesta geometria facilita una graella ràster no rotada, però incorpora mar i municipis veïns. L'ajust a l'origen i mida de píxel a PR5 serà una operació posterior.
+
+![Municipi, buffer i ROI sobre el WMS IGN PNOA amb les connexions de treball]({{ site.baseurl }}/assets/img/qgis/qgis-c06-roi-desada.png "Municipi magenta, buffer blau i ROI verda són tres geometries diferents. L'Explorador identifica el contenidor de treball i els originals; el WMS proporciona context territorial, sense intervenir com a geometria del càlcul."){: data-figure-width-web="64rem" data-figure-width-pdf="100%"}
+
+El rectangle orientat, la convexa i el cercle mínim del **mateix buffer** ocupen, respectivament, 70,773, 54,713 i 95,193 km²; el cercle d'aquesta comparació s'ha discretitzat amb 720 segments. Aquests valors no corresponen a les envolupants municipals de la primera figura. Una alternativa més compacta pot reduir espai de càlcul, però no substitueix automàticament la caixa acordada per a la continuïtat.
+
+### Distàncies normatives i cribratge territorial
+
+Un buffer pot ajudar a localitzar casos que necessiten revisió, però el seu significat jurídic depèn de la norma i de la geometria des d'on aquesta mesura. No és equivalent mesurar des d'un eix viari, de la vora de la calçada o de l'aresta d'una esplanació.
+
+::: table "Preguntes de cribratge i geometria de referència"
+| Context | Comprovació necessària |
+| --- | --- |
+| Espai natural protegit | Perímetre oficial, zonificació i règim del pla aplicable |
+| Costes | Delimitament jurídic i tipus de zona previstos a la [Llei de costes](https://www.boe.es/eli/es/l/1988/07/28/22/con), no només costa visible al WMS |
+| Aigües | Llera, geometria oficial i règim establert a la [legislació d'aigües](https://www.boe.es/eli/es/rdlg/2001/07/20/1/con) |
+| Carreteres | Titularitat, classe, zona i aresta des de la qual es mesura |
+| Instal·lació o pla de protecció civil | Norma, pla o resolució específica; no una distància universal presumpta |
+:::
+
+El [text refós de la Llei de carreteres de Catalunya](https://portaljuridic.gencat.cat/eli/es-ct/dlg/2009/08/25/2/con) diferencia zones i referències de mesura. Els 25 m apareixen en determinats supòsits, però no defineixen una franja universal per a qualsevol autopista; les vies estatals requereixen consultar la [Llei 37/2015](https://www.boe.es/eli/es/l/2015/09/29/37/con). Els eixos CNIG poden servir per al cribratge a la seva escala, sense substituir les geometries exigides per un expedient.
+
+## Preparació i selecció espacial
+
+### Fonts completes per a l'àmbit ampliat
+
+La ROI supera el terme municipal. Els portals i les vies seleccionats només per Vila-seca a PR3 no cobreixen necessàriament el nou àmbit. Es reprenen les fonts provincials: CartoCiudad Tarragona d'abril de 2026, amb `portalpk_publi` i `manzana`, i viari CNIG de juliol de 2026, amb `rt_tramo_vial`. Els originals es mantenen separats dels candidats i resultats.
+
+En continuar la cadena de pràctiques, amb QGIS tancat es copia el GeoPackage validat de PR3 a `sandbox/pr4-geoprocessament-cognom.gpkg`. No es copia el `.qgz` anterior. S'estableix el projecte principal `pr4`, es reorienten totes les fonts locals al contenidor nou i després es crea un `.qgz` homònim amb camins relatius. Les connexions de l'Explorador pertanyen al perfil de QGIS i poden haver-se de recrear en un altre equip.
+
+Abans de transformar es conserva una clau ordinària de fila, `id_font`, i s'extreuen candidats d'un sector que cobreixi tota la ROI, encara amb geometries senceres. Un índex o una selecció per extensió proporciona candidats, però després cal el predicat exacte. Els FID interns poden canviar en exportar o fragmentar; `id_tramo` també pot repetir-se en registres diferents del viari i no equival a una clau de fila.
+
+>> **Processar sense dibuixar tota la font.** Una capa desmarcada al panell Capes continua disponible per a Processament. Sovint no cal representar la província ni obrir-ne la taula per retallar-la. Un filtre de capa pot restringir també l'entrada de molts algorismes; no és equivalent a ocultar-la, filtrar només la taula o mantenir una selecció. Cal registrar el filtre i comprovar el recompte. La millora de temps depèn de la font, els índexs i la consulta.
+
+![Menú contextual del viari amb Filtre ressaltat]({{ site.baseurl }}/assets/img/qgis/qgis-c06-filtre-capa.png "El filtre es configura sobre la capa. Pot continuar actiu encara que la capa sigui invisible al mapa, i per això cal revisar-lo abans de qualsevol càlcul."){: data-figure-width-web="64rem" data-figure-width-pdf="100%"}
+
+CartoCiudad reuneix portals i punts quilomètrics. La consulta `"tipo" = 'Portal'` delimita el subconjunt de portals; el nom del fitxer no ho garanteix. En el viari, el valor observat de `clased` per als carrers urbans és `Urbano`. El retall general conserva totes les classes i el subconjunt urbà es materialitza quan la pregunta el necessita.
+
+### Predicats i geometries senceres
+
+Quines vies intersequen la ROI? **Selecciona per ubicació** avalua una relació entre la capa objectiu i la referència. Amb el predicat `intersects`, una via que comparteix qualsevol punt amb `roi` queda seleccionada **sencera**, encara que la major part sigui fora. Exportar només les seleccionades materialitza aquesta selecció; encara no calcula el tros interior.
+
+![Selecció per ubicació amb els candidats viaris i la ROI]({{ site.baseurl }}/assets/img/qgis/qgis-c06-seleccio-roi.png "La capa objectiu determina quines entitats es seleccionen. La ROI participa en el predicat, però no retalla la geometria de les vies seleccionades."){: data-figure-width-web="44rem" data-figure-width-pdf="88%"}
+
+La **topologia d'edició** ajuda a mantenir límits o nodes compartits; un **predicat** avalua una relació i retorna un valor lògic; una operació de **geoprocessament** pot crear geometries noves. Superar una regla d'edició no substitueix el predicat que exigeix l'anàlisi, i seleccionar correctament no construeix la superfície que només una superposició pot obtenir {% cite ogcSimpleFeatures2011 %}.
+
+::: table "Predicats habituals i interpretació"
+| Predicat | Relació | Precaució |
+| --- | --- | --- |
+| `intersects` | Almenys un punt comú | Inclou contacte, creuament, contenció i solapament |
+| `disjoint` | Cap punt comú | Una escletxa petita continua essent separació |
+| `touches` | Contacte sense intersecció dels interiors | No equival a compartir superfície |
+| `within` / `contains` | Contenció, amb la relació d'interiors exigida | Són inversos; un punt només sobre la frontera no és estrictament interior |
+| `overlaps` | Solapament parcial entre geometries de la mateixa dimensió | Exclou igualtat i contenció completa |
+| `crosses` | Creuament amb la dimensió d'intersecció adequada | El significat depèn dels tipus geomètrics |
+| `equals` | Igualtat topològica dels conjunts de punts | No exigeix els mateixos IDs, atributs ni ordre de vèrtexs |
+:::
+
+![Predicats entre punts, línies i polígons ideals]({{ site.baseurl }}/assets/quarto/06-analisi-geoprocessament-vectorial/spatial-predicates-by-geometry.qmd "La dimensió geomètrica condiciona la relació: tocar una frontera, creuar una línia i compartir superfície no són situacions equivalents."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
+
+### Interior, frontera i DE-9IM
+
+L'interior d'un polígon exclou els anells; la frontera inclou tant el contorn exterior com els anells dels forats. Un punt dins d'un forat és exterior al polígon, i un punt sobre l'anell interior és a la frontera. En una línia oberta simple, els extrems formen la frontera; la resta del recorregut és interior. Una línia tancada simple té frontera buida segons la regla topològica corresponent i no es converteix en polígon pel fet de tancar-se. El punt té interior, però frontera buida.
+
+El model **DE-9IM** compara interior, frontera i exterior d'A amb els mateixos conjunts de B. Cada intersecció és buida o té una dimensió màxima: punt, línia o superfície. Aquesta formulació permet expressar els predicats sense deduir-los del gruix dels símbols {% cite egenhoferPointSetTopological1991 clementiniFormalTopological1993 ogcSimpleFeatures2011 %}.
+
+::: table "Les nou interseccions de DE-9IM"
 | A respecte de B | Interior de B | Frontera de B | Exterior de B |
 | --- | --- | --- | --- |
-| Interior d'A | $I(A) \cap I(B)$ | $I(A) \cap \partial B$ | $I(A) \cap E(B)$ |
-| Frontera d'A | $\partial A \cap I(B)$ | $\partial A \cap \partial B$ | $\partial A \cap E(B)$ |
-| Exterior d'A | $E(A) \cap I(B)$ | $E(A) \cap \partial B$ | $E(A) \cap E(B)$ |
+| Interior d'A | $I(A)\cap I(B)$ | $I(A)\cap\partial B$ | $I(A)\cap E(B)$ |
+| Frontera d'A | $\partial A\cap I(B)$ | $\partial A\cap\partial B$ | $\partial A\cap E(B)$ |
+| Exterior d'A | $E(A)\cap I(B)$ | $E(A)\cap\partial B$ | $E(A)\cap E(B)$ |
 :::
 
-Una implementació pot codificar les cel·les com `F` quan són buides o com `0`, `1` i `2` segons la dimensió de la intersecció; en patrons de consulta, `T` admet qualsevol intersecció no buida i `*` no imposa cap condició. Els predicats amb nom són patrons interpretables sobre aquesta matriu. No cal memoritzar les nou posicions de cada predicat, però sí entendre que `touches`, `crosses` o `overlaps` no es decideixen per una semblança visual: exigeixen combinacions concretes d'interiors i fronteres.
+La codificació utilitza `F` per a una intersecció buida i `0`, `1` o `2` per a la dimensió; en un patró, `T` admet qualsevol intersecció no buida i `*` no imposa condició. No cal memoritzar tots els patrons, però sí distingir-los de la distància: dos polígons amb una escletxa continuen sent `disjoint`, per petita que sigui. Els predicats `covers` i `covered_by`, quan l'eina els ofereix, permeten tractar explícitament la cobertura de la frontera.
 
-DE-9IM descriu relacions topològiques, no distàncies. Dos polígons separats per una escletxa mínima continuen sent `disjoint`; dos que comparteixen un segment poden estar en contacte (`touches`); i dos que comparteixen superfície s'intersequen (`intersects`), però no només es toquen. Si la pregunta diu «a menys de», cal un predicat de distància o una àrea d'influència, no una reinterpretació de `intersects`.
+Una prova ideal amb WKT fa aquesta distinció reproduïble. WKT és text de geometria, no una capa completa ni un CRS; WKB n'és una representació binària.
 
-La direcció ocupa un paper diferent segons el predicat. `intersects`, `disjoint`, `touches`, `overlaps`, `equals` i `crosses` són simètrics: intercanviar A i B no canvia el valor lògic quan la relació és aplicable. En `crosses`, les dimensions de les geometries determinen si el predicat és aplicable i què significa. `within` i `contains` són inversos: A pot ser dins de B mentre B conté A. En una selecció de QGIS, la capa objectiu continua determinant quines entitats es conserven encara que el predicat sigui simètric.
-
-### Semàntica dels predicats habituals
-
-::: table "Predicats espacials i condicions que no s'han de confondre"
-| Predicat | Relació essencial | Exemple conceptual | Precaució |
-| --- | --- | --- | --- |
-| `intersects` | Les geometries comparteixen almenys un punt | Una línia entra en un polígon o només en toca la vora | És la negació de `disjoint` i inclou moltes relacions més específiques |
-| `disjoint` | No comparteixen cap punt | Dos polígons separats | Una distància molt petita continua sent separació topològica |
-| `touches` | Comparteixen punts, però els interiors no es comparteixen | Dos polígons adjacents amb frontera comuna | Un solapament d'àrea no és contacte pur |
-| `crosses` | La intersecció travessa l'interior amb una dimensió inferior adequada | Dues línies que es tallen en un punt interior | No és un sinònim general d'`intersects` |
-| `within` | A queda dins de B i els interiors tenen la relació exigida | Un punt estrictament interior a un polígon | Un punt només sobre la frontera no és `within` en el sentit estricte |
-| `contains` | A conté B; és la relació inversa de `within` | Un polígon conté un punt interior | Cal situar correctament capa objectiu i capa de comparació |
-| `overlaps` | Geometries de la mateixa dimensió comparteixen part de l'interior sense ser iguals ni contenir-se completament | Dos polígons amb una zona comuna parcial | No descriu qualsevol intersecció ni una contenció completa |
-| `equals` | Interiors, fronteres i exteriors ocupen els mateixos conjunts de punts | Dues geometries topològicament iguals | No implica que comparteixin identificador, ordre de vèrtexs o atributs |
-:::
-
-`intersects` és deliberadament ampli. Retorna cert per contacte, creuament, solapament, contenció i igualtat, sempre que hi hagi almenys un punt comú. És útil per no perdre candidats, però sovint necessita un diagnòstic posterior. Si es volen només municipis limítrofs sense superfície comuna, `touches` expressa millor la pregunta; si es volen zones parcialment superposades, `overlaps` exclou les contencions completes.
-
-La distinció entre contenció estricta i cobertura de la frontera és especialment important amb punts. `within` exigeix la relació d'interiors definida pel model; una família de predicats com `covered_by` i `covers`, quan l'eina els ofereix, permet incloure explícitament la frontera. No s'ha de canviar de predicat només per augmentar el recompte. Primer cal decidir si el fenomen pot pertànyer legítimament al límit i com s'han de tractar les coincidències múltiples.
-
-`crosses` depèn de les dimensions. Dues línies que es troben només als extrems poden complir `touches`, mentre que si els interiors es tallen en un punt poden complir `crosses`. Una línia que entra i surt d'un polígon pot creuar-lo; dos polígons amb superfície comuna parcial se solen descriure amb `overlaps`. El nom quotidià «creuar» no determina el predicat formal.
-
-![Exemples de relacions topològiques entre punt i polígon, entre dues línies i entre dos polígons]({{ site.baseurl }}/assets/quarto/06-analisi-geoprocessament-vectorial/spatial-predicates-by-geometry.qmd "El predicat aplicable i la seva interpretació depenen dels tipus geomètrics: la figura contrasta contenció, contacte, creuament, solapament i separació amb geometries ideals."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
-
-### Exemple resolt: punts interiors, sobre la frontera i exteriors
-
-En un conjunt ideal hi ha un polígon quadrat B, un punt P al seu interior, un punt Q sobre una aresta i un punt R a l'exterior. Són geometries didàctiques exactes, no observacions mesurades. P compleix `within(P, B)` i `intersects(P, B)`; Q compleix `touches(Q, B)` i `intersects(Q, B)`, però no `within(Q, B)`; R compleix `disjoint(R, B)`.
-
-En el mateix exercici, dues línies obertes L1 i L2 compleixen `crosses(L1, L2)` si es tallen en un punt interior de totes dues. Si només comparteixen un extrem, poden complir `touches` sense creuar-se. Finalment, dos polígons A i B amb una franja interior parcial compleixen `overlaps(A, B)`; si A queda completament dins de B, compleix `within(A, B)` i ja no és un solapament parcial. Aquestes resolucions permeten predir l'eina abans d'aplicar-la a geometries reals amb toleràncies i errors.
-
-Les geometries ideals es poden escriure com a **text ben conegut** (WKT, de l'anglès *well-known text*) per repetir la prova sense dibuixar-les manualment. El **binari ben conegut** (WKB) codifica el mateix model en forma binària i no es llegeix directament com a text. Tots dos són representacions d'intercanvi de geometries definides per Simple Features, no predicats ni formats complets de capa {% cite ogcSimpleFeatures2011 %}.
-
-::: listing "Geometries WKT per comprovar interior, frontera i exterior"
+::: listing "Interior, frontera i exterior en un exemple cartesià"
 ```text
 POLYGON ((0 0, 2 0, 2 2, 0 2, 0 0))
 POINT (1 1)
@@ -125,422 +209,321 @@ POINT (3 1)
 ```
 :::
 
-Respecte del polígon de la primera línia, els punts següents representen, per ordre, interior, frontera i exterior. Les coordenades només defineixen un exercici cartesià sense unitat territorial. Assignar-los un CRS o interpretar-ne la distància exigiria una decisió addicional que aquesta prova topològica no necessita.
+El primer punt és interior, el segon toca la frontera i el tercer és exterior. Els dos primers intersequen el polígon, però només el primer és `within`. Les coordenades són didàctiques, sense unitat territorial. Amb dades reals, precisió finita, geometries invàlides o límits de fonts diferents poden alterar les relacions i requereixen diagnòstic.
 
-### Precisió de coordenades i efectes de la superposició
+## Superposicions i atributs
 
-Les coordenades digitals tenen precisió finita. Geometries procedents de fonts diferents poden representar el mateix límit amb vèrtexs lleugerament separats, i una transformació de CRS pot introduir diferències numèriques. El predicat avalua les geometries disponibles, no la intenció del productor. Ajustar o arrodonir coordenades pot canviar relacions i no s'ha d'aplicar sense una tolerància justificada per l'exactitud i l'escala.
+Seleccionar, unir atributs i tallar geometries responen preguntes diferents. Una **unió espacial d'atributs** conserva habitualment la geometria objectiu i hi associa informació de les coincidències. Un **retall** construeix la part interior a una màscara. Una **intersecció** construeix parts comunes i relaciona les files que les han generades.
 
-Una geometria invàlida pot fer que la seva frontera o interior no es puguin interpretar de manera consistent i que una operació falli o doni fragments inesperats. La validació individual i les regles entre entitats s'han de revisar abans del geoprocessament. Reparar automàticament totes les entrades tampoc no és neutral: pot moure, dividir o eliminar components i obliga a comparar la sortida amb la font.
+![Selecció, retall i intersecció sobre les mateixes geometries]({{ site.baseurl }}/assets/quarto/06-analisi-geoprocessament-vectorial/selection-overlay.qmd "La selecció conserva l'entitat completa. Retall i intersecció en construeixen la part comuna, però propaguen atributs diferents."){: data-figure-width-web="43.5rem" data-figure-width-pdf="100%"}
 
-Les operacions de superposició creen geometries derivades. Cal triar-les segons la pregunta, no segons la semblança dels noms.
+Les eines habituals es troben a `Vectorial > Eines de geoprocessament` i a la caixa de Processament. Les captures corresponen a QGIS 3.44.11, amb algunes etiquetes encara en anglès. L'identificador de cada algorisme permet reconèixer-lo encara que la traducció variï.
 
-::: table "Operacions vectorials i efecte sobre el resultat"
-| Operació | Geometria resultant | Atributs habituals | Pregunta típica |
-| --- | --- | --- | --- |
-| Extracció | Entitats completes seleccionades | De l'entrada | Quines entitats compleixen el criteri? |
-| Unió espacial | Geometria de la capa objectiu | Camps afegits de la capa relacionada | A quina zona correspon cada entitat? |
-| Retall (`clip`) | Part de l'entrada dins de la màscara | De l'entrada | Quina part queda dins l'àmbit? |
-| Intersecció | Parts comunes entre entrades | De totes dues capes | On coincideixen els dos fenòmens? |
-| Diferència | Part de l'entrada fora de la màscara | De l'entrada | Què queda exclòs? |
-| Diferència simètrica | Parts exclusives de cadascuna de les dues entrades | De la capa corresponent, amb nuls o camps separats segons l'eina | On apareix exactament un dels dos fenòmens? |
-| Unió geomètrica (`union`) | Extensió conjunta segmentada pels límits entre les dues capes; només és una partició disjunta si cada entrada ja és una cobertura sense solapaments interns | De totes dues capes, amb nuls | Quines zones són comunes o exclusives? |
-| Dissolució | Geometria agregada per grup | Camps de l'entrada; els valors no formen un resum estadístic | Quin contorn únic correspon a cada classe? |
+![Accés a les operacions de geoprocessament vectorial]({{ site.baseurl }}/assets/img/qgis/qgis-c06-menu-geoprocessament.png "El menú dona accés a les operacions de superposició. L'elecció depèn de la geometria i la taula que ha de produir la resposta, no de la proximitat dels botons."){: data-figure-width-web="64rem" data-figure-width-pdf="100%"}
+
+### Retall de portals i viari
+
+El **retall**, `native:clip`, utilitza `roi` com a màscara i conserva els atributs de l'entrada. En punts, cada posició es conserva o s'exclou; no es genera mig portal. En línies, el tall crea extrems nous i pot produir diverses parts d'un mateix registre. El recorregut desa `portals_roi`, després del filtre Portal, i `viari_roi`, amb totes les classes viàries.
+
+![Retall de les línies viàries per la ROI]({{ site.baseurl }}/assets/img/qgis/qgis-c06-retall-viari.png "L'entrada és vies_candidats i la màscara és roi. La longitud es recalcula sobre la sortida: un camp antic copiat de l'entrada no mesura els nous fragments."){: data-figure-width-web="44rem" data-figure-width-pdf="88%"}
+
+Cap geometria resultant ha de quedar fora de la màscara i la longitud o superfície no ha d'augmentar respecte de l'original corresponent. `id_font` permet relacionar els fragments amb la seva fila de procedència. El recompte de registres no es confon amb el d'itineraris ni amb el de trams geomètrics diferents.
+
+### Intersecció d'illes i identitat de la màscara
+
+La **intersecció**, `native:intersection`, calcula les parts comunes i hi incorpora camps de les dues entrades. Les illes de `manzana` es preparen com `illes_candidates`, s'intersecten amb `roi` i es desen com `illes_roi`, conservant `id_font` i l'atribut de màscara `id_roi`.
+
+![Intersecció de les illes de CartoCiudad amb el camp id_roi seleccionat]({{ site.baseurl }}/assets/img/qgis/qgis-c06-interseccio-illes.png "La intersecció identifica tant l'illa d'origen com la màscara que participa en el resultat. Els FID de la sortida no substitueixen aquestes claus."){: data-figure-width-web="44rem" data-figure-width-pdf="88%"}
+
+Si una entitat amb un recompte $N$ es divideix en dos fragments, tots dos poden rebre el mateix $N$. Sumar-lo donaria $2N$, no un total desagregat. Repartir-lo proporcionalment a l'àrea exigeix una hipòtesi d'homogeneïtat, que pot ser inadequada. La geometria correcta no garanteix l'ús correcte dels atributs.
+
+::: table "Recomptes del cas CNIG sobre la ROI de Vila-seca"
+| Entrada preparada | Files candidates | Sortida | Files resultants |
+| --- | ---: | --- | ---: |
+| Punts CartoCiudad, encara amb Portal/PK | 17.793 | `portals_roi`, després de filtrar Portal | 16.756 |
+| Viari de totes les classes | 10.262 | `viari_roi` | 9.780 |
+| Illes completes | 1.490 | `illes_roi` | 1.399 |
 :::
 
-Una intersecció pot dividir una entitat en molts fragments i copiar-hi el mateix atribut original. Si una parcel·la amb un recompte $N$ queda partida en dos fragments, tots dos poden conservar $N$ i sumar-los produiria $2N$. Repartir una variable extensa segons superfície exigeix una hipòtesi explícita de distribució uniforme i no és adequat per a qualsevol fenomen.
+Les diferències combinen criteri espacial i, en els portals, filtre de tipus. No són una mesura de pèrdua de qualitat. Els valors corresponen a les edicions i a la preparació declarades; no s'imposen a un altre municipi.
 
-La dissolució és una operació geomètrica, no una agregació estadística.
+![Punts, línies i polígons limitats per la mateixa ROI]({{ site.baseurl }}/assets/img/qgis/qgis-c06-retalls-resultat.png "Els tres resultats comparteixen àmbit. El límit municipal permet veure que la ROI conserva també l'entorn exterior de Vila-seca."){: data-figure-width-web="64rem" data-figure-width-pdf="100%"}
 
-L'algorisme `native:dissolve` de QGIS conserva per als camps no agrupadors els valors de la primera entitat processada, que no representen necessàriament tot el grup. L'opció `Keep disjoint features separate` pot crear més d'una fila per valor de grup. Quan cal sumar, comptar o resumir atributs, s'ha d'aplicar una agregació explícita i comprovar-la separadament {% cite qgisUserGuide344 %}.
+### Unió geomètrica i dissolució
 
-### Selecció per ubicació o transformació
+La **unió geomètrica**, `native:union`, cobreix $A\cup B$ i segmenta les geometries pels límits entre entrades. A les peces exclusives d'A, els camps de B queden nuls, i a la inversa; a la part comuna hi ha atributs de totes dues. Aquest patró de nuls expressa pertinença espacial. La unió no és apilar files de capes compatibles.
 
-Una **selecció per ubicació** avalua un predicat entre una capa objectiu i una capa de comparació. Si una línia interseca una zona, queda seleccionada sencera encara que només un segment hi entri. Una **extracció per ubicació** pot materialitzar les mateixes entitats completes en una capa nova. Cap de les dues calcula només el tros comú.
+![Partició i atributs d'una unió geomètrica]({{ site.baseurl }}/assets/quarto/06-analisi-geoprocessament-vectorial/union-geometry-and-attributes.qmd "Les peces exclusives i comunes conserven camps de procedència. Els nuls de l'altra capa són esperables a les zones on aquella capa no participa."){: data-figure-width-web="45rem" data-figure-width-pdf="100%"}
 
-Una **unió espacial** també conserva habitualment la geometria objectiu, però hi afegeix atributs de les coincidències. Una **intersecció geomètrica** construeix les parts comunes i pot fragmentar l'objectiu. Un **retall** construeix la part interior a la màscara sense incorporar normalment els seus atributs. Triar entre aquestes operacions exigeix decidir si la sortida ha de respondre «quines entitats?», «a quina zona correspon cada entitat?» o «quina part exacta coincideix?».
+La sortida només és una partició disjunta si es compleixen les condicions de les entrades i de l'algorisme. Amb dues capes, `native:union` no resol per si sol els solapaments interns de cadascuna. Sense capa de superposició, pot dividir coincidències de la mateixa entrada i conservar peces geomètricament coincidents per als participants. Comptar files no equival, per tant, a comptar zones exclusives.
 
-::: table "La mateixa relació aplicada amb efectes diferents"
-| Procediment | Conserva la geometria completa de l'objectiu | Afegeix atributs de l'altra capa | Crea parts geomètriques noves |
-| --- | --- | --- | --- |
-| Selecció per ubicació | Sí | No | No |
-| Extracció per ubicació | Sí | No | No; només materialitza les entitats coincidents |
-| Unió d'atributs per ubicació | Sí, segons la capa objectiu | Sí | No en la forma ordinària |
-| Retall | No | No, llevat de camps afegits per un altre pas | Sí |
-| Intersecció | No | Sí | Sí |
+La **dissolució**, `native:dissolve`, agrupa geometries segons un camp o calcula una geometria conjunta si no se n'indica cap. Elimina fronteres internes, però no defineix sumes, mitjanes ni recomptes dels altres camps. QGIS conserva valors de la primera entitat processada per a camps no agrupadors; no s'interpreten com a estadístiques. Amb `Keep disjoint features separate` poden aparèixer diverses files per grup {% cite qgisUserGuide344 %}.
+
+Quan calen geometria i totals, es calculen separadament la cobertura dissolta i una taula agregada per la mateixa clau, i se'n comprova la unicitat abans d'unir-les. Per estudiar cobertura de fanals, les peces geomètriques úniques es relacionen de nou amb els buffers individuals i es compten IDs diferents. La petjada conjunta, el nombre de generadors i la il·luminació real són magnituds diferents.
+
+## Diferències, components i peces entre carrers
+
+### Complement dins d'un univers finit
+
+La **diferència** $A\setminus B$ conserva la part d'A no coberta per B. És direccional: invertir les entrades canvia la pregunta. La **diferència simètrica** conserva les parts exclusives de totes dues i és útil per localitzar desacords entre cobertures, sense identificar per si sola si es deuen a canvi territorial, escala o desplaçament.
+
+Per obtenir un complement finit cal definir l'univers. En el cas costaner, `roi` és aquest univers i `terra_roi` és la unió dels recintes administratius retallats que hi intervenen: Cambrils, Constantí, Reus, Riudoms, Tarragona, Vila-seca, Salou i la Canonja. Restar només Vila-seca deixaria també els municipis veïns al complement. El nom `terra_roi` és operatiu; no identifica tota la terra física ni exclou qualsevol superfície d'aigua.
+
+![Diferència entre la ROI i la unió dels recintes administratius]({{ site.baseurl }}/assets/img/qgis/qgis-c06-diferencia-mar.png "L'ordre és roi menys terra_roi. El complement s'ha de conservar i inspeccionar abans d'atribuir-li un significat territorial."){: data-figure-width-web="44rem" data-figure-width-pdf="88%"}
+
+La sortida `mar_complement` ocupa **14,826 km²** i conté **cinc components**. S'inspeccionen amb el WMS, especialment als ports i als desajustos de límits. El cas conserva tota la diferència i identifica com `mar_context` els dos components connectats amb punts marins de contrast prop de les cantonades sud-oest i sud-est. Sumen **14,447 km²**. No és una regla universal de conservar el polígon més gran.
+
+![Contorns del context marí derivat sobre el WMS]({{ site.baseurl }}/assets/img/qgis/qgis-c06-mar-resultat.png "Els components seleccionats proporcionen context cartogràfic. No substitueixen una delimitació marina oficial ni una línia de costa específica; les altres parts del complement continuen disponibles per al diagnòstic."){: data-figure-width-web="64rem" data-figure-width-pdf="100%"}
+
+El balanç compara l'àrea de `terra_roi` amb la del complement: han de reconstruir l'àrea de `roi`, dins de la tolerància declarada, sense superposició d'interiors. Una igualtat d'àrea no basta per etiquetar el complement com a mar; el control geomètric i la interpretació territorial són passos diferents.
+
+### Franges viàries i conversió multipart
+
+La segona diferència pregunta què queda entre franges uniformes al voltant dels carrers. De `viari_roi` s'extreu `"clased" = 'Urbano'`, amb **5.475 registres**, i es desa `urbans_roi`. Es comparen buffers dissolts de **5 i 10 m**, amb 8 segments per quadrant i extrems i unions arrodonits. Un radi de 5 m dona aproximadament 10 m d'amplada total en un tram recte; no mesura l'amplada real del carrer.
+
+![Buffer de cinc metres sobre els carrers urbans amb dissolució]({{ site.baseurl }}/assets/img/qgis/qgis-c06-buffer-carrers.png "La dissolució obté una petjada conjunta dels carrers. Els radis de 5 i 10 m són dues hipòtesis comparables del model, amb la mateixa entrada i els mateixos paràmetres de corba."){: data-figure-width-web="44rem" data-figure-width-pdf="88%"}
+
+Es resta cada petjada de `terra_roi`. Una sola fila pot contenir moltes peces separades: una geometria **multipart**. En WKT, `MULTIPOLYGON` agrupa diversos polígons sota una geometria; no implica una fila per polígon.
+
+L'algorisme `native:multiparttosingleparts`, visible com **Compost a parts senzilles**, crea una fila per part i repeteix els atributs d'origen.
+
+![Separació d'una geometria multipart en parts senzilles]({{ site.baseurl }}/assets/img/qgis/qgis-c06-multipart-monopart.png "La conversió canvia el nombre de files, no la cobertura. Després es conserva la clau d'origen, s'assigna id_peca i es recalcula l'àrea de cada part."){: data-figure-width-web="44rem" data-figure-width-pdf="88%"}
+
+Amb 5 m s'obtenen **1.330 parts** i amb 10 m, **1.131**. La suma d'àrees de les parts ha de coincidir amb la diferència anterior. Les peces poden incloure espais rurals, rotondes, discontinuïtats viàries i fragments del límit: no són un inventari oficial d'illes urbanes. El contrast amb `manzana` i l'ortofoto permet explicar aquestes diferències.
+
+![Peces delimitades pels buffers viaris al nucli de Vila-seca]({{ site.baseurl }}/assets/img/qgis/qgis-c06-illes-resultat.png "Els eixos blaus i els contorns de les peces permeten llegir el model sobre el teixit urbà. Una franja uniforme simplifica amplades, places, cruïlles i culs-de-sac."){: data-figure-width-web="64rem" data-figure-width-pdf="100%"}
+
+### Combinació de criteris territorials
+
+Les operacions anteriors permeten expressar una decisió multicriteri. Si U és l'àmbit, C una coberta compatible, P una proximitat i E una exclusió, una zona candidata pot ser $(U\cap C\cap P)\setminus E$. Cal conservar cada criteri amb un nom interpretable i comprovar-lo abans de combinar-lo. Canviar una intersecció per una unió o invertir una diferència canvia el significat.
+
+En la branca municipal de PR4, els candidats viaris de PR3 es preparen com `vies_principals`, amb una clau `id_tram` pròpia, única i no nul·la després de fragmentar, `codi_muni` i traça d'origen. Aquesta preparació es distingeix del viari de tota la ROI. Es poden comparar proximitat al viari, a fanals inventariats i a l'entorn de la Facultat, mantenint separats buffers individuals i cobertures dissoltes. Un escenari sintètic s'identifica com a tal.
+
+La sensibilitat repeteix el flux variant una decisió plausible —distància, predicat, tolerància o edició— i mantenint les altres. S'analitzen àrees comunes i exclusives, components i entitats que canvien de classe, no només superfície total. La sortida afirma compatibilitat amb les regles codificades; no demostra disponibilitat jurídica, il·luminació, accessibilitat ni cap factor omès.
+
+## Punts derivats de línies i polígons
+
+### Centroide i punt sobre la superfície
+
+Un **centroide** resumeix tota la geometria. En polígons es pondera per superfície i en línies per longitud. Pot quedar fora d'un polígon còncau o multipart, i el centroide d'una línia corbada pot quedar fora del traçat: no és necessàriament el punt de mitja longitud.
+
+`native:centroids` permet obtenir un punt per entitat o per part. En les **1.399 illes** retallades del cas, amb un punt per entitat, **35 centroides queden fora** del polígon corresponent. No s'han de moure per fer-los semblar interiors: és una propietat del mètode que cal interpretar.
+
+![Centroide de cada entitat poligonal a QGIS]({{ site.baseurl }}/assets/img/qgis/qgis-c06-centroides.png "La comparació manté un punt per entitat. Activar el càlcul per part canviaria la unitat del resultat en geometries multipart."){: data-figure-width-web="44rem" data-figure-width-pdf="88%"}
+
+Quan la posició ha de pertànyer a la superfície, es fa servir **Punt sobre la superfície**, `native:pointonsurface`. Els 1.399 punts del cas s'han contrastat amb la seva illa d'origen. La pertinença els pot fer adequats per a una etiqueta o per consultar la peça, però no els converteix en portals, accessos ni centres funcionals.
+
+### Vèrtexs i extrems
+
+**Extreu vèrtexs**, `native:extractvertices`, conserva coordenades de la geometria amb índexs de vèrtex, part i anell quan correspongui. El cas genera **137.919 registres** per a les illes i **92.789** per als carrers urbans. Els anells tancats i les coincidències entre entitats poden repetir coordenades; el recompte no és el de posicions diferents ni un mostreig regular per distància.
+
+![Extracció de vèrtexs de les illes de CartoCiudad]({{ site.baseurl }}/assets/img/qgis/qgis-c06-vertices.png "La capa puntual conserva la relació amb l'entitat i els índexs geomètrics. Aquesta informació permet distingir anells, parts i coincidències."){: data-figure-width-web="44rem" data-figure-width-pdf="88%"}
+
+`native:extractspecificvertices` accepta `0,-1` per al primer i l'últim vèrtex d'una entitat lineal. Per obtenir els extrems de **cada part**, primer es converteix la geometria multipart a parts senzilles. En una línia tancada, els dos índexs poden donar la mateixa coordenada. Aquests punts no són automàticament nodes topològics d'una xarxa.
+
+![Comparació dels punts derivats sobre les mateixes illes]({{ site.baseurl }}/assets/img/qgis/qgis-c06-punts-resultat.png "Triangles vermells: centroides; diamants verds: punts sobre superfície; punts blaus: vèrtexs. Les posicions responen a preguntes diferents i conserven la traça fins al polígon d'origen."){: data-figure-width-web="64rem" data-figure-width-pdf="100%"}
+
+## Tessel·lacions regulars i unitat d'anàlisi
+
+Una **tessel·lació** divideix un domini en cel·les sense buits ni superposició d'interiors. Una malla regular defineix les unitats abans d'agregar-hi observacions. Serveix per comparar recomptes sobre superfícies comunes, però mida, forma, origen i orientació condicionen quins punts queden junts {% cite longleyGeographicInformationScience2015 %}.
+
+Els quadrats s'alineen fàcilment amb eixos cartesians i ràsters; els veïns laterals i diagonals tenen distàncies diferents entre centres. Els hexàgons regulars tenen sis veïns laterals equidistants. Aquesta propietat no els fa universalment superiors: la tria també depèn de les dades amb què s'ha de comparar i de la jerarquia espacial que es necessita.
+
+### Portals de Reus: registres i ubicacions
+
+El nou cas utilitza CartoCiudad Tarragona 04/2026 i el terme CNIG de Reus en EPSG:25831. El municipi té el valor `34094343123` al camp `NATCODE`. El domini és el rectangle municipal ampliat almenys **1.500 m** i arrodonit exteriorment a múltiples de **1.000 m**. És un marge rectangular, no un buffer euclidià. S'hi conserven tots els punts de tipus Portal, inclosos els de municipis veïns.
+
+Hi ha **35.190 registres de portals** i **34.614 ubicacions diferents** després de la preparació. Cada ubicació rep `id_generador`, `cod_postal` textual i `n_portals`; una taula de correspondència manté les files originals. Diverses adreces coincidents no es desplacen artificialment per crear dominis geomètrics diferents. Els codis absents o incompatibles requereixen categories i regles explícites.
+
+Aquest conjunt complet alimenta les malles, Delaunay i Voronoi del recorregut. Una partició d'entrenament/validació és un experiment diferent: els seus recomptes no es barregen amb els del model que utilitza tots els generadors.
+
+### Construcció i recompte per cel·la
+
+**Crea una quadrícula**, `native:creategrid`, permet escollir el tipus, l'extensió, els espaiaments i el CRS. Per als quadrats de 500 m se seleccionen rectangles poligonals, espaiaments horitzontal i vertical de 500 m i solapament zero. Es manté el mateix origen per repetir el càlcul a 1.000 m; així es poden comparar dues mides de suport.
+
+![Paràmetres de la quadrícula de cinc-cents metres]({{ site.baseurl }}/assets/img/qgis/qgis-c06-graella-parametres.png "El domini, el CRS i els dos espaiaments defineixen la malla. Per obtenir quadrats, els costats són iguals; el solapament és zero."){: data-figure-width-web="44rem" data-figure-width-pdf="88%"}
+
+Cada cel·la conserva `id_cella`, fila i columna. S'hi compten per separat **ubicacions** i **registres de portals**: comptar generadors i sumar `n_portals` no dona la mateixa magnitud. Les cel·les sense punts també es conserven. La suma sobre el domini complet ha de recuperar 34.614 ubicacions i 35.190 portals.
+
+![Quadrícula regular de 500 metres sobre Reus]({{ site.baseurl }}/assets/img/qgis/qgis-c06-graella-resultat.png "La malla continua més enllà del límit magenta de Reus. Les cel·les s'han definit sobre el domini complet, abans d'escollir un àmbit d'informe o una cobertura de pàgines."){: data-figure-width-web="64rem" data-figure-width-pdf="100%"}
+
+Els punts sobre fronteres poden intersectar dues o més cel·les. Per evitar doble recompte cal una assignació unívoca. El cas calculat utilitza índexs de fila/columna i intervals semioberts, incloent el límit exterior final a l'última cel·la. En una unió espacial de QGIS s'han de detectar les coincidències múltiples i aplicar una regla equivalent, no sumar-les com si fossin observacions noves.
+
+### Mida, origen i efectes de vora
+
+El **problema de la unitat espacial modificable** (**MAUP**) descriu els canvis dels resums quan varien la mida o la delimitació de les unitats. L'efecte d'escala apareix en passar, per exemple, de 500 a 1.000 m; l'efecte de zonificació, en desplaçar l'origen mantenint la mida. Les observacions poden ser les mateixes i, tanmateix, canviar els punts agrupats en cada cel·la {% cite longleyGeographicInformationScience2015 nunesDiccionariSIG2012 %}.
+
+Retallar cel·les pel terme crea peces parcials. Un recompte brut sobre una peça petita no és directament comparable amb el d'una cel·la completa. Dividir per l'àrea dona densitat geomètrica; una taxa per població o exposició necessita un denominador diferent. Zero observacions i absència de cobertura de la font també s'han de distingir.
+
+Una comparació amb hexàgons ha de fixar el domini i documentar les dimensions reals produïdes per l'eina. No s'ha de suposar que el mateix nombre escrit als espaiaments genera la mateixa àrea que un quadrat. Per a l'atlas posterior es conservaran quadrats complets: la pàgina necessita un enquadrament regular, no una peça retallada de mida variable.
+
+## Delaunay: triangles, arestes i agrupacions
+
+La **triangulació de Delaunay** connecta punts de manera que l'interior del cercle circumscrit a cada triangle no contingui altres punts del conjunt. Proposa un veïnatge geomètric sense haver de fixar primer un radi. Els duplicats, la col·linearitat i les configuracions cocirculars poden provocar degeneracions o triangulacions equivalents; els triangles perifèrics també reflecteixen l'extensió del conjunt observat.
+
+### Triangular els mateixos generadors
+
+S'executa `native:delaunaytriangulation` sobre `generadors`, amb tolerància zero i conservació de la informació dels vèrtexs. La tolerància no s'utilitza per eliminar coincidències sense diagnòstic: la preparació ja ha separat registres i ubicacions. El cas produeix **69.195 triangles**.
+
+![Diàleg de triangulació de Delaunay amb els generadors únics]({{ site.baseurl }}/assets/img/qgis/qgis-c06-delaunay-parametres.png "La triangulació utilitza les mateixes ubicacions que la resta del recorregut. Els identificadors retornats dels vèrtexs s'han de relacionar amb la capa d'entrada; no s'assumeix que siguin claus estables del nou GeoPackage."){: data-figure-width-web="44rem" data-figure-width-pdf="88%"}
+
+Per analitzar distàncies entre veïns interessen les **arestes**, no només els polígons triangulars. Una ruta a QGIS transforma polígons a línies, explota les línies en segments i elimina geometries duplicades. Una aresta interior apareix a dos triangles; la de la vora exterior pot aparèixer només a un. Cal conservar-ne una sola còpia no dirigida i els IDs dels dos generadors extrems.
+
+Es calcula `distancia_m` sobre cada segment en el CRS mètric. El cas resolt conserva **103.808 parelles úniques**, amb `id_a` i `id_b`. L'ordre dels extrems es normalitza per no comptar A–B i B–A com a parelles diferents. Una comprovació recalcula la longitud a partir de les coordenades dels generadors.
+
+![Arestes de Delaunay en un sector del nord de Reus]({{ site.baseurl }}/assets/img/qgis/qgis-c06-delaunay-arestes.png "Les arestes blaves relacionen ubicacions veïnes sobre el WMS. Les connexions llargues travessen espais poc mostrejats i poden creuar barreres; no són carrers ni trajectes de repartiment."){: data-figure-width-web="64rem" data-figure-width-pdf="100%"}
+
+### Retirar arestes llargues
+
+Un llindar de distància conserva només les arestes que el compleixen. Amb 50 m, l'expressió és `"distancia_m" <= 50`. La capa completa es manté i la selecció es desa com una sortida nova. La comparació cartogràfica utilitza el mateix enquadrament i escala, de manera que el canvi observat correspon al llindar.
+
+Un **component connectat** reuneix punts entre els quals existeix una cadena d'arestes conservades. Els punts sense cap aresta també formen components, d'una sola ubicació. L'efecte de cadena és essencial: dos extrems d'un mateix component poden quedar molt més lluny de 50 m, encara que cadascun dels passos de la cadena compleixi el llindar.
+
+![Arestes de fins a cinquanta metres i components en el mateix sector]({{ site.baseurl }}/assets/img/qgis/qgis-c06-delaunay-llindar.png "S'han retirat les arestes de més de 50 m i es conserven també els punts aïllats. Els colors dels punts indiquen mida del component: gris, una ubicació; blau, 2–9; verd, 10–99; magenta, 100 o més. Dos components diferents poden tenir el mateix color."){: data-figure-width-web="64rem" data-figure-width-pdf="100%"}
+
+::: table "Sensibilitat al llindar sobre els 34.614 generadors"
+| Distància màxima | Arestes conservades | Components | Components d'una ubicació |
+| --- | ---: | ---: | ---: |
+| 25 m | 53.237 | 6.810 | 5.074 |
+| 50 m | 78.132 | 3.098 | 2.355 |
+| 100 m | 92.649 | 1.323 | 916 |
 :::
 
-![Comparació de la línia A que interseca el polígon B quan se selecciona sencera, es retalla o es transforma mitjançant una intersecció]({{ site.baseurl }}/assets/quarto/06-analisi-geoprocessament-vectorial/selection-overlay.qmd "La selecció i l'extracció conserven l'entitat completa; el retall i la intersecció en construeixen només la part comuna amb la màscara, però propaguen atributs diferents."){: data-figure-width-web="43.5rem" data-figure-width-pdf="100%"}
+Augmentar el llindar afegeix arestes i pot unir components; no els ha de dividir. Les agrupacions són exploratòries i depenen de la densitat de portals, de les fonts i del radi. Una frontera administrativa, una autopista o una discontinuïtat de recorregut no interrompen automàticament aquestes connexions euclidianes.
 
-La direcció s'ha d'explicitar fins i tot per a un predicat simètric. «Seleccionar portals que intersecten zones» conserva portals; «seleccionar zones que intersecten portals» conserva zones. El predicat és el mateix, però la unitat de la resposta i el recompte canvien. En una unió espacial, la direcció determina quina geometria es conserva i quins atributs es repeteixen.
+L'algorisme `native:dbscanclustering` permet contrastar els components amb **DBSCAN** a QGIS. Amb distància 50 m, mínim **1 punt** i DBSCAN* desactivat, cada ubicació pot ser nucli i els aïllats es conserven. En aquest cas s'ha comprovat la coincidència amb els components del graf. És una configuració específica; amb un mínim superior intervenen densitat, punts de vora i soroll, i ja no s'ha de presentar com el mateix procediment. Els identificadors numèrics de clúster poden canviar entre execucions: es compara la pertinença, no el número de la classe.
 
-Les coincidències múltiples formen part del resultat. Un punt en una partició poligonal ben construïda acostuma a tenir una zona interior, però un punt de frontera pot intersectar-ne més d'una. Una línia pot travessar molts polígons de manera legítima. L'eina pot crear una fila per coincidència, seleccionar una sola entitat relacionada o calcular un resum; cal declarar l'opció i comptar objectius amb zero, una i diverses parelles.
+## Voronoi i codis postals de Reus
 
-### Operacions de conjunts espacials
+El **diagrama de Voronoi** assigna cada posició al generador més pròxim segons la mètrica adoptada. Els límits són llocs equidistants. En el cas pla, les cel·les no tenen en compte carrers, barreres, capacitat ni recorreguts. En configuracions no degenerades, dos generadors les cel·les dels quals comparteixen una aresta són veïns de Delaunay: dominis i connexions són dues lectures del mateix conjunt.
 
-Si A representa la geometria d'entrada i B la màscara o segona entrada, el retall i la intersecció conserven geomètricament $A \cap B$, però no construeixen la mateixa taula. La diferència conserva $A \setminus B$. La unió cobreix $A \cup B$ i segmenta els límits entre A i B. Aquesta segmentació diferencia zones només d'A, només de B i comunes quan cada entrada és una cobertura sense solapaments interns; si A o B ja contenen entitats superposades, la sortida pot conservar peces coincidents o duplicades i no és una partició disjunta. La diferència simètrica conserva $(A \setminus B) \cup (B \setminus A)$ i elimina la part comuna.
+### Cel·les de proximitat amb atributs
 
-Aquestes equivalències descriuen conjunts de punts ideals. Un algorisme concret també imposa tipus de geometria, regles d'atributs, precisió numèrica i tractament de geometries buides. Dues operacions amb la mateixa extensió geomètrica teòrica poden produir esquemes i nombres de files diferents. La documentació de QGIS i la informació de l'algorisme s'han de consultar per conèixer el contracte de la versió i del proveïdor utilitzats {% cite qgisUserGuide344 %}.
+S'aplica `native:voronoipolygons` a `generadors`. Es fixen tolerància zero i còpia d'atributs. El paràmetre `BUFFER` d'aquesta eina amplia **percentualment** l'extensió de construcció; no és un buffer en metres al voltant dels punts. A la demostració es fixa a 100 i es comprova que els polígons cobreixen el municipi abans de retallar-los.
 
-#### Retall
+![Diàleg de Voronoi amb ampliació de l'extensió i còpia d'atributs]({{ site.baseurl }}/assets/img/qgis/qgis-c06-reus-voronoi-parametres.png "Es conserven id_generador i cod_postal. L'ampliació percentual evita confondre l'extensió de construcció amb el marge territorial dels generadors, que s'ha preparat en metres."){: data-figure-width-web="44rem" data-figure-width-pdf="88%"}
 
-El **retall** (`clip`) utilitza B com un motlle. Conserva de cada entitat d'A la part situada dins de la geometria conjunta de B i manté els atributs d'A. Els camps de B no s'incorporen perquè la màscara respon on es talla, no quina entitat aporta cada tros. Si aquesta identitat és necessària, cal una intersecció.
+Els generadors externs continuen participant en la construcció. Retallar els portals pel terme abans de calcular faria desaparèixer veïns que poden ser més pròxims a posicions interiors. El resultat s'intersecta després amb `municipi_reus` i es desa com `voronoi`, amb **17.318 cel·les retallades** en aquest cas. No totes les ubicacions del domini ampli han de conservar una peça dins del terme.
 
-Retallar una xarxa pel municipi modifica la longitud dels trams que creuen el límit. Qualsevol camp de longitud calculat abans queda desactualitzat, encara que continuï a la taula. També poden aparèixer diverses parts procedents d'una mateixa entitat. El control ha de comprovar que cap part queda fora de la màscara, que la mesura no augmenta i que l'identificador d'origen permet reconstruir la fragmentació.
+![Cel·les de Voronoi retallades pel terme al sector de comparació]({{ site.baseurl }}/assets/img/qgis/qgis-c06-reus-voronoi-resultat.png "Els contorns mostren dominis de proximitat dels portals. Les cel·les grans corresponen a generadors dominants sobre espais amplis del conjunt observat; no demostren per si soles demanda ni cobertura funcional."){: data-figure-width-web="64rem" data-figure-width-pdf="100%"}
 
-#### Intersecció
+### Dissoldre per categoria postal
 
-La **intersecció** compara entitats d'A amb entitats de B i crea una peça per a cada coincidència geomètrica amb dimensió admesa per la sortida. Cada peça rep atributs de les dues files que l'han generada. Intersectar cobertes amb municipis permet saber quina categoria i quin municipi corresponen a cada fragment, però una coberta que travessa tres municipis pot convertir-se en tres files.
+`cod_postal` es conserva com a **text categòric**. No té sentit interpolar una mitjana de codis sobre els triangles. Es manté el Voronoi amb identitat del generador i se'n crea una segona capa dissolta per `cod_postal`, `zones_postals`. Pot haver-hi parts separades o enclavaments per a una mateixa categoria.
 
-La multiplicació de files és correcta quan reflecteix parelles espacials diferents. El risc apareix en els atributs extensius. Si una entitat d'origen tenia un recompte referit a tota la seva geometria, copiar-lo a cada fragment no reparteix el fenomen. Sumar-lo després el comptaria diverses vegades. Una ponderació per superfície només és defensable si la variable es pot suposar distribuïda uniformement o si hi ha una font més detallada que en justifiqui la desagregació.
+El cas complet dona **15 categories** dins de Reus: 43006, 43110, 43120, 43201, 43202, 43203, 43204, 43205, 43206, 43330, 43381, 43392, 43393, 43470 i 43480. Les categories minoritàries o que no comencen per 432 no s'eliminen només perquè resultin inesperades; cal tornar als portals i a la seva procedència.
 
-#### Unió geomètrica
+![Zones postals estimades a partir dels portals de l'entorn de Reus]({{ site.baseurl }}/assets/img/qgis/qgis-c06-reus-codis-postals.png "Els contorns i les etiquetes representen la dissolució de cel·les pel codi del generador. És una zonificació postal estimada per proximitat amb CartoCiudad 04/2026, no una delimitació postal oficial."){: data-figure-width-web="64rem" data-figure-width-pdf="100%"}
 
-La **unió geomètrica** (`union`) conserva tota l'extensió coberta per A o B i talla les geometries pels límits entre totes dues capes. A la part només d'A, els camps de B queden nuls; a la part només de B, els camps d'A queden nuls; a la zona comuna hi ha atributs de totes dues. Aquest patró de nuls és informació sobre pertinença espacial, no necessàriament manca de dades. L'algorisme `native:union` no resol per si sol els solapaments interns de cada entrada: abans i després cal comptar-los i comprovar si el cas requeria una cobertura sense duplicacions.
+La unió de les cel·les i la de les zones dissoltes han de cobrir el mateix terme, sense buits ni solapaments d'àrea no explicats. També cal contrastar IDs i categories, inspeccionar punts prop de fronteres i valorar si ampliar l'entorn modifica les zones. Una cobertura geomètrica correcta no prova que la frontera postal inferida sigui correcta.
 
-`Union` no significa apilar files ni combinar fitxers amb el mateix esquema. Afegir entitats d'una capa sota les d'una altra és una fusió o annexió de capes i no calcula superposicions. Tampoc no equival a dissolució: la unió crea més particions quan hi ha límits creuats, mentre que la dissolució elimina límits interns segons un criteri.
+### Construcció i validació independent
 
-![Dos polígons superposats i la taula de la unió geomètrica, amb peces exclusives, peça comuna i atributs nuls on una capa no té cobertura]({{ site.baseurl }}/assets/quarto/06-analisi-geoprocessament-vectorial/union-geometry-and-attributes.qmd "La unió segmenta l'extensió conjunta i conserva els camps de totes dues entrades; els nuls de les peces exclusives indiquen que l'altra capa no hi és present."){: data-figure-width-web="45rem" data-figure-width-pdf="100%"}
+Que el generador rebi el seu propi codi és una comprovació de consistència, no una estimació independent de capacitat predictiva. Per a un contrast, es reserven abans ubicacions completes o blocs espacials; les adreces coincidents queden al mateix grup per evitar validar una còpia amb una altra. Es reconstrueix el model només amb els punts d'entrenament i es comparen codis reservats, classes rares i localització dels desacords.
 
-#### Diferència i diferència simètrica
+Aquest experiment ha de tenir les seves pròpies sortides i recomptes. El mapa principal del capítol utilitza tots els generadors: no se li atribueix un percentatge obtingut amb una partició diferent. Fins i tot un bon resultat sobre adreces reservades no valida les fronteres en espais sense portals. Una delimitació independent, amb llicència i metadades, proporciona un contrast territorial addicional.
 
-La **diferència** és direccional. $A \setminus B$ conserva les parts d'A que no són cobertes per B; intercanviar les entrades produeix $B \setminus A$, una resposta diferent. És adequada per aplicar una exclusió, sempre que B representi exactament la zona que s'ha de treure. Si només se seleccionessin les entitats d'A disjuntes de B, es perdrien també les parts exteriors de les entitats que el travessen.
+## Tessel·les com a cobertura d'un atlas
 
-La **diferència simètrica** conserva les zones que pertanyen exclusivament a una de les dues entrades. És útil per comparar cobertures quan interessa localitzar desacords i no només allò que una té de més respecte de l'altra. No indica per si sola si el canvi és real, un desplaçament posicional o una diferència d'escala; els camps de procedència i la inspecció dels límits han de permetre classificar-lo.
+Un **atlas** repeteix una composició cartogràfica canviant l'entitat de referència. La capa de cobertura determina les pàgines; el mapa del layout determina com s'hi enquadra cada entitat. Una quadrícula pot servir alhora per resumir observacions i per organitzar fulls, però són funcions diferents: la cel·la és una unitat de dades, mentre que la pàgina és una vista amb escala, marges i elements cartogràfics.
 
-#### Dissolució i geometries multipart
+### Cobertura completa i ordre de pàgines
 
-La **dissolució** agrupa geometries d'una mateixa capa segons un o més camps i calcula la unió geomètrica de cada grup. Si no es defineix cap camp, pot produir una entitat que representa la geometria agregada de tota la capa. Per defecte, les parts separades d'un mateix grup poden quedar dins d'una sola geometria multipart. Si s'activa `Keep disjoint features separate`, cada component desconnectat pot generar una fila i ja no hi ha necessàriament un únic registre per grup.
+Es reprèn `malla_1000m` i s'extreuen els quadrats amb **intersecció d'àrea positiva** amb Reus. Es conserven sencers, sense retallar-los pel terme. Un contacte només puntual o lineal no justifica una pàgina en aquest cas. La capa `cobertura_atlas` conté **82 cel·les**, amb `id_cella`, fila, columna i `pagina`.
 
-L'operació geomètrica no defineix la suma, la mitjana, el recompte ni cap altra estadística dels atributs. Que l'algorisme conservi una fila i alguns camps no converteix els valors retinguts en representants del grup. Per obtenir una població agregada cal sumar explícitament poblacions compatibles; per obtenir una densitat cal dividir totals adequats; per comptar entitats originals cal conservar-ne un identificador o calcular el recompte abans o durant una agregació separada.
+![Cobertura d'atlas de Reus amb vuitanta-dues cel·les numerades]({{ site.baseurl }}/assets/img/qgis/qgis-c06-atlas-cobertura.png "Els quadrats d'1 km es conserven complets i s'ordenen de nord a sud i d'oest a est. Les cel·les perifèriques inclouen entorn exterior al terme: la cobertura de pàgines no redefineix el municipi."){: data-figure-width-web="64rem" data-figure-width-pdf="100%"}
 
-Quan calen geometria dissolta i estadístiques, el flux més transparent produeix dos resultats controlables: una geometria per clau de grup i una taula agregada per la mateixa clau. Després es comprova que totes dues claus siguin úniques i s'uneixen. Una eina que ofereixi simultàniament geometria i agregats també és vàlida si cada estadística queda configurada explícitament; el nom `Dissolve`, tot sol, no autoritza a suposar-les.
+`id_cella` identifica la unitat encara que canviï l'ordre; `pagina` controla la seqüència. Es comproven identificadors únics, numeració consecutiva i cobertura de tot el terme. L'ordre no es deriva dels FID ni de l'ordre accidental de lectura del GeoPackage.
 
-### Exemple resolt: geometries i atributs de dos polígons superposats
+### Pràctica guiada al compositor
 
-Dos polígons didàctics A i B se superposen parcialment i tenen un identificador propi. Una selecció d'A per `intersects` amb B conserva A complet. Un retall d'A amb B conserva només la part comuna i només els atributs d'A. Una intersecció conserva la mateixa part comuna i hi associa els identificadors d'A i B. La diferència d'A respecte de B conserva la part exclusiva d'A.
+Des de `Projecte > Dissenys` s'obre el disseny existent o es crea un disseny d'impressió nou. Al cas resolt s'anomena **Atlas de tessel·les de Reus**. La configuració segueix aquests passos:
 
-La unió produeix peces per a la part exclusiva d'A, la part comuna i la part exclusiva de B, amb nuls als camps de la capa absent. La diferència simètrica conserva les dues parts exclusives i elimina la comuna. Dissoldre A i B sense camp, si abans s'han incorporat a una mateixa capa compatible, elimina el límit interior de la seva geometria conjunta, però no calcula cap resum vàlid dels seus atributs. La predicció de geometria i esquema permet escollir l'operació sense basar-se en el nom del botó.
+1. Establir una pàgina A4 vertical de **210 × 297 mm** i inserir un element de mapa quadrat de **200 × 200 mm**, a 5 mm del marge esquerre i 40 mm del superior. El mapa rep l'ID `mapa_atlas`.
+2. Al panell **Atlas**, activar-ne la generació i escollir `cobertura_atlas`. Utilitzar `id_cella` com a nom de pàgina i ordenar per `pagina` en sentit ascendent. El nom de fitxer pot derivar de l'expressió `'reus_' || "id_cella"`.
+3. A les propietats de l'element de mapa, activar **Controlat per atlas** i escollir **escala fixa 1:5.000**, amb rotació zero i EPSG:25831. Activar l'atlas sense vincular-hi el mapa no fa canviar l'enquadrament.
+4. Fixar les capes que ha de mostrar el mapa i comprovar que el canvi de visibilitat al llenç principal no n'alteri accidentalment el contingut. El WMS necessita xarxa; les fonts locals han de continuar resolent-se al projecte.
+5. Afegir títol amb el nom de cel·la, numeració amb les variables `@atlas_featurenumber` i `@atlas_totalfeatures`, escala, CRS, nord i fonts. A QGIS, els fragments d'expressió d'una etiqueta s'insereixen entre `[%` i `%]`.
 
-### Geometries representatives, envolupants i distància
+La relació d'escala és comprovable: 200 mm sobre el paper a 1:5.000 representen **1.000 m** sobre el terreny. Per això el marc quadrat coincideix amb la cel·la d'1 km. Un marc amb proporcions diferents, una rotació o un marge automàtic canviarien l'extensió visible. El projecte resolt conserva aquesta configuració i s'han comprovat l'ordre i els enquadraments de les 82 entitats mitjançant la iteració nativa de QGIS.
 
-Algunes operacions deriven una geometria descriptiva sense superposar dues capes. El **centroide** és el centre geomètric calculat a partir de tota la forma; en un polígon còncau o multipart pot quedar fora de la superfície. Un **punt sobre la superfície** tria una posició que pertany a un polígon vàlid i no buit i és més adequat per col·locar una etiqueta que ha de quedar dins, però no representa necessàriament el centre visual, l'accés ni el lloc més important.
+### Navegació, exportació i control
 
-L'**envolupant convexa** és la geometria convexa mínima que conté l'entrada. Omple concavitats, travessa forats i pot unir parts separades, de manera que resumeix extensió però no conserva la forma ocupada. L'**envolupant rectangular** ordinària s'alinea amb els eixos del CRS i és la caixa que utilitzen molts índexs espacials per descartar candidats. Un rectangle mínim orientat pot ajustar-se millor a la direcció principal de la geometria, però continua incloent espai que l'objecte no ocupa.
+S'activa la previsualització de l'atlas i es recorren, com a mínim, primera i última pàgina, una d'interior i una de vora. En canviar de pàgina han de variar l'entitat de cobertura, el títol i l'enquadrament, mentre que escala, dimensions i llegenda es mantenen coherents. El full perifèric ha de mostrar el quadrat complet i el contorn municipal dins seu.
 
-Una **envolupant circular** resumeix la dispersió mitjançant un centre i un radi, però també incorpora espai no observat. Una **envolupant còncava** pot seguir més de prop entrants i separacions del patró; no és una forma única independent de les decisions, perquè varia segons l'algorisme i el paràmetre de concavitat. Triar l'envolupant més ajustada no la converteix en una àrea ocupada ni en una frontera observada.
+L'exportació de l'atlas és diferent de la d'un únic layout. Es pot iniciar des del compositor o amb **Exporta el disseny d'atles com a PDF, fitxer únic**, `native:atlaslayouttopdf`. Si s'hi especifica una capa de cobertura, els paràmetres de filtre i ordenació de l'algorisme substitueixen els corresponents del layout; cal tornar a fixar l'ordre per `pagina` {% cite qgisUserGuide344 %}.
 
-![Els mateixos deu punts continguts per una envolupant circular, una envolupant convexa i una possible envolupant còncava]({{ site.baseurl }}/assets/quarto/06-analisi-geoprocessament-vectorial/envelopes-and-hulls.qmd "Les tres envolupants resumeixen el mateix conjunt amb supòsits diferents: el cercle prioritza centre i radi, la convexa elimina entrants i la còncava depèn del mètode i del paràmetre."){: data-figure-width-web="52rem" data-figure-width-pdf="100%"}
+![Diàleg natiu d'exportació de l'atlas a PDF amb disseny i cobertura]({{ site.baseurl }}/assets/img/qgis/qgis-c06-atlas-configuracio.png "La captura mostra la configuració de l'algorisme d'exportació, no un PDF ja produït ni la previsualització del compositor. Es vinculen el disseny, la cobertura i l'ordre de les pàgines."){: data-figure-width-web="44rem" data-figure-width-pdf="88%"}
 
-La distància entre dues geometries és la longitud del segment més curt que les connecta sota el model de mesura adoptat. No és la distància entre centroides: dues formes allargades poden tenir centres llunyans i vores pròximes. Si les geometries s'intersequen, la distància mínima és zero; si el càlcul és pla, el valor només té lectura mètrica en un CRS projectat adequat. Cap d'aquestes mesures no incorpora recorregut, barreres ni accessibilitat.
+Després d'exportar s'obre el PDF i es comproven nombre de pàgines, dimensions, ordre, noms, enquadraments, textos i disponibilitat del fons. Per al disseny d'una pàgina i les 82 cel·les, s'espera un PDF de 82 pàgines. Aquesta expectativa s'ha de contrastar amb el fitxer, no donar per complerta perquè el diàleg estigui emplenat. Es conserven també la cobertura i el layout editable al projecte incrustat i a l'extern; desar-ne un no actualitza l'altre.
 
-![Centroide i punt sobre la superfície d'un polígon còncau, envolupant convexa, caixes rectangulars i segment de distància mínima]({{ site.baseurl }}/assets/quarto/06-analisi-geoprocessament-vectorial/derived-vector-operations.qmd "Les geometries derivades responen preguntes diferents: representar una superfície, resumir-ne l'extensió o mesurar la separació mínima entre vores."){: data-figure-width-web="54rem" data-figure-width-pdf="100%"}
+## Errors geomètrics i controls
 
-## Àrees d'influència i distància
+### Validesa, dimensió i fragments
 
-Una **àrea d'influència** (`buffer`) amb extrems i unions arrodonits aproxima el conjunt de punts situats a una distància màxima d'una geometria. Al voltant d'un punt forma una aproximació poligonal a un disc; al voltant d'una línia, una franja; i al voltant d'un polígon, una expansió o retracció. Amb extrems plans o quadrats i unions bisellades o en punta, la sortida deixa de coincidir exactament amb aquest conjunt de distància.
+Una geometria **invàlida** incompleix les regles del seu tipus, com un anell autointersectat. Una geometria vàlida encara pot ser inadequada per al model: una partició pot solapar-se o una xarxa pot contenir una connexió interrompuda. Un extrem penjant pot ser error o cul-de-sac legítim; un pseudonode pot ser redundant o conservar un canvi d'atribut. Cal interpretar la regla abans de corregir.
 
-La distància, les unitats, el nombre de segments, la forma dels extrems i la dissolució condicionen la sortida. El càlcul necessita un CRS i un model de distància adequats. Crear un `buffer` de 200 sobre coordenades en graus no produeix una franja de 200 m.
+`Fix geometries` intenta reparar l'estructura, però pot separar parts o modificar components. S'aplica sobre una còpia després del diagnòstic i es comparen tipus, files, parts, àrea o longitud i localització dels canvis. També es compten geometries nul·les i buides: una fila sense geometria i una geometria que ha quedat sense punts no són el mateix estat.
 
-En QGIS, aquest model geomètric es tradueix en els paràmetres visibles de l'algorisme `native:buffer`. La captura permet comprovar l'entrada i les unitats abans d'executar, però no decideix si cal dissoldre ni quina distància respon la pregunta territorial.
+Una intersecció matemàtica pot tenir dimensió inferior: dos polígons poden compartir només una aresta o un vèrtex. Un algorisme que produeix polígons pot ometre aquests contactes. Una sortida buida d'intersecció poligonal no prova `disjoint`; cal contrastar el predicat i el tipus de sortida. No s'ha d'inventar superfície amb un buffer per ocultar un col·lapse dimensional.
 
-![Diàleg del buffer natiu de QGIS amb la capa municipal en EPSG 25831, una distància de 500 metres, la dissolució i el botó d'execució identificats]({{ site.baseurl }}/assets/img/qgis/qgis-buffer-dialog.png "La interfície confirma que l'entrada treballa en EPSG:25831 i interpreta 500 com a metres; la dissolució i la destinació encara s'han de decidir segons la pregunta abans d'executar."){: data-figure-width-web="44rem" data-figure-width-pdf="88%"}
+Els fragments estrets, escletxes o *slivers* poden provenir de límits nominalment iguals però geomètricament diferents, o representar entitats reals. Eliminar-los només per àrea pot esborrar corredors o illes legítimes. Ajustar coordenades decideix quina font és referència i necessita una tolerància i una traça de canvis.
 
-Dissoldre els buffers elimina solapaments interns i evita comptar diverses vegades una mateixa superfície, però també elimina la identitat de cada entitat d'origen. Quan interessa saber quin fanal o quin tram genera cada cobertura, convé conservar els buffers individuals i crear una segona capa dissolta per calcular la superfície conjunta.
+### Índexs i invariants
 
->>>> **Proximitat no és accessibilitat.** Una distància euclidiana no incorpora sentit de circulació, pendents, passos de vianants, barreres, temps ni capacitat. El resultat s'ha de descriure com una zona geomètrica de proximitat llevat que el model incorpori explícitament una xarxa o altres restriccions.
+Els índexs espacials organitzen caixes envolupants per reduir candidates. Si dues caixes no se superposen, les geometries tampoc no poden intersectar-se; si se superposen, encara cal el predicat exacte. Crear un índex no corregeix un CRS, una geometria ni un filtre, i no hauria de canviar els resultats exactes de la mateixa operació.
 
-![Comparació entre el segment euclidià que travessa una barrera, un recorregut ortogonal de Manhattan i una ruta restringida als arcs d'una xarxa]({{ site.baseurl }}/assets/quarto/06-analisi-geoprocessament-vectorial/distance-models.qmd "El mateix origen i destinació produeixen distàncies diferents segons l'espai de moviment: la línia recta, els passos ortogonals o una xarxa amb connectivitat, sentits i costos."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
-
-### Distància, CRS i model de mesura
-
-La distància del `buffer` s'interpreta segons el contracte de l'algorisme. En una operació plana ordinària, el valor s'expressa en les unitats del CRS de processament o de la capa; un valor `200` només significa 200 m si la unitat lineal pertinent és el metre. En un CRS geogràfic, els eixos s'expressen angularment i no es poden tractar els graus com una distància mètrica constant. Reprojectar explícitament a un CRS adequat a l'àrea d'estudi fa visibles la referència, les unitats i l'extensió d'ús.
-
-Una distància geodèsica sobre l'el·lipsoide i una distància plana en una projecció no són idèntiques. Per a un àmbit local i un CRS projectat apropiat, l'aproximació plana pot ser suficient; per a extensions grans o zones on la projecció deforma fortament la distància, cal un algorisme o un procediment geodèsic. Canviar només el CRS del projecte no transforma les coordenades emmagatzemades ni modifica necessàriament el model que utilitza l'eina.
-
-El llindar ha de provenir de la pregunta. Pot correspondre a una distància normativa, a una hipòtesi exploratòria o a una aproximació funcional; aquestes justificacions no són equivalents. Si la norma mesura des de la vora d'una plataforma i la capa només conté l'eix de la carretera, un `buffer` des de l'eix no representa exactament la franja legal. L'abstracció geomètrica de l'entrada forma part de la incertesa.
-
-### Quan la distància prové d'una norma o d'un protocol
-
-Les àrees d'influència són útils per fer un primer cribratge en planificació, gestió ambiental i protecció civil, però el polígon calculat només adquireix significat jurídic quan la font, la geometria de referència, la distància i l'efecte normatiu coincideixen amb el cas aplicable. Una mateixa norma pot distingir domini públic, servitud, zona d'afectació o limitació d'edificació; representar-les totes com «el buffer legal» esborra diferències essencials.
-
-::: table "Exemples d'àrees d'influència i comprovació necessària"
-| Context | Pregunta preliminar que pot ajudar a respondre | Per què no basta un buffer genèric |
-| --- | --- | --- |
-| Espai natural protegit | Quines activitats o parcel·les queden a prop del perímetre o d'una zona sensible? | El pla de protecció pot establir zonificacions, elements concrets i règims diferents; el perímetre oficial i la norma vigent són entrades del cas |
-| Domini públic marítim-terrestre | Quins elements podrien intersectar una servitud o zona regulada per la [Llei de costes](https://www.boe.es/eli/es/l/1988/07/28/22/con)? | La mesura parteix del delimitament jurídic corresponent, no de la línia de costa visible en una ortofoto |
-| Domini públic hidràulic | Quins usos podrien quedar dins d'una zona regulada per la [legislació d'aigües](https://www.boe.es/eli/es/rdlg/2001/07/20/1/con)? | Cal identificar la llera i la geometria oficials, el tipus de zona i el règim d'autorització; l'eix gràfic d'un riu no equival necessàriament al límit legal |
-| Carreteres | Quines parcel·les o actuacions convé sotmetre a una comprovació sectorial? | Titularitat, classe de via, tipus de zona, geometria de referència i excepcions determinen la distància i l'efecte aplicables |
-| Estació de servei i habitatges | Quines localitzacions entren en un escenari preventiu o en l'àmbit d'un pla concret? | No s'ha de pressuposar una distància única de protecció civil per a totes les instal·lacions; cal aportar la norma, el pla o la resolució aplicable al cas |
-:::
-
-En carreteres catalanes, per exemple, el [text refós de la Llei de carreteres](https://portaljuridic.gencat.cat/eli/es-ct/dlg/2009/08/25/2/con) diferencia diverses zones i mesura unes distàncies des de l'aresta exterior de l'esplanació i unes altres des de l'aresta exterior de la calçada. Els `25 m` apareixen en determinats supòsits, però no constitueixen una franja universal d'edificació per a qualsevol autopista; per a vies de titularitat estatal s'ha de consultar, a més, la [Llei 37/2015, de carreteres](https://www.boe.es/eli/es/l/2015/09/29/37/con). Una capa d'eixos viaris del CNIG és adequada per a proximitat i cribratge a la seva escala, però no substitueix les arestes ni els delimitaments que exigeixi l'expedient jurídic.
-
->>>> **Una àrea d'influència pot localitzar casos per revisar; no certifica per si sola una afecció legal.** La conclusió ha d'indicar si la distància és normativa, preventiva o exploratòria i quina geometria s'ha utilitzat per mesurar-la.
-
-### Aproximació de corbes, extrems i cantonades
-
-Els arcs circulars s'emmagatzemen sovint com una successió de segments rectes. El paràmetre **segments** del `Buffer` natiu de QGIS indica la quantitat utilitzada per aproximar un quart de circumferència. Un nombre més gran suavitza l'arc i augmenta el nombre de vèrtexs, el volum i el cost de les operacions posteriors. No hi ha un valor universal: ha de ser prou fi per a l'escala i la mesura exigides, i s'ha de mantenir constant quan es comparen escenaris {% cite qgisUserGuide344 %}.
-
-En buffers de línies, l'estil dels extrems pot ser arrodonit, pla o quadrat. L'extrem pla acaba a la coordenada final i exclou punts pròxims més enllà de l'extrem; el quadrat s'estén més enllà i pot incloure punts a una distància superior al valor nominal en diagonal; l'arrodonit hi afegeix un semicercle aproximat. En trams curts, aquesta decisió pot afectar una part considerable de la superfície. Si la pregunta és literalment «quins punts són a una distància màxima $d$?», cal usar extrems i unions arrodonits amb una segmentació suficient o l'algorisme `Select within distance`. Dissoldre una xarxa després pot ocultar algunes juntes internes, però no corregeix una connectivitat defectuosa.
-
-L'estil d'unió controla les cantonades entre segments: arrodonida, bisellada o en punta. Una unió en punta pot produir prolongacions molt llargues en angles aguts, i el paràmetre `Miter limit` en restringeix l'extensió. Aquests paràmetres no són decoratius quan el resultat es mesura o s'utilitza com a màscara. El diari ha d'indicar-los si poden canviar la zona candidata.
-
-![Efecte del radi, els segments per quadrant, els extrems i les unions sobre buffers de punts, línies i polígons]({{ site.baseurl }}/assets/quarto/06-analisi-geoprocessament-vectorial/buffer-parameters.qmd "Un buffer depèn de la geometria d'entrada i del radi, però també de l'aproximació de les corbes, els extrems de les línies i les unions entre segments; aquestes opcions poden canviar la superfície resultant."){: data-figure-width-web="50.5rem" data-figure-width-pdf="100%"}
-
-Un `buffer` d'un sol costat és útil quan una línia orientada representa un marge concret, però «esquerra» i «dreta» depenen de l'ordre dels vèrtexs. Invertir la digitalització inverteix el costat. Abans d'utilitzar-lo cal comprovar el sentit de les línies i conservar una mostra on la relació entre orientació i sortida sigui visible.
-
-### Distància variable i buffers negatius
-
-La distància pot procedir d'un camp o d'una expressió. Això permet aplicar una franja diferent segons la categoria d'una via o una propietat de l'entitat, però converteix l'esquema atributiu en un paràmetre geomètric. Cal revisar nuls, unitats, signes, valors extrems i domini abans de processar. Un nul no s'ha de substituir per zero sense decidir si significa «sense franja», «dada desconeguda» o «entitat no aplicable».
-
-Un valor negatiu sobre polígons genera una retracció interior quan la geometria i l'algorisme ho permeten. Les parts estretes poden desaparèixer, un polígon pot dividir-se i una distància superior a la seva amplada local pot produir geometria buida. No és una manera general de corregir límits ni d'estimar una superfície útil: és una transformació morfològica amb efectes que s'han de comptar i inspeccionar.
-
-### Dissoldre cobertura o conservar origen
-
-Amb buffers individuals, cada polígon conserva la fila i els atributs de l'entitat generadora. Les zones solapades existeixen en més d'una geometria i sumar-ne les àrees compta la coincidència diverses vegades. Amb dissolució, la geometria conjunta elimina les fronteres internes i permet mesurar la cobertura única, però ja no indica directament quin origen cobreix cada posició.
-
-Quan calen totes dues preguntes, convé conservar dues sortides: buffers individuals per atribuir cobertura i una còpia dissolta per calcular la unió espacial. Dissoldre per categoria conserva una geometria per valor de grup, no necessàriament per entitat. En cap cas la dissolució defineix per si sola com s'han de sumar capacitats, intensitats o altres atributs dels generadors.
-
-![Comparació de quatre buffers individuals amb una cobertura dissolta que conserva dos components desconnectats]({{ site.baseurl }}/assets/quarto/06-analisi-geoprocessament-vectorial/buffer-dissolve.qmd "Els buffers individuals mantenen l'origen però superposen cobertures; la dissolució elimina les fronteres internes i permet mesurar una cobertura única, a canvi de perdre l'atribució directa a cada generador."){: data-figure-width-web="45rem" data-figure-width-pdf="100%"}
-
-### Exemple resolt: franja al voltant d'una xarxa
-
-En una xarxa didàctica, alguns trams comparteixen node i altres se solapen parcialment. Si la pregunta demana quins portals queden a una distància geomètrica $d$, el flux pot utilitzar `Select within distance` o crear un `buffer` amb $d$, extrems i unions arrodonits i una segmentació suficient en un CRS mètric adequat. Una còpia dissolta representa la cobertura única i és útil per mesurar-ne la superfície; no és necessària per evitar portals duplicats en una selecció espacial ordinària, perquè el resultat és un conjunt d'identificadors d'entitat.
-
-Si, en canvi, la pregunta demana quin tram podria associar-se a cada portal, la capa individual és necessària i les coincidències múltiples s'han de conservar o resoldre amb una regla de distància. El `buffer` dissolt respon a cobertura conjunta; els buffers individuals responen a possibles generadors. Cap resultat no mesura temps de recorregut ni accessibilitat sense incorporar una xarxa i els seus costos.
-
-### Distàncies en estrella, entre parelles i entre veïns
-
-Una distància no obliga a crear una superfície. En vector, el resultat pot ser un camp, una taula de parelles o una línia que uneix les posicions comparades. Abans d'escollir una eina cal decidir quines parelles són candidates i si es mesuren les vores de les geometries, punts representatius o posicions sobre una xarxa.
-
-::: table "Patrons vectorials de càlcul de distàncies"
-| Patró | Resultat | Exemple d'ús | Control determinant |
-| --- | --- | --- | --- |
-| Origen únic o estrella | Una distància des d'un origen a cada destinació | Comparar la separació de diversos equipaments respecte d'una facultat | Identificar l'origen, la geometria representativa i les destinacions absents |
-| Veí més pròxim | Una o diverses candidates mínimes per entitat | Assignar preliminarment cada portal al fanal inventariat més pròxim | Conservar empats, distància i identificador de totes les candidates necessàries |
-| Matriu entre dos conjunts | Fins a $n \times m$ parelles | Comparar tots els centres amb tots els refugis abans d'aplicar un llindar | Preveure volum, direcció de la taula i duplicats |
-| Totes les parelles d'un conjunt | Fins a $n(n-1)/2$ distàncies no dirigides | Estudiar separació o agrupament entre punts de mostreig | No comptar dues vegades A–B i B–A si la distància és simètrica |
-| Veïnatge per llindar o pels $k$ més pròxims | Arestes d'un graf de proximitat | Proposar relacions locals per inspeccionar una xarxa d'equipaments | La proximitat geomètrica no demostra una connexió funcional |
-| Àrea d'influència | Polígon amb totes les posicions dins del llindar | Seleccionar qualsevol objecte situat a menys de 300 m d'una via | CRS, unitats, dissolució i geometria de referència |
-:::
-
-Les eines de matriu de distàncies, veí més pròxim o distància al centre més pròxim poden adoptar centroides o punts d'entrada i sortida segons el contracte. Per a polígons allargats, la distància entre vores pot ser molt menor que la distància entre centroides. Un índex espacial evita comparar exhaustivament totes les caixes quan només interessen candidats pròxims, però la distància exacta encara s'ha de calcular sobre les geometries. El capítol 07 presenta una altra sortida: la **superfície ràster de distància**, que assigna un valor a cada cel·la en lloc de generar una fila per parella.
-
-## Superposició i anàlisi multicriteri
-
-Una anàlisi multicriteri transforma cada condició en una capa o màscara i després les combina. La lògica espacial ha de quedar escrita abans d'obrir l'algorisme. Per exemple, una zona candidata podria haver d'estar fora de dues franges viàries, a prop d'una carretera secundària i dins d'una àrea urbana. Canviar `AND` per `OR`, o aplicar diferència en un ordre diferent, canvia el significat territorial.
-
-La seqüència més fàcil de validar avança de geometries existents a derivades i després a combinades:
-
-1. Seleccionar i extreure les entitats d'entrada.
-2. Validar geometries, CRS, unitats i extensió.
-3. Crear una zona per a cada criteri.
-4. Comprovar cada zona per separat.
-5. Combinar-les amb intersecció, diferència o unió.
-6. Recalcular superfícies i revisar fragments.
-7. Interpretar la zona final com a resultat del model, no com una observació directa.
-
-Els llindars han de respondre al cas. Una franja de 50 m pot provenir d'una norma, d'una hipòtesi pedagògica o d'una decisió exploratòria; aquestes justificacions no són equivalents. El diari ha d'indicar-ne la font o la funció.
-
-### Criteris d'inclusió i d'exclusió
-
-Cada criteri s'ha de formular com un conjunt espacial. Una zona d'inclusió conté les posicions admeses per una condició, mentre que una zona d'exclusió conté les que s'han de retirar. Si U és l'univers d'estudi, C una zona compatible per coberta, P una zona de proximitat i E una exclusió, una formulació possible és $(U \cap C \cap P) \setminus E$. L'expressió deixa clar que totes les inclusions s'han de complir i que l'exclusió s'aplica al resultat.
-
-La geometria de l'univers és necessària perquè el complement d'una exclusió no és finit sense un àmbit. «Fora del buffer» vol dir la part d'U que no queda dins del buffer, no tot l'espai exterior del planeta. El límit municipal pot servir d'univers si la pregunta és municipal, però no si equipaments externs o processos transfronterers condicionen el fenomen.
-
-Un criteri atributiu s'ha d'aplicar abans de derivar-ne la geometria quan defineix quines entitats són rellevants. Si només les vies d'una categoria generen una franja, primer se seleccionen i s'extreuen amb el camp documentat; després es calcula el `buffer`. Dissoldre totes les vies i intentar recuperar la categoria més tard perdria la traça de quines geometries han contribuït al criteri.
-
-### Ordre de superposició i conservació dels criteris intermedis
-
-Algunes operacions de conjunts tenen equivalències matemàtiques, però el flux digital pot diferir per atributs, precisió i cost. Intersectar primer amb un àmbit petit pot reduir el volum de dades. En `native:clip`, les entitats de la màscara ja es tracten com una geometria conjunta, de manera que predissoldre-les no evita fragments causats pels límits interns; amb altres proveïdors cal comprovar el contracte. Predissoldre continua sent una simplificació possible si redueix volum i si els identificadors i límits eliminats no són necessaris per a la pregunta.
-
-Els resultats intermedis han de correspondre a criteris interpretables.
-
-Una capa `zona_proximitat`, una `zona_exclusio` i una `zona_compatible` es poden validar separadament; una seqüència de capes `temp1`, `temp2` i `final3` no permet relacionar un error amb una decisió. Conservar els intermedis determinants no obliga a conservar totes les proves, però sí les entrades que permeten auditar el resultat final.
-
-### Exemple resolt: coberta admesa, proximitat i zones excloses
-
-En un cas didàctic, les zones candidates han de quedar dins de l'àmbit U, dins d'una coberta admesa C, prop d'una xarxa seleccionada V i fora d'una zona incompatible E. Primer es valida U i s'extreu C amb una consulta atributiva. Després es crea el `buffer` P de V amb una distància $d$ justificada i es dissol només per obtenir cobertura conjunta. La intersecció $U \cap C \cap P$ crea les inclusions comunes, i la diferència respecte d'E produeix el resultat R.
-
-Si s'utilitzés `OR` entre C i P, R inclouria posicions que només compleixen un dels criteris. Si s'apliqués una selecció espacial en lloc d'una intersecció, es conservarien polígons complets de C encara que només una part fos pròxima. Si es calculés la diferència en l'ordre invers, $E \setminus (U \cap C \cap P)$, el resultat descriuria la part de l'exclusió que queda fora de les inclusions, no les candidatures. Predir aquests efectes és part de la resolució.
-
-El resultat final només afirma que les geometries disponibles compleixen les regles codificades. No prova disponibilitat jurídica, propietat, accessibilitat, cost, acceptació social ni qualsevol factor omès. Una zona candidata és una sortida del model i necessita comprovació amb fonts independents i, quan la decisió ho exigeix, treball de camp.
-
-### Sensibilitat als supòsits
-
-Una **anàlisi de sensibilitat** repeteix el flux modificant una decisió plausible mentre manté constants les altres. En aquest context pot variar la distància $d$, el predicat que tracta la frontera, l'edició d'una font, la tolerància de precisió o la mida d'una cel·la d'agregació. L'objectiu no és trobar el paràmetre que produeix el mapa més convincent, sinó observar quines conclusions depenen fortament d'una elecció.
-
-Comparar només la superfície total pot ocultar canvis de forma i localització. Dues alternatives poden tenir àrees semblants i ocupar zones diferents. La sensibilitat s'ha de descriure amb mesures adequades al cas: àrea comuna i exclusiva, nombre de components, entitats incloses de manera estable, canvis prop dels límits i inspecció de les zones que entren o surten. No s'han d'inventar valors esperats abans d'executar l'anàlisi.
-
-Si una variació petita del llindar elimina la major part de les candidatures o canvia quins equipaments hi entren, el resultat és fràgil respecte d'aquell paràmetre. Això no invalida necessàriament el model, però obliga a comunicar el rang, justificar millor el criteri o evitar una classificació binària excessivament concloent. Si les alternatives produeixen el mateix patró essencial, aquesta estabilitat és una evidència de consistència, no una prova de veritat externa.
-
-### Validació del flux multicriteri
-
-La validació combina invariants geomètrics, recomptes, atributs i contrast territorial. Cada resultat d'intersecció ha de quedar dins de totes les entrades; una diferència no ha d'intersectar l'interior de l'exclusió; la cobertura dissolta no ha de tenir més àrea que la suma dels buffers individuals; i la suma de parts exclusives i comunes s'ha de poder relacionar amb la unió, dins de la tolerància numèrica adoptada.
-
-També cal cercar casos negatius i de frontera. Una posició que compleix clarament tots els criteris ha d'aparèixer; una que n'incompleix un de manera clara no; i una mostra sobre cada límit permet comprovar com s'ha aplicat el predicat. Les comprovacions manuals s'han de triar abans de mirar el resultat quan sigui possible, perquè seleccionar només exemples favorables no posa a prova el flux.
-
-La validació externa contrasta la sortida amb una font o una observació que no s'ha utilitzat per construir-la. Una ortofoto pot revelar una barrera omesa, una visita de camp pot mostrar que un pas no existeix i un registre administratiu pot descartar una zona geomètricament compatible. Aquest contrast no s'ha de confondre amb ajustar repetidament els criteris fins que coincideixin amb una expectativa no documentada.
-
-## Cas guiat: vies, portals i fanals
-
-Amb QGIS tancat, es copia el GeoPackage validat de `pr3` des de `dist/` a `sandbox/`. La còpia s'anomena `pr4-geoprocessament-cognom.gpkg`; no es copia ni es reanomena el `.qgz` de `pr3`. Des de la còpia s'obre el projecte incrustat heretat, es desa com a `pr4` i s'elimina l'entrada `pr3`. Totes les fonts locals es reorienten al GeoPackage `pr4` i es comprova que no apuntin a `dist/`, a `pr3-consultes-cognom.gpkg` ni a una ruta personal. La demostració de Vila-seca utilitza `municipi_treball`, derivada a la micropràctica 2, i `transport_candidats_c06`, preparada a la micropràctica 3. A partir de l'esquema real del producte de transport, se selecciona el subconjunt justificat per la pregunta i es retalla pel límit municipal. La sortida preparada es desa com a `vies_principals`: conserva l'identificador d'origen, incorpora el `codi_muni` textual de `municipi_treball` com a camp de grup i crea un camp ordinari `id_tram`, únic i no nul, verificat després de la fragmentació. Els noms de la capa i dels camps són contractes interns del projecte, no noms atribuïts a la descàrrega del CNIG.
-
-Sobre `vies_principals` es creen àrees d'influència amb distàncies justificades. Una selecció espacial identifica els portals que intersecten aquestes zones, mentre que un retall o una intersecció permetria crear geometries noves. Comparar les sortides fa visible la diferència entre conservar una entitat completa i fragmentar-la.
-
-Una segona anàlisi combina dues distàncies: proximitat als fanals inventariats del carrer de Joanot Martorell i proximitat a l'entorn de la Facultat. La intersecció dels buffers delimita l'espai que compleix tots dos criteris.
-
-La validació compara el nombre d'entitats abans i després, l'àrea de cada zona, les coincidències múltiples i una mostra sobre una ortofoto. Els camps d'àrea emmagatzemats s'han de recalcular després de fragmentar geometries.
-
-El cas comença amb un contracte per a cada entrada: què representa la geometria viària, quina data i exactitud tenen els portals i fanals, quin és el límit de treball i en quin CRS es faran les mesures. Abans del `buffer` es comproven geometries nul·les, longituds no positives, duplicats, unicitat d'`id_tram` i trams que aparentment haurien de connectar. El WMS continua funcionant com a context visual per a la inspecció, però no es tracta com una geometria d'entrada del geoprocessament.
-
-La primera comparació resol dues preguntes diferents. `Select by location` identifica els portals complets que intersecten la franja viària; una intersecció entre línies o polígons i la franja crearia les parts geomètriques comunes. Com que els portals són punts, fragmentar-los no aporta una geometria parcial: la selecció o extracció és suficient si només cal saber quins hi entren. Si un punt cau exactament al límit, el predicat i la precisió de la font s'han d'examinar abans de classificar-lo.
-
-Per a la combinació de fanals i Facultat es conserven els buffers individuals i les cobertures dissoltes. Els primers permeten rastrejar quin origen participa en cada coincidència; les segones delimiten cada criteri sense solapaments interns. Intersectar les dues cobertures produeix la zona que compleix simultàniament les proximitats geomètriques. La sortida no rep una puntuació d'il·luminació ni d'accessibilitat perquè les entrades no contenen prou informació per calcular-les.
-
-Cada pas produeix una fila de control al diari: nom d'entrada, filtre, algorisme, distància i unitat, paràmetres de corba, dissolució, nombre d'entitats, geometries buides i mesura recalculada. Una mostra inclou un cas clarament interior, un d'exterior i un de frontera. La revisió sobre ortofoto serveix per detectar obstacles o desplaçaments, no per substituir la font ni per redibuixar el resultat fins que coincideixi visualment.
-
-## Tessel·lacions i dominis de proximitat
-
-Una **tessel·lació** divideix l'espai en cel·les sense buits ni solapaments. Les malles quadrades i hexagonals ofereixen unitats regulars per agregar punts o comparar densitats. Aquesta regularitat no és neutral: la mida, l'origen i l'orientació de la graella poden alterar el patró observat {% cite longleyGeographicInformationScience2015 %}.
-
-Els quadrats tenen una estructura simple però distingeixen veïnatge lateral i diagonal. Els hexàgons tenen sis veïns laterals a una distància homogènia entre centroides. En tots dos casos, un recompte per cel·la mesura intensitat espacial; només es converteix en taxa quan es divideix per una població o exposició adequada.
-
-Diagrama de Voronoi
-: Divideix l'espai en dominis on cada posició és més pròxima al seu punt generador que a qualsevol altre, segons la mètrica adoptada.
-
-Triangulació de Delaunay
-: Estructura dual que uneix generadors veïns quan les seves cel·les de Voronoi comparteixen una aresta, en els casos no degenerats.
-
-Són dues lectures complementàries del mateix conjunt de punts. El Voronoi s'ha de retallar a una àrea d'estudi defensable i ha d'incloure generadors externs que hi puguen influir. Les arestes de Delaunay no són automàticament connexions funcionals ni els triangles grans demostren per si sols una anomalia.
-
->>> **Dos usos diferents.** Amb punts d'equipaments, el Voronoi pot assignar preliminarment cada domicili a l'equipament euclidianament més pròxim. Amb punts de cota, Delaunay pot construir els triangles sobre els quals s'interpola una superfície. El primer ús no incorpora carrers, barreres, capacitat ni demanda; el segon necessita comprovar la distribució, els errors i els efectes de vora dels punts.
-
-![Comparació d'una graella quadrada amb recomptes, una graella hexagonal amb sis veïns laterals i dominis de Voronoi amb arestes de Delaunay]({{ site.baseurl }}/assets/quarto/06-analisi-geoprocessament-vectorial/spatial-tessellations.qmd "Les malles regulars imposen unitats comunes i el parell Voronoi-Delaunay deriva dominis i veïnatges dels generadors; cap d'aquestes estructures incorpora per si sola població, barreres, capacitat ni temps."){: data-figure-width-web="56rem" data-figure-width-pdf="100%"}
-
-### Graelles regulars i unitat d'anàlisi
-
-Una graella imposa una zonificació comuna quan els límits administratius són massa desiguals o no corresponen al procés estudiat. Això facilita comparar recomptes sobre cel·les de mida semblant, però no converteix la malla en una observació neutral. La posició de l'origen, l'orientació, la mida i la forma decideixen quins punts queden junts i quins es reparteixen entre cel·les.
-
-Aquest efecte forma part del **problema de la unitat espacial modificable** (*modifiable areal unit problem*, **MAUP**): els resums estadístics i els patrons cartogràfics poden canviar quan les mateixes observacions s'agrupen en unitats d'una mida o una delimitació diferent. Se'n distingeixen habitualment l'**efecte d'escala**, produït en passar a unitats més grans o més petites, i l'**efecte de zonificació**, produït en redibuixar unitats d'una mida semblant {% cite longleyGeographicInformationScience2015 nunesDiccionariSIG2012 %}.
-
-Per exemple, els mateixos punts d'incidències poden formar una cel·la amb una taxa alta en una malla i repartir-se entre quatre cel·les si se'n desplaça l'origen. Una mitjana de renda o un percentatge electoral també pot mostrar patrons diferents per barris, seccions censals o quadrícules, encara que no canviï cap observació individual. El MAUP no converteix automàticament una agregació en incorrecta: obliga a justificar les unitats, comparar alternatives plausibles i limitar la conclusió quan el patró no és estable. Tampoc no autoritza a inferir el comportament de cada persona a partir del valor agregat de la seva zona.
-
-Els quadrats s'alineen de manera directa amb eixos cartesians i tenen veïns laterals i diagonals a distàncies diferents entre centroides. Els hexàgons tenen sis veïns que comparteixen costat i ofereixen una relació més homogènia en aquest sentit. Aquesta propietat no fa els hexàgons superiors per a qualsevol pregunta: els quadrats poden encaixar millor amb altres ràsters, facilitar una jerarquia niada o simplificar l'intercanvi.
-
-La mida declarada només té lectura mètrica en un CRS projectat adequat. `Create grid` necessita una extensió, espaiaments i un CRS; aquests paràmetres han de quedar fixats perquè una execució posterior reprodueixi les mateixes cel·les. Retallar la graella exactament pel límit d'estudi crea cel·les parcials a la vora. Comparar-ne recomptes bruts amb els de cel·les completes pot ser enganyós si l'exposició o l'àrea observable no es corregeixen.
-
-Per agregar punts, cal definir què passa sobre una frontera de cel·la, amb duplicats i amb punts sense coordenada. Un recompte descriu intensitat observada, no risc ni taxa. Dividir per l'àrea pot construir una densitat geomètrica; dividir per població, temps d'observació o una altra exposició construeix indicadors diferents. Les cel·les sense casos observats han de distingir-se de les cel·les sense cobertura de la font.
-
-### Dominis de Voronoi
-
-Donat un conjunt de punts generadors, el diagrama de Voronoi assigna a cada posició el generador amb menor distància segons la mètrica utilitzada. Els límits són llocs equidistants entre dos o més generadors. En una implementació plana ordinària, la distància és euclidiana en les coordenades del CRS; carrers, barreres, pendents i capacitat no alteren les cel·les.
-
-La construcció necessita un domini finit per convertir les regions exteriors teòricament no acotades en polígons manejables. Retallar pel municipi és adequat només si la pregunta es limita a aquest àmbit i s'han incorporat els generadors externs prou pròxims per influir-hi. Si s'omet un equipament just fora del límit, una cel·la interior pot atribuir-se erròniament a un punt més llunyà situat dins.
-
-Els punts duplicats o gairebé coincidents necessiten una regla. Dos registres a la mateixa coordenada no defineixen dominis separables només per distància; poden representar un duplicat, dos serveis al mateix edifici o entitats diferents. Agregar-los, conservar-los o desplaçar-los altera el model i s'ha de decidir amb atributs, no mitjançant una correcció geomètrica arbitrària.
-
-Una cel·la gran indica que, dins del conjunt de generadors i el domini adoptats, el seu punt és el més pròxim sobre una regió extensa. No demostra demanda desatesa, cobertura efectiva ni capacitat suficient. Per parlar d'àrees de servei caldria incorporar xarxa, temps, barreres, horaris, capacitat i població potencial segons la pregunta.
-
-### Veïnatge de Delaunay
-
-La triangulació de Delaunay connecta punts de manera dual al Voronoi: dos generadors són veïns quan les seves cel·les comparteixen una aresta, en els casos no degenerats. Una propietat geomètrica de la triangulació és que l'interior del cercle circumscrit a cada triangle no conté altres punts del conjunt. Aquesta estructura evita triar una distància fixa per proposar veïns geomètrics, però continua depenent de tots els punts inclosos.
-
-Punts col·lineals, duplicats o configuracions cocirculars poden produir casos degenerats o més d'una triangulació equivalent. Els punts de la vora acostumen a connectar-se mitjançant triangles més oberts perquè no hi ha generadors fora del domini. Abans d'interpretar longituds o formes cal revisar duplicats, extensió i efectes de vora.
-
-Una aresta de Delaunay no prova que existeixi una carretera, una relació social, un flux o una connexió viable. Pot proposar parelles per a una inspecció, ajudar a construir una interpolació o descriure veïnatge geomètric. Convertir-la directament en xarxa funcional ignoraria obstacles i costos. De manera semblant, un triangle gran pot indicar separació relativa entre punts observats, però no identifica per si sol un buit de servei.
-
-### Exemple resolt: tres estructures per als mateixos punts
-
-Amb una capa didàctica de punts d'equipament, una graella respon quants punts o quina exposició correspon a cada unitat regular definida prèviament. Un Voronoi respon quin punt és el més proper a cada posició segons distància euclidiana dins del domini. Una triangulació de Delaunay respon quins punts són veïns geomètrics segons el conjunt complet. Cap sortida substitueix les altres perquè canvien la unitat i la pregunta.
-
-El control de la graella compara mides i orígens i reconstrueix el recompte total a partir de cel·les. El de Voronoi verifica una correspondència entre generadors únics i cel·les dins de les limitacions de l'eina, incorpora punts externs rellevants i comprova posicions equidistants. El de Delaunay revisa duplicats, casos de vora i arestes que travessen barreres. La interpretació final conserva només les afirmacions que la mètrica geomètrica permet sostenir.
-
-## Errors geomètrics i controls del geoprocessament
-
-Abans de processar cal comprovar el CRS real, les unitats, l'extensió, la validesa geomètrica, els identificadors estables, els filtres actius i la naturalesa dels atributs. Els FID interns del proveïdor no són identificadors de procedència: `union`, intersecció, diferència, dissolució i altres algorismes poden regenerar-los. Abans d'executar-los cal conservar una clau ordinària i explícita, com `id_font_a` o `id_font_b`, si s'ha de reconstruir la fragmentació. Després, cada operació necessita controls propis.
-
-### Validesa individual i coherència entre entitats
-
-Una geometria **invàlida** incompleix les regles estructurals del seu tipus, per exemple un polígon amb un anell autointersectat. Una geometria vàlida pot ser incorrecta per al model: dos polígons d'una partició poden solapar-se, una xarxa pot tenir un extrem desconnectat o un punt pot quedar fora de la zona exigida. `Check validity`, les regles topològiques i els predicats entre capes responen controls diferents.
-
-En una xarxa, un extrem penjant pot indicar una connexió interrompuda o un cul-de-sac legítim. Un pseudonode, on dos trams formen una continuïtat de grau dos, pot ser redundant o conservar un canvi d'atribut necessari. La regla no s'ha de deduir del nom de l'error: cal saber si el model representa connectivitat, canvis de categoria, passos a diferent nivell i interrupcions reals. La correcció correspon a l'edició de la font preparada, no a una superposició posterior que n'amagui la causa.
-
-L'algorisme `Fix geometries` intenta produir geometries vàlides, però no coneix el significat territorial. Una reparació pot convertir una peça en multipart, separar lòbuls, descartar components de dimensió inferior o modificar vèrtexs. S'ha d'aplicar sobre una còpia, després d'identificar l'error, i comparar nombre d'entitats, tipus, parts, àrea o longitud i localització de les modificacions.
-
-Les geometries buides i les geometries nul·les tampoc no són el mateix. Una fila amb geometria nul·la no té cap geometria associada; una geometria buida pot conservar un objecte geomètric sense punts després d'una operació. Cap de les dues pot satisfer predicats ordinaris com una geometria present. Cal comptar-les abans i després, perquè algunes eines les ometen i altres en conserven la fila.
-
-### Col·lapse dimensional
-
-La intersecció matemàtica pot tenir una dimensió inferior a la de les entrades. Dos polígons que només comparteixen una aresta tenen una intersecció lineal; si només comparteixen un vèrtex, és puntual. Dos trams que se superposen comparteixen una línia, mentre que dos trams que es creuen comparteixen un punt. El predicat `intersects` pot ser cert en tots aquests casos, però l'àrea comuna pot ser zero.
-
-Un algorisme de superposició orientat a polígons pot conservar només components poligonals i ometre contactes lineals o puntuals, o bé oferir una opció per mantenir dimensions inferiors. Una sortida buida d'intersecció poligonal no implica necessàriament que les capes siguin `disjoint`: poden tocar-se sense compartir superfície. El tipus esperat de la sortida s'ha de comprovar abans d'interpretar-ne el recompte.
-
-Una transformació també pot eliminar parts estretes o crear una geometria multipart. Si l'anàlisi necessita els contactes, s'han de consultar amb el predicat o extreure la dimensió adequada; no s'ha de forçar una superfície artificial mitjançant un `buffer` només perquè l'eina de polígons retorni una capa buida.
-
-### Fragments estrets, escletxes i solapaments
-
-Els **fragments residuals** o *slivers* són polígons molt estrets o petits que sovint apareixen quan se superposen límits que pretenen representar la mateixa frontera amb coordenades diferents. També poden ser entitats territorials reals. La mida sola no permet classificar-los com a error: cal relacionar forma, font, escala, exactitud i fenomen.
-
-Una unió entre dues cobertures nominalment coincidents fa visibles aquests desacords com franges amb atributs només d'una capa. Eliminar-les amb un llindar d'àrea pot esborrar illes, corredors o parcel·les legítimes. Ajustar una capa a l'altra decideix quina geometria actua com a referència i pot alterar superfícies. Qualsevol neteja necessita una tolerància justificada i una taula de canvis.
-
-Les escletxes i solapaments interns també poden provocar doble comptatge o àrea sense assignar. Dissoldre amaga els límits interns, però no explica si l'entrada era una partició coherent. Abans de dissoldre convé comprovar les regles «no se solapa» i «no deixa buits» només dins del domini on siguin conceptualment exigibles.
-
-### Índexs espacials i verificació exacta
-
-Un **índex espacial** accelera la cerca de parelles candidates. Estructures habituals com els arbres R organitzen caixes envolupants perquè l'algorisme no hagi de comparar exhaustivament cada geometria amb totes les altres. Si dues caixes no se superposen, les geometries tampoc no poden intersectar-se; si les caixes se superposen, encara cal avaluar el predicat exacte.
-
-L'índex modifica el rendiment, no la semàntica esperada. Una caixa envolupant que interseca una altra pot contenir geometries disjuntes, especialment amb formes còncaves o forats. Per això una selecció basada només en caixes dona candidats, no una resposta final a `within`, `touches` o `overlaps`. Els algorismes de QGIS acostumen a gestionar aquesta fase internament, però en conjunts grans convé comprovar que les fonts admeten o tenen índex i evitar reconstruir consultes espacials costoses fila per fila {% cite qgisUserGuide344 %}.
-
-Crear un índex no corregeix geometries, CRS ni filtres. Tampoc no ha de canviar el conjunt de resultats d'una mateixa operació exacta. Si executar amb una còpia indexada altera les coincidències, cal investigar diferències de dades, proveïdor, precisió o paràmetres en lloc d'atribuir-ho a una «aproximació» acceptable de l'índex.
-
-### Invariants i balanços
-
-Els controls més útils deriven de propietats que l'operació no hauria de violar. Un retall no ha d'afegir superfície o longitud a l'entrada; una intersecció ha de quedar dins de totes dues capes; una diferència i la part comuna haurien de reconstruir l'entrada, llevat de fronteres de dimensió inferior i toleràncies numèriques; una dissolució no ha de crear cobertura fora de la unió dels membres del grup.
-
-Els balanços s'han d'aplicar a mesures recalculades sobre les geometries resultants, no a camps antics copiats. Les petites diferències de coma flotant necessiten una tolerància definida segons escala i CRS, però una tolerància no pot convertir-se en permís per ignorar qualsevol discrepància. També cal comparar identificadors d'origen, nombre de parts i patró de nuls, perquè una àrea total correcta pot ocultar atribucions errònies.
-
-::: table "Controls mínims de geoprocessament vectorial"
-| Operació | Comprovació mínima |
+::: table "Controls vinculats a cada transformació"
+| Resultat | Comprovació |
 | --- | --- |
-| Buffer | Distància mostrejada, unitats, entitats sense sortida i àrea dissolta no superior a la suma individual |
-| Retall | Cap geometria fora de la màscara i superfície o longitud que no augmenta |
-| Intersecció | Camps de les dues fonts, fragments justificats i totals coherents |
-| Diferència | Cap intersecció amb l'interior de la màscara i absència de fragments residuals inesperats; la frontera de tall es pot compartir |
-| Diferència simètrica | Absència de la part comuna, procedència de les parts exclusives i efecte dels desajustos de límit |
-| Unió | Extensió conjunta, patró de nuls i fragments estrets o solapaments |
-| Dissolució | Nombre de resultats compatible amb `Keep disjoint features separate`, geometries multipart esperades, camps no resumits identificats i agregacions separades quan calgui |
-| Tessel·lació | Extensió, mida i origen documentats, suma de recomptes i efectes de vora |
+| Envolupant | Entrada continguda, tipus i agrupació correctes |
+| Buffer | Unitats, paràmetres, geometries buides i control de distància adequat a l'aproximació |
+| Retall/intersecció | Parts dins de l'àmbit, IDs preservats i mesures recalculades |
+| Diferència | Interiors disjunts de l'exclusió; part restant i part comuna reconstrueixen l'entrada |
+| Unió/dissolució | Cobertura, coincidències, nuls i absència d'agregats estadístics presumptes |
+| Parts i punts | Cobertura conservada, claus noves i relació amb la geometria original |
+| Malla | Mida/origen, assignació unívoca i suma de recomptes |
+| Delaunay/llindar | Parelles úniques, longituds, components i aïllats |
+| Voronoi postal | Cobertura/disjunció, IDs/categories, generadors externs i contrast independent |
+| Atlas | Cobertura completa, ordre, escala, enquadrament i fitxer exportat reobert |
 :::
 
-Reparar geometries sense diagnòstic no substitueix aquests controls.
-
-Primer s'ha d'identificar l'error i comparar recompte, tipus i superfície abans i després de la correcció.
+Els balanços utilitzen mesures de les geometries resultants i toleràncies numèriques explícites. Una àrea total correcta pot ocultar una atribució errònia; una captura sense avisos pot mostrar un diàleg que encara no s'ha executat. Per això es combinen dades, controls, mapes i reobertura, i es distingeix consistència interna de validació amb fonts independents.
 
 ## Activitats
 
-### Comprovació: quatre operacions sobre el mateix cas
+### Comparar envolupants i sensibilitat del buffer
 
-Cal aplicar selecció espacial, unió espacial, retall i intersecció a les mateixes capes simples. Per a cada sortida s'han de comparar geometria, nombre de files i camps. L'objectiu és predir l'efecte abans d'executar-lo.
+Sobre un municipi, es calculen les quatre envolupants amb la mateixa entrada i es comparen contenció, extensió i espai addicional. Després es construeix un buffer amb distància justificada i se'n deriva la caixa. El diari ha d'explicar per què la caixa del terme i la del buffer no són intercanviables.
 
-### Pràctica guiada: sensibilitat d'una distància
+Una segona comparació manté entrada i radi mentre varia 4, 8 i 16 segments per quadrant; o manté la segmentació mentre varia el radi. Es conserven els resultats i es compara forma, àrea i nombre de vèrtexs. Cap escenari es presenta com una franja legal sense font i geometria de referència adequades.
 
-Es crearan àrees d'influència de 100, 300 i 500 m, amb i sense dissolució, sobre una mateixa xarxa. Són tres escenaris analítics per estudiar la sensibilitat del resultat, no franges legals ni criteris universals de protecció civil. Cal representar com canvien superfície i nombre d'entitats relacionades, i explicar per què cap distància no s'ha d'interpretar com un temps de recorregut sense un model de xarxa.
+### Micropràctica 4: un GeoPackage de geoprocessament
 
-### Micropràctica 4: geoprocessament vectorial
+El recorregut parteix de PR3 i conserva la ROI de continuïtat. Moodle concreta els apartats seleccionats; el capítol ofereix comparacions addicionals sense convertir-les totes en obligacions.
 
-::: table "Contracte de la micropràctica 4"
-| Component | Requisit |
+::: table "Continuïtat del projecte PR4"
+| Component | Resultat observable |
 | --- | --- |
-| Entrades | `dist/pr3-consultes-cognom.gpkg`, que es copia a `sandbox/pr4-geoprocessament-cognom.gpkg`, amb `municipi_treball`, `transport_candidats_c06`, portals o equipaments i una capa capturada a la micropràctica 2 |
-| Operacions mínimes | No copiar el `.qgz` de `pr3`; establir el projecte principal `pr4`; reorientar les fonts locals de les vistes conservades; materialitzar `vies_principals` amb `id_tram` verificat; validar; crear dos buffers justificats; aplicar una selecció espacial i una superposició geomètrica |
-| Resultats | `vies_principals` amb `codi_muni`, `id_tram` i identificadors d'origen verificats, capes persistents de cada criteri i resultat vectorial combinat dins de `pr4-geoprocessament-cognom.gpkg`, amb mesures recalculades |
-| Evidències del diari | Pregunta, llindars, CRS, ordre d'operacions, recompte i àrea després de cada pas i limitacions |
-| Comprovacions | Projecte principal `pr4` identificat; fonts revisades a totes les vistes conservades; cap URI local cap a `dist/` o `pr3`; camins relatius al `.qgz`; distàncies en metres, geometries vàlides, coincidències múltiples identificades i inspecció d'una mostra |
-| Fitxers que cal conservar | `dist/pr4-geoprocessament-cognom.gpkg`, amb el projecte incrustat `pr4`; `dist/pr4-geoprocessament-cognom.qgz`; diari i capes intermèdies necessàries per auditar el flux |
+| Entrada | Còpia validada de PR3 i originals CNIG per cobrir l'entorn exterior |
+| Projecte | Principal `pr4`, fonts locals reorientades i `.qgz` nou, homònim i relatiu |
+| Preparació | `vies_principals` amb claus comprovades en la branca municipal; candidats complets en la branca ROI |
+| Continuïtat | `municipi_buffer_500m` i caixa no orientada `roi` persistents |
+| Anàlisi seleccionada | Comparacions justificades, selecció espacial i transformacions geomètriques amb traça |
+| Evidència | Mapa comparatiu, apunts, recomptes, mesures, incidències i límits de la interpretació |
+| Reobertura | GeoPackage, projecte incrustat i extern verificats sense dependències locals de PR3 ni de `dist/` |
 :::
 
-En acabar, es desa el projecte incrustat `pr4` i es crea de nou `sandbox/pr4-geoprocessament-cognom.qgz` amb camins relatius al GeoPackage homònim. Amb QGIS tancat, la parella validada es copia a `dist/` sense canviar-ne els noms. Tancar i obrir separadament les dues representacions des d'una ubicació neta ha de confirmar les mateixes capes persistents, grups i fonts; desar-ne una no actualitza automàticament l'altra.
+La base és `pr4-geoprocessament-cognom`: fitxers `.gpkg` i `.qgz`, `-mapa.pdf` i `-apunts.pdf`. Amb QGIS tancat es prepara la còpia de distribució i es prova des d'una ubicació neta. El mapa i les captures no substitueixen les capes ni la composició editable.
 
-Com a ampliació, el resultat es pot agregar sobre una malla quadrada o hexagonal amb dues mides de cel·la i, per a una mida, amb dos orígens. La comparació ha de separar l'efecte d'escala de l'efecte de zonificació del MAUP i explicar quins patrons es mantenen i quins depenen de la tessel·lació.
+### Reus i transferència al municipi propi
+
+Sobre un mateix conjunt de portals amb entorn es construeixen una malla, Delaunay i Voronoi. La malla respon quants registres o ubicacions hi ha a cada unitat; les arestes descriuen veïnatges; les cel·les assignen proximitat. Cal conservar les correspondències i comparar almenys una decisió seleccionada: mida/origen, llindar d'arestes o extensió dels generadors.
+
+La zonificació postal es dissol per categoria textual i es presenta com a estimació. Un contrast amb punts reservats és un experiment separat amb partició prèvia. Els resultats propis s'incorporen a PR4; Reus continua identificat com a cas de demostració i no crea una setena instantània.
+
+### Atlas de cobertura regular
+
+Es transfereix el procediment de cobertura al municipi escollit: malla completa, selecció de cel·les amb àrea comuna, IDs, ordre de pàgines, layout i mapa controlat per atlas. Cal justificar conjuntament costat de cel·la, dimensions del marc i escala; una variant pot comparar dues mides mantenint el format de paper.
+
+Les evidències són la cobertura desada, el layout editable, una previsualització interior i una de vora, el PDF exportat reobert i el recompte de pàgines. Els apunts expliquen qualsevol diferència entre extensió de cel·la i extensió visible. L'encaix de Reus i de l'atlas en el treball seleccionat es concreta a Moodle, amb els blocs habituals **70% bàsic, 20% ampliacions i 10% documentació** i sense doble recompte.

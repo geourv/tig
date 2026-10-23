@@ -1,8 +1,8 @@
 ---
-title: "PR4 · Guia docent dels buffers, els solapaments i la ROI"
+title: "PR4 · Guia docent d’envolupants, distàncies i geoprocessament"
 lang: ca
 recipient: docent
-content_status: approved
+content_status: draft
 subject: "Tecnologies de la Informació Geogràfica"
 subject_code: "21234114"
 author: "Benito Zaragozí"
@@ -11,7 +11,7 @@ institution: "Universitat Rovira i Virgili"
 
 # Finalitat i resultats d’aprenentatge
 
-La pràctica desenvolupa el pas de consultar entitats a derivar geometries. El fil docent és progressiu: primer una transformació amb paràmetres visibles, després comparacions controlades, superposicions amb atributs i, finalment, una regió d’interès que connecta amb el treball ràster.
+La pràctica desenvolupa el pas de consultar entitats a derivar geometries. Comença amb les envolupants del municipi, desenvolupa distància i buffer i construeix la ROI rectangular. Aquest àmbit comú permet preparar punts, línies i polígons, contrastar superposicions i obtenir peces i punts derivats. Les comparacions es vinculen al capítol 6 i a la continuïtat ràster.
 
 La seqüència ha de permetre predir què conservarà cada algorisme i comprovar-ho després. Processament forma part del recorregut principal; la programació d’un model de reproducció és una eina d’autoria, no un requisit previ perquè l’alumnat pugui executar els procediments de QGIS.
 
@@ -19,13 +19,13 @@ La seqüència ha de permetre predir què conservarà cada algorisme i comprovar
 
 | Component | Durada orientativa |
 | --- | --- |
-| Aula, buffers i superposicions | 150–180 min |
-| Treball autònom i apunts | 120–180 min |
+| Aula, recorregut complet amb demostracions | 210–270 min |
+| Treball autònom i apunts | 150–210 min |
 | Preparació docent | 45–60 min |
 
 Table: Estimació de PR4, sense afegir-hi el taller de tessel·lacions.
 
-Estimació pendent de contrast amb una classe, amb PR3 validada i un sector de captura acotat. Convé repartir la demostració en dos blocs: paràmetres i superposicions; multiplicitat i ROI. Les ampliacions tenen dedicació addicional segons la pregunta.
+Estimació pendent de contrast amb una classe, amb PR3 validada i fonts descarregades. Convé repartir-la en tres blocs: envolupants, distància i ROI; preparació, superposicions i peces; punts derivats i comparacions seleccionades. El recorregut complet és més ampli que una sessió ordinària: el professor concreta a Moodle els apartats obligatoris. Les ampliacions tenen dedicació addicional segons la pregunta.
 
 La preparació comprova IDs, capes heretades i una còpia del cas sintètic. Abans de cada operació es demana una predicció sobre geometria i atributs; després es contrasta amb la sortida desada. Les aturades determinants són la pèrdua d’identitat en dissoldre, les peces coincidents de la unió i la diferència entre buffer i caixa. Una taula de fragments i mesures és necessària per explicar un mapa que visualment sembla correcte.
 
@@ -39,9 +39,9 @@ La preparació comprova IDs, capes heretades i una còpia del cas sintètic. Aba
 
 ## Enunciat per copiar a la descripció
 
-**Dades i objectiu.** Cal continuar la PR3 pròpia, conservar l’herència i derivar geometries amb Processament. Les entrades són els límits CNIG, les seleccions de PR3 i els generadors de PR2 o un escenari sintètic declarat. El resultat ha d’explicar l’efecte de les decisions i preparar la ROI per a PR5.
+**Dades i objectiu.** Cal continuar la PR3 pròpia, conservar l’herència i derivar geometries amb Processament. Les entrades són els límits CNIG, les fonts provincials de CartoCiudad i del viari, les preparacions de PR3 i els generadors de PR2 o un escenari sintètic declarat. La ROI inclou entorn exterior al terme; una selecció només municipal pot ser insuficient. El resultat ha d’explicar l’efecte de les decisions i conservar la ROI per a PR5.
 
-**Treball bàsic —70%.** El professor selecciona a classe i enumera en aquesta Tasca les comparacions de buffers, superposicions, solapaments i envolupants obligatòries. Cal preservar IDs, recalcular mesures i comprovar les sortides persistents. La `roi` de continuïtat és la caixa alineada als eixos d’EPSG:25831 del buffer municipal de 500 m. Les altres variants de la guia no són totes obligatòries per defecte.
+**Treball bàsic —70%.** El professor selecciona a classe i enumera en aquesta Tasca les preparacions, superposicions, comparacions de buffers, parts i punts derivats obligatòries. Cal preservar IDs, recalcular mesures i comprovar les sortides persistents. La `roi` de continuïtat és la caixa alineada als eixos d’EPSG:25831 del buffer municipal de 500 m. Les altres variants de la guia no són totes obligatòries per defecte.
 
 **Ampliacions —20%.** Una aportació pot desenvolupar una pregunta com aquestes:
 
@@ -64,6 +64,74 @@ Per avançar el cas dels fanals es pot emprar un escenari sintètic declarat. L�
 # Procediment de demostració
 
 Les comparacions conserven la mateixa entrada mentre varia una decisió. Cada sortida es desa amb els paràmetres i la clau d’origen perquè es pugui reprendre el control després de tancar QGIS.
+
+## Envolupants del municipi i selector del tipus
+
+La primera vista mostra l’Explorador amb les connexions als tres GeoPackage: projecte PR4, CartoCiudad i viari CNIG. El WMS IGN/PNOA es carrega sota els vectors, amb contorns sense farciment. Cal comprovar CRS i una mostra de coincidències territorials. Les connexions de l’Explorador es recreen al perfil de l’equip quan calgui; no s’han de confondre amb les referències desades al projecte.
+
+La primera entrada de la demostració és `municipi_treball`, **sense buffer**. Es comparen caixa alineada, rectangle orientat, cercle mínim i convexa mitjançant `qgis:minimumboundinggeometry`, amb `TYPE` 0, 1, 2 i 3. Cal mostrar que és un selector de la mateixa eina i distingir conjunt, grup per camp i càlcul per entitat.
+
+![Eina de geometria delimitadora mínima](assets/img/qgis/qgis-c06-envolupants-tipus.png "L’entrada és el terme original. El camp d’agrupació és opcional i no equival a demanar una envolupant per fila.")
+
+![Envolupants del mateix municipi](assets/img/qgis/qgis-c06-envolupants-comparacio.png "La comparació manté entrada i CRS: caixa verda, rectangle orientat blau, cercle taronja, convexa violeta i terme magenta.")
+
+La pregunta d’aturada és quin espai afegeix cada forma i per què. S’esperen contenció i validesa; les mesures han de correspondre a la mateixa entrada. El cercle discretitzat necessita una tolerància vinculada a l’aproximació. Aquest bloc no utilitza encara el buffer de 500 m.
+
+## Distàncies, buffer i ROI
+
+Abans d’obrir Buffer es distingeixen distància mínima entre geometries, distància entre centroides i distància de recorregut. Els metres requereixen una preparació explícita en EPSG:25831; canviar només el CRS de la vista no reprojecta la font. La segmentació aproxima corbes i no millora l’exactitud topogràfica.
+
+Es calcula el buffer municipal de 500 m amb 8 segments per quadrant i dissolució desactivada. La caixa ROI es deriva després d’aquest buffer amb l’algorisme de caixetins delimitadors.
+
+![Configuració del buffer municipal](assets/img/qgis/qgis-c06-buffer-municipal.png "La distància s’ha explicat abans d’arribar al diàleg. La sortida persistent es reobre i se’n comproven validesa, contenció i mesures.")
+
+`native:boundingboxes` produeix la capa `roi`. Cal preguntar per què les cantonades no es troben a 500 m del terme i per què s’incorporen municipis veïns. La preparació reprèn els originals provincials, conserva `id_font`, extreu candidats amb geometries senceres i els reprojecta a EPSG:25831.
+
+![Municipi, buffer i caixa ROI](assets/img/qgis/qgis-c06-roi-desada.png "La caixa del buffer, verda, és la ROI de continuïtat. No es confon amb la caixa inicial del terme ni amb una franja de distància constant.")
+
+## Preparació de les fonts provincials
+
+La demostració de rendiment diferencia capa oculta, filtre de capa, filtre de taula i selecció. Es pot processar sense dibuixar tota la província ni obrir-ne la taula. El filtre de capa afecta també moltes entrades de Processament: convé comparar-ne el recompte i el criteri, sense atribuir una acceleració concreta a una prova que no s’ha cronometrat.
+
+## Un retall de cada tipus geomètric
+
+El cas compara portals filtrats per `tipo = Portal`, viari de totes les classes i illes de CartoCiudad. Es fan dos retalls i una intersecció d’illes amb el camp de màscara `id_roi`. Un punt només es conserva o s’exclou; una línia o un polígon poden fragmentar-se. Les captures dels diàlegs documenten la configuració, i els resultats reoberts i els controls acrediten el càlcul.
+
+| Preparació | Candidats | Sortida dins de la ROI |
+| --- | ---: | ---: |
+| Punts Portal/PK; després filtre Portal | 17.793 | 16.756 |
+| Viari de totes les classes | 10.262 | 9.780 |
+| Illes | 1.490 | 1.399 |
+
+Table: Referències del cas CNIG amb límits de juliol de 2026, CartoCiudad d’abril de 2026 i viari de juliol de 2026.
+
+![Resultats dels retalls de punts, línies i polígons](assets/img/qgis/qgis-c06-retalls-resultat.png "Els tres tipus de geometria comparteixen la mateixa ROI, que incorpora territori exterior a Vila-seca. Els registres viaris no equivalen necessàriament a trams diferents.")
+
+## Diferències i interpretació dels components
+
+Per al context marí, `terra_roi` és la unió dels recintes administratius retallats. Intervenen vuit municipis: Cambrils, Constantí, Reus, Riudoms, Tarragona, Vila-seca, Salou i la Canonja. La diferència `roi − terra_roi` conserva cinc components i 14,826 km². Cal examinar-los amb l’ortofoto: una geometria exterior als recintes no es classifica com a mar només pel nom de la sortida.
+
+El cas conserva la diferència sencera i selecciona dos components connectats amb punts marins de contrast prop de les cantonades sud-oest i sud-est, amb 14,447 km². Els altres components continuen disponibles per inspecció. La selecció no és una regla general de «conservar el polígon més gran», ni una nova costa oficial; a l’entorn portuari cal distingir límit administratiu i superfície d’aigua.
+
+![Context marí derivat sobre el WMS](assets/img/qgis/qgis-c06-mar-resultat.png "El context marí és una interpretació acotada del complement. El WMS ajuda a revisar ports, costa i components; la diferència completa es conserva.")
+
+La segona diferència utilitza els 5.475 registres `Urbano` de `viari_roi`. Es comparen buffers dissolts de 5 i 10 m i es resten de `terra_roi`. La conversió multipart a monopart produeix 1.330 i 1.131 parts, respectivament. La disminució del recompte no és una prova que el radi major sigui millor: pot eliminar peces petites o unir exclusions. Cal contrastar amb `manzana`, ortofoto, límits i discontinuïtats del viari.
+
+La pregunta WKT és quantes files i quantes parts descriu una geometria `MULTIPOLYGON`. Després de separar-la, es conserva la clau d’origen, es crea `id_peca` i es comprova que la suma d’àrees correspon a la diferència original. Els atributs repetits no s’han de sumar automàticament.
+
+## Centroides, punts sobre superfície i vèrtexs
+
+El cas calcula un centroide per entitat sobre les illes i sobre els carrers. El centre lineal pondera per longitud, no identifica necessàriament una posició sobre el traçat ni el punt de mitja longitud. Entre les 1.399 illes, 35 centroides queden fora del seu polígon; aquest resultat permet discutir la diferència entre centre geomètric i punt interior.
+
+![Diàleg de centroides sobre les illes](assets/img/qgis/qgis-c06-centroides.png "L’opció d’un punt per entitat es manté constant en la comparació. En multipart, un punt per part respon una pregunta diferent.")
+
+![Diàleg de punts sobre la superfície](assets/img/qgis/qgis-c06-punt-superficie.png "Els punts sobre superfície es contrasten amb la geometria d’origen. La pertinença al polígon no implica que siguin accessos o centres funcionals.")
+
+L’extracció de vèrtexs produeix 137.919 files per a les illes i 92.789 per als carrers urbans. Es comproven coordenades i índexs contra les geometries d’origen. Cal recordar els vèrtexs de tancament i les coordenades coincidents: nombre de files i nombre de posicions diferents són preguntes distintes.
+
+![Extracció dels índexs inicial i final de les línies](assets/img/qgis/qgis-c06-extrems-linies.png "Els índexs 0 i −1 identifiquen el primer i l’últim vèrtex de l’entitat. Per treballar amb els extrems de cada part cal separar abans les geometries multipart.")
+
+Aquest bloc acaba amb punts derivats i comprovats. La construcció de tessel·lacions correspon al taller posterior, amb decisions pròpies sobre duplicats, domini i generadors externs.
 
 ## Sensibilitat dels buffers
 
@@ -118,15 +186,17 @@ on les peces $Z_j$ formen una partició de la cobertura i $B_i$ són els buffers
 
 La zona zero necessita un univers explícit, com el corredor d’estudi, i la diferència respecte de la cobertura. No s’infereix de l’absència de files a la unió. El mapa de `n_fanals` representa multiplicitat geomètrica, no intensitat lluminosa ni suficiència del servei.
 
-## Buffer municipal i envolupants
+## Sensibilitat de les envolupants sobre el buffer
 
-El pas municipal utilitza `municipi_buffer_500m` com a entrada comuna de les quatre comparacions: caixa alineada als eixos, rectangle mínim orientat, envolupant convexa i cercle mínim contenidor. Es comproven contenció, àrea i extensió de cadascuna; un cercle discretitzat també necessita documentar-ne l’aproximació.
+La comparació addicional utilitza `municipi_buffer_500m` com a entrada comuna de les quatre formes. Aquestes mesures es distingeixen de les envolupants inicials del terme. Es comproven contenció, àrea i extensió; el cercle d’aquesta comparació s’ha discretitzat amb 720 segments.
 
 La caixa alineada als eixos es desa com `roi`. És la decisió de continuïtat cap a una graella ràster no rotada en EPSG:25831, no una afirmació que sigui la geometria més ajustada. Es conserven el rectangle orientat i les altres envolupants com a comparacions. L’alineació futura de cel·les a PR5 és una operació posterior i pot ampliar l’extensió.
 
 Un rectangle orientat de mínima àrea no és un polígon dibuixat a ull seguint la costa. El cercle mínim no és el buffer d’un centre qualsevol i l’envolupant convexa no conserva concavitats ni forats. Aquestes diferències s’han d’interpretar sobre la mateixa entrada, sense canviar-ne el límit entre proves.
 
 # Comprovacions i interpretació
+
+El cas complementari d’envolupants, ROI, retalls, diferències i punts s’ha executat amb QGIS 3.44.11 i **143 controls** sobre fonts i sortides persistides. Conserva 34 capes vectorials, incloses les quatre envolupants del terme original. Els projectes externs i incrustats s’han reobert sense xarxa; el WMS s’afegeix a l’escena de captura online. La configuració d’un diàleg no substitueix el càlcul ni la reobertura de la sortida.
 
 El pilot retingut `tig-buffer-municipal-500m` constitueix una referència acotada: una entitat CNIG, 500 m, 8 segments per quadrant, unions arrodonides i dissolució desactivada. Disposa de 30 controls retinguts i d’una banda contínua contrastada d’aproximadament 494,5782549823905 a 500,01 m respecte del límit original. El mínim mesurat del run acceptat és 495,0869662890991 m.
 
@@ -148,8 +218,4 @@ L’alumnat prepara les operacions sobre la seva PR3 seguint el PDF. El paquet d
 
 Cal conservar un registre de paràmetres, errors i correccions, i comprovar els projectes externs i incrustats des d’una ubicació neta. La reobertura de la còpia s’ha de fer sense utilitzar el GeoPackage predecessor com a font alternativa. La presència de captures o d’un PDF no substitueix aquests controls sobre les dades.
 
-# Referències
-
-- [Anàlisi i geoprocessament vectorial, manual TIG](https://geourv.github.io/tig/ca/chapters/analisi-geoprocessament-vectorial/).
-- [Unió i superposicions, QGIS 3.44](https://docs.qgis.org/3.44/en/docs/user_manual/processing_algs/qgis/vectoroverlay.html#union).
-- [Geometria vectorial, QGIS 3.44](https://docs.qgis.org/3.44/en/docs/user_manual/processing_algs/qgis/vectorgeometry.html).
+El desenvolupament conceptual es pot consultar al [manual TIG](https://geourv.github.io/tig/ca/chapters/analisi-geoprocessament-vectorial/). La documentació de QGIS 3.44 concreta els contractes d’[Unió i superposicions](https://docs.qgis.org/3.44/en/docs/user_manual/processing_algs/qgis/vectoroverlay.html#union) i de [geometria vectorial](https://docs.qgis.org/3.44/en/docs/user_manual/processing_algs/qgis/vectorgeometry.html).

@@ -1,0 +1,81 @@
+{
+  "schema_version": 2,
+  "kind": "qgis-practice-request-v2",
+  "activity": {"id": "pr4-roi-cnig", "version": "0.2.0", "title": "Vila-seca: envolupants, ROI, superposicions i punts derivats"},
+  "qgis_image": "sha256:1003721d96abe9607d8337b36851f9b29f84c2f8f92b377d1a73ff03c9d15cd2",
+  "script": "compute.py",
+  "inputs": [
+    {"id": "limits-original", "path": "inputs/lineas_limite_cnig_20260728.zip", "sha256": "d752b1b943e6c60f46a23119d6c3d4ad0b198461c502f0a5433197d7a5e34c83"},
+    {"id": "cartociudad", "path": "inputs/tarragona.gpkg", "sha256": "75b3523872d582ece5dfa2edd488674852557d898bf65f36b511e45be695f90e"},
+    {"id": "transport", "path": "inputs/red_viaria.gpkg", "sha256": "77224877c243c32c23853f6859cc6088e653eb21be9698663492ff3f1f28705d"}
+  ],
+  "parameters": {
+    "municipality_code": "34094343171", "buffer_m": 500, "segments": 8,
+    "sources": [
+      {"id": "limits-original", "repository_path": "practiques/recorregut-municipal/inputs/lineas_limite_cnig_20260728.zip", "sha256": "d752b1b943e6c60f46a23119d6c3d4ad0b198461c502f0a5433197d7a5e34c83"},
+      {"id": "cartociudad", "repository_path": "practiques/recorregut-municipal/inputs/tarragona.gpkg", "sha256": "75b3523872d582ece5dfa2edd488674852557d898bf65f36b511e45be695f90e"},
+      {"id": "transport", "repository_path": "practiques/recorregut-municipal/inputs/red_viaria.gpkg", "sha256": "77224877c243c32c23853f6859cc6088e653eb21be9698663492ff3f1f28705d"}
+    ]
+  },
+  "products": [
+    {"id": "initial-data", "path": "data/entrada_roi.gpkg", "role": "initial-data", "format": "geopackage", "depends_on": ["font-regular"], "members": [
+      {"kind": "vector", "name": "municipi_treball", "role": "initial-data"},
+      {"kind": "vector", "name": "termes_candidats", "role": "initial-data"},
+      {"kind": "vector", "name": "portals_candidats", "role": "initial-data"},
+      {"kind": "vector", "name": "vies_candidats", "role": "initial-data"},
+      {"kind": "vector", "name": "illes_candidates", "role": "initial-data"},
+      {"kind": "table", "name": "fonts_dades", "role": "metadata"},
+      {"kind": "project", "name": "inicial", "role": "initial-project"}
+    ]},
+    {"id": "resolved-data", "path": "data/pr4-roi-exemple.gpkg", "role": "resolved-data", "format": "geopackage", "depends_on": ["font-regular"], "members": [
+      {"kind": "vector", "name": "municipi_caixa", "role": "resolved-data"},
+      {"kind": "vector", "name": "municipi_rectangle_orientat", "role": "resolved-data"},
+      {"kind": "vector", "name": "municipi_cercle_minim", "role": "resolved-data"},
+      {"kind": "vector", "name": "municipi_convexa", "role": "resolved-data"},
+      {"kind": "vector", "name": "municipi_treball", "role": "resolved-data"},
+      {"kind": "vector", "name": "termes_candidats", "role": "resolved-data"},
+      {"kind": "vector", "name": "portals_candidats", "role": "resolved-data"},
+      {"kind": "vector", "name": "vies_candidats", "role": "resolved-data"},
+      {"kind": "vector", "name": "illes_candidates", "role": "resolved-data"},
+      {"kind": "vector", "name": "municipi_buffer_500m", "role": "resolved-data"},
+      {"kind": "vector", "name": "roi", "role": "resolved-data"},
+      {"kind": "vector", "name": "rectangle_orientat", "role": "resolved-data"},
+      {"kind": "vector", "name": "envolupant_convexa", "role": "resolved-data"},
+      {"kind": "vector", "name": "cercle_minim", "role": "resolved-data"},
+      {"kind": "vector", "name": "termes_roi", "role": "resolved-data"},
+      {"kind": "vector", "name": "terra_roi", "role": "resolved-data"},
+      {"kind": "vector", "name": "mar_complement", "role": "resolved-data"},
+      {"kind": "vector", "name": "mar_context", "role": "resolved-data"},
+      {"kind": "vector", "name": "portals_roi", "role": "resolved-data"},
+      {"kind": "vector", "name": "viari_roi", "role": "resolved-data"},
+      {"kind": "vector", "name": "illes_roi", "role": "resolved-data"},
+      {"kind": "vector", "name": "urbans_roi", "role": "resolved-data"},
+      {"kind": "vector", "name": "buffer_carrers_5m", "role": "resolved-data"},
+      {"kind": "vector", "name": "buffer_carrers_10m", "role": "resolved-data"},
+      {"kind": "vector", "name": "peces_carrers_5m", "role": "resolved-data"},
+      {"kind": "vector", "name": "peces_carrers_10m", "role": "resolved-data"},
+      {"kind": "vector", "name": "peces_individuals_5m", "role": "resolved-data"},
+      {"kind": "vector", "name": "peces_individuals_10m", "role": "resolved-data"},
+      {"kind": "vector", "name": "centroides_illes", "role": "resolved-data"},
+      {"kind": "vector", "name": "centroides_linies", "role": "resolved-data"},
+      {"kind": "vector", "name": "punts_superficie_illes", "role": "resolved-data"},
+      {"kind": "vector", "name": "vertices_illes", "role": "resolved-data"},
+      {"kind": "vector", "name": "vertices_linies", "role": "resolved-data"},
+      {"kind": "vector", "name": "extrems_linies", "role": "resolved-data"},
+      {"kind": "table", "name": "fonts_dades", "role": "metadata"},
+      {"kind": "table", "name": "resum_resultats", "role": "metadata"},
+      {"kind": "project", "name": "pr4_roi", "role": "resolved-project"}
+    ]},
+    {"id": "font-regular", "path": "data/fonts/DejaVuSans.ttf", "role": "initial-data", "format": "font", "depends_on": []},
+    {"id": "font-licence", "path": "data/fonts/DejaVuSans-licence.csv", "role": "initial-data", "format": "csv", "depends_on": ["font-licence-types"]},
+    {"id": "font-licence-types", "path": "data/fonts/DejaVuSans-licence.csvt", "role": "initial-data", "format": "csvt", "depends_on": []}
+  ],
+  "fonts": [{"file": "font-regular", "family": "DejaVu Sans"}],
+  "projects": [
+    {"id": "initial-project", "path": "projects/inicial.qgz", "role": "initial-project", "source_product": "initial-data", "source_project": "inicial", "compose": true, "capture": false,
+      "scene": {"setup": [{"action": "close_transients"}, {"action": "clear_message_bar"}], "presentation": {"checks": {"project_crs": "EPSG:25831"}}}},
+    {"id": "resolved-project", "path": "projects/pr4-roi-exemple.qgz", "role": "resolved-project", "source_product": "resolved-data", "source_project": "pr4_roi", "compose": true, "capture": true,
+      "scene": {"setup": [{"action": "close_transients"}, {"action": "show_panel", "title": "Layers"}, {"action": "clear_message_bar"}], "presentation": {"checks": {"project_crs": "EPSG:25831"}}}}
+  ],
+  "exports": [], "timeout_seconds": 600, "locale": "ca_ES"
+}
