@@ -2,13 +2,230 @@
 
 Aquest registre identifica edicions locals, fonts, comprovacions i límits. Les setze lectures tenen aprovació de primera versió des del 18/10/2026. Els PDF i els bundles de pràctiques són recursos locals, exclosos del web; la seva distribució a Moodle es decideix separadament. La reserva i les seleccions de l’autor consten a [TIG #28](https://github.com/geourv/tig/issues/28).
 
+## Manual aprovat i comprovat · 23/10/2026
+
+`make test` amb el digest immutable de Web 0.7.1 ha completat el PDF, build
+i auditoria HTML. El gate editorial de fonts i resultat renderitzat passa.
+El manual aprovat té **325 pàgines**, sense ESBORRANY, SHA
+`eb174bd4b8e61d092d7dfceca3b0884ecf2dc3f8969052a03bbc047a63daf9af`.
+La còpia retinguda és
+`sandbox/practiques/pr4-geoprocessament/manual-2026-10-vector-r2-approved-20261023/`.
+El PDF HTTP coincideix; s'han revisat web d'escriptori/mòbil i pàgines del PDF.
+Els detalls i avisos consten a `pr4-roi-geoprocessament.md`.
+
+Els setze PDF de pràctiques i els deu bundles conserven l'estat i els hashes
+de l'auditoria del 22/10. Aquesta validació del manual no aprova els quatre
+esborranys PR4/Reus ni crea una edició de distribució de les pràctiques.
+
+## Autorització de latest i estat de les lectures · 22/10/2026
+
+L'autor aprova expressament publicar el manual actual, amb les captures d'atles
+ajornades i els avisos de figures documentats. Autoritza commit de fonts, push,
+PR, integració a `main` i desplegament. Les onze fonts públiques són `approved`.
+Les quatre lectures PR4/Reus continuen **draft**, segons la seva selecció
+«Conservar-les en esborrany»; els seus PDF, hashes i 91 pàgines no canvien.
+
+La continuació de captures és [#37](https://github.com/geourv/tig/issues/37),
+primera tasca de continguts quan el capturador i la família compatible estiguin
+actualitzats. El sondeig no publicable s'ha retingut fora d'`assets/`, sense
+alterar-ne els bytes ni el diagnòstic anterior. La publicació del manual actual
+no acredita una captura o exportació d'atles que encara no s'ha executat a TIG.
+
+## Preparació conjunta i estat de latest · 22/10/2026
+
+L'autor demana acabar de preparar `latest` i deixar disponibles els materials
+locals de pràctiques. També ha acceptat **preparar la migració** del consumidor
+Web 0.7.1 al punt publicat 0.7.3, amb revisió prèvia dels conflictes.
+
+### Materials verificats i índex vigent
+
+- **16 PDF / 172 pàgines** concorden byte per byte amb els hashes retinguts:
+  12 lectures v1 aprovades, 81 pàgines; 4 lectures PR4/Reus vector-r2 en draft,
+  91 pàgines. Les fonts actuals coincideixen amb els snapshots dels jobs triats.
+- Tots els artefactes dels rebuts, recompte de pàgines, A4 horitzontal, marca
+  d'esborrany pertinent, seccions docents, logs i límits de text són correctes.
+- **10 bundles GIS** acceptats pel `practice-check` públic 0.6.1, amb selecció
+  `resolved-project` i dependències: vuit casos del recorregut, ROI 143 controls
+  i Reus 80 controls. És verificació de segells/contractes, no una reexecució GIS.
+- Els **set imports PR1** de l'edició Moodle confirmada mantenen els hashes.
+- Informe create-only: `sandbox/practiques/materials-readiness-20261022-01.json`,
+  SHA `02194000a197f06bd4fff2dcbc1e2dc7d79a846e28ffb4f60c79d23d4e038270`.
+- `practiques/README.md` ofereix ara l'índex únic dels setze PDF vigents per a
+  revisió. El report no és una edició PDF/ZIP ni aprova els quatre esborranys.
+- Els setze enllaços, recomptes i fitxers de l'índex s'han contrastat amb
+  l'informe. `prose_check` no admet aquest índex privat com a target editorial
+  (`Editorial target must be reader-facing content or public metadata`);
+  no es presenta aquesta exclusió com una comprovació de prosa superada.
+- Les instruccions de correcció i la seva integració amb Unaltramesa es
+  mantenen com a tasca d'autoria separada [#35](https://github.com/geourv/tig/issues/35).
+
+### Capturador: implementat en local, encara no adoptable
+
+El [retorn del proveïdor](https://github.com/dosquartsdedocs/unaltracaptura-qgis/issues/27#issuecomment-6329069144)
+acredita una implementació local `0.7.0.dev0`, sense commit ni release:
+401 tests, 43 Qt/QGIS, smoke, 22 conjunts forçats, dues captures del mateix
+compositor i PDF de tres pàgines. Els exemples específics de Reus són a
+`docs/tig-atlas-handoff.md` d'aquell checkout. Aquest retorn encara no és una
+release que la sessió TIG pugui adoptar ni una execució sobre el cas real.
+
+La connexió actual és QGIS MCP **0.6.1**, controller
+`sha256:d06b742c3e7d2e9383cf8a1d22bce928dd806f316a0bcbb1f676f50e22e94b05`,
+sense drift i amb el mateix worker QGIS 3.44.11. Web **0.7.3** declara v1/v2;
+cal publicar el candidat i acceptar explícitament el nou perfil v3 a la família.
+
+### Web i publicació
+
+Web 0.7.3 està connectat a TIG, sense drift, controller
+`sha256:0a5b91a4c1c8b3b0bd8d3c4160ed1e5b9ccc8ad3cd0abee67f621d8636d15bd6`.
+És la selecció immutable del runtime; els pins del consumidor continuen a 0.7.1.
+`site_check` passa i el PDF local de 327 pàgines continua `fresh`.
+
+`build_site` i `manual_release_status(latest)` fallen pel socket exclòs
+`.unaltramesa/project/operator.sock`; el candidat antic de `tmp/manual-release/latest`
+no acredita aquesta revisió. La correcció del snapshot correspon a Web.
+
+La [preparació de migració #36](https://github.com/geourv/tig/issues/36) reté el
+pla `962d50d85c086182cc36a3e1f8a977a6eb9835136958bfc2406ed5db4794567d`:
+Makefile, Gemfile, lock i scaffold; conciliació de `.gitignore` i del workflow
+de fonts. El workflow publicat només canvia la versió del paquet 0.7.2→0.7.3.
+S'ha detectat també que la plantilla de gem 0.7.3 es combina amb el commit
+de core 3332e0… que declara 0.7.1. Cal un tuple coherent del proveïdor abans
+de tornar a revisar/aplicar un pla CAS. No s'ha aplicat aquesta migració.
+
+S'han tramès dos informes reproduïbles al proveïdor Web:
+[snapshot i socket exclòs #114](https://github.com/dosquartsdedocs/unaltraweb/issues/114)
+i [coherència del tuple gem/core #115](https://github.com/dosquartsdedocs/unaltraweb/issues/115).
+Inclouen proves d'acceptació i preservació dels controls existents; són
+incidències obertes, no reparacions ja implementades.
+
+En aquesta fita de preparació encara es preveia completar l'atles abans de
+publicar. L'autor n'ha autoritzat posteriorment l'ajornament a #37, tal com
+recull l'apartat d'autorització. El workflow manté el requisit del SHA de
+`main` revisat exacte. La connexió gaContExt de memòria no està disponible en aquesta
+sessió; el seguiment nou queda en aquest dossier i a #36, sense afirmar una
+persistència nova al servei de memòria.
+
+## Reestructuració de PR4 i Reus · `2026-10-vector-r2`
+
+L'autor ha rebutjat editorialment r1 i ha acceptat ampliar la reserva de #34
+a 124 paths. El nou capítol integra concepte, eina, resultat i comprovació,
+començant per envolupants i explicant distàncies abans de buffers. Les quatre
+lectures PR4/Reus s'han adaptat després; totes continuen en `draft`.
+
+La fita ROI `roi-run-20261020-04` té 143 controls, SHA
+`b17cbbbfb9a9e23eca45a1f9c86f80f590ed14a87df37aa6dd2c5bf3b70e431d`.
+La fita Reus `tesselles-run-20261020-04` té 80 controls, SHA
+`be001fde84b38fe4315382e42e6fe23107713c9aaf3e3662bc8ed0cc1c2c4bb7`.
+Les carpetes són sota `sandbox/practiques/` de cada pràctica; originals,
+preparacions i runs previs es retenen. S'han regenerat 33 conjunts de captura
+amb WMS real, contorns sense farciment i anotacions contrastades amb la recepta.
+
+L'atlas té 82 cel·les, layout i iteració nativa comprovats. No hi ha encara
+captura del compositor ni PDF multipàgina segellat; `atlas-configuracio`
+mostra només el diàleg natiu d'exportació. La limitació del proveïdor és a
+la nota `ead73d2cba6c4aa8b4381207fe8c6bc0` i al README del cas Reus.
+
+### Lectures locals comprovades
+
+Els quatre PDF sumen **91 pàgines**, A4 horitzontal i marca ESBORRANY. Jobs
+sota `sandbox/practiques/<slug>/lectura-2026-10-vector-r2-ca-<destinatari>-<run>/`.
+El fitxer és `outputs/LLEGIU-ME.pdf`; els snapshots i tots els artefactes
+coincideixen amb les fonts actuals i els hashes dels rebuts.
+
+| Pràctica i destinatari | Run | Pàgines | SHA-256 de la font | SHA-256 del PDF |
+| --- | --- | ---: | --- | --- |
+| PR4 alumnat | `revisio-02` | 27 | `006164aa43691254110618a7b385e445fd65537954ed3a1bfde5ae297ced11c5` | `4fb313cf07ea9f4b2b7a3765bdc28098c1dd43197b5c15a9057a8106ec744c04` |
+| PR4 docent | `revisio-02` | 23 | `d0f4a81b9b3621d6b3241f24a7e81444337663c34812cac640d15685e22b0367` | `63c19959662fa8d2a4598a6254a06811c086ac80a5005af37377b30b29f6e871` |
+| Reus alumnat | `revisio-01` | 23 | `3b403f80ace949262a1e01a6ff6bd465d7f24a580afcbf8924dc4363ed8f3e2d` | `f89245e5e1e59e00cb10a2e29bceb60b9b19d77fb78c8d446785fabe2b6c31a0` |
+| Reus docent | `revisio-02` | 18 | `0916f3699342eed51e8fbad290364004f751fd2307e5caded92514b1dd06e93d` | `2eb92904ccc0a4ac29baad02cc129cd97e4bdbe9115549930cadc29c9a9a881d` |
+
+Els primers runs es retenen. S'ha corregit un `Overfull` de 3,36 pt a PR4
+alumnat i s'han compactat una taula i finals de referències de les guies
+docents. Els logs finals no tenen desbordaments, caràcters absents ni
+referències indefinides; el text queda dins de les pàgines. S'han inspeccionat
+les figures i les pàgines de procediment, taules, atlas i tancament.
+
+Sessions Web públiques, 0.7.2 sense drift, worker PDF immutable ja fixat:
+`7af995b42a1048a7b54a3540c17a8fbb` (lot inicial) i
+`045f6d6e95c142f0924ad144a7156484` (correccions). Totes les construccions
+retornen `publishes: false`. La validació editorial no implica aprovació
+humana; els PDF v1 i r1 continuen retinguts.
+
+### Manual local de revisió
+
+El PDF català té **327 pàgines**, 80.234.190 bytes i SHA-256
+`86992d06368bb12be8c74a068c5892eeabd6ff66b5886f81a67f3db53cb9285b`.
+`manual_pdf_preview_prepare` retorna `publishes: false` i rebut
+`6da6ad367b29c6b5af98afe6580f73be7fed4f9d28b44477c94b4926ee93283e`.
+S'han conservat còpies dels set fitxers de sortida natius a
+`sandbox/practiques/pr4-geoprocessament/manual-2026-10-vector-r2-revisio-01/`,
+`manual-2026-10-vector-r2-revisio-02/` i `manual-2026-10-vector-r2-revisio-03/`;
+la tercera correspon al PDF final. Són snapshots de revisió, no bundles GIS
+segellats ni edicions publicades.
+
+La inspecció ha corregit al Markdown les línies que desbordaven el bloc de
+text del capítol. El cos passa el control de marges; queda una observació
+tipogràfica de l'URL QGIS a la bibliografia generada, uns 4 pt més enllà del
+bloc estimat però dins de la pàgina. Les 29 captures PNG referenciades són
+opaques; els sis avisos restants d'aquest capítol corresponen als SVG
+conceptuals previs. La comprovació general que exhaureix pressupost s'ha
+complementat amb `image_background_check` acotat al capítol.
+
+## Antecedent rebutjat editorialment · `2026-10-roi-r1`
+
+Les comprovacions següents corresponen a la fita r1. L'autor en va rebutjar
+l'ordre i la inserció de captures el 20/10/2026; els hashes i les proves es
+conserven com a historial, sense donar per aprovades les fonts actuals.
+
+Reserva acceptada a [TIG #34](https://github.com/geourv/tig/issues/34).
+L'autor ha precisat que l'Explorador ha de mostrar les connexions als tres
+GeoPackage i que el WMS IGN/PNOA ha d'aparèixer sota els vectors. S'han
+renderitzat 20 conjunts PNG/SVG/manifest amb el MCP QGIS 0.6.0 en mode
+`offscreen`, sense avisos. Les fonts del capítol 6, la continuïtat del 8 i
+les dues lectures PR4 són `draft`; aquesta revisió no és una edició aprovada.
+
+| Font relativa a `practiques/` | Pàgines | SHA-256 de la font en revisió | SHA-256 del PDF |
+| --- | ---: | --- | --- |
+| `pr4-geoprocessament/ca/alumnat/LLEGIU-ME.md` | 21 | `483cbc44f68b13431df970819eb9900a79b3e928b899a4e97aa89f1e9dbf3471` | `371061a52c983ff4d1d5480912b8b1eb4539b7a2d24c64f8e45ad8a77f4b63f2` |
+| `pr4-geoprocessament/ca/docent/LLEGIU-ME.md` | 18 | `10964606e85ca08a7a3dd917d5ba80fa02e1ae18c2220d6079e52eb80c919c9a` | `0071cd1a3bed4e7c29b5bec28b3e4bc54f6f0cefb186b43ca1cf2a74d36eceb1` |
+
+Jobs sota `sandbox/practiques/pr4-geoprocessament/`:
+`lectura-2026-10-roi-r1-ca-alumnat-revisio-01` i
+`lectura-2026-10-roi-r1-ca-docent-revisio-02`. La primera construcció docent
+es reté: tenia un desbordament d'una expressió inline, corregit al Markdown.
+Les fonts finals coincideixen amb els snapshots, els artefactes coincideixen
+amb els rebuts i els PDF són A4 horitzontals amb marca ESBORRANY. Els logs
+finals no tenen `Overfull`, caràcters absents ni referències indefinides.
+
+El cas científic complementari és
+`sandbox/practiques/pr4-geoprocessament/roi-run-20261019-03/bundle.json`, amb
+segell `3960e5e074f50d6c40bf2d7c00305b96dc1fc480691b35200b76d59c9375601f`.
+`practice-check` confirma l'arbre, la selecció del projecte resolt i els 131
+controls. Els tres originals conserven els seus hashes després de les captures.
+La primera versió i els vuit casos anteriors continuen retinguts.
+
+El [registre de treball](pr4-roi-geoprocessament.md) identifica les sessions,
+els controls, el preview i les limitacions del build web. La comprovació
+d'imatges acotada al capítol confirma opacitat de les 14 captures PNG noves
+referenciades al manual; els avisos de transparència corresponen a les figures
+conceptuals anteriors. La inspecció general havia exhaurit el pressupost abans
+d'arribar a aquestes imatges, motiu pel qual s'ha fet el control acotat.
+
+El manual PDF local revisat té 329 pàgines, SHA-256
+`a4f513ebf22dc4fe4e95fc3cf3b990347a7ddadbae2e494eb7d64da1b98f9c50`.
+El preview etiquetat ha servit el capítol i aquest PDF, amb comprovació visual
+d'escriptori i mòbil. `build_site` continua bloquejat pel socket privat
+`.unaltramesa/project/operator.sock`; queda registrat com a incidència del
+proveïdor, sense aturar Unaltramesa ni modificar-ne les dades. El contingut
+continua en esborrany per a la revisió de l'autor.
+
 ## Primera versió aprovada · `2026-10-v1`
 
 L’autor ha aprovat totes les activitats com a primera versió i ha autoritzat integrar les fonts pendents a Git: [registre del vistiplau i de l’abast](https://github.com/geourv/tig/issues/28#issuecomment-6253787193). També ha confirmat publicar `latest` a Pages quan passin les comprovacions i la integració a `main`. L’actualització tècnica del scaffold 0.7.1→0.7.2 queda ajornada expressament.
 
 Les dues lectures PR1 s’han harmonitzat amb `tig/pr1-moodle`, edició `moodle-confirmed-2026-10-18`: GPKG, projecte incrustat/extern, WMS i apunts PDF són bàsics; la composició és opcional. La font CNIG, l’EPSG i un segon PDF pertanyen al recorregut ampliat, no s’afegeixen al mínim de la micropràctica. La rúbrica manté tres blocs globals de 70/20/10 sobre 100, equivalents a 7/2/1 sobre 10, sense subpesos. S’han contrastat els set fitxers importats amb `import-manifest.json`: tots conserven els bytes i hashes confirmats.
 
-Les setze lectures són `content_status: approved`. Els altres catorze cossos Markdown coincideixen amb r4; només canvia l’estat editorial. Els nous PDF es construeixen amb la versió **`2026-10-v1`**, run **`primera-01`**, a `sandbox/practiques/<slug>/lectura-2026-10-v1-ca-<destinatari>-primera-01/outputs/LLEGIU-ME.pdf`. Són **108 pàgines**, A4 horitzontals i sense marca ESBORRANY. `practiques/README.md` enllaça els setze resultats.
+En aquella fita, les setze lectures eren `content_status: approved`. Els altres catorze cossos Markdown coincidien amb r4; només canviava l’estat editorial. Els PDF es van construir amb la versió **`2026-10-v1`**, run **`primera-01`**, a `sandbox/practiques/<slug>/lectura-2026-10-v1-ca-<destinatari>-primera-01/outputs/LLEGIU-ME.pdf`. Són **108 pàgines**, A4 horitzontals i sense marca ESBORRANY. `practiques/README.md` continua enllaçant els setze resultats retinguts.
 
 | Font relativa a `practiques/` | Pàgines | SHA-256 de la font aprovada | SHA-256 del PDF |
 | --- | ---: | --- | --- |

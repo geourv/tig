@@ -109,13 +109,13 @@ Una selecció activa, un filtre de capa, una edició encara no desada, una varia
 
 ### Programació visual: QGIS i ArcGIS
 
-Un diagrama de processament és un programa visual: les caixes representen entrades, paràmetres o algorismes, i les connexions indiquen quina sortida alimenta el pas següent. En un primer model municipal, `municipi_treball` i `distancia_m` alimenten `Buffer`, que produeix una regió d'interès (`ROI`). L'ordre d'execució no depèn de la posició esquerra-dreta de les caixes, sinó d'aquestes dependències.
+Un diagrama de processament és un programa visual: les caixes representen entrades, paràmetres o algorismes, i les connexions indiquen quina sortida alimenta el pas següent. En el model municipal, `municipi_treball` i `distancia_m` alimenten `Buffer`; la seva sortida alimenta `Caixetins delimitadors`, que produeix la regió d'interès rectangular (`ROI`) del capítol 6. L'ordre d'execució no depèn de la posició esquerra-dreta de les caixes, sinó d'aquestes dependències.
 
 En QGIS 3.44, el recorregut `Procés > Model Designer...` obre el **Dissenyador de models**. La pestanya `Entrades` defineix els valors que es demanaran en executar el model; `Toolbox` conté els algorismes; i el llenç mostra els nodes i les connexions. La captura situa aquestes regions abans de construir cap model i evita confondre el diagrama amb una capa o un mapa {% cite qgisUserGuide344 %}.
 
 ![Dissenyador de models de QGIS amb el panell d'entrades, el llenç de dependències i el botó d'execució identificats]({{ site.baseurl }}/assets/img/qgis/qgis-model-designer.png "En el Dissenyador de models, primer es defineixen les entrades, després s'afegeixen algorismes des de Toolbox i es connecten al llenç. El botó d'execució només s'utilitza quan el graf i els paràmetres ja s'han validat."){: data-figure-width-web="43rem" data-figure-width-pdf="90%"}
 
-Per construir el cas mínim, s'afegeix una entrada de capa vectorial, una entrada numèrica descrita en metres i l'algorisme `native:buffer`; la capa i la distància es vinculen als paràmetres corresponents i la sortida del buffer es marca com a sortida del model. El fitxer `.model3` o el model desat al projecte conserva el graf, però no incorpora automàticament les fonts externes, la justificació de la distància ni els controls. Abans de reutilitzar-lo cal comparar-ne una execució amb el procediment manual conegut.
+Per construir el cas mínim, s'afegeix una entrada vectorial, una entrada numèrica en metres i dos algorismes: `native:buffer` i `native:boundingboxes`. La capa i la distància alimenten el primer node; el buffer alimenta el segon. Es marquen el buffer de diagnòstic i la caixa ROI com a sortides identificades. El fitxer `.model3` o el model desat al projecte conserva el graf, però no incorpora automàticament les fonts externes, la justificació de la distància ni els controls. Abans de reutilitzar-lo cal comparar-ne una execució amb el procediment manual conegut.
 
 ArcGIS Pro ofereix el mateix paradigma amb **ModelBuilder**, que la seva [documentació oficial descriu com un llenguatge de programació visual](https://pro.arcgis.com/en/pro-app/latest/help/analysis/geoprocessing/modelbuilder/what-is-modelbuilder-.htm). Les variables i dades alimenten eines de geoprocessament, els connectors expressen dependències i el model es pot executar per passos o publicar com una eina. El concepte es transfereix entre QGIS i ArcGIS, però els formats, els identificadors d'algorisme, els paràmetres i els entorns no són interoperables: un model s'ha de reconstruir i validar al programa de destinació, no només copiar-ne el diagrama.
 
@@ -221,7 +221,7 @@ La correcció s'aplica al primer punt incorrecte i obliga a repetir els resultat
 
 ### Cas guiat: una regió d'interès per a Vila-seca
 
-El model guiat delimita una **regió d'interès** (ROI) lleugerament més gran que Vila-seca per analitzar el relleu sense perdre veïnatge a les vores. Les entrades són una capa municipal, un codi oficial, un model digital del terreny (MDT) i una distància de marge. El valor inicial del marge és 500 m, però queda exposat com a paràmetre perquè la seva funció es pugui discutir. No és un valor universal ni demostra per si sol que tot el context hidrològic o de visibilitat sigui suficient.
+El model guiat manté la **regió d'interès** (ROI) del capítol 6: la caixa no orientada que conté el buffer municipal. Les entrades de la seqüència integrada són una capa municipal, un codi oficial, un model digital del terreny (MDT) i una distància de marge. El valor inicial del marge és 500 m i s'aplica al buffer, no a totes les posicions del contorn rectangular. Queda exposat com a paràmetre perquè la seva funció es pugui discutir. No és un valor universal ni demostra per si sol que tot el context hidrològic o de visibilitat sigui suficient.
 
 Abans d'executar, el contracte exigeix que el codi sigui text i identifiqui una sola entitat; que la geometria tingui el `CRS` conegut; que el MDT cobreixi la ROI prevista; i que la resolució, la referència vertical i `NoData` estiguin documentats. El marge s'expressa en metres i necessita un `CRS` projectat adequat. Si alguna precondició falla, cal aturar la seqüència abans de crear resultats derivats.
 
@@ -230,10 +230,11 @@ Abans d'executar, el contracte exigeix que el codi sigui text i identifiqui una 
 | --- | --- | --- |
 | 1 | `native:extractbyexpression` amb `EXPRESSION = attribute(@feature, 'codi_muni') = @codi_municipi` i sortida temporal | Una sola entitat, codi i nom comprovats; zero o més d'una fan fallar el flux |
 | 2 | `native:checkvalidity` amb mètode GEOS i, només si cal, `native:reprojectlayer` amb `TARGET_CRS = EPSG:25831` | Cap entitat invàlida ni error; geometria apta, extensió plausible i unitats mètriques explícites |
-| 3 | `native:buffer` amb `DISTANCE = @distancia_m`, `SEGMENTS = 10`, extrems i unions arrodonits, `MITER_LIMIT = 2`, `DISSOLVE = True` i `SEPARATE_DISJOINT = False` | ROI temporal o persistent, una sola entitat eventualment multipart, superfície superior a la municipal i distància mostrejada |
-| 4 | `gdal:cliprasterbymasklayer` amb ROI, `CROP_TO_CUTLINE = True`, resolució de la font conservada, `NODATA` explícit i tipus de dada preservat | Ràster temporal no buit; resolució, origen, dimensions, `NoData` i rang comparats amb la font |
-| 5 | `gdal:slope` sobre la banda 1, `SCALE = 1` si totes les unitats són metres, sortida en graus, fórmula fixada i `COMPUTE_EDGES = False` | GeoTIFF persistent `sandbox/pr6_pendent_roi_graus.tif`, rang de 0° a 90° i vores `NoData` esperades |
-| 6 | `native:zonalstatisticsfb` sobre el municipi original, banda 1 i prefix `slope_`, amb recompte, mitjana, desviació, mínim i màxim | Capa o taula persistent amb una fila municipal, recompte vàlid positiu i estadístics dins del rang del ràster |
+| 3 | `native:buffer` amb `DISTANCE = @distancia_m`, `SEGMENTS = 8`, extrems i unions arrodonits, `MITER_LIMIT = 2`, `DISSOLVE = False` i `SEPARATE_DISJOINT = False` | Buffer municipal vàlid i no buit, superfície superior a la municipal i distància mostrejada |
+| 4 | `native:boundingboxes` sobre el buffer anterior | ROI rectangular alineada als eixos d'EPSG:25831, amb extrems coherents i contenció del buffer |
+| 5 | `gdal:cliprasterbymasklayer` amb ROI, `CROP_TO_CUTLINE = True`, resolució de la font conservada, `NODATA` explícit i tipus de dada preservat | Ràster temporal no buit; resolució, origen, dimensions, `NoData` i rang comparats amb la font |
+| 6 | `gdal:slope` sobre la banda 1, `SCALE = 1` si totes les unitats són metres, sortida en graus, fórmula fixada i `COMPUTE_EDGES = False` | GeoTIFF persistent `sandbox/pr6_pendent_roi_graus.tif`, rang de 0° a 90° i vores `NoData` esperades |
+| 7 | `native:zonalstatisticsfb` sobre el municipi original, banda 1 i prefix `slope_`, amb recompte, mitjana, desviació, mínim i màxim | Capa o taula persistent amb una fila municipal, recompte vàlid positiu i estadístics dins del rang del ràster |
 :::
 
 Els noms anteriors corresponen a QGIS 3.44. La seqüència ha de fixar també tots els paràmetres no mostrats que el proveïdor exposa, encara que mantinguin un valor inicial: mètode de validesa, tractament d'errors, tipus de dada, fórmula de pendent i destinacions. `gdal:cliprasterbymasklayer` pot conservar la mida de cel·la sense garantir per si sol que l'origen coincideixi amb una graella externa; per això la postcondició compara la geotransformació amb la font. Si el cas exigeix una alineació comuna amb altres ràsters, abans cal aplicar el contracte de graella de l'anàlisi ràster.
@@ -244,9 +245,9 @@ El marge s'utilitza per calcular el pendent; les estadístiques s'obtenen sobre 
 
 La ROI pot ser una sortida persistent perquè fa visible l'àmbit de càlcul. El ràster retallat pot ser temporal si es regenera de manera segura i no és necessari per diagnosticar cap incidència. `sandbox/pr6_pendent_roi_graus.tif` i la taula zonal són finals analítics nous de `pr6`; no substitueixen ni reanomenen cap dels GeoTIFF copiats de `pr5`. Els controls i el diari són finals documentals. Aquesta selecció evita exposar totes les connexions internes sense convertir el procés en una caixa negra.
 
-Els sis passos s'han de validar amb controls definits: una entitat municipal, extensió de ROI justificada, mida i origen de cel·la conservats, recompte de valors vàlids positiu i estadístiques dins de la precisió esperada. Si la seqüència s'incorpora a un model ampliat, l'execució manual i la del model han de coincidir en aquests controls. Si difereixen, cal revisar les seleccions, el tractament de `NoData`, les destinacions i els valors predeterminats; no s'ha de triar un resultat només perquè sembla més recent.
+Els set passos s'han de validar amb controls definits: una entitat municipal, buffer comprovat, caixa coherent amb els seus extrems, mida i origen de cel·la conservats, recompte de valors vàlids positiu i estadístiques dins de la precisió esperada. Si la seqüència s'incorpora a un model ampliat, l'execució manual i la del model han de coincidir en aquests controls. Si difereixen, cal revisar les seleccions, el tractament de `NoData`, les destinacions i els valors predeterminats; no s'ha de triar un resultat només perquè sembla més recent.
 
-La micropràctica final exigeix executar i validar els sis passos. El fitxer `pr6_pendent_roi_graus.tif` es conserva a `sandbox/`, però no cal convertir necessàriament tota la seqüència en un sol model.
+La micropràctica final exigeix executar i validar els set passos. El fitxer `pr6_pendent_roi_graus.tif` es conserva a `sandbox/`, però no cal convertir necessàriament tota la seqüència en un sol model.
 
 `pr6_roi_municipal.model3` és el model mínim que cal construir, validar i conservar a `sandbox/`. Parteix de `municipi_treball` i `distancia_m` i retorna la ROI de la pràctica guiada. Es pot ampliar amb passos del cas integrat sempre que es tornin a validar. El tancament del projecte continua tenint com a objecte principal la síntesi verificada de les micropràctiques 1–5.
 
@@ -441,11 +442,11 @@ Cal triar una operació de l'historial i reconstruir-ne el proveïdor i identifi
 
 ### Pràctica guiada: execució manual, lot i model
 
-Primer s'executarà manualment `native:buffer` sobre `municipi_treball`, sense seleccions ni filtres imprevistos i en un `CRS` projectat en metres. Amb `DISTANCE = 500`, els paràmetres geomètrics fixats al contracte del capítol i la destinació d'auditoria `roi_manual_500m_auditoria`, cal comprovar que la sortida té una geometria vàlida, no buida, una sola entitat eventualment multipart i una superfície superior a la municipal. L'entrada `municipi_treball` no s'ha de modificar ni utilitzar mai com a destinació.
+Primer s'executarà manualment `native:buffer` sobre `municipi_treball`, sense seleccions ni filtres imprevistos i en un `CRS` projectat en metres. Amb `DISTANCE = 500`, 8 segments per quadrant i els altres paràmetres municipals fixats, es desa `buffer_manual_500m_auditoria`. Cal comprovar validesa, recompte, superfície i distància. Després `native:boundingboxes` genera `roi_manual_500m_auditoria`, amb la caixa alineada als eixos i els extrems del buffer. L'entrada `municipi_treball` no s'ha de modificar ni utilitzar mai com a destinació.
 
-Després s'executarà el mateix buffer per lots amb les distàncies diferenciades de 250, 500 i 750 m. Cada fila tindrà una destinació pròpia, com `roi_lot_250m_auditoria`, `roi_lot_500m_auditoria` i `roi_lot_750m_auditoria`, o una sortida temporal inequívoca equivalent. Cal revisar totes les files, comparar l'evolució de l'extensió i la superfície i contrastar la fila de 500 m amb la sortida manual validada; una sortida buida, repetida o escrita sobre una altra fila invalida el lot.
+Després s'executarà el mateix buffer per lots amb distàncies de 250, 500 i 750 m. Cada fila tindrà un buffer propi, com `buffer_lot_250m_auditoria`, i se'n calcularà després la caixa corresponent: `roi_lot_250m_auditoria`, `roi_lot_500m_auditoria` i `roi_lot_750m_auditoria`. Cal revisar totes les files, comparar l'evolució de l'extensió i la superfície i contrastar el buffer i la caixa de 500 m amb les sortides manuals; una sortida buida, repetida o escrita sobre una altra fila invalida el lot.
 
-Finalment es construirà i es desarà un model QGIS `.model3` amb el graf `municipi_treball + distancia_m -> ROI`: una entrada vectorial, un paràmetre numèric en metres i `native:buffer` amb els mateixos paràmetres fixos. Una execució amb 500 m s'escriurà a `roi_model_500m_auditoria`, mai sobre l'entrada ni sobre les sortides manual o de lot. El model es considerarà validat quan coincideixin amb `roi_manual_500m_auditoria` el `CRS`, el recompte, la validesa, l'extensió, la superfície i la diferència espacial dins de la tolerància documentada.
+Finalment es construirà i es desarà un model QGIS `.model3` amb una entrada vectorial, un paràmetre numèric en metres i els dos nodes `native:buffer` i `native:boundingboxes`. La sortida del buffer alimenta la caixa. Una execució amb 500 m es desarà com a buffer i `roi_model_500m_auditoria`, en destinacions noves. El model es considerarà validat quan coincideixin amb les sortides manuals el `CRS`, el recompte, la validesa, l'extensió, la superfície i la diferència espacial dins de la tolerància documentada.
 
 ### Pràctica guiada: obertura del projecte en una ubicació neta
 
@@ -459,7 +460,7 @@ La sisena micropràctica crea la instantània final `pr6` a partir d'una còpia 
 | Component | Requisit |
 | --- | --- |
 | Entrades | `dist/pr5-raster-cognom.gpkg`, els deu GeoTIFF que l'acompanyen i el diari acumulat; el GeoPackage es copia com a `sandbox/pr6-sintesi-cognom.gpkg` i els GeoTIFF es copien a `sandbox/` sense reanomenar-los |
-| Operacions mínimes | No copiar el `.qgz` de `pr5`; establir el projecte principal `pr6`; reorientar les fonts locals de totes les vistes conservades; completar una auditoria integrada; executar i validar els sis passos de la seqüència integrada de relleu; executar i validar el buffer manual; comparar distàncies amb el lot; construir, desar i validar `pr6_roi_municipal.model3`; reexecutar des de l'entrada canònica una branca vectorial o ràster existent i comparar-la amb el resultat conservat; repetir els controls crítics; preparar la simbolització; compondre i exportar almenys un mapa; documentar les limitacions; i crear de nou el `.qgz` homònim |
+| Operacions mínimes | No copiar el `.qgz` de `pr5`; establir el projecte principal `pr6`; reorientar les fonts locals de totes les vistes conservades; completar una auditoria integrada; executar i validar els set passos de la seqüència integrada de relleu; validar manualment el buffer i la caixa ROI; comparar distàncies amb el lot; construir, desar i validar `pr6_roi_municipal.model3`; reexecutar des de l'entrada canònica una branca vectorial o ràster existent i comparar-la amb el resultat conservat; repetir els controls crítics; preparar la simbolització; compondre i exportar almenys un mapa; documentar les limitacions; i crear de nou el `.qgz` homònim |
 | Resultats | Auditoria integrada; `pr6-sintesi-cognom.gpkg` i còpies locals dels GeoTIFF auditats; `pr6_pendent_roi_graus.tif`; `pr6_roi_municipal.model3` validat; `pr6-sintesi-cognom.qgz` nou i projecte incrustat `pr6` amb la coherència verificada; almenys un mapa exportat i diari complet |
 | Evidències del diari | Inventari i llinatge finals, contractes i controls de la seqüència integrada de relleu, comparacions de l'execució manual, el lot, el model i la branca reexecutada, relació entre pregunta i resultats, incidències, decisions de neteja, limitacions, prova de les dues representacions, prova neta del paquet i guió de la defensa oral |
 | Comprovacions | Projecte principal `pr6` identificat; fonts revisades a totes les vistes conservades; cap URI local cap a `dist/`, a `pr5-raster-cognom.gpkg` ni a una carpeta anterior; `pr6_pendent_roi_graus.tif` amb rang, graella, `NoData` i recompte vàlid comprovats; equivalència del model amb el buffer manual i de la branca reexecutada amb el resultat canònic dins de les toleràncies declarades; cap sobreescriptura de `municipi_treball`; absència de fonts perdudes; esquemes i `CRS` identificats; resultats traçables; ràsters documentats; mapa llegible; i obertura independent correcta de les dues representacions des del paquet extret |
@@ -469,7 +470,7 @@ La sisena micropràctica crea la instantània final `pr6` a partir d'una còpia 
 | Ampliacions opcionals | Les consultes SQL o PostGIS i els scripts PyQGIS no formen part del nucli obligatori; si es presenten, els fitxers corresponents s'han de conservar separadament i documentar-ne l'entorn |
 :::
 
-El model obligatori és deliberadament petit: formalitza un buffer ja validat sense convertir tota l'anàlisi acumulada en un diagrama artificial. La seva evidència és la comparació controlada amb la sortida manual; la reexecució de la branca acumulada comprova, de manera separada, que el resultat final continua derivant de les entrades canòniques.
+El model obligatori és deliberadament petit: formalitza el buffer i la caixa ROI ja validats sense convertir tota l'anàlisi acumulada en un diagrama artificial. La seva evidència és la comparació controlada amb les sortides manuals; la reexecució de la branca acumulada comprova, de manera separada, que el resultat final continua derivant de les entrades canòniques.
 
 ### Activitat integradora: reexecució i comparació de resultats heretats
 
@@ -477,7 +478,7 @@ Cal escollir una branca que ja intervingui en la conclusió del projecte: per ex
 
 Abans d'executar es reconstrueixen des del diari el proveïdor i l'identificador de cada algorisme, els paràmetres, el `CRS`, les seleccions o filtres, la versió de l'entorn i la destinació. La sortida de prova serà temporal o rebrà un nom inequívoc d'auditoria; no reemplaçarà el resultat canònic. En una branca vectorial es compararan esquema, identificadors d'origen, nombre d'entitats, geometries buides, àrea o longitud i diferència espacial. En una branca ràster es compararan dimensions, geotransformació, `NoData`, rang, recompte vàlid i estadístiques zonals sense arrodonir.
 
-La mateixa activitat inclou la reexecució del `.model3` `municipi_treball + distancia_m -> ROI` amb la distància de 500 m i una destinació d'auditoria nova, diferent de les sortides manual i de lot. La comparació amb `roi_manual_500m_auditoria` repetirà els controls de `CRS`, recompte, validesa, extensió, superfície i diferència espacial; ni aquesta prova ni la branca acumulada no poden sobreescriure `municipi_treball`.
+La mateixa activitat inclou la reexecució del `.model3` de buffer i caixa ROI amb la distància de 500 m i destinacions d'auditoria noves, diferents de les sortides manuals i de lot. La comparació amb `roi_manual_500m_auditoria` repetirà els controls de `CRS`, recompte, validesa, extensió, superfície i diferència espacial; ni aquesta prova ni la branca acumulada no poden sobreescriure `municipi_treball`.
 
 Si les reexecucions són equivalents dins de les toleràncies declarades, el diari registra els controls i les sortides de prova es poden descartar quan no aporten cap diagnòstic. Si difereixen, cal localitzar el primer pas divergent, corregir l'entrada o el contracte que pertoqui i regenerar-ne els descendents; no s'edita manualment el resultat final per fer-lo coincidir. Finalment s'actualitzen deliberadament la composició afectada i el projecte incrustat `pr6`, es crea de nou `sandbox/pr6-sintesi-cognom.qgz`, se'n verifica la coherència, es tanca QGIS, es comproven els GeoTIFF heretats, es copien a `dist/` només els fitxers nous de `pr6` i se'n repeteixen les obertures amb el paquet complet després d'una extracció neta.
 
@@ -687,7 +688,7 @@ resultat = processing.run(
         "INPUT": municipi,
         "DISTANCE": 500,
         "SEGMENTS": 8,
-        "DISSOLVE": True,
+        "DISSOLVE": False,
         "OUTPUT": "TEMPORARY_OUTPUT",
     },
 )
@@ -755,20 +756,20 @@ processing.run(
     {
         "INPUT": municipi_area,
         "DISTANCE": 500.0,
-        "SEGMENTS": 10,
+        "SEGMENTS": 8,
         "END_CAP_STYLE": 0,
         "JOIN_STYLE": 0,
         "MITER_LIMIT": 2.0,
-        "DISSOLVE": True,
+        "DISSOLVE": False,
         "SEPARATE_DISJOINT": False,
         "OUTPUT": destinacio,
     },
 )
 
-buffer_roi = QgsVectorLayer(uri_sortida, nom_sortida, "ogr")
-if not buffer_roi.isValid() or buffer_roi.featureCount() != 1:
+buffer_municipal = QgsVectorLayer(uri_sortida, nom_sortida, "ogr")
+if not buffer_municipal.isValid() or buffer_municipal.featureCount() != 1:
     raise RuntimeError("La capa de buffer persistent no és vàlida o no té una fila")
-if any(f.geometry().isNull() or f.geometry().isEmpty() for f in buffer_roi.getFeatures()):
+if any(f.geometry().isNull() or f.geometry().isEmpty() for f in buffer_municipal.getFeatures()):
     raise RuntimeError("La capa de buffer conté una geometria absent o buida")
 ```
 :::

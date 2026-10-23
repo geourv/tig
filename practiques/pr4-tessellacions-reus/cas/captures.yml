@@ -1,0 +1,227 @@
+id: tig-c06-reus-tesselles
+title: Reus · malles, arestes, Voronoi i atlas
+source_prompt: >-
+  Explicar, en aquest ordre, les tessel·les regulars, la triangulació i les seves
+  arestes de distància, el Voronoi postal de Reus i l'atlas amb cobertura regular.
+  Mostrar l'Explorador i el WMS IGN/PNOA, sense tenyir l'ortofoto; els punters
+  s'ancoren en caixes o petits cercles visibles sobre controls reals.
+runtime:
+  image: sha256:1003721d96abe9607d8337b36851f9b29f84c2f8f92b377d1a73ff03c9d15cd2
+  display_backend: offscreen
+  locale: ca_ES
+compat: {qgis: "==3.44.11"}
+plugins: [processing]
+project:
+  source: /workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/projects/reus-tesselles.qgz
+  native_profile: qgis-practice-v2
+  font_files:
+    DejaVu Sans: /workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/fonts/DejaVuSans.ttf
+  composition:
+    script: /workspace/practiques/pr4-tessellacions-reus/cas/compute.py
+    project_id: capture-online
+    parameters:
+      wms:
+        name: Ortofoto IGN/PNOA (WMS)
+        url: https://www.ign.es/wms-inspire/pnoa-ma?
+        layers: OI.OrthoimageCoverage
+        styles: ""
+        format: image/jpeg
+        crs: EPSG:25831
+        version: "1.3.0"
+    products:
+      cartociudad: /workspace/practiques/recorregut-municipal/inputs/tarragona.gpkg
+connections:
+  - {id: cartociudad, type: gpkg, name: 01 CartoCiudad · tarragona.gpkg, path: /workspace/practiques/recorregut-municipal/inputs/tarragona.gpkg}
+  - {id: viari, type: gpkg, name: 02 Viari CNIG · red_viaria.gpkg, path: /workspace/practiques/recorregut-municipal/inputs/red_viaria.gpkg}
+  - {id: reus, type: gpkg, name: 03 Reus · tessel·les, path: /workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg}
+presentation:
+  expand_geopackages: true
+  groups:
+    - {path: [Àmbit i generadors], layers: [municipi_reus, generadors, portals_entorn, domini], expanded: true}
+    - {path: [Malles regulars], layers: [malla_500m, malla_1000m, cobertura_atlas], expanded: false}
+    - {path: [Triangulació i arestes], layers: [triangles, arestes], expanded: false}
+    - {path: [Llindars i components], layers: [arestes_25m, arestes_50m, arestes_100m, grups_25m, grups_50m, grups_100m], expanded: false}
+    - {path: [Zonificació postal estimada], layers: [voronoi, zones_postals], expanded: false}
+  checks: {project_crs: EPSG:25831, persistent_layers: [municipi_reus, generadors]}
+setup:
+  - &close {action: close_transients}
+  - {action: clear_message_bar}
+  - {action: show_panel, title: Layers}
+  - {action: show_panel, title: Browser}
+  - {action: zoom_to_layer, layer: municipi_reus, scale: 1.12}
+captures:
+  - id: graella-resultat
+    title: Una malla regular sobre els portals de Reus
+    mode: window
+    steps:
+      - {action: set_layer_visible, layer: generadors, visible: false}
+      - {action: set_layer_visible, layer: malla_500m, visible: true}
+      - {action: select_layer, layer: malla_500m}
+      - {action: select_tree_item, target: {class_name: QgsDockBrowserTreeView, item_text: GeoPackage}}
+      - {action: wait, ms: 15000}
+    target: &main {class_name: QgisApp}
+    drawings: []
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-graella-resultat.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-graella-resultat.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-graella-resultat.manifest.yml
+  - id: graella-parametres
+    title: Quadrícules de 500 m en un CRS mètric
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: native:creategrid
+        parameters: {TYPE: 2, EXTENT: domini, HSPACING: 500, VSPACING: 500, HOVERLAY: 0, VOVERLAY: 0, CRS: EPSG:25831}
+    target: {object_name: "unaltracapturaProcessingDialog:native:creategrid"}
+    drawings:
+      - {type: callout, text: Rectangles poligonals, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:TYPE"}}
+      - {type: callout, text: Mateix costat en metres, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:HSPACING"}}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-graella-parametres.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-graella-parametres.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-graella-parametres.manifest.yml
+  - id: delaunay-parametres
+    title: Triangulació dels mateixos generadors
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: native:delaunaytriangulation
+        parameters: {INPUT: generadors, TOLERANCE: 0, ADD_ATTRIBUTES: true}
+    target: {object_name: "unaltracapturaProcessingDialog:native:delaunaytriangulation"}
+    drawings:
+      - {type: callout, text: Ubicacions úniques, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:INPUT"}}
+      - {type: callout, text: Índexs dels vèrtexs, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:ADD_ATTRIBUTES"}}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-delaunay-parametres.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-delaunay-parametres.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-delaunay-parametres.manifest.yml
+  - id: delaunay-arestes
+    title: Arestes úniques amb identificadors i longitud
+    mode: window
+    steps:
+      - *close
+      - {action: set_layer_visible, layer: malla_500m, visible: false}
+      - action: load_vector
+        path: "/workspace/sandbox/practiques/pr4-tessellacions-reus/tesselles-run-20261020-04/payload/data/reus-tesselles.gpkg|layername=malla_1000m|subset=\"id_cella\" = 'g1000_r011_c006'"
+        name: Sector nord · enquadrament de comparació
+      - {action: set_layer_visible, layer: Sector nord · enquadrament de comparació, visible: false}
+      - {action: zoom_to_layer, layer: Sector nord · enquadrament de comparació, scale: 1.1}
+      - {action: set_layer_visible, layer: generadors, visible: true}
+      - {action: set_layer_visible, layer: arestes, visible: true}
+      - {action: set_canvas_scale, scale: 10000}
+      - {action: select_layer, layer: arestes}
+      - {action: wait, ms: 12000}
+    target: *main
+    drawings: []
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-delaunay-arestes.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-delaunay-arestes.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-delaunay-arestes.manifest.yml
+  - id: delaunay-llindar
+    title: Arestes de fins a 50 m i components connectats
+    mode: window
+    steps:
+      - *close
+      - {action: set_layer_visible, layer: arestes, visible: false}
+      - {action: set_layer_visible, layer: generadors, visible: false}
+      - {action: set_layer_visible, layer: arestes_50m, visible: true}
+      - {action: set_layer_visible, layer: grups_50m, visible: true}
+      - {action: select_layer, layer: grups_50m}
+      - {action: wait, ms: 3000}
+    target: *main
+    drawings: []
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-delaunay-llindar.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-delaunay-llindar.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-delaunay-llindar.manifest.yml
+  - id: reus-voronoi-parametres
+    title: Dominis de proximitat dels portals
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: native:voronoipolygons
+        parameters: {INPUT: generadors, BUFFER: 100, TOLERANCE: 0, COPY_ATTRIBUTES: true}
+    target: {object_name: "unaltracapturaProcessingDialog:native:voronoipolygons"}
+    drawings:
+      - {type: callout, text: Conservar atributs, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:COPY_ATTRIBUTES"}}
+      - {type: callout, text: Extensió percentual, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:BUFFER"}}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-reus-voronoi-parametres.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-reus-voronoi-parametres.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-reus-voronoi-parametres.manifest.yml
+  - id: reus-voronoi-resultat
+    title: Cel·les retallades pel terme de Reus
+    mode: window
+    steps:
+      - *close
+      - {action: set_layer_visible, layer: arestes_50m, visible: false}
+      - {action: set_layer_visible, layer: grups_50m, visible: false}
+      - {action: set_layer_visible, layer: generadors, visible: true}
+      - {action: set_layer_visible, layer: voronoi, visible: true}
+      - {action: select_layer, layer: voronoi}
+      - {action: wait, ms: 3000}
+    target: *main
+    drawings: []
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-reus-voronoi-resultat.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-reus-voronoi-resultat.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-reus-voronoi-resultat.manifest.yml
+  - id: reus-codis-postals
+    title: Zonificació postal estimada a partir dels portals
+    mode: window
+    steps:
+      - *close
+      - {action: set_layer_visible, layer: voronoi, visible: false}
+      - {action: set_layer_visible, layer: generadors, visible: false}
+      - {action: set_layer_visible, layer: zones_postals, visible: true}
+      - {action: zoom_to_layer, layer: municipi_reus, scale: 1.12}
+      - {action: select_layer, layer: zones_postals}
+      - {action: wait, ms: 12000}
+    target: *main
+    drawings: []
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-reus-codis-postals.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-reus-codis-postals.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-reus-codis-postals.manifest.yml
+  - id: atlas-cobertura
+    title: Quadrats complets i ordre de les pàgines
+    mode: window
+    steps:
+      - *close
+      - {action: set_layer_visible, layer: zones_postals, visible: false}
+      - {action: set_layer_visible, layer: cobertura_atlas, visible: true}
+      - {action: select_layer, layer: cobertura_atlas}
+      - {action: wait, ms: 3000}
+    target: *main
+    drawings: []
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-atlas-cobertura.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-atlas-cobertura.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-atlas-cobertura.manifest.yml
+  - id: atlas-configuracio
+    title: Paràmetres de l'exportació de l'atlas a PDF
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: native:atlaslayouttopdf
+        parameters:
+          LAYOUT: Atlas de tessel·les de Reus
+          COVERAGE_LAYER: cobertura_atlas
+          SORTBY_EXPRESSION: '"pagina"'
+          SORTBY_REVERSE: false
+          OUTPUT: /workspace/sandbox/reus-atlas-classe.pdf
+    target: {object_name: "unaltracapturaProcessingDialog:native:atlaslayouttopdf"}
+    drawings:
+      - {type: callout, text: Disseny d'atlas, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:LAYOUT"}}
+      - {type: callout, text: Una entitat per pàgina, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:COVERAGE_LAYER"}}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-atlas-configuracio.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-atlas-configuracio.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-atlas-configuracio.manifest.yml
+# atlas-pagina is retained only as an unreferenced diagnostic probe. The accepted
+# teaching sequence stays at ten captures until the provider supports the layout
+# window and atlas navigation; see prompt.md and the retained atlas-probe folder.

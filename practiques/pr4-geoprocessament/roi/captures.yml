@@ -1,0 +1,536 @@
+id: tig-c06-roi-cnig
+title: ROI CNIG i geoprocessament vectorial
+source_prompt: >-
+  Mostrar a QGIS en català la ROI no orientada sobre el buffer municipal de 500 m,
+  la preparació de punts, línies i polígons, les diferències i els punts derivats.
+  Reutilitzar les captures pertinents al capítol 6 i a PR4.
+  La vista general ha de mostrar l'Explorador amb les connexions al GeoPackage
+  de PR4 i als originals de CartoCiudad i del viari CNIG. Carregar el WMS real
+  IGN/PNOA sota els vectors, amb contorns llegibles i EPSG:25831 visible.
+runtime:
+  image: sha256:1003721d96abe9607d8337b36851f9b29f84c2f8f92b377d1a73ff03c9d15cd2
+  display_backend: offscreen
+  locale: ca_ES
+compat:
+  qgis: "==3.44.11"
+plugins: [processing]
+project:
+  source: /workspace/sandbox/practiques/pr4-geoprocessament/roi-run-20261020-04/payload/projects/pr4-roi-exemple.qgz
+  native_profile: qgis-practice-v2
+  font_files:
+    DejaVu Sans: /workspace/sandbox/practiques/pr4-geoprocessament/roi-run-20261020-04/payload/data/fonts/DejaVuSans.ttf
+  composition:
+    script: /workspace/practiques/pr4-geoprocessament/roi/compute.py
+    project_id: capture-online
+    parameters:
+      wms:
+        name: Ortofoto IGN/PNOA (WMS)
+        url: https://www.ign.es/wms-inspire/pnoa-ma?
+        layers: OI.OrthoimageCoverage
+        styles: ""
+        format: image/jpeg
+        crs: EPSG:25831
+        version: "1.3.0"
+    products:
+      cartociudad: /workspace/practiques/recorregut-municipal/inputs/tarragona.gpkg
+      transport: /workspace/practiques/recorregut-municipal/inputs/red_viaria.gpkg
+connections:
+  - id: cartociudad
+    type: gpkg
+    name: 01 CartoCiudad · tarragona.gpkg
+    path: /workspace/practiques/recorregut-municipal/inputs/tarragona.gpkg
+  - id: viari-cnig
+    type: gpkg
+    name: 02 Viari CNIG · red_viaria.gpkg
+    path: /workspace/practiques/recorregut-municipal/inputs/red_viaria.gpkg
+  - id: projecte-pr4
+    type: gpkg
+    name: 03 PR4 · pr4-roi-exemple.gpkg
+    path: /workspace/sandbox/practiques/pr4-geoprocessament/roi-run-20261020-04/payload/data/pr4-roi-exemple.gpkg
+presentation:
+  expand_geopackages: true
+  groups:
+    - path: [Envolupants del municipi]
+      layers: [municipi_caixa, municipi_rectangle_orientat, municipi_cercle_minim, municipi_convexa]
+      expanded: true
+    - path: [Àmbit de treball]
+      layers: [roi, municipi_treball, municipi_buffer_500m]
+      expanded: true
+    - path: [Alternatives d'envolupant]
+      layers: [rectangle_orientat, envolupant_convexa, cercle_minim]
+      expanded: false
+    - path: [Entrades completes del sector]
+      layers: [termes_candidats, portals_candidats, vies_candidats, illes_candidates]
+      expanded: false
+    - path: [Retalls per ROI]
+      layers: [portals_roi, viari_roi, illes_roi, urbans_roi, termes_roi]
+      expanded: false
+    - path: [Diferències i parts]
+      layers: [terra_roi, mar_complement, mar_context, buffer_carrers_5m, buffer_carrers_10m, peces_carrers_5m, peces_carrers_10m, peces_individuals_5m, peces_individuals_10m]
+      expanded: false
+    - path: [Punts derivats]
+      layers: [centroides_illes, centroides_linies, punts_superficie_illes, vertices_illes, vertices_linies, extrems_linies]
+      expanded: false
+    - path: [Procedència]
+      layers: [fonts_dades]
+      expanded: false
+  checks:
+    project_crs: EPSG:25831
+    persistent_layers: [roi, municipi_treball, municipi_buffer_500m]
+setup:
+  - &close {action: close_transients}
+  - action: clear_message_bar
+  - action: set_project_crs
+    auth_id: EPSG:25831
+  - action: show_panel
+    title: Layers
+  - action: show_panel
+    title: Browser
+  - action: zoom_to_layer
+    layer: roi
+    scale: 1.12
+  - {action: select_layer, layer: roi}
+captures:
+  - id: envolupants-comparacio
+    title: Quatre envolupants sobre el mateix municipi
+    mode: window
+    steps:
+      - *close
+      - {action: set_layer_visible, layer: roi, visible: false}
+      - {action: set_layer_visible, layer: municipi_buffer_500m, visible: false}
+      - {action: set_layer_visible, layer: municipi_caixa, visible: true}
+      - {action: set_layer_visible, layer: municipi_rectangle_orientat, visible: true}
+      - {action: set_layer_visible, layer: municipi_cercle_minim, visible: true}
+      - {action: set_layer_visible, layer: municipi_convexa, visible: true}
+      - {action: zoom_to_layer, layer: municipi_rectangle_orientat, scale: 1.12}
+      - {action: select_layer, layer: municipi_caixa}
+      - {action: select_tree_item, target: {class_name: QgsDockBrowserTreeView, item_text: GeoPackage}}
+      - {action: wait, ms: 15000}
+    target: &main {class_name: QgisApp}
+    drawings: []
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-envolupants-comparacio.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-envolupants-comparacio.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-envolupants-comparacio.manifest.yml
+  - id: envolupants-tipus
+    title: Una eina per escollir el tipus d'envolupant
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: qgis:minimumboundinggeometry
+        parameters: {INPUT: municipi_treball, TYPE: 0}
+    target: {object_name: "unaltracapturaProcessingDialog:qgis:minimumboundinggeometry"}
+    drawings:
+      - {type: callout, text: Municipi sense buffer, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:INPUT"}}
+      - {type: callout, text: Tipus d'envolupant, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:TYPE"}}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-envolupants-tipus.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-envolupants-tipus.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-envolupants-tipus.manifest.yml
+  - id: buffer-municipal
+    title: Buffer municipal amb distància de 500 m
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: native:buffer
+        parameters: {INPUT: municipi_treball, DISTANCE: 500, SEGMENTS: 8, END_CAP_STYLE: 0, JOIN_STYLE: 0, MITER_LIMIT: 2, DISSOLVE: false, SEPARATE_DISJOINT: false}
+    target: {object_name: "unaltracapturaProcessingDialog:native:buffer"}
+    drawings:
+      - {type: callout, text: Distància en metres, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:DISTANCE"}}
+      - {type: callout, text: Segments per quadrant, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:SEGMENTS"}}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-buffer-municipal.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-buffer-municipal.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-buffer-municipal.manifest.yml
+  - id: roi-desada
+    title: ROI CNIG, connexions GeoPackage i WMS IGN/PNOA
+    mode: window
+    presentation:
+      checks: &context_checks
+        project_crs: EPSG:25831
+        required_layers: [CartoCiudad · portals i PK, CartoCiudad · illes, CNIG · trams viaris]
+        visible_layers: [roi, municipi_treball, municipi_buffer_500m, Ortofoto IGN/PNOA (WMS)]
+        persistent_layers: [roi, municipi_treball, municipi_buffer_500m]
+    steps:
+      - *close
+      - {action: set_layer_visible, layer: municipi_caixa, visible: false}
+      - {action: set_layer_visible, layer: municipi_rectangle_orientat, visible: false}
+      - {action: set_layer_visible, layer: municipi_cercle_minim, visible: false}
+      - {action: set_layer_visible, layer: municipi_convexa, visible: false}
+      - {action: set_layer_visible, layer: roi, visible: true}
+      - {action: set_layer_visible, layer: municipi_buffer_500m, visible: true}
+      - {action: select_layer, layer: roi}
+      - {action: zoom_to_layer, layer: roi, scale: 1.15}
+      - action: select_tree_item
+        target: {class_name: QgsDockBrowserTreeView, item_text: GeoPackage}
+      - {action: wait, ms: 15000}
+    target: *main
+    drawings: []
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-roi-desada.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-roi-desada.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-roi-desada.manifest.yml
+  - id: menu-geoprocessament
+    title: Accés al geoprocessament vectorial
+    mode: window
+    steps:
+      - action: open_menu_path
+        path: [Vectorial, Eines de geoprocessament]
+    target:
+      class_name: QgisApp
+    drawings:
+      - type: callout
+        text: Operacions de superposició
+        number: none
+        target_marker: box
+        label_topology: outside
+        target_anchor_position: right
+        placement: right
+        target: {class_name: QAction, text: Intersecció}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-menu-geoprocessament.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-menu-geoprocessament.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-menu-geoprocessament.manifest.yml
+  - id: caixa-roi
+    title: Caixa no orientada sobre el buffer de 500 m
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: native:boundingboxes
+        parameters:
+          INPUT: municipi_buffer_500m
+          OUTPUT: "ogr:dbname='/workspace/sandbox/pr4-roi-classe.gpkg' table=\"roi\" (geom)"
+    target: {object_name: "unaltracapturaProcessingDialog:native:boundingboxes"}
+    drawings:
+      - &input_label
+        type: callout
+        text: Buffer municipal de 500 m
+        number: none
+        target_marker: box
+        label_topology: outside
+        target_anchor_position: right
+        placement: right
+        target: {object_name: "unaltracapturaProcessingParameter:INPUT"}
+      - type: callout
+        text: Destinació persistent
+        number: none
+        target_marker: box
+        label_topology: outside
+        target_anchor_position: bottom
+        placement: below
+        target: {object_name: "unaltracapturaProcessingParameter:OUTPUT"}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-caixa-roi.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-caixa-roi.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-caixa-roi.manifest.yml
+  - id: filtre-capa
+    title: Accés al filtre de capa sobre el viari
+    mode: window
+    presentation:
+      active_layer: Candidats urbans (filtre)
+      checks: *context_checks
+    steps:
+      - *close
+      - action: load_vector
+        path: "/workspace/sandbox/practiques/pr4-geoprocessament/roi-run-20261020-04/payload/data/pr4-roi-exemple.gpkg|layername=vies_candidats|subset=\"clased\" = 'Urbano'"
+        name: Candidats urbans (filtre)
+      - {action: set_layer_visible, layer: Candidats urbans (filtre), visible: false}
+      - {action: select_layer, layer: Candidats urbans (filtre)}
+      - action: open_context_menu
+        target: {object_name: theLayerTreeView, item_text: Candidats urbans (filtre)}
+        active_text: Filtre
+    target: *main
+    drawings: []
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-filtre-capa.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-filtre-capa.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-filtre-capa.manifest.yml
+  - id: seleccio-roi
+    title: Selecció de geometries que intersequen la ROI
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: native:selectbylocation
+        parameters: {INPUT: vies_candidats, PREDICATE: [0], INTERSECT: roi, METHOD: 0}
+    target: {object_name: "unaltracapturaProcessingDialog:native:selectbylocation"}
+    drawings:
+      - {type: callout, text: Geometries senceres, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:INPUT"}}
+      - {type: callout, text: La ROI defineix la relació, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:INTERSECT"}}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-seleccio-roi.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-seleccio-roi.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-seleccio-roi.manifest.yml
+  - id: retall-portals
+    title: Retall de portals amb la ROI
+    mode: window
+    steps:
+      - *close
+      - action: load_vector
+        path: "/workspace/sandbox/practiques/pr4-geoprocessament/roi-run-20261020-04/payload/data/pr4-roi-exemple.gpkg|layername=portals_candidats|subset=\"tipo\" = 'Portal'"
+        name: Portals (filtre Portal)
+      - {action: set_layer_visible, layer: Portals (filtre Portal), visible: false}
+      - action: open_processing_algorithm_dialog
+        algorithm: native:clip
+        parameters:
+          INPUT: Portals (filtre Portal)
+          OVERLAY: roi
+          OUTPUT: "ogr:dbname='/workspace/sandbox/pr4-roi-classe.gpkg' table=\"portals_roi\" (geom)"
+    target: &clip_dialog {object_name: "unaltracapturaProcessingDialog:native:clip"}
+    drawings: &clip_labels
+      - {type: callout, text: Geometria d'entrada, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:INPUT"}}
+      - {type: callout, text: Àmbit de retall, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:OVERLAY"}}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-retall-portals.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-retall-portals.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-retall-portals.manifest.yml
+  - id: retall-viari
+    title: Retall del viari amb la ROI
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: native:clip
+        parameters:
+          INPUT: vies_candidats
+          OVERLAY: roi
+          OUTPUT: "ogr:dbname='/workspace/sandbox/pr4-roi-classe.gpkg' table=\"viari_roi\" (geom)"
+    target: *clip_dialog
+    drawings: *clip_labels
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-retall-viari.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-retall-viari.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-retall-viari.manifest.yml
+  - id: interseccio-illes
+    title: Intersecció de les illes i atribut de la ROI
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: native:intersection
+        parameters:
+          INPUT: illes_candidates
+          OVERLAY: roi
+          OVERLAY_FIELDS: [id_roi]
+          OUTPUT: "ogr:dbname='/workspace/sandbox/pr4-roi-classe.gpkg' table=\"illes_roi\" (geom)"
+    target: {object_name: "unaltracapturaProcessingDialog:native:intersection"}
+    drawings:
+      - {type: callout, text: Illes de CartoCiudad, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:INPUT"}}
+      - {type: callout, text: Atribut de la superposició, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:OVERLAY_FIELDS"}}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-interseccio-illes.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-interseccio-illes.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-interseccio-illes.manifest.yml
+  - id: retalls-resultat
+    title: Punts, línies i polígons dins de la ROI
+    mode: window
+    steps:
+      - *close
+      - {action: set_layer_visible, layer: municipi_buffer_500m, visible: false}
+      - {action: set_layer_visible, layer: portals_roi, visible: true}
+      - {action: set_layer_visible, layer: viari_roi, visible: true}
+      - {action: set_layer_visible, layer: illes_roi, visible: true}
+      - {action: select_layer, layer: illes_roi}
+      - {action: zoom_to_layer, layer: roi, scale: 1.15}
+      - {action: wait, ms: 2000}
+    target: *main
+    drawings: []
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-retalls-resultat.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-retalls-resultat.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-retalls-resultat.manifest.yml
+  - id: diferencia-mar
+    title: Complement dels recintes administratius dins de la ROI
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: native:difference
+        parameters:
+          INPUT: roi
+          OVERLAY: terra_roi
+          OUTPUT: "ogr:dbname='/workspace/sandbox/pr4-roi-classe.gpkg' table=\"mar_complement\" (geom)"
+    target: &difference_dialog {object_name: "unaltracapturaProcessingDialog:native:difference"}
+    drawings:
+      - {type: callout, text: Univers finit, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:INPUT"}}
+      - {type: callout, text: Unió dels vuit recintes, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:OVERLAY"}}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-diferencia-mar.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-diferencia-mar.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-diferencia-mar.manifest.yml
+  - id: mar-resultat
+    title: Context marí derivat i contrast amb el WMS
+    mode: window
+    steps:
+      - *close
+      - {action: set_layer_visible, layer: portals_roi, visible: false}
+      - {action: set_layer_visible, layer: viari_roi, visible: false}
+      - {action: set_layer_visible, layer: illes_roi, visible: false}
+      - {action: style_layer, layer: mar_context, color: "#277da8", fill_color: "#6ec8df", fill_opacity: 0, outline_width: 0.4}
+      - {action: set_layer_visible, layer: mar_context, visible: true}
+      - {action: select_layer, layer: mar_context}
+      - {action: wait, ms: 2000}
+    target: *main
+    drawings: []
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-mar-resultat.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-mar-resultat.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-mar-resultat.manifest.yml
+  - id: buffer-carrers
+    title: Buffer de 5 m dels carrers urbans
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: native:buffer
+        parameters: {INPUT: urbans_roi, DISTANCE: 5, SEGMENTS: 8, END_CAP_STYLE: 0, JOIN_STYLE: 0, MITER_LIMIT: 2, DISSOLVE: true, SEPARATE_DISJOINT: false}
+    target: {object_name: "unaltracapturaProcessingDialog:native:buffer"}
+    drawings:
+      - {type: callout, text: 5 m a cada costat de l'eix, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:DISTANCE"}}
+      - {type: callout, text: Petjada conjunta dels carrers, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:DISSOLVE"}}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-buffer-carrers.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-buffer-carrers.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-buffer-carrers.manifest.yml
+  - id: diferencia-illes
+    title: Peces entre les àrees d'influència dels carrers
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: native:difference
+        parameters:
+          INPUT: terra_roi
+          OVERLAY: buffer_carrers_5m
+          OUTPUT: "ogr:dbname='/workspace/sandbox/pr4-roi-classe.gpkg' table=\"peces_carrers_5m\" (geom)"
+    target: *difference_dialog
+    drawings:
+      - {type: callout, text: Àmbit administratiu de treball, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:INPUT"}}
+      - {type: callout, text: Franges excloses, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:OVERLAY"}}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-diferencia-illes.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-diferencia-illes.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-diferencia-illes.manifest.yml
+  - id: multipart-monopart
+    title: Una entitat multipart passa a una fila per part
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: native:multiparttosingleparts
+        parameters:
+          INPUT: peces_carrers_5m
+          OUTPUT: "ogr:dbname='/workspace/sandbox/pr4-roi-classe.gpkg' table=\"peces_individuals_5m\" (geom)"
+    target: {object_name: "unaltracapturaProcessingDialog:native:multiparttosingleparts"}
+    drawings:
+      - {type: callout, text: Conservar la clau d'origen, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:INPUT"}}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-multipart-monopart.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-multipart-monopart.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-multipart-monopart.manifest.yml
+  - id: illes-resultat
+    title: Peces derivades dels carrers al nucli de Vila-seca
+    mode: window
+    steps:
+      - *close
+      - {action: set_layer_visible, layer: mar_context, visible: false}
+      - action: load_vector
+        path: "/workspace/sandbox/practiques/pr4-geoprocessament/roi-run-20261020-04/payload/data/pr4-roi-exemple.gpkg|layername=illes_roi|subset=\"id_manz\" = 431711172717"
+        name: Illa de referència per a l'enquadrament
+      - {action: set_layer_visible, layer: Illa de referència per a l'enquadrament, visible: false}
+      - {action: zoom_to_layer, layer: Illa de referència per a l'enquadrament, scale: 1.2}
+      - {action: set_canvas_scale, scale: 6500}
+      - {action: style_layer, layer: peces_individuals_5m, color: "#c46000", fill_color: "#f7bd4c", fill_opacity: 0, outline_width: 0.35}
+      - {action: set_layer_visible, layer: peces_individuals_5m, visible: true}
+      - {action: set_layer_visible, layer: urbans_roi, visible: true}
+      - {action: select_layer, layer: peces_individuals_5m}
+      - {action: wait, ms: 12000}
+    target: *main
+    drawings: []
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-illes-resultat.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-illes-resultat.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-illes-resultat.manifest.yml
+  - id: centroides
+    title: Un centroide per entitat poligonal
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: native:centroids
+        parameters: {INPUT: illes_roi, ALL_PARTS: false}
+    target: {object_name: "unaltracapturaProcessingDialog:native:centroids"}
+    drawings:
+      - {type: callout, text: Centre geomètric de l'entitat, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:INPUT"}}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-centroides.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-centroides.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-centroides.manifest.yml
+  - id: punt-superficie
+    title: Punt situat sobre la superfície de cada illa
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: native:pointonsurface
+        parameters: {INPUT: illes_roi, ALL_PARTS: false}
+    target: {object_name: "unaltracapturaProcessingDialog:native:pointonsurface"}
+    drawings:
+      - {type: callout, text: Pertinença al polígon, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:INPUT"}}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-punt-superficie.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-punt-superficie.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-punt-superficie.manifest.yml
+  - id: vertices
+    title: Extracció dels vèrtexs dels polígons
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: native:extractvertices
+        parameters: {INPUT: illes_roi}
+    target: {object_name: "unaltracapturaProcessingDialog:native:extractvertices"}
+    drawings:
+      - {type: callout, text: Geometries d'origen, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:INPUT"}}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-vertices.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-vertices.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-vertices.manifest.yml
+  - id: extrems-linies
+    title: Primer i últim vèrtex de cada entitat lineal
+    mode: window
+    steps:
+      - *close
+      - action: open_processing_algorithm_dialog
+        algorithm: native:extractspecificvertices
+        parameters: {INPUT: urbans_roi, VERTICES: "0,-1"}
+    target: {object_name: "unaltracapturaProcessingDialog:native:extractspecificvertices"}
+    drawings:
+      - {type: callout, text: Índex inicial i índex final, number: none, target_marker: box, label_topology: outside, target: {object_name: "unaltracapturaProcessingParameter:VERTICES"}}
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-extrems-linies.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-extrems-linies.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-extrems-linies.manifest.yml
+  - id: punts-resultat
+    title: Vèrtexs, centroides i punts sobre la superfície
+    mode: window
+    steps:
+      - *close
+      - {action: set_layer_visible, layer: peces_individuals_5m, visible: false}
+      - {action: set_layer_visible, layer: urbans_roi, visible: false}
+      - {action: set_layer_visible, layer: illes_roi, visible: true}
+      - {action: set_layer_visible, layer: vertices_illes, visible: true}
+      - {action: set_layer_visible, layer: centroides_illes, visible: true}
+      - {action: set_layer_visible, layer: punts_superficie_illes, visible: true}
+      - {action: set_canvas_scale, scale: 2300}
+      - {action: select_layer, layer: centroides_illes}
+      - {action: wait, ms: 12000}
+    target: *main
+    drawings: []
+    output:
+      path: ../../../assets/img/qgis/qgis-c06-punts-resultat.png
+      annotations_svg: ../../../assets/img/qgis/qgis-c06-punts-resultat.annotations.svg
+      manifest: ../../../assets/img/qgis/qgis-c06-punts-resultat.manifest.yml

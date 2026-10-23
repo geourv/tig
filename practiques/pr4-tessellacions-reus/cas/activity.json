@@ -1,0 +1,59 @@
+{
+  "schema_version": 2, "kind": "qgis-practice-request-v2",
+  "activity": {"id": "reus-tesselles", "version": "0.1.1", "title": "Reus: malles, distàncies, codis postals i atlas"},
+  "qgis_image": "sha256:1003721d96abe9607d8337b36851f9b29f84c2f8f92b377d1a73ff03c9d15cd2",
+  "script": "compute.py",
+  "inputs": [
+    {"id": "limits", "path": "inputs/limits.zip", "sha256": "d752b1b943e6c60f46a23119d6c3d4ad0b198461c502f0a5433197d7a5e34c83"},
+    {"id": "cartociudad", "path": "inputs/tarragona.gpkg", "sha256": "75b3523872d582ece5dfa2edd488674852557d898bf65f36b511e45be695f90e"}
+  ],
+  "parameters": {
+    "municipality_code": "34094343123", "margin_m": 1500, "include_atlas": true,
+    "sources": [
+      {"id": "limits", "repository_path": "practiques/recorregut-municipal/inputs/lineas_limite_cnig_20260728.zip", "sha256": "d752b1b943e6c60f46a23119d6c3d4ad0b198461c502f0a5433197d7a5e34c83"},
+      {"id": "cartociudad", "repository_path": "practiques/recorregut-municipal/inputs/tarragona.gpkg", "sha256": "75b3523872d582ece5dfa2edd488674852557d898bf65f36b511e45be695f90e"}
+    ]
+  },
+  "products": [
+    {"id": "initial-data", "path": "data/inicial.gpkg", "role": "initial-data", "format": "geopackage", "depends_on": ["font-regular"], "members": [
+      {"kind": "vector", "name": "municipi_reus", "role": "initial-data"},
+      {"kind": "vector", "name": "portals_entorn", "role": "initial-data"},
+      {"kind": "vector", "name": "generadors", "role": "initial-data"},
+      {"kind": "table", "name": "correspondencia", "role": "metadata"},
+      {"kind": "table", "name": "fonts_dades", "role": "metadata"},
+      {"kind": "project", "name": "inicial", "role": "initial-project"}
+    ]},
+    {"id": "resolved-data", "path": "data/reus-tesselles.gpkg", "role": "resolved-data", "format": "geopackage", "depends_on": ["font-regular"], "members": [
+      {"kind": "vector", "name": "municipi_reus", "role": "resolved-data"},
+      {"kind": "vector", "name": "portals_entorn", "role": "resolved-data"},
+      {"kind": "vector", "name": "generadors", "role": "resolved-data"},
+      {"kind": "vector", "name": "domini", "role": "resolved-data"},
+      {"kind": "vector", "name": "malla_500m", "role": "resolved-data"},
+      {"kind": "vector", "name": "malla_1000m", "role": "resolved-data"},
+      {"kind": "vector", "name": "cobertura_atlas", "role": "resolved-data"},
+      {"kind": "vector", "name": "triangles", "role": "resolved-data"},
+      {"kind": "vector", "name": "arestes", "role": "resolved-data"},
+      {"kind": "vector", "name": "arestes_25m", "role": "resolved-data"},
+      {"kind": "vector", "name": "arestes_50m", "role": "resolved-data"},
+      {"kind": "vector", "name": "arestes_100m", "role": "resolved-data"},
+      {"kind": "vector", "name": "grups_25m", "role": "resolved-data"},
+      {"kind": "vector", "name": "grups_50m", "role": "resolved-data"},
+      {"kind": "vector", "name": "grups_100m", "role": "resolved-data"},
+      {"kind": "vector", "name": "voronoi", "role": "resolved-data"},
+      {"kind": "vector", "name": "zones_postals", "role": "resolved-data"},
+      {"kind": "table", "name": "correspondencia", "role": "metadata"},
+      {"kind": "table", "name": "fonts_dades", "role": "metadata"},
+      {"kind": "table", "name": "resum", "role": "metadata"},
+      {"kind": "project", "name": "reus", "role": "resolved-project"}
+    ]},
+    {"id": "font-regular", "path": "data/fonts/DejaVuSans.ttf", "role": "initial-data", "format": "font", "depends_on": []},
+    {"id": "font-licence", "path": "data/fonts/licence.csv", "role": "initial-data", "format": "csv", "depends_on": ["font-licence-types"]},
+    {"id": "font-licence-types", "path": "data/fonts/licence.csvt", "role": "initial-data", "format": "csvt", "depends_on": []}
+  ],
+  "fonts": [{"file": "font-regular", "family": "DejaVu Sans"}],
+  "projects": [
+    {"id": "initial-project", "path": "projects/inicial.qgz", "role": "initial-project", "source_product": "initial-data", "source_project": "inicial", "compose": true, "capture": false, "scene": {"setup": [{"action": "close_transients"}], "presentation": {"checks": {"project_crs": "EPSG:25831"}}}},
+    {"id": "resolved-project", "path": "projects/reus-tesselles.qgz", "role": "resolved-project", "source_product": "resolved-data", "source_project": "reus", "compose": true, "capture": true, "scene": {"setup": [{"action": "close_transients"}, {"action": "show_panel", "title": "Layers"}], "presentation": {"checks": {"project_crs": "EPSG:25831"}}}}
+  ],
+  "exports": [], "timeout_seconds": 600, "locale": "ca_ES"
+}
