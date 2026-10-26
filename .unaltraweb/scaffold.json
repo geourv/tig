@@ -4,11 +4,32 @@
     ".github/dependabot.yml": "a8220cfb49a6649b7d8d8600e4b6f619fadf05b4da68bea2e3a9cd3fc48eac20",
     ".github/pull_request_template.md": "88086df7e4052936e8dbe6515db3f13fa93c5602e9e3a7beeae8210a6e52a7dc",
     ".github/workflows/deploy.yml": "efcb07d00b45b89fa1ee9a77e5a059740e0bd376be8a570b2ee04b95b60aa501",
-    ".gitignore": "2a8759432093ddc35526ba104208cdf01e6d259dbdd5b9e26da9d31966057f64",
+    ".github/workflows/source-checks.yml": "c0c1ad9f32b70d0e36846d5dc32eb4f585e36c7e3fcc071c27092a5afd59067a",
+    ".gitignore": "e63225e3d5b8ccbd81292bf872e3a87771df1ed6780e660bad23b80cb558c875",
     ".unaltraweb/docker-mount.sh": "59b042cecc2226036e4d85bd96543182c53b32dbddb437b9c196d78df6d12104",
-    "Gemfile": "4e4ab55d246aa5984d00e689446a0e594bfe85e64b2319e17321afbaa89e2fed",
-    "Gemfile.lock": "9ead8d64e9c6b73b2cded03d8c16b821d0b5e9c71bd971ffed65b0ed7b408164",
-    "Makefile": "b9c7af8e19dde40597f6dd52fd604c0491d7abf46a1c63c15e6f964a099c0091"
+    "Gemfile": "a593559bfe89825b8bbe39da8fbc223f4d37f10c5b262f30e310e34e5d063a9a",
+    "Gemfile.lock": "dd10fcf843c20587fae4fc11c903c1fee6750cc7766c8e765ff93b05d31bc7fe",
+    "Makefile": "9e5da284b2821e9684f9ebd99ea7326ed66970208eea2c920994739f572cc38f"
+  },
+  "reviewed_resolutions": {
+    ".github/workflows/source-checks.yml": {
+      "base_plan_sha256": "f686809cd5f29e1c1f5bbcbc3b29a1f97d4ec515d51fac5c7bfe2ba601ed8386",
+      "baseline_sha256": "",
+      "local_sha256": "8b5c475aa5e33b2ac5b66c2c5ca9cd5f058593684c245a7cffa163f62777fd4e",
+      "mode": "pins-only",
+      "payload_sha256": "c0c1ad9f32b70d0e36846d5dc32eb4f585e36c7e3fcc071c27092a5afd59067a",
+      "reason": "Update technical pins only; preserve workflow controls and all non-pin bytes as authorized.",
+      "result_sha256": "b0f271fd8dea90dd1c9c084d0db6dd0e6120c3e22cc53001794b84e21776759a"
+    },
+    ".gitignore": {
+      "base_plan_sha256": "f686809cd5f29e1c1f5bbcbc3b29a1f97d4ec515d51fac5c7bfe2ba601ed8386",
+      "baseline_sha256": "2a8759432093ddc35526ba104208cdf01e6d259dbdd5b9e26da9d31966057f64",
+      "local_sha256": "ff1022c2d2bd9c12cb5105fcee4bc60b89108258a3108bd5a5131cdad43abca5",
+      "mode": "keep",
+      "payload_sha256": "e63225e3d5b8ccbd81292bf872e3a87771df1ed6780e660bad23b80cb558c875",
+      "reason": "Preserve all local exclusions and customizations under the coordinated author authorization.",
+      "result_sha256": "ff1022c2d2bd9c12cb5105fcee4bc60b89108258a3108bd5a5131cdad43abca5"
+    }
   },
   "schema_version": 1,
   "source": "unaltraweb_mcp package"
