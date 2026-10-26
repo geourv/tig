@@ -357,6 +357,26 @@ Retallar cel·les pel terme crea peces parcials. Un recompte brut sobre una peç
 
 Una comparació amb hexàgons ha de fixar el domini i documentar les dimensions reals produïdes per l'eina. No s'ha de suposar que el mateix nombre escrit als espaiaments genera la mateixa àrea que un quadrat. Per a l'atlas posterior es conservaran quadrats complets: la pàgina necessita un enquadrament regular, no una peça retallada de mida variable.
 
+### Patrons de punts per distribuir elements en una parcel·la {#patrons-parcella}
+
+Quants arbres, mòduls fotovoltaics o places d'aparcament es podrien distribuir en una parcel·la mantenint espais de pas? Una tessel·lació divideix la superfície en cel·les; un **patró de punts** proposa posicions. Situar un punt al centre de cada cel·la és una manera de relacionar-los. Abans de comptar cal definir què representa cada punt i quines separacions necessita.
+
+Es treballa amb el polígon de la parcel·la en un CRS projectat adequat, en metres. Un **buffer negatiu** n'obté un interior reduït; la diferència entre la parcel·la i aquest interior forma la franja perimetral reservada. S'exclouen també cases, camins i altres obstacles, amb el resguard que requereixi cada cas. Si un camí està representat per una línia, cal donar amplada a la seva zona d'exclusió.
+
+A QGIS, `native:creategrid` amb tipus **Punt** (`TYPE=0`) crea posicions amb espaiaments horitzontal i vertical, i índexs de fila i columna {% cite qgisUserGuide344 %}. L'extensió generada ha de cobrir la parcel·la també després de girar o desplaçar el conjunt. Canviar l'origen mou el patró sencer; desplaçar només files alternes produeix una disposició a portell. Es fixa el centre de gir per poder repetir una orientació.
+
+La selecció espacial conserva els punts estrictament interiors a la zona utilitzable i descarta els que intersequen les exclusions, inclosos els contactes amb les seves vores. Es desen els candidats amb un ID estable i el motiu d'exclusió, i es compten els acceptats. Aquesta primera selecció comprova les posicions; les dimensions dels elements afegeixen altres controls.
+
+En una **plantació d'arbres**, l'espaiament entre arbres d'una mateixa fila i entre files defineix el marc de plantació. Es poden comparar files alineades i a portell, mantenint explícites aquestes distàncies. A més del marge lateral, les capçaleres —els extrems de les files— han de reservar espai per al gir de la maquinària. Una franja uniforme és una primera aproximació; la forma i l'amplada de maniobra depenen de l'operació prevista.
+
+Per als **panells solars**, es pot proposar en un exercici una franja perimetral lliure d'**1,5 m** per al manteniment. És una hipòtesi del cas, no un mínim normatiu general. El rectangle que representa la petjada de cada mòdul ha de quedar completament dins de la zona utilitzable, sense envair obstacles ni altres mòduls. El pas lliure es mesura entre vores, no entre centres. També cal reservar corredors interiors connectats amb l'accés i considerar l'orientació, les ombres i els equips auxiliars.
+
+En un **aparcament**, cada punt pot identificar una plaça amb amplada, llargada i orientació. Comparar files rectes o obliqües requereix representar les places com a polígons i reservar carrils de circulació, girs i recorreguts de vianants. Un recompte més alt només és útil si les places continuen essent accessibles.
+
+>> **Símbols i punts comptables.** Un farciment de patró de punts repeteix dibuixos dins d'un polígon, però no crea entitats puntuals que es puguin seleccionar i comptar. Una capa de punts sí que conserva registres. Els seus marcadors poden tenir mida en unitats del mapa i rotació segons un camp; les comprovacions d'ocupació, però, requereixen les petjades geomètriques, no només l'aparença dels símbols.
+
+Es pot afinar una proposta movent o retirant punts en una còpia d'edició manual. Cal conservar el patró inicial, els IDs i el motiu de cada canvi, i repetir els controls de separació, ocupació i accés. El recompte expressa una capacitat sota les hipòtesis adoptades. Per comptar arbres o panells ja existents, les posicions s'han de contrastar amb observacions: un patró regular no acredita que tots els elements hi siguin.
+
 ## Delaunay: triangles, arestes i agrupacions
 
 La **triangulació de Delaunay** connecta punts de manera que l'interior del cercle circumscrit a cada triangle no contingui altres punts del conjunt. Proposa un veïnatge geomètric sense haver de fixar primer un radi. Els duplicats, la col·linearitat i les configuracions cocirculars poden provocar degeneracions o triangulacions equivalents; els triangles perifèrics també reflecteixen l'extensió del conjunt observat.
@@ -515,6 +535,12 @@ El recorregut parteix de PR3 i conserva la ROI de continuïtat. Moodle concreta 
 :::
 
 La base és `pr4-geoprocessament-cognom`: fitxers `.gpkg` i `.qgz`, `-mapa.pdf` i `-apunts.pdf`. Amb QGIS tancat es prepara la còpia de distribució i es prova des d'una ubicació neta. El mapa i les captures no substitueixen les capes ni la composició editable.
+
+### Comparar dues distribucions dins d'una parcel·la {#comparar-patrons-parcella}
+
+Sobre una parcel·la real documentada o un polígon sintètic identificat com a tal, es tria un dels tres usos anteriors. Es fixen marges, obstacles, espaiaments, dimensions i accessos. Es comparen dos patrons canviant només un desplaçament o una orientació, amb el centre de gir documentat i cobertura suficient de la parcel·la en tots dos casos.
+
+Es conserven les entrades, els patrons candidats i els acceptats, les petjades quan pertoqui i els paràmetres. El diari inclou dos mapes a la mateixa escala i els recomptes abans i després de les exclusions. Cal explicar els canvis prop de les vores i els obstacles, comprovar els passos i justificar qualsevol ajust manual. El resultat millor entre els dos escenaris provats no demostra un màxim global.
 
 ### Reus i transferència al municipi propi
 
