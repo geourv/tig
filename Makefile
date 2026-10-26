@@ -2,7 +2,7 @@ LOCAL_CORE ?= /opt/unaltraweb
 # Empty selects factory-owned, runtime-specific generated state. An explicit
 # Gemfile is author-owned and requires its existing frozen lock.
 LOCAL_GEMFILE ?=
-MCP_IMAGE ?= ghcr.io/dosquartsdedocs/unaltraweb-mcp:0.7.1
+MCP_IMAGE ?= ghcr.io/dosquartsdedocs/unaltraweb-mcp:0.7.4
 MANUAL_PDF_IMAGE ?= ghcr.io/dosquartsdedocs/unaltraweb-manual-pdf@sha256:1bb3f2dafd741e96c28639ec1cc8ccaeb81cbaa73e649f787c0b4ef59997bd4b
 MANUAL_PDF_PREVIEW_CLEAN_DRY_RUN ?= 1
 MANUAL_PDF_PREVIEW_CONFIRM_CLEAN ?= 0
